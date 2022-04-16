@@ -1,5 +1,6 @@
 #include "Debug.h"
 #include <iostream>
+#include <sstream>
 #include <windows.h>
 
 #pragma region logging
@@ -7,21 +8,7 @@
 void Debug::PrintLog(std::wstring log) noexcept
 {
 #if _DEBUG
-	std::wcout << "[LOG]: " << log << std::endl;
-#endif
-}
-
-void Debug::PrintLog(std::string log) noexcept
-{
-#if _DEBUG
-	std::cout << "[LOG]: " << log << std::endl;
-#endif
-}
-
-void Debug::PrintLog(char* log) noexcept
-{
-#if _DEBUG
-	std::cout << "[LOG]: " << log << std::endl;
+	MessageBox(nullptr, log.c_str(), L"[LOG]", MB_OK | MB_ICONINFORMATION);
 #endif
 }
 
@@ -29,36 +16,16 @@ void Debug::PrintLog(char* log) noexcept
 
 #pragma region error
 
-void Debug::PrintError(std::wstring error) noexcept
+void Debug::PrintError(std::string error, std::string file ,unsigned int line) noexcept
 {
 #if _DEBUG
-	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hStdout,
-		FOREGROUND_RED | FOREGROUND_INTENSITY);
+	std::ostringstream oss;
 
-	std::wcout << "[ERROR]: " << error << std::endl;
-#endif
-}
+	oss << "[ASSERT]: " << error << std::endl
+		<< "[FILE]: " << file << std::endl
+		<< "[LINE]: " << line;
 
-void Debug::PrintError(std::string error) noexcept
-{
-#if _DEBUG
-	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hStdout,
-		FOREGROUND_RED | FOREGROUND_INTENSITY);
-
-	std::cout << "[ERROR]: " << error << std::endl;
-#endif
-}
-
-void Debug::PrintError(char* error) noexcept
-{
-#if _DEBUG
-	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hStdout,
-		FOREGROUND_RED | FOREGROUND_INTENSITY);
-
-	std::cout << "[ERROR]: " << error << std::endl;
+	MessageBoxW(nullptr, reinterpret_cast<LPCWSTR>(oss.str().c_str()), L"[ERROR]", MB_OK | MB_ICONERROR);
 #endif
 }
 
@@ -66,44 +33,18 @@ void Debug::PrintError(char* error) noexcept
 
 #pragma region assert
 
-void Debug::PrintAssert(bool condition, std::wstring error) noexcept
+void Debug::PrintAssert(bool condition, std::string error, std::string file, unsigned int line) noexcept
 {
 #if _DEBUG
 	if (!condition)
 	{
-		HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleTextAttribute(hStdout,
-			FOREGROUND_RED | FOREGROUND_INTENSITY);
+		std::ostringstream oss;
 
-		std::wcout << "[ASSERT]: " << error << std::endl;
-	}
-#endif
-}
+		oss << "[ASSERT]: " << error << std::endl
+			<< "[FILE]: " << file << std::endl
+			<< "[LINE]: " << line;
 
-void Debug::PrintAssert(bool condition, std::string error) noexcept
-{
-#if _DEBUG
-	if (!condition)
-	{
-		HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleTextAttribute(hStdout,
-			FOREGROUND_RED | FOREGROUND_INTENSITY);
-
-		std::cout << "[ASSERT]: " << error << std::endl;
-	}
-#endif
-}
-
-void Debug::PrintAssert(bool condition, char* error) noexcept
-{
-#if _DEBUG
-	if (!condition)
-	{
-		HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleTextAttribute(hStdout,
-			FOREGROUND_RED | FOREGROUND_INTENSITY);
-
-		std::cout << "[ASSERT]: " << error << std::endl;
+		MessageBox(nullptr, (LPCWSTR)oss.str().c_str(), L"[ASSERT]", MB_OK | MB_ICONERROR);
 	}
 #endif
 }

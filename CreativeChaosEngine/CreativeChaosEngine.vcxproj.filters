@@ -22,9 +22,6 @@
     <Filter Include="Header Files\core\application\editor">
       <UniqueIdentifier>{f09819eb-429f-4987-9b38-2a616dfa140c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\core\application\editor_window">
-      <UniqueIdentifier>{bf2c4c16-2c55-4e43-9bfc-ef23b0a32a2e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\core">
       <UniqueIdentifier>{e0e87fbd-d755-487b-9efd-94da6967b6be}</UniqueIdentifier>
     </Filter>
@@ -34,30 +31,30 @@
     <Filter Include="Source Files\core\application\editor">
       <UniqueIdentifier>{d6e0cf51-63e1-4ddf-8278-34c2e0c0892b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\core\application\editor_window">
-      <UniqueIdentifier>{439944f7-c7f0-46a2-baf5-c176c4ee30d6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\core\debug">
       <UniqueIdentifier>{89c60970-6c0c-473e-8d02-2e7cc8eab299}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\core\debug">
       <UniqueIdentifier>{995a1967-e70f-4a2c-ac98-736a4ff43e4a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\core\application\input">
+      <UniqueIdentifier>{f7b3f962-295a-40fe-bb8c-d59bd6132fdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core\application\editor\input">
+      <UniqueIdentifier>{b8787571-34e4-4a36-b0ae-a76ac4684a8e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\application\Application.h">
       <Filter>Header Files\core\application</Filter>
     </ClInclude>
-    <ClInclude Include="core\application\editor_window\EditorWindow.h">
-      <Filter>Header Files\core\application\editor_window</Filter>
-    </ClInclude>
     <ClInclude Include="core\application\editor\CCE_Editor.h">
       <Filter>Header Files\core\application\editor</Filter>
     </ClInclude>
-    <ClInclude Include="core\application\editor_window\EditorWindowManager.h">
-      <Filter>Header Files\core\application\editor_window</Filter>
-    </ClInclude>
     <ClInclude Include="core\debug\Debug.h">
+      <Filter>Header Files\core\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="core\debug\CCException.h">
       <Filter>Header Files\core\debug</Filter>
     </ClInclude>
   </ItemGroup>
@@ -68,13 +65,10 @@
     <ClCompile Include="core\application\editor\CCE_Editor.cpp">
       <Filter>Source Files\core\application\editor</Filter>
     </ClCompile>
-    <ClCompile Include="core\application\editor_window\EditorWindow.cpp">
-      <Filter>Source Files\core\application\editor_window</Filter>
-    </ClCompile>
-    <ClCompile Include="core\application\editor_window\EditorWindowManager.cpp">
-      <Filter>Source Files\core\application\editor_window</Filter>
-    </ClCompile>
     <ClCompile Include="core\debug\Debug.cpp">
+      <Filter>Source Files\core\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="core\debug\CCException.cpp">
       <Filter>Source Files\core\debug</Filter>
     </ClCompile>
   </ItemGroup>

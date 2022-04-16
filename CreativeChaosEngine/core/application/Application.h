@@ -1,39 +1,25 @@
 #pragma once
 #include <Windows.h>
+#include <string>
 #include "editor/CCE_Editor.h"
-#include "../debug/Debug.h"
 
 // temporary entrance point -> change later
 
-LRESULT CALLBACK WindowProcessMessages(HWND hWnd, UINT msg, WPARAM param, LPARAM lparam);
-
-CCE_Editor* editor = new CCE_Editor();
-
-int WINAPI WinMain(HINSTANCE currentInstance, HINSTANCE previousInstance, PSTR cmdLine, INT cmdCount)
+int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    editor->OpenEditor(false, WindowProcessMessages);
+    CCE_Editor* editor = new CCE_Editor(1280,720, "Creative Chaos Machine - v0.1");
 
-    while (true)
+    try 
     {
-        editor->UpdateEditor();
+        return editor->OpenEditor();
+    }
+    catch (std::exception e)
+    {
+        MessageBox(nullptr, e.what(), "[Standard Exception]", MB_OK | MB_ICONEXCLAMATION);
     }
 
+    editor->~CCE_Editor();
     delete editor;
 
-    return 0;
-}
-
-LRESULT CALLBACK WindowProcessMessages(HWND hWnd, UINT msg, WPARAM param, LPARAM lparam)
-{
-    switch (msg)
-    {
-    case WM_QUIT:
-        editor->ExitEditor();
-        break;
-    case WM_CLOSE:
-        PostQuitMessage(0);
-        return 0;
-        break;
-    }
-    return DefWindowProc(hWnd, msg, param, lparam);
+    return -1;
 }
