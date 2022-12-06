@@ -5,10 +5,10 @@
 
 #pragma region logging
 
-void Debug::PrintLog(std::wstring log) noexcept
+void Debug::PrintLog(char* log) noexcept
 {
 #if _DEBUG
-	MessageBox(nullptr, log.c_str(), L"[LOG]", MB_OK | MB_ICONINFORMATION);
+	MessageBox(nullptr, log, "[LOG]", MB_OK | MB_ICONINFORMATION);
 #endif
 }
 
@@ -33,7 +33,7 @@ void Debug::PrintError(std::string error, std::string file ,unsigned int line) n
 
 #pragma region assert
 
-void Debug::PrintAssert(bool condition, std::string error, std::string file, unsigned int line) noexcept
+void Debug::PrintAssert(bool condition, char* error, std::string file, unsigned int line) noexcept
 {
 #if _DEBUG
 	if (!condition)
@@ -44,7 +44,7 @@ void Debug::PrintAssert(bool condition, std::string error, std::string file, uns
 			<< "[FILE]: " << file << std::endl
 			<< "[LINE]: " << line;
 
-		MessageBox(nullptr, (LPCWSTR)oss.str().c_str(), L"[ASSERT]", MB_OK | MB_ICONERROR);
+		MessageBox(nullptr, (LPCSTR)oss.str().c_str(), "[ASSERT]", MB_OK | MB_ICONERROR);
 	}
 #endif
 }

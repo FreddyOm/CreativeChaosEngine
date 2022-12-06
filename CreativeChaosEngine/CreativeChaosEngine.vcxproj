@@ -21,12 +21,14 @@
   <ItemGroup>
     <ClInclude Include="core\application\Application.h" />
     <ClInclude Include="core\application\editor\CCE_Editor.h" />
+    <ClInclude Include="core\application\editor\EditorWindow.h" />
     <ClInclude Include="core\debug\CCException.h" />
     <ClInclude Include="core\debug\Debug.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\application\Application.cpp" />
     <ClCompile Include="core\application\editor\CCE_Editor.cpp" />
+    <ClCompile Include="core\application\editor\EditorWindow.cpp" />
     <ClCompile Include="core\debug\CCException.cpp" />
     <ClCompile Include="core\debug\Debug.cpp" />
   </ItemGroup>

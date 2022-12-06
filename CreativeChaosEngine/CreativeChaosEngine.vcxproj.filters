@@ -57,6 +57,9 @@
     <ClInclude Include="core\debug\CCException.h">
       <Filter>Header Files\core\debug</Filter>
     </ClInclude>
+    <ClInclude Include="core\application\editor\EditorWindow.h">
+      <Filter>Header Files\core\application\editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\application\Application.cpp">
@@ -70,6 +73,9 @@
     </ClCompile>
     <ClCompile Include="core\debug\CCException.cpp">
       <Filter>Source Files\core\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="core\application\editor\EditorWindow.cpp">
+      <Filter>Source Files\core\application\editor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

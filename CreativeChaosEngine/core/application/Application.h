@@ -5,9 +5,9 @@
 
 // temporary entrance point -> change later
 
-int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    CCE_Editor* editor = new CCE_Editor(1280,720, "Creative Chaos Machine - v0.1");
+    CCE_Editor* editor = new CCE_Editor(hInstance);
 
     try 
     {
@@ -18,7 +18,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         MessageBox(nullptr, e.what(), "[Standard Exception]", MB_OK | MB_ICONEXCLAMATION);
     }
 
-    editor->~CCE_Editor();
+
+    editor->ExitEditor();
     delete editor;
 
     return -1;

@@ -12,12 +12,12 @@
 struct Debug
 {
 	// Logging
-	static void PrintLog(std::wstring log) noexcept;
+	static void PrintLog(char* log) noexcept;
 
 	// Error
 	static void PrintError(std::string error, std::string file, unsigned int line) noexcept;
 
 	// Assert
-	static void PrintAssert(bool condition, std::string error, std::string file, unsigned int line) noexcept;
+	static void PrintAssert(bool condition, char* error, std::string file, unsigned int line) noexcept;
 
 };
