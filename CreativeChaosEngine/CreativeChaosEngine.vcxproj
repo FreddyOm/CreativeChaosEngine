@@ -24,6 +24,9 @@
     <ClInclude Include="core\application\editor\EditorWindow.h" />
     <ClInclude Include="core\debug\CCException.h" />
     <ClInclude Include="core\debug\Debug.h" />
+    <ClInclude Include="core\debug\debug_console.h" />
+    <ClInclude Include="test\base_test.h" />
+    <ClInclude Include="test\editor_test.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\application\Application.cpp" />
@@ -31,6 +34,9 @@
     <ClCompile Include="core\application\editor\EditorWindow.cpp" />
     <ClCompile Include="core\debug\CCException.cpp" />
     <ClCompile Include="core\debug\Debug.cpp" />
+    <ClCompile Include="core\debug\debug_console.cpp" />
+    <ClCompile Include="test\base_test.cpp" />
+    <ClCompile Include="test\editor_test.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -64,7 +70,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">

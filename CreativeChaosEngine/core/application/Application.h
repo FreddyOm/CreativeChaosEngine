@@ -1,26 +1,45 @@
 #pragma once
 #include <Windows.h>
 #include <string>
+#include <iostream>
 #include "editor/CCE_Editor.h"
 
-// temporary entrance point -> change later
+#if _DEBUG
+#include "../../test/editor_test.h"
+#include "../debug/debug_console.h"
+#endif // _DEBUG
 
+// temporary entrance point -> change later
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    CCE_Editor* editor = new CCE_Editor(hInstance);
+#if _DEBUG
+	
+		using namespace CCE_Debug;
 
-    try 
-    {
-        return editor->OpenEditor();
-    }
-    catch (std::exception e)
-    {
-        MessageBox(nullptr, (LPCWSTR)e.what(), L"[Standard Exception]", MB_OK | MB_ICONEXCLAMATION);
-    }
+		DebugConsole console = DebugConsole();
 
+		{
+			DebugConsole::ConsoleLog(L"---------------- UNIT TESTING ----------------");
 
-    editor->ExitEditor();
-    delete editor;
+			EditorTest test = EditorTest();
+			test.RunAllTests();
+		}
+	
+#endif // _DEBUG
 
-    return -1;
+	CCE_Editor* editor = new CCE_Editor(hInstance);
+
+	try
+	{
+		return editor->OpenEditor();
+	}
+	catch (std::exception e)
+	{
+		MessageBox(nullptr, (LPCWSTR)e.what(), L"[Standard Exception]", MB_OK | MB_ICONEXCLAMATION);
+	}
+
+	editor->ExitEditor();
+	delete editor;
+
+	return -1;
 }

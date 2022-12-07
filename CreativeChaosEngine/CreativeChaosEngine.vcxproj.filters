@@ -31,17 +31,23 @@
     <Filter Include="Source Files\core\application\editor">
       <UniqueIdentifier>{d6e0cf51-63e1-4ddf-8278-34c2e0c0892b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\core\debug">
-      <UniqueIdentifier>{89c60970-6c0c-473e-8d02-2e7cc8eab299}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\core\debug">
-      <UniqueIdentifier>{995a1967-e70f-4a2c-ac98-736a4ff43e4a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\core\application\input">
       <UniqueIdentifier>{f7b3f962-295a-40fe-bb8c-d59bd6132fdf}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\core\application\editor\input">
       <UniqueIdentifier>{b8787571-34e4-4a36-b0ae-a76ac4684a8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core\debug">
+      <UniqueIdentifier>{c50a3e9b-3c15-422f-b211-4f12552caaf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core\debug">
+      <UniqueIdentifier>{a20b04f9-0d0f-4601-bb62-590d431fe524}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\test">
+      <UniqueIdentifier>{8f041eb4-4b6c-4a24-bf67-f5a4364400b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\test">
+      <UniqueIdentifier>{b7110d48-bc72-456b-a1cb-ad8ba53168ac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -51,14 +57,23 @@
     <ClInclude Include="core\application\editor\CCE_Editor.h">
       <Filter>Header Files\core\application\editor</Filter>
     </ClInclude>
-    <ClInclude Include="core\debug\Debug.h">
-      <Filter>Header Files\core\debug</Filter>
+    <ClInclude Include="core\application\editor\EditorWindow.h">
+      <Filter>Header Files\core\application\editor</Filter>
     </ClInclude>
     <ClInclude Include="core\debug\CCException.h">
       <Filter>Header Files\core\debug</Filter>
     </ClInclude>
-    <ClInclude Include="core\application\editor\EditorWindow.h">
-      <Filter>Header Files\core\application\editor</Filter>
+    <ClInclude Include="core\debug\Debug.h">
+      <Filter>Header Files\core\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="test\editor_test.h">
+      <Filter>Header Files\test</Filter>
+    </ClInclude>
+    <ClInclude Include="test\base_test.h">
+      <Filter>Header Files\test</Filter>
+    </ClInclude>
+    <ClInclude Include="core\debug\debug_console.h">
+      <Filter>Header Files\core\debug</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -68,14 +83,23 @@
     <ClCompile Include="core\application\editor\CCE_Editor.cpp">
       <Filter>Source Files\core\application\editor</Filter>
     </ClCompile>
-    <ClCompile Include="core\debug\Debug.cpp">
-      <Filter>Source Files\core\debug</Filter>
+    <ClCompile Include="core\application\editor\EditorWindow.cpp">
+      <Filter>Source Files\core\application\editor</Filter>
     </ClCompile>
     <ClCompile Include="core\debug\CCException.cpp">
       <Filter>Source Files\core\debug</Filter>
     </ClCompile>
-    <ClCompile Include="core\application\editor\EditorWindow.cpp">
-      <Filter>Source Files\core\application\editor</Filter>
+    <ClCompile Include="core\debug\Debug.cpp">
+      <Filter>Source Files\core\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="test\editor_test.cpp">
+      <Filter>Source Files\test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\base_test.cpp">
+      <Filter>Source Files\test</Filter>
+    </ClCompile>
+    <ClCompile Include="core\debug\debug_console.cpp">
+      <Filter>Source Files\core\debug</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

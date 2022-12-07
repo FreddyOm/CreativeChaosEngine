@@ -5,19 +5,26 @@
 	TODO: Implement custom string class instead of std::wstring
 ------------------------------------------------------------ */
 
-#define LOG(log) (Debug::PrintLog(log))
-#define CCERROR(error) (Debug::PrintError(error,__FILE__,__LINE__))
-#define ASSERT(condition,error) (Debug::PrintAssert(condition,error,__FILE__,__LINE__))
+#define WIDE2(x) L##x
+#define WIDE1(x) WIDE2(x)
+#define __WFILE__ WIDE1(__FILE__)
 
-struct Debug
+namespace CCE_Debug
 {
-	// Logging
-	static void PrintLog(char* log) noexcept;
+#define LOG(log) (Debug::PrintLog(log))
+#define CCERROR(error) (Debug::PrintError(error,__WFILE__,__LINE__))
+#define ASSERT(condition,error) (Debug::PrintAssert(condition,error,__WFILE__,__LINE__))
 
-	// Error
-	static void PrintError(std::string error, std::string file, unsigned int line) noexcept;
+	struct Debug
+	{
+		// Logging
+		static void PrintLog(wchar_t* log) noexcept;
 
-	// Assert
-	static void PrintAssert(bool condition, char* error, std::string file, unsigned int line) noexcept;
+		// Error
+		static void PrintError(std::wstring error, std::wstring file, unsigned int line) noexcept;
 
-};
+		// Assert
+		static void PrintAssert(bool condition, std::wstring error, std::wstring file, unsigned int line) noexcept;
+
+	};
+}
