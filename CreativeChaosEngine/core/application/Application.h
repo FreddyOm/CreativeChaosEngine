@@ -9,7 +9,7 @@
 #include "../debug/debug_console.h"
 #endif // _DEBUG
 
-#define UNIT_TESTING
+//#define UNIT_TESTING
 
 // temporary entrance point -> change later
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
