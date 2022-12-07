@@ -25,7 +25,7 @@ namespace CCE_Debug
 
 	public:
 
-		static void ConsoleLog(std::wstring message);
+		static void ConsoleLog(std::wstring message, int color = 15);
 
 		static void CloseConsole();
 	};

@@ -32,21 +32,21 @@ public:
 		std::wostringstream oss;
 		oss << L"No tests in base test class. If you see this," <<
 			L" this is an error. Check BaseTest class.";
-		DebugConsole::ConsoleLog(oss.str());
+		DebugConsole::ConsoleLog(oss.str(), 14);
 	}
 
 	void PrintTestFailInfo(const wchar_t* testname, std::wstring file, int line)
 	{
 		std::wostringstream oss;
 		oss <<  L"[FAILED]: " << testname << L" in " << file << L" at line " << line;
-		DebugConsole::ConsoleLog(oss.str());
+		DebugConsole::ConsoleLog(oss.str(), 12);
 	}
 
 	void PrintTestSuccessInfo(const wchar_t* testname)
 	{
 		std::wostringstream oss;
 		oss << L"[SUCCEEDED]: " << testname;
-		DebugConsole::ConsoleLog(oss.str());
+		DebugConsole::ConsoleLog(oss.str(), 10);
 	}
 };
 #endif // only test if DEBUG

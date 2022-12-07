@@ -2,7 +2,6 @@
 #include <iostream>
 #include <sstream>
 #include <windows.h>
-#include "../debug/debug_console.h"
 
 namespace CCE_Debug
 {
@@ -14,7 +13,6 @@ namespace CCE_Debug
 		std::wostringstream oss;
 		oss << L"[LOG]: " << log;
 		MessageBox(nullptr, log, L"[LOG]", MB_OK | MB_ICONINFORMATION);
-		DebugConsole::ConsoleLog(oss.str());
 #endif
 	}
 
@@ -32,7 +30,6 @@ namespace CCE_Debug
 			<< "[LINE]: " << line;
 
 		MessageBoxW(nullptr, reinterpret_cast<LPCWSTR>(oss.str().c_str()), L"[ERROR]", MB_OK | MB_ICONERROR);
-		DebugConsole::ConsoleLog(oss.str());
 #endif
 	}
 
@@ -52,7 +49,6 @@ namespace CCE_Debug
 				<< "[LINE]: " << line;
 
 			MessageBox(nullptr, (LPCWSTR)oss.str().c_str(), L"[ASSERT]", MB_OK | MB_ICONERROR);
-			DebugConsole::ConsoleLog(oss.str());
 		}
 #endif
 	}

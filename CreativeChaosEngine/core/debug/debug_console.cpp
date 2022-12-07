@@ -48,8 +48,10 @@ int DebugConsole::hConHandle;
 long DebugConsole::lStdHandle;
 FILE* DebugConsole::fp;
 
-void DebugConsole::ConsoleLog(std::wstring message)
+void DebugConsole::ConsoleLog(std::wstring message, int color )
 {
+	SetConsoleTextAttribute((HANDLE)lStdHandle, color);
+
 	int len = wcslen(message.c_str());
 	WriteConsole((HANDLE)lStdHandle, message.c_str(), len, &charsWritten, NULL);
 	WriteConsole((HANDLE)lStdHandle, L"\n", 1, &charsWritten, NULL);

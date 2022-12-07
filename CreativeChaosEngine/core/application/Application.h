@@ -9,10 +9,14 @@
 #include "../debug/debug_console.h"
 #endif // _DEBUG
 
+#define UNIT_TESTING
+
 // temporary entrance point -> change later
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 #if _DEBUG
+
+#ifdef UNIT_TESTING
 	
 		using namespace CCE_Debug;
 
@@ -24,7 +28,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			EditorTest test = EditorTest();
 			test.RunAllTests();
 		}
-	
+
+		//DebugConsole::CloseConsole();
+#endif
 #endif // _DEBUG
 
 	CCE_Editor* editor = new CCE_Editor(hInstance);
