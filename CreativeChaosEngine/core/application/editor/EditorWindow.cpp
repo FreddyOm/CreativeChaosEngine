@@ -1,5 +1,6 @@
 #include "EditorWindow.h"
 #include "../../debug/Debug.h"
+#include <iostream>
 
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -45,9 +46,6 @@ EditorWindow::EditorWindow(HINSTANCE hInstance, wchar_t* windowName)
 	
 	Debug::PrintAssert(UpdateWindow(hWnd) != FALSE,
 		"Failed to update the window.", __FILE__, __LINE__);
-
-	// start message queue
-	HandleMessages();
 }
 
 EditorWindow::~EditorWindow()
@@ -55,16 +53,21 @@ EditorWindow::~EditorWindow()
 
 }
 
-void EditorWindow::HandleMessages()
+int EditorWindow::HandleMessages()
 {
 	MSG msg = { };
 
 	while (GetMessage(&msg, NULL, 0, 0) > 0)
 	{
-
+		if (msg.message == WM_QUIT)
+		{
+			break;
+		}
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
+
+	return 0;
 }
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -75,6 +78,21 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			PostQuitMessage(0);
 			return 0;
 		
+		case WM_PAINT:
+			{
+				PAINTSTRUCT ps;
+				HDC hdc = BeginPaint(hwnd, &ps);
+
+				// All painting occurs here, between BeginPaint and EndPaint.
+
+				FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
+
+				EndPaint(hwnd, &ps);
+			}
+			return 0;
+
+		case WM_CLOSE:
+			DestroyWindow(hwnd);
 	}
 
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);

@@ -15,7 +15,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
     catch (std::exception e)
     {
-        MessageBox(nullptr, e.what(), "[Standard Exception]", MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(nullptr, (LPCWSTR)e.what(), L"[Standard Exception]", MB_OK | MB_ICONEXCLAMATION);
     }
 
 

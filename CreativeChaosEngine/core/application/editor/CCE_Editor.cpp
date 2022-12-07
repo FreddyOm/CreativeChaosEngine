@@ -5,27 +5,25 @@
 
 CCE_Editor::CCE_Editor(HINSTANCE _hInstance)
 {
+	Debug::PrintAssert(!editorRunning, "Editor is already running!", __FILE__, __LINE__);
+	
+	// setup general flags
 	editorRunning = true;
 	hInstance = _hInstance;
 
-	//Debug::PrintLog("Editor is running now!");
-
 	
-	// Do stuff
-	EditorWindow win = EditorWindow(hInstance, L"Test Window");
-
-
-	OpenEditor();
+	// create a new window instance
+	editorWindow = new EditorWindow(hInstance, L"Test Window");	
 }
 
 CCE_Editor::~CCE_Editor()
 {
-	
+	free(editorWindow);
 }
 
 int CCE_Editor::OpenEditor() noexcept
 {
-	return 0;
+	return editorWindow->HandleMessages();
 }
 
 void CCE_Editor::ExitEditor() noexcept

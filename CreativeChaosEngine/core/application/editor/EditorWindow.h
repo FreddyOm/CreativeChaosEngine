@@ -19,8 +19,7 @@ private:
 	int win_height = 720;
 
 private:
-	void HandleMessages();
-	
+
 
 public:
 	HWND GetWindowHandle();
@@ -31,5 +30,5 @@ public:
 	void SetWindowClass(WNDCLASS& wndClass);
 	void SetWindowClassName(wchar_t* wndClassName);
 
-	//LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	int HandleMessages();
 };
