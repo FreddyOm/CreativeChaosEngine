@@ -15,6 +15,7 @@ class CCE_Editor
 #if _DEBUG
 	friend struct EditorTest;
 #endif // unit testing
+
 private:
 	bool editorRunning = false;
 	HINSTANCE hInstance = {};
@@ -24,6 +25,7 @@ public:
 #if _DEBUG
 	CCE_Editor();
 #endif // unit testing
+
 	CCE_Editor(HINSTANCE _hInstance);
 	~CCE_Editor();
 	int OpenEditor() noexcept;
