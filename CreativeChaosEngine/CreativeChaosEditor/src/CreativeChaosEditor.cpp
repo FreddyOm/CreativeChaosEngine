@@ -1,14 +1,13 @@
-#include <iostream>;
+#include <iostream>
+#include <CCEngine.h>
 
-namespace CCECore
+
+
+int main(int argc, char** argv)
 {
-    __declspec(dllimport) void Test();
-}
+    CCE::Core core = CCE::Core();
 
-
-int main()
-{
-    CCECore::Test();
-
+    core.Test();
+    
     std::cin.get();
 }

@@ -15,12 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Core.cpp">
+    <ClCompile Include="src\CCE\Core.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core.h">
+    <ClInclude Include="src\CCE\Core.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCEngine.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
