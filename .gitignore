@@ -26,6 +26,9 @@
 *.a
 *.lib
 
+# User specific files
+*.user
+
 # Executables
 *.exe
 *.out
