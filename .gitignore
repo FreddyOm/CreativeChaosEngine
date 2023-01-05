@@ -31,6 +31,5 @@
 *.out
 *.app
 CreativeChaosEngine/.vs/
-CreativeChaosEngine/x64/Debug/CreativeChaosEngine.exe.recipe
-CreativeChaosEngine/x64/Debug/CreativeChaosEngine.ilk
-CreativeChaosEngine/x64/
+CreativeChaosEngine/bin
+CreativeChaosEngine/bin-int

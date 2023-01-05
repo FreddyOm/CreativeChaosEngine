@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CreativeChaosEditor", "CreativeChaosEditor\CreativeChaosEditor.vcxproj", "{DC87242C-9135-475F-B249-F63104F36538}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CreativeChaosEngineCore", "CreativeChaosEngine\CreativeChaosEngine.vcxproj", "{97D57B0B-DD36-45FF-8004-CF9B9BBA596D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug_Profile|x64 = Debug_Profile|x64
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DC87242C-9135-475F-B249-F63104F36538}.Debug_Profile|x64.ActiveCfg = Debug|x64
+		{DC87242C-9135-475F-B249-F63104F36538}.Debug_Profile|x64.Build.0 = Debug|x64
+		{DC87242C-9135-475F-B249-F63104F36538}.Debug|x64.ActiveCfg = Debug|x64
+		{DC87242C-9135-475F-B249-F63104F36538}.Debug|x64.Build.0 = Debug|x64
+		{DC87242C-9135-475F-B249-F63104F36538}.Release|x64.ActiveCfg = Release|x64
+		{DC87242C-9135-475F-B249-F63104F36538}.Release|x64.Build.0 = Release|x64
+		{97D57B0B-DD36-45FF-8004-CF9B9BBA596D}.Debug_Profile|x64.ActiveCfg = Debug_Profile|x64
+		{97D57B0B-DD36-45FF-8004-CF9B9BBA596D}.Debug_Profile|x64.Build.0 = Debug_Profile|x64
+		{97D57B0B-DD36-45FF-8004-CF9B9BBA596D}.Debug|x64.ActiveCfg = Debug|x64
+		{97D57B0B-DD36-45FF-8004-CF9B9BBA596D}.Debug|x64.Build.0 = Debug|x64
+		{97D57B0B-DD36-45FF-8004-CF9B9BBA596D}.Release|x64.ActiveCfg = Release|x64
+		{97D57B0B-DD36-45FF-8004-CF9B9BBA596D}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FDBC2FB9-BFC5-463F-B7BA-A76F588A3222}
+	EndGlobalSection
+EndGlobal
