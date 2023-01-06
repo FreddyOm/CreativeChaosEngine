@@ -3,11 +3,11 @@
 
 namespace CCE
 {
-	struct CCE_API ProfilingManager : public BaseManager
+	struct CCE_API JobManager : public BaseManager
 	{
 	public:
-		ProfilingManager() = default;
-		~ProfilingManager() = default;
+		JobManager() = default;
+		~JobManager() = default;
 
 		void StartUp() override;
 		void ShutDown() override;

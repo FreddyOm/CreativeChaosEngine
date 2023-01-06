@@ -15,14 +15,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CCE\Manager\JobManager.cpp" />
+    <ClCompile Include="src\CCE\Manager\PhysicsManager.cpp" />
+    <ClCompile Include="src\CCE\Manager\RenderManager.cpp" />
     <ClCompile Include="src\CCE\Manager\BaseManager.cpp" />
     <ClCompile Include="src\CCE\Analysis\Debug.cpp" />
     <ClCompile Include="src\CCE\Manager\ProfilingManager.cpp" />
     <ClCompile Include="src\CCE\Analysis\Logger.cpp" />
     <ClCompile Include="src\CCE\Core.cpp" />
     <ClCompile Include="src\CCE\Analysis\Time.cpp" />
+    <ClCompile Include="src\CCE\Manager\TestManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CCE\Manager\JobManager.h" />
+    <ClInclude Include="src\CCE\Manager\PhysicsManager.h" />
+    <ClInclude Include="src\CCE\Manager\RenderManager.h" />
     <ClInclude Include="src\CCE\Manager\BaseManager.h" />
     <ClInclude Include="src\CCE\Analysis\Debug.h" />
     <ClInclude Include="src\CCE\Manager\ProfilingManager.h" />
@@ -30,6 +37,7 @@
     <ClInclude Include="src\CCEngine.h" />
     <ClInclude Include="src\CCE\Core.h" />
     <ClInclude Include="src\CCE\Analysis\Time.h" />
+    <ClInclude Include="src\CCE\Manager\TestManager.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

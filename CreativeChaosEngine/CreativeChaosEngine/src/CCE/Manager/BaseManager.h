@@ -3,7 +3,7 @@
 
 namespace CCE
 {
-	class CCE_API BaseManager
+	struct CCE_API BaseManager
 	{
 	public:
 		inline BaseManager() noexcept {}

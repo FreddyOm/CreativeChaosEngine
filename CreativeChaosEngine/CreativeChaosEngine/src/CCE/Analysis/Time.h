@@ -26,6 +26,3 @@ namespace CCE
 	};
 
 }
-
-// TODO: Change API so other classes can get the milliseconds / clockcycles since init
-// and can easily calculate execution time like that.

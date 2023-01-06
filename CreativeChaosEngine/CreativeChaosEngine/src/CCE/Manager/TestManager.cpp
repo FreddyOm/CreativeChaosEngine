@@ -1,4 +1,4 @@
-#include "ProfilingManager.h"
+#include "TestManager.h"
 #if defined(DEBUG) || defined(DEBUG_PROFILE)
 #include "../Analysis/Logger.h"
 #include "../Analysis/Debug.h"
@@ -7,25 +7,26 @@
 
 namespace CCE
 {
-	void ProfilingManager::StartUp()
+	void TestManager::StartUp()
 	{
 		auto startTime = Time::CurrentTick();
-		if (initialized) 
+		if (initialized)
 		{
-			DWARNING("ProfilingManager has already been initialized!");
+			DWARNING("TestManager has already been initialized!");
 			return;
 		}
-		LOGC("Starting ProfilingManager...", COLOR_BLUE);
+		LOGC("Starting TestManager...", COLOR_BLUE);
 
 		initialized = true;
 
 		auto endTime = Time::CurrentTick();
 		double initDuration = Time::GetDurationInMicroSec(startTime, endTime);
-		LOGC("ProfilingManager initialization done in...", COLOR_BLUE);
+		LOGC("TestManager initialization done in...", COLOR_BLUE);
 		LOGC(initDuration, COLOR_BLUE);
 	}
-	void ProfilingManager::ShutDown()
+
+	void TestManager::ShutDown()
 	{
-		LOGC("Shutting down ProfilingManager...", COLOR_BLUE);
+		LOGC("Shutting down TestManager...", COLOR_BLUE);
 	}
 }

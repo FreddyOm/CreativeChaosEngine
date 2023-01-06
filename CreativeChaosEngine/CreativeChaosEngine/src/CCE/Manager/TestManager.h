@@ -3,13 +3,15 @@
 
 namespace CCE
 {
-	struct CCE_API ProfilingManager : public BaseManager
+	struct CCE_API TestManager : public BaseManager
 	{
 	public:
-		ProfilingManager() = default;
-		~ProfilingManager() = default;
+		TestManager() = default;
+		~TestManager() = default;
 
 		void StartUp() override;
 		void ShutDown() override;
 	};
 }
+
+

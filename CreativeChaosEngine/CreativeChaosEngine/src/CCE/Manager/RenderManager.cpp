@@ -1,4 +1,4 @@
-#include "ProfilingManager.h"
+#include "RenderManager.h"
 #if defined(DEBUG) || defined(DEBUG_PROFILE)
 #include "../Analysis/Logger.h"
 #include "../Analysis/Debug.h"
@@ -7,25 +7,26 @@
 
 namespace CCE
 {
-	void ProfilingManager::StartUp()
+	void RenderManager::StartUp()
 	{
 		auto startTime = Time::CurrentTick();
-		if (initialized) 
+		if (initialized)
 		{
-			DWARNING("ProfilingManager has already been initialized!");
+			DWARNING("RenderManager has already been initialized!");
 			return;
 		}
-		LOGC("Starting ProfilingManager...", COLOR_BLUE);
+		LOGC("Starting RenderManager...", COLOR_BLUE);
 
 		initialized = true;
 
 		auto endTime = Time::CurrentTick();
 		double initDuration = Time::GetDurationInMicroSec(startTime, endTime);
-		LOGC("ProfilingManager initialization done in...", COLOR_BLUE);
+		LOGC("RenderManager initialization done in...", COLOR_BLUE);
 		LOGC(initDuration, COLOR_BLUE);
 	}
-	void ProfilingManager::ShutDown()
+	void RenderManager::ShutDown()
 	{
-		LOGC("Shutting down ProfilingManager...", COLOR_BLUE);
+		LOGC("Shutting down RenderManager...", COLOR_BLUE);
 	}
 }
+

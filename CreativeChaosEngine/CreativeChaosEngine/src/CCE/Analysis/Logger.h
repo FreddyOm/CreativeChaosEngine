@@ -19,6 +19,9 @@ namespace CCE
 		~Logger() = default;
 		static void Log(const char* msg, COLOR color = COLOR_WHITE);
 		static void Log(const float msg, COLOR color = COLOR_WHITE);
+		static void Log(const double msg, COLOR color = COLOR_WHITE);
+		static void Log(const int msg, COLOR color = COLOR_WHITE);
+		static void Log(const long msg, COLOR color = COLOR_WHITE);
 
 	private:
 		static HANDLE hConsole;
@@ -26,3 +29,4 @@ namespace CCE
 }
 
 // TODO: Maybe log everything into a file ..?
+// TODO: Collapse all of the different Logs into Log<T>

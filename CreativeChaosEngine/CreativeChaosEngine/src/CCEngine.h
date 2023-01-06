@@ -15,6 +15,10 @@
 // -------- Manager ---------
 
 #include "CCE/Manager/ProfilingManager.h"
+#include "CCE/Manager/RenderManager.h"
+#include "CCE/Manager/PhysicsManager.h"
+#include "CCE/Manager/JobManager.h"
+#include "CCE/Manager/TestManager.h"
  
 // --------------------------
 
