@@ -8,11 +8,15 @@ namespace CCE
 
 	struct CCE_API Time
 	{
-		using time = cr::steady_clock;
-		using floatsec = cr::duration<float>;
-		using time_point = cr::time_point<time, floatsec>;
+		using time = cr::high_resolution_clock;
+		using mics = cr::duration<cr::microseconds>;
+		using time_point = cr::time_point<time, mics>;
 
-		static time_point CurrentTick();
+		static cr::high_resolution_clock::time_point CurrentTick();
+		static double GetDurationInMilliSec(cr::high_resolution_clock::time_point start,
+			cr::high_resolution_clock::time_point end);
+		static long GetDurationInMicroSec(cr::high_resolution_clock::time_point start,
+			cr::high_resolution_clock::time_point end);
 	};
 
 	struct CCE_API DateTime

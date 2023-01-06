@@ -18,6 +18,7 @@ namespace CCE
 		Logger() = default;
 		~Logger() = default;
 		static void Log(const char* msg, COLOR color = COLOR_WHITE);
+		static void Log(const float msg, COLOR color = COLOR_WHITE);
 
 	private:
 		static HANDLE hConsole;

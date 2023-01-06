@@ -6,7 +6,6 @@ int main(int argc, char* argv[])
     // ------ HELLO ------
     LOGC("Starting Creative Chaos Engine - v0.1", COLOR_BLUE);
 
-
     CCE::ProfilingManager mProfilingManager = CCE::ProfilingManager();
 
     // ------ STARTUP MANAGER ------
