@@ -15,11 +15,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CCE\Manager\BaseManager.cpp" />
+    <ClCompile Include="src\CCE\Analysis\Debug.cpp" />
+    <ClCompile Include="src\CCE\Manager\ProfilingManager.cpp" />
+    <ClCompile Include="src\CCE\Analysis\Logger.cpp" />
     <ClCompile Include="src\CCE\Core.cpp" />
+    <ClCompile Include="src\CCE\Analysis\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CCE\Manager\BaseManager.h" />
+    <ClInclude Include="src\CCE\Analysis\Debug.h" />
+    <ClInclude Include="src\CCE\Manager\ProfilingManager.h" />
+    <ClInclude Include="src\CCE\Analysis\Logger.h" />
     <ClInclude Include="src\CCEngine.h" />
     <ClInclude Include="src\CCE\Core.h" />
+    <ClInclude Include="src\CCE\Analysis\Time.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -80,12 +90,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>CCE_PLATFORM_WINDOWS;CCE_BUILD_DLL;_DEBUG;CREATIVECHAOSENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CCE_PLATFORM_WINDOWS;CCE_BUILD_DLL;DEBUG;CREATIVECHAOSENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -97,12 +108,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>CCE_PLATFORM_WINDOWS;CCE_BUILD_DLL;_DEBUG_PROFILE;CREATIVECHAOSENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CCE_PLATFORM_WINDOWS;CCE_BUILD_DLL;DEBUG_PROFILE;CREATIVECHAOSENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -122,6 +134,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

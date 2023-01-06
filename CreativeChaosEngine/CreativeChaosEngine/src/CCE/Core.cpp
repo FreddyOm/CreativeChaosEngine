@@ -1,10 +1,10 @@
 #include "Core.h"
-#include <iostream>
+#include "Analysis/Logger.h"
 
 namespace CCE
 {
 	void Core::Test()
 	{
-		std::cout << "[TEST]: Hello World" << std::endl;
+		
 	}
 }

@@ -18,12 +18,42 @@
     <ClCompile Include="src\CCE\Core.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\CCE\Analysis\Time.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCE\Analysis\Logger.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCE\Manager\ProfilingManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCE\Analysis\Debug.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCE\Manager\BaseManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\Core.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\CCEngine.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Analysis\Time.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Analysis\Logger.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Manager\ProfilingManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Analysis\Debug.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Manager\BaseManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
