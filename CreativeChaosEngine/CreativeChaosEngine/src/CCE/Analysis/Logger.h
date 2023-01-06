@@ -23,3 +23,5 @@ namespace CCE
 		static HANDLE hConsole;
 	};
 }
+
+// TODO: Maybe log everything into a file ..?
