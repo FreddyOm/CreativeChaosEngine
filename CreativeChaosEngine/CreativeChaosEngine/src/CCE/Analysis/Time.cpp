@@ -18,7 +18,7 @@ namespace CCE
 	long Time::GetDurationInMicroSec(cr::high_resolution_clock::time_point start, cr::high_resolution_clock::time_point end)
 	{
 		auto duration = cr::duration_cast<cr::microseconds>(end - start);
-		return duration.count();
+		return (long) duration.count();
 	}
 
 	char DateTime::currentTime[8];

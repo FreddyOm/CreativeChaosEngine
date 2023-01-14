@@ -1,5 +1,9 @@
 #include <iostream>
 #include <CCEngine.h>
+#ifdef NDEBUG
+#include <Windows.h>
+#endif // 
+
 
 int main(int argc, char* argv[])
 {  
@@ -11,7 +15,19 @@ int main(int argc, char* argv[])
     CCE::ProfilingManager mProfilingManager = CCE::ProfilingManager();
     CCE::RenderManager mRenderManager = CCE::RenderManager();
     CCE::PhysicsManager mPhysicsManager = CCE::PhysicsManager();
-    CCE::TestManager mTestManager = CCE::TestManager();
+
+
+    // ------ UNIT TESTING ------
+#ifdef DEBUG
+    LOGC("----------- UNIT TESTS -----------", COLOR_BLUE);
+    CCE_Testing::UnitTestMath mathTest;
+
+    mathTest.Test();
+    mathTest.Cleanup();
+
+    LOGC("----------------------------------", COLOR_BLUE);
+#endif // Only test when in debug mode
+
 
     // ------ STARTUP MANAGER ------
 
@@ -19,7 +35,6 @@ int main(int argc, char* argv[])
     mProfilingManager.StartUp();
     mRenderManager.StartUp();
     mPhysicsManager.StartUp();
-    mTestManager.StartUp();
     
 
     // ------ RUN LOOP ------
@@ -29,12 +44,10 @@ int main(int argc, char* argv[])
 
     // ------ SHUTDOWN MANAGER ------
 
-    mTestManager.ShutDown();
     mPhysicsManager.ShutDown();
     mRenderManager.ShutDown();
     mProfilingManager.ShutDown();
     mJobManager.ShutDown();
-
 
     // ------ BYE ------
     LOGC("Shutting down Creative Chaos Engine - v0.1", COLOR_BLUE);

@@ -34,5 +34,6 @@
 *.out
 *.app
 CreativeChaosEngine/.vs/
-CreativeChaosEngine/bin
-CreativeChaosEngine/bin-int
+CreativeChaosEngine/bin/
+CreativeChaosEngine/bin-int/
+CreativeChaosEngine/x64/
