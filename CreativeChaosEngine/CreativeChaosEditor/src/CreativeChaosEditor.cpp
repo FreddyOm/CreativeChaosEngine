@@ -21,9 +21,12 @@ int main(int argc, char* argv[])
 #ifdef DEBUG
     LOGC("----------- UNIT TESTS -----------", COLOR_BLUE);
     CCE_Testing::UnitTestMath mathTest;
+    CCE_Testing::UnitTestStackAlloc stallocTest;
 
     mathTest.Test();
     mathTest.Cleanup();
+    stallocTest.Test();
+    stallocTest.Cleanup();
 
     LOGC("----------------------------------", COLOR_BLUE);
 #endif // Only test when in debug mode
@@ -38,6 +41,11 @@ int main(int argc, char* argv[])
     
 
     // ------ RUN LOOP ------
+
+    //CCE::PhysicsManager* pManager = 
+      //  (CCE::PhysicsManager*) malloc(sizeof(pManager));
+    //pManager = new(pManager)CCE::PhysicsManager();
+    //pManager->StartUp();
 
     std::cin.get(); // Placeholder to prevent the window from closing
 

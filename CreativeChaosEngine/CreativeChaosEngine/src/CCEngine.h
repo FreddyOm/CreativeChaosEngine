@@ -3,6 +3,7 @@
 // For use by applications
 
 #include "CCE/Core.h"
+#include "CCE/Memory/StackAllocator.h"
 
 #if defined(DEBUG) || defined(DEBUG_PROFILE)
 
@@ -18,6 +19,7 @@
 
 #include "CCE/Analysis/UnitTesting/UnitTest.h"
 #include "CCE/Analysis/UnitTesting/UnitTestMath.h"
+#include "CCE/Analysis/UnitTesting/UnitTestStackAlloc.h"
 
 // -------------------------
 

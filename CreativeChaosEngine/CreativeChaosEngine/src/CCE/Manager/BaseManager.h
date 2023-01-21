@@ -6,8 +6,8 @@ namespace CCE
 	struct CCE_API BaseManager
 	{
 	public:
-		inline BaseManager() noexcept {}
-		inline ~BaseManager() noexcept {}
+		BaseManager() noexcept {}
+		~BaseManager() noexcept {}
 
 		virtual void StartUp() = 0;
 		virtual void ShutDown() = 0;

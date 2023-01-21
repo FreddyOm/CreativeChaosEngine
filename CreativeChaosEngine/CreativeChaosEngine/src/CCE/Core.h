@@ -14,6 +14,9 @@
 // ----------- MACROS ------------
 
 #ifdef DEBUG
+#include "Analysis/Debug.h"
+#include "Analysis/Logger.h"
+
 #define LOG(msg) CCE::Logger::Log(msg)
 #define LOGC(msg, c) CCE::Logger::Log(msg, c)
 
@@ -24,6 +27,8 @@
 #endif // DEBUG
 
 #ifdef DEBUG_PROFILE
+#include "Analysis/Debug.h"
+#include "Analysis/Logger.h"
 #define LOG(msg) CCE::Logger::Log(msg)
 #define LOGC(msg, c) CCE::Logger::Log(msg, c)
 
