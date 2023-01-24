@@ -42,11 +42,6 @@ int main(int argc, char* argv[])
 
     // ------ RUN LOOP ------
 
-    //CCE::PhysicsManager* pManager = 
-      //  (CCE::PhysicsManager*) malloc(sizeof(pManager));
-    //pManager = new(pManager)CCE::PhysicsManager();
-    //pManager->StartUp();
-
     std::cin.get(); // Placeholder to prevent the window from closing
 
 
