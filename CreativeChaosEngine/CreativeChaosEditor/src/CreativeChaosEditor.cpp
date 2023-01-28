@@ -4,7 +4,7 @@
 #include <Windows.h>
 #endif // 
 
-
+//TODO: give args and trigger unittests with i.e. '--unittests'
 int main(int argc, char* argv[])
 {  
     // ------ HELLO ------
@@ -22,11 +22,14 @@ int main(int argc, char* argv[])
     LOGC("----------- UNIT TESTS -----------", COLOR_BLUE);
     CCE_Testing::UnitTestMath mathTest;
     CCE_Testing::UnitTestStackAlloc stallocTest;
+    CCE_Testing::UnitTestPoolAlloc poolallocTest;
 
     mathTest.Test();
     mathTest.Cleanup();
     stallocTest.Test();
     stallocTest.Cleanup();
+    poolallocTest.Test();
+    poolallocTest.Cleanup();
 
     LOGC("----------------------------------", COLOR_BLUE);
 #endif // Only test when in debug mode

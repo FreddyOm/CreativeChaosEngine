@@ -15,6 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CCE\Memory\PoolAllocator.cpp" />
     <ClCompile Include="src\CCE\Memory\Allocator.cpp" />
     <ClCompile Include="src\CCE\Utilities\CCMath.cpp" />
     <ClCompile Include="src\CCE\Manager\JobManager.cpp" />
@@ -30,8 +31,10 @@
     <ClCompile Include="src\CCE\Analysis\UnitTesting\UnitTestMath.cpp" />
     <ClCompile Include="src\CCE\Memory\StackAllocator.cpp" />
     <ClCompile Include="src\CCE\Analysis\UnitTesting\UnitTestStackAlloc.cpp" />
+    <ClCompile Include="src\CCE\Analysis\UnitTesting\UnitTestPoolAlloc.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CCE\Memory\PoolAllocator.h" />
     <ClInclude Include="src\CCE\Memory\Allocator.h" />
     <ClInclude Include="src\CCE\Utilities\CCMath.h" />
     <ClInclude Include="src\CCE\Manager\JobManager.h" />
@@ -48,6 +51,7 @@
     <ClInclude Include="src\CCE\Analysis\UnitTesting\UnitTestMath.h" />
     <ClInclude Include="src\CCE\Memory\StackAllocator.h" />
     <ClInclude Include="src\CCE\Analysis\UnitTesting\UnitTestStackAlloc.h" />
+    <ClInclude Include="src\CCE\Analysis\UnitTesting\UnitTestPoolAlloc.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

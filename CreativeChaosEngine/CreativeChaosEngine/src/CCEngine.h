@@ -4,6 +4,7 @@
 
 #include "CCE/Core.h"
 #include "CCE/Memory/StackAllocator.h"
+#include "CCE/Memory/PoolAllocator.h"
 
 #if defined(DEBUG) || defined(DEBUG_PROFILE)
 
@@ -20,6 +21,7 @@
 #include "CCE/Analysis/UnitTesting/UnitTest.h"
 #include "CCE/Analysis/UnitTesting/UnitTestMath.h"
 #include "CCE/Analysis/UnitTesting/UnitTestStackAlloc.h"
+#include "CCE/Analysis/UnitTesting/UnitTestPoolAlloc.h"
 
 // -------------------------
 

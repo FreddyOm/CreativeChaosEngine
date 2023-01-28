@@ -4,6 +4,7 @@
 
 namespace CCMemory
 {
+	//TODO: Aligned alloc
 	typedef intptr_t StackAllocMarker;
 	struct CCE_API StackAllocator : public Allocator
 	{
