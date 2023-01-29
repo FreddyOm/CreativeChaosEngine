@@ -16,25 +16,38 @@ int main(int argc, char* argv[])
     CCE::RenderManager mRenderManager = CCE::RenderManager();
     CCE::PhysicsManager mPhysicsManager = CCE::PhysicsManager();
 
-
-    // ------ UNIT TESTING ------
+    {
 #ifdef DEBUG
-    LOGC("----------- UNIT TESTS -----------", COLOR_BLUE);
-    CCE_Testing::UnitTestMath mathTest;
-    CCE_Testing::UnitTestStackAlloc stallocTest;
-    CCE_Testing::UnitTestPoolAlloc poolallocTest;
+        bool unittesting = false;
+        for(int i = 0; i < argc; i++)
+        {
+            std::string arg = std::string(argv[i]);
+            
+            if (arg == std::string("--test"))
+            {
+                unittesting = true;
+            }
+        }
 
-    mathTest.Test();
-    mathTest.Cleanup();
-    stallocTest.Test();
-    stallocTest.Cleanup();
-    poolallocTest.Test();
-    poolallocTest.Cleanup();
+        if (unittesting)
+        {
+            // ------ UNIT TESTING 
+            LOGC("----------- UNIT TESTS -----------", COLOR_BLUE);
+            CCE_Testing::UnitTestMath mathTest;
+            CCE_Testing::UnitTestStackAlloc stallocTest;
+            CCE_Testing::UnitTestPoolAlloc poolallocTest;
 
-    LOGC("----------------------------------", COLOR_BLUE);
+            mathTest.Test();
+            mathTest.Cleanup();
+            stallocTest.Test();
+            stallocTest.Cleanup();
+            poolallocTest.Test();
+            poolallocTest.Cleanup();
+
+            LOGC("----------------------------------", COLOR_BLUE);
+        }
 #endif // Only test when in debug mode
-
-
+    }
     // ------ STARTUP MANAGER ------
 
     mJobManager.StartUp();
