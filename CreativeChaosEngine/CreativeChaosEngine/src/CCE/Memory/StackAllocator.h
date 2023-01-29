@@ -54,9 +54,9 @@ namespace CCMemory
 		void RollbackToMarker(StackAllocMarker _marker);
 		void ClearAll();
 		intptr_t GetCurretTop();
-		unsigned int GetFreeMem() override;
-		unsigned int GetUsedMem() override;
-		unsigned int GetTotalMem() override;
+		intptr_t GetFreeMem() override;
+		intptr_t GetUsedMem() override;
+		intptr_t GetTotalMem() override;
 		float GetUsedSpaceRatio() override;
 
 	private:

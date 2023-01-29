@@ -10,18 +10,18 @@ namespace CCMemory
 		~Allocator() = default;
 
 	protected:
-		unsigned int totalSpace = 0;
-		unsigned int freeSpace = 0;
-		unsigned int usedSpace = 0;
-		unsigned int numAllocs = 0;
-		unsigned int numFrees = 0;
+		intptr_t totalSpace = 0;
+		intptr_t freeSpace = 0;
+		intptr_t usedSpace = 0;
+		intptr_t numAllocs = 0;
+		intptr_t numFrees = 0;
 
 	public:
-		unsigned int GetNumAllocs();
-		unsigned int GetNumFrees();
-		virtual unsigned int GetFreeMem();
-		virtual unsigned int GetUsedMem();
-		virtual unsigned int GetTotalMem();
+		intptr_t GetNumAllocs();
+		intptr_t GetNumFrees();
+		virtual intptr_t GetFreeMem();
+		virtual intptr_t GetUsedMem();
+		virtual intptr_t GetTotalMem();
 		virtual float GetUsedSpaceRatio();
 	};
 }

@@ -82,7 +82,7 @@ namespace CCMemory
 
 			return ptr;
 		}
-		void Free(intptr_t addr, size_t size);
+		void Free(intptr_t addr, unsigned int size);
 		void Clear();
 		unsigned long GetPoolSize();
 		unsigned int GetNumPoolElements();

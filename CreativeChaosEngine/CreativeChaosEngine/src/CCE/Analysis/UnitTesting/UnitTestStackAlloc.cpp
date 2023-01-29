@@ -261,7 +261,7 @@ namespace CCE_Testing
 
 		alloc2.Alloc<TestStruct1>(sizeof(TestStruct1));
 		CCMemory::StackAllocMarker marker =
-			(unsigned int)alloc2.Alloc<TestStruct1>(sizeof(TestStruct1));
+			(intptr_t)alloc2.Alloc<TestStruct1>(sizeof(TestStruct1));
 		alloc2.Alloc<TestStruct1>(sizeof(TestStruct1));
 
 		alloc2.RollbackToMarker(marker);

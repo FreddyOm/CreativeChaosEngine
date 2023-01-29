@@ -23,14 +23,14 @@ namespace CCMemory
 	// free. This is still error prone since you might give arbitrary
 	// values to the function which in consequence breaks the memory
 	// counting (free mem / used mem).
-	void PoolAllocator::Free(intptr_t addr, size_t size)
+	void PoolAllocator::Free(intptr_t addr, unsigned int size)
 	{
 		// check
 		DASSERT(addr < allocatableMemBottom + totalSpace,
 			"Trying to free a memory adress which is not part of the allocated memory!");
 
 		// free
-		unsigned int poolIndex = (addr - allocatableMemBottom) / poolSize;
+		intptr_t poolIndex = (addr - allocatableMemBottom) / poolSize;
 		
 		if (pool[poolIndex])
 		{

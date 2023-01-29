@@ -1,5 +1,5 @@
 #include "Logger.h"
-#include <iostream>
+#include <stdio.h>
 #include "Time.h"
 #include <ctime>
 
@@ -14,7 +14,7 @@ namespace CCE
         }
 
         SetConsoleTextAttribute(hConsole, color);
-        std::cout << "[" << DateTime::GetTime() << "] " << msg << std::endl;
+        printf("[%s] %s\n", DateTime::GetTime(), msg);
     }
 
     void Logger::Log(const float msg, COLOR color)
@@ -25,7 +25,7 @@ namespace CCE
         }
 
         SetConsoleTextAttribute(hConsole, color);
-        std::cout << "[" << DateTime::GetTime() << "] " << msg << std::endl;
+        printf("[%s] %f\n", DateTime::GetTime(), msg);
     }
 
     void Logger::Log(const double msg, COLOR color)
@@ -36,7 +36,7 @@ namespace CCE
         }
 
         SetConsoleTextAttribute(hConsole, color);
-        std::cout << "[" << DateTime::GetTime() << "] " << msg << std::endl;
+        printf("[%s] %f\n", DateTime::GetTime(), msg);
     }
 
     void Logger::Log(const int msg, COLOR color)
@@ -47,7 +47,7 @@ namespace CCE
         }
 
         SetConsoleTextAttribute(hConsole, color);
-        std::cout << "[" << DateTime::GetTime() << "] " << msg << std::endl;
+        printf("[%s] %i\n", DateTime::GetTime(), msg);
     }
 
     void Logger::Log(const long msg, COLOR color)
@@ -58,7 +58,7 @@ namespace CCE
         }
 
         SetConsoleTextAttribute(hConsole, color);
-        std::cout << "[" << DateTime::GetTime() << "] " << msg << std::endl;
+        printf("[%s] %i\n", DateTime::GetTime(), msg);
     }
 
     HANDLE Logger::hConsole;

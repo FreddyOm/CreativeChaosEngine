@@ -1,25 +1,25 @@
 #include "Allocator.h"
 namespace CCMemory
 {
-	unsigned int Allocator::GetNumAllocs()
+	intptr_t Allocator::GetNumAllocs()
 	{
 		return numAllocs;
 	}
-	unsigned int Allocator::GetNumFrees()
+	intptr_t Allocator::GetNumFrees()
 	{
 		return numFrees;
 	}
-	unsigned int Allocator::GetFreeMem()
+	intptr_t Allocator::GetFreeMem()
 	{
 		return freeSpace;
 	}
 
-	unsigned int Allocator::GetUsedMem()
+	intptr_t Allocator::GetUsedMem()
 	{
 		return usedSpace;
 	}
 
-	unsigned int Allocator::GetTotalMem()
+	intptr_t Allocator::GetTotalMem()
 	{
 		return totalSpace;
 	}

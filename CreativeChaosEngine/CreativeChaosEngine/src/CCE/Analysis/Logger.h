@@ -14,7 +14,6 @@ namespace CCE
 
 	struct CCE_API Logger
 	{
-	public:
 		Logger() = default;
 		~Logger() = default;
 		static void Log(const char* msg, COLOR color = COLOR_WHITE);

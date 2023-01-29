@@ -17,7 +17,7 @@
 #include "Analysis/Debug.h"
 #include "Analysis/Logger.h"
 
-#define LOG(msg) CCE::Logger::Log(msg)
+#define LOG(msg) CCE::Logger::Log(msg, COLOR_WHITE)
 #define LOGC(msg, c) CCE::Logger::Log(msg, c)
 
 #define DINFO(msg) CCE::Debug::DebugInfo(msg, __FILE__, __LINE__)

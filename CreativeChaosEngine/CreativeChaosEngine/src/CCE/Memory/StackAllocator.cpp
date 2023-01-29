@@ -60,15 +60,15 @@ namespace CCMemory
 			
 	}
 
-	unsigned int StackAllocator::GetFreeMem()
+	intptr_t StackAllocator::GetFreeMem()
 	{
 		return GetTotalMem() - GetUsedMem();
 	}
-	unsigned int StackAllocator::GetUsedMem()
+	intptr_t StackAllocator::GetUsedMem()
 	{
 		return top - bottom;
 	}
-	unsigned int StackAllocator::GetTotalMem()
+	intptr_t StackAllocator::GetTotalMem()
 	{
 		return totalSpace;
 	}
