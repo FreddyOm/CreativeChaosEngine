@@ -4,7 +4,6 @@
 #include <Windows.h>
 #endif // 
 
-//TODO: give args and trigger unittests with i.e. '--unittests'
 int main(int argc, char* argv[])
 {  
     // ------ HELLO ------
@@ -18,6 +17,7 @@ int main(int argc, char* argv[])
 
     {
 #ifdef DEBUG
+        // Conduct unit tests by opening the application with '--test'
         bool unittesting = false;
         for(int i = 0; i < argc; i++)
         {
