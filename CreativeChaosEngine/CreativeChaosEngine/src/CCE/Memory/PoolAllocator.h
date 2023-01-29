@@ -23,7 +23,7 @@ namespace CCMemory
 			bottom = (intptr_t) malloc((sizeof(bool) * elements) + totalSpace);
 			pool = new (reinterpret_cast<bool*>(bottom)) bool[elements];
 			memset(pool, FALSE, elements);
-			allocatableMemBottom = bottom + numPoolElements;
+			allocatableMemBottom = bottom + ((sizeof(bool) * numPoolElements));
 		}
 
 		~PoolAllocator()
@@ -34,8 +34,9 @@ namespace CCMemory
 			usedSpace = 0;
 			numAllocs = 0;
 			numFrees = 0;
-			numPoolElements = 0;
 			free((void*)bottom);
+			numPoolElements = 0;
+			bottom = 0;
 		}
 
 		template<typename T>

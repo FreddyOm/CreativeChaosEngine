@@ -21,7 +21,7 @@ namespace CCMemory
 			totalSpace = 0;
 			freeSpace = totalSpace;
 			top = 0;
-			free(reinterpret_cast<int*>(bottom));
+			free((void*)bottom);
 			bottom = 0;
 		}
 
