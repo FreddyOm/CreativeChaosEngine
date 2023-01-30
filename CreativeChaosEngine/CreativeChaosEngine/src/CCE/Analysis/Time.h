@@ -13,10 +13,10 @@ namespace CCE
 		using time_point = cr::time_point<time, mics>;
 
 		static cr::high_resolution_clock::time_point CurrentTick();
-		static double GetDurationInMilliSec(cr::high_resolution_clock::time_point start,
-			cr::high_resolution_clock::time_point end);
-		static long GetDurationInMicroSec(cr::high_resolution_clock::time_point start,
-			cr::high_resolution_clock::time_point end);
+		static double GetDurationInMilliSec(const cr::high_resolution_clock::time_point start,
+			const cr::high_resolution_clock::time_point end);
+		static long GetDurationInMicroSec(const cr::high_resolution_clock::time_point start,
+			const cr::high_resolution_clock::time_point end);
 	};
 
 	struct CCE_API DateTime

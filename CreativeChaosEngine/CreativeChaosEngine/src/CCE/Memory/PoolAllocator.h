@@ -84,9 +84,9 @@ namespace CCMemory
 		}
 		void Free(intptr_t addr, unsigned int size);
 		void Clear();
-		unsigned long GetPoolSize();
-		unsigned int GetNumPoolElements();
-		unsigned int GetNumFreePoolElements();
+		const unsigned long GetPoolSize();
+		const unsigned int GetNumPoolElements();
+		const unsigned int GetNumFreePoolElements();
 
 	private:
 		unsigned long poolSize = 0;

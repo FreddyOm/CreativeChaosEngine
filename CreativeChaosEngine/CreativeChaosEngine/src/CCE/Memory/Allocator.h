@@ -17,12 +17,12 @@ namespace CCMemory
 		intptr_t numFrees = 0;
 
 	public:
-		intptr_t GetNumAllocs();
-		intptr_t GetNumFrees();
-		virtual intptr_t GetFreeMem();
-		virtual intptr_t GetUsedMem();
-		virtual intptr_t GetTotalMem();
-		virtual float GetUsedSpaceRatio();
+		const intptr_t GetNumAllocs();
+		const intptr_t GetNumFrees();
+		const virtual intptr_t GetFreeMem();
+		const virtual intptr_t GetUsedMem();
+		const virtual intptr_t GetTotalMem();
+		const virtual float GetUsedSpaceRatio();
 	};
 }
 

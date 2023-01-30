@@ -9,13 +9,13 @@ namespace CCE
 		return time::now();
 	}
 
-	double Time::GetDurationInMilliSec(cr::high_resolution_clock::time_point start, cr::high_resolution_clock::time_point end)
+	double Time::GetDurationInMilliSec(const cr::high_resolution_clock::time_point start, const cr::high_resolution_clock::time_point end)
 	{
 		auto duration = cr::duration_cast<cr::microseconds>(end - start);
 		return (double)duration.count() / 1000.0;
 	}
 
-	long Time::GetDurationInMicroSec(cr::high_resolution_clock::time_point start, cr::high_resolution_clock::time_point end)
+	long Time::GetDurationInMicroSec(const cr::high_resolution_clock::time_point start, const cr::high_resolution_clock::time_point end)
 	{
 		auto duration = cr::duration_cast<cr::microseconds>(end - start);
 		return (long) duration.count();

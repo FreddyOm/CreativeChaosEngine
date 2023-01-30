@@ -36,3 +36,5 @@
  
 // --------------------------
 
+#include "CCE/String/String.h"
+

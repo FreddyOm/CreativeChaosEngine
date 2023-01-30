@@ -68,9 +68,11 @@ int main(int argc, char* argv[])
     mProfilingManager.ShutDown();
     mJobManager.ShutDown();
 
+
     // ------ BYE ------
+
     LOGC("Shutting down Creative Chaos Engine - v0.1", COLOR_BLUE);
-    Sleep(2000);
+    Sleep(500);
     
     return 0;
 }

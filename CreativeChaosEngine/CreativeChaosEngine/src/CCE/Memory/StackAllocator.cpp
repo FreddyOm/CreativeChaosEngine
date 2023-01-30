@@ -17,7 +17,6 @@ namespace CCMemory
 		}
 	}
 
-
 	/// <summary>
 	/// Clears all the memory in the allocator.
 	/// </summary>
@@ -32,7 +31,7 @@ namespace CCMemory
 	/// Returns a pointer to the top of the stack.
 	/// </summary>
 	/// <returns></returns>
-	intptr_t StackAllocator::GetCurretTop()
+	const intptr_t StackAllocator::GetCurretTop()
 	{
 		return top;
 	}
@@ -60,19 +59,38 @@ namespace CCMemory
 			
 	}
 
-	intptr_t StackAllocator::GetFreeMem()
+	/// <summary>
+	/// Gets the currently free memory.
+	/// </summary>
+	/// <returns>Returns the free memory of the stack allocator.</returns>
+	const intptr_t StackAllocator::GetFreeMem()
 	{
 		return GetTotalMem() - GetUsedMem();
 	}
-	intptr_t StackAllocator::GetUsedMem()
+
+	/// <summary>
+	/// Returns the used memory.
+	/// </summary>
+	/// <returns>Used memory of the stack allocator.</returns>
+	const intptr_t StackAllocator::GetUsedMem()
 	{
 		return top - bottom;
 	}
-	intptr_t StackAllocator::GetTotalMem()
+
+	/// <summary>
+	/// Returns the total available memory.
+	/// </summary>
+	/// <returns>The total memory available.</returns>
+	const intptr_t StackAllocator::GetTotalMem()
 	{
 		return totalSpace;
 	}
-	float StackAllocator::GetUsedSpaceRatio()
+
+	/// <summary>
+	/// Shows the ratio of used space to total space.
+	/// </summary>
+	/// <returns>Ratio used space to total space.</returns>
+	const float StackAllocator::GetUsedSpaceRatio()
 	{
 		return (float)GetUsedMem() / (float)GetTotalMem();
 	}

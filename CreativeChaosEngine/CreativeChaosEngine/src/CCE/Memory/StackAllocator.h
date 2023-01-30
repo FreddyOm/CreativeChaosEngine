@@ -53,11 +53,11 @@ namespace CCMemory
 
 		void RollbackToMarker(StackAllocMarker _marker);
 		void ClearAll();
-		intptr_t GetCurretTop();
-		intptr_t GetFreeMem() override;
-		intptr_t GetUsedMem() override;
-		intptr_t GetTotalMem() override;
-		float GetUsedSpaceRatio() override;
+		const intptr_t GetCurretTop();
+		const intptr_t GetFreeMem() override;
+		const intptr_t GetUsedMem() override;
+		const intptr_t GetTotalMem() override;
+		const float GetUsedSpaceRatio() override;
 
 	private:
 		intptr_t bottom = 0;
