@@ -15,6 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CCE\Utilities\CRCHash.cpp" />
     <ClCompile Include="src\CCE\Memory\PoolAllocator.cpp" />
     <ClCompile Include="src\CCE\Memory\Allocator.cpp" />
     <ClCompile Include="src\CCE\Utilities\CCMath.cpp" />
@@ -35,6 +36,7 @@
     <ClCompile Include="src\CCE\String\String.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CCE\Utilities\CRCHash.h" />
     <ClInclude Include="src\CCE\Memory\PoolAllocator.h" />
     <ClInclude Include="src\CCE\Memory\Allocator.h" />
     <ClInclude Include="src\CCE\Utilities\CCMath.h" />

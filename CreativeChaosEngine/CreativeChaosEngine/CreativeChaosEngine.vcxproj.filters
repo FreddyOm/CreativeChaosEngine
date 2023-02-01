@@ -69,6 +69,9 @@
     <ClCompile Include="src\CCE\String\String.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\CCE\Utilities\CRCHash.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\Core.h">
@@ -126,6 +129,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\CCE\String\String.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Utilities\CRCHash.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

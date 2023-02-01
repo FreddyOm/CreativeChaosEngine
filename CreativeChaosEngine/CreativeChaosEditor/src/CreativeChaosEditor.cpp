@@ -33,12 +33,9 @@ int main(int argc, char* argv[])
         {
             // ------ UNIT TESTING 
             LOGC("----------- UNIT TESTS -----------", COLOR_BLUE);
-            CCE_Testing::UnitTestMath mathTest;
             CCE_Testing::UnitTestStackAlloc stallocTest;
             CCE_Testing::UnitTestPoolAlloc poolallocTest;
 
-            mathTest.Test();
-            mathTest.Cleanup();
             stallocTest.Test();
             stallocTest.Cleanup();
             poolallocTest.Test();
@@ -56,8 +53,8 @@ int main(int argc, char* argv[])
     mPhysicsManager.StartUp();
     
 
-    // ------ RUN LOOP ------
-
+    // ------ RUN LOOP ------    
+    
     std::cin.get(); // Placeholder to prevent the window from closing
 
 

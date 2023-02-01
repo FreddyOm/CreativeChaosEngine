@@ -1,7 +1,7 @@
 #pragma once
 #include "../Core.h"
 
-namespace CCE
+namespace CCE::Math
 {
 	struct CCE_API CCMath
 	{

@@ -1,13 +1,10 @@
 #include "String.h"
+#include "../Utilities/CRCHash.h"
 
 namespace CCE
 {
-	size_t String::GetStringID(const char* str)
-	{
-		//TODO: insert better hash function
-		using namespace std;
-		hash<string> _hash;
-		
-		return _hash(string(str));
+	unsigned long long String::GetStringID(const char* str)
+	{		
+		return CCE::Math::CRCHash::HashValue(str);
 	}
 }

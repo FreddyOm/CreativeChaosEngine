@@ -36,5 +36,10 @@
  
 // --------------------------
 
-#include "CCE/String/String.h"
+// ------- Utilities --------
 
+#include "CCE/String/String.h"
+#include "CCE/Utilities/CCMath.h"
+#include "CCE/Utilities/CRCHash.h"
+
+// --------------------------

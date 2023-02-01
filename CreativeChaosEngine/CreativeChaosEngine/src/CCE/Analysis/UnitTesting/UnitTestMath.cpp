@@ -48,7 +48,7 @@ namespace CCE_Testing
 
 		int res;
 
-		CCE::CCMath::Add(&a, &b, &res);
+		CCE::Math::CCMath::Add(&a, &b, &res);
 
 		if (res == 16)
 		{
@@ -65,7 +65,7 @@ namespace CCE_Testing
 
 		int res;
 
-		CCE::CCMath::Add(&a, &b, &res);
+		CCE::Math::CCMath::Add(&a, &b, &res);
 
 		if (res == -400)
 		{
@@ -82,7 +82,7 @@ namespace CCE_Testing
 
 		float res;
 
-		CCE::CCMath::Add(&a, &b, &res);
+		CCE::Math::CCMath::Add(&a, &b, &res);
 
 		if (res == 3.0f)
 		{
@@ -98,7 +98,7 @@ namespace CCE_Testing
 
 		long res;
 
-		CCE::CCMath::Add(&a, &b, &res);
+		CCE::Math::CCMath::Add(&a, &b, &res);
 
 		if (res == 62000000)
 		{
@@ -114,9 +114,9 @@ namespace CCE_Testing
 
 		double res;
 
-		CCE::CCMath::Add(&a, &b, &res);
+		CCE::Math::CCMath::Add(&a, &b, &res);
 
-		// FIXME: Double uncertainty!! Fix in CCE::CCMath::Add
+		// FIXME: Double uncertainty!! Fix in CCE::Math::CCMath::Add
 		if (res == 0.1)
 		{
 			return true;
@@ -132,7 +132,7 @@ namespace CCE_Testing
 
 		int res;
 
-		CCE::CCMath::Substract(&a, &b, &res);
+		CCE::Math::CCMath::Substract(&a, &b, &res);
 
 		if (res == -2)
 		{
@@ -148,7 +148,7 @@ namespace CCE_Testing
 
 		int res;
 
-		CCE::CCMath::Substract(&a, &b, &res);
+		CCE::Math::CCMath::Substract(&a, &b, &res);
 
 		if (res == -1200)
 		{
@@ -164,7 +164,7 @@ namespace CCE_Testing
 
 		float res;
 
-		CCE::CCMath::Substract(&a, &b, &res);
+		CCE::Math::CCMath::Substract(&a, &b, &res);
 
 		if (res == -5.8f)
 		{
@@ -180,7 +180,7 @@ namespace CCE_Testing
 
 		long res;
 
-		CCE::CCMath::Substract(&a, &b, &res);
+		CCE::Math::CCMath::Substract(&a, &b, &res);
 
 		if (res == 38000000)
 		{
@@ -196,7 +196,7 @@ namespace CCE_Testing
 
 		double res;
 
-		CCE::CCMath::Substract(&a, &b, &res);
+		CCE::Math::CCMath::Substract(&a, &b, &res);
 
 		if (res == 15.9)
 		{

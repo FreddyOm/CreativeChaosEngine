@@ -1,6 +1,6 @@
 #include "CCMath.h"
 
-namespace CCE
+namespace CCE::Math
 {
 	void CCMath::Add(int* a, int* b, int* res) noexcept
 	{
