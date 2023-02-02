@@ -43,7 +43,7 @@ namespace CCE::Math
 	{
 		static unsigned long long HashValue(const char* data, unsigned long size = 64);
 	private:
-		static unsigned long long ReverseBits(unsigned long long bits);
+		static unsigned long long ReverseBits(unsigned long long bits, unsigned long size);
 	};
 }
 

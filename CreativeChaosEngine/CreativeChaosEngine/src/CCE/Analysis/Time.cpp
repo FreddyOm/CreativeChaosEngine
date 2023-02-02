@@ -3,12 +3,13 @@
 
 namespace CCE
 {
-	std::chrono::high_resolution_clock::time_point Time::CurrentTick()
+	cr::high_resolution_clock::time_point Time::CurrentTick()
 	{
 		using time = cr::high_resolution_clock;
 		return time::now();
 	}
 
+	// TODO: Add GetDurationInClockCycles(CurrentTick) 
 	double Time::GetDurationInMilliSec(const cr::high_resolution_clock::time_point start, const cr::high_resolution_clock::time_point end)
 	{
 		auto duration = cr::duration_cast<cr::microseconds>(end - start);

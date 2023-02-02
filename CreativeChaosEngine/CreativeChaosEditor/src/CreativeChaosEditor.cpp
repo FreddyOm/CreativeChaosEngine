@@ -17,13 +17,13 @@ int main(int argc, char* argv[])
 
     {
 #ifdef DEBUG
-        // Conduct unit tests by opening the application with '--test'
+        // Conduct unit tests by opening the application with '-test'
         bool unittesting = false;
         for(int i = 0; i < argc; i++)
         {
             std::string arg = std::string(argv[i]);
             
-            if (arg == std::string("--test"))
+            if (arg == std::string("-test"))
             {
                 unittesting = true;
             }
