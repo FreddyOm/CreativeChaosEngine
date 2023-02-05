@@ -1,5 +1,7 @@
 #include "PoolAllocator.h"
 #include <iterator>
+#include "../Analysis/Debug.h"
+#include <minwindef.h>
 
 namespace CCMemory
 {

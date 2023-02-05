@@ -6,8 +6,6 @@
 #include "CCE/Memory/StackAllocator.h"
 #include "CCE/Memory/PoolAllocator.h"
 
-#if defined(DEBUG) || defined(DEBUG_PROFILE)
-
 // ------- Analysis --------
 
 #include "CCE/Analysis/Debug.h"
@@ -15,6 +13,8 @@
 #include "CCE/Analysis/Time.h"
 
 // -------------------------
+
+#if defined(DEBUG) || defined(DEBUG_PROFILE)
 
 // -------- Testing ---------
 
@@ -26,7 +26,7 @@
 
 // -------------------------
 
-#endif // Only include Debug and Testing facilities when in debug or profile config
+#endif // Only include Debug and Testing facilities when in debug or profile config (?)
 
 // -------- Manager ---------
 

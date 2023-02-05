@@ -1,8 +1,5 @@
 #include <iostream>
 #include <CCEngine.h>
-#ifdef NDEBUG
-#include <Windows.h>
-#endif // 
 
 int main(int argc, char* argv[])
 {  
@@ -51,6 +48,7 @@ int main(int argc, char* argv[])
         }
 #endif // Only test when in debug mode
     }
+    
     // ------ STARTUP MANAGER ------
 
     mJobManager.StartUp();

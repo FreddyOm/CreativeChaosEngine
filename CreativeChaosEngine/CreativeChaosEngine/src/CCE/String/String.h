@@ -2,13 +2,12 @@
 #include "../Core.h"
 #include <unordered_map>
 #include <iterator>
+#include "../Analysis/Debug.h"
 
 namespace CCE
 {
 	// TODO: Implement something so that the struct constructor 
 	// will return the string to the used function
-	
-	// TODO: Add Unit tests!
 
 	// TODO: Implement Logging for custom strings
 	struct CCE_API String
@@ -26,7 +25,7 @@ namespace CCE
 			{
 				printf("Hash-Collision on strings '%s' and '%s'.", str, gStringTable[sId]);
 			}
-			DASSERT(!collision, "There has been a hash function collision");
+			DASSERT(!collision, "There has been a hash function collision!");
 #endif // DEBUG
 
 			// Add String if it doesn't exist already (copy str)

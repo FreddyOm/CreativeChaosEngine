@@ -1,6 +1,20 @@
 #pragma once
 #include "../Core.h"
-#include "Windows.h"
+
+#ifdef DEBUG
+#define LOG(msg) CCE::Logger::Log(msg, COLOR_WHITE)
+#define LOGC(msg, c) CCE::Logger::Log(msg, c)
+#endif // DEBUG
+
+#ifdef DEBUG_PROFILE
+#define LOG(msg) CCE::Logger::Log(msg)
+#define LOGC(msg, c) CCE::Logger::Log(msg, c)
+#endif // PROFILE
+
+#ifdef NDEBUG
+#define LOG(msg)
+#define LOGC(msg, c)
+#endif // RELEASE
 
 namespace CCE
 {
