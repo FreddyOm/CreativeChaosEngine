@@ -3,7 +3,7 @@
 
 namespace CCE
 {
-	const size_t String::Length() const
+	size_t String::Length() const
 	{
 		return strlen(gStringTable[sId]);
 	}
@@ -17,4 +17,6 @@ namespace CCE
 	{		
 		return CCE::Math::CRCHash::HashValue(str, strlen(str));
 	}
+
+	std::unordered_map<unsigned long long, const char*> String::gStringTable;
 }

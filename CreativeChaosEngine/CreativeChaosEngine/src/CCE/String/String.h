@@ -73,14 +73,14 @@ namespace CCE
 			return this->sId != other.sId;
 		}
 
-		const size_t Length() const;
+		size_t Length() const;
 		const char* Value() const;
 
 	public:
 		unsigned long long sId = 0;
 		
 	private:
-		inline static std::unordered_map<unsigned long long, const char*> gStringTable;
+		static std::unordered_map<unsigned long long, const char*> gStringTable;
 
 	private:
 		const unsigned long long GetStringID(const char* str);

@@ -2,7 +2,7 @@
 
 namespace CCE::Math
 {
-	unsigned long long CRCHash::HashValue(const char* data, unsigned long size)
+	unsigned long long CRCHash::HashValue(const char* data, size_t size)
 	{
 		unsigned long long crc = 0;
 
@@ -13,7 +13,7 @@ namespace CCE::Math
 		return ReverseBits(crc, size);
 	}
 
-	unsigned long long CRCHash::ReverseBits(unsigned long long bits, unsigned long size)
+	unsigned long long CRCHash::ReverseBits(unsigned long long bits, size_t size)
 	{
 		unsigned long long rBits = 0;
 

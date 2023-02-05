@@ -41,9 +41,9 @@ namespace CCE::Math
     //TODO: Implement Unit tests for CRC Hashing
 	struct CCE_API CRCHash
 	{
-		static unsigned long long HashValue(const char* data, unsigned long size = 64);
+		static unsigned long long HashValue(const char* data, size_t size = 64);
 	private:
-		static unsigned long long ReverseBits(unsigned long long bits, unsigned long size);
+		static unsigned long long ReverseBits(unsigned long long bits, size_t size);
 	};
 }
 
