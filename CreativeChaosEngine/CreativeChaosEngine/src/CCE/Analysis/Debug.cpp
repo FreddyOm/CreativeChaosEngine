@@ -55,7 +55,7 @@ namespace CCE
 		CCE::Logger::Log(buf, COLOR_RED);
 	}
 
-	void Debug::DebugAssert(bool condition, const char* msg, const char* file, const int line) noexcept
+	void Debug::DebugAssert(const bool condition, const char* msg, const char* file, const int line) noexcept
 	{
 		if (condition)
 			return;

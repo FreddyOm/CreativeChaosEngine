@@ -74,8 +74,8 @@ namespace CCE
 			return this->sId != other.sId;
 		}
 
-		const size_t Length();
-		const char* Value();
+		const size_t Length() const;
+		const char* Value() const;
 
 	public:
 		unsigned long long sId = 0;

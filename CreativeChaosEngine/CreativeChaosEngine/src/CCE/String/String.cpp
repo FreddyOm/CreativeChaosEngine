@@ -3,12 +3,12 @@
 
 namespace CCE
 {
-	const size_t String::Length()
+	const size_t String::Length() const
 	{
 		return strlen(gStringTable[sId]);
 	}
 
-	const char* String::Value()
+	const char* String::Value() const
 	{
 		return gStringTable[sId] == NULL ? "" : gStringTable[sId];
 	}

@@ -1,5 +1,6 @@
 #pragma once
 #include "../Core.h"
+#include "../String/String.h"
 
 #ifdef DEBUG
 #define LOG(msg) CCE::Logger::Log(msg, COLOR_WHITE)
@@ -31,6 +32,7 @@ namespace CCE
 		Logger() = default;
 		~Logger() = default;
 		static void Log(const char* msg, COLOR color = COLOR_WHITE);
+		static void Log(const String msg, COLOR color = COLOR_WHITE);
 		static void Log(const float msg, COLOR color = COLOR_WHITE);
 		static void Log(const double msg, COLOR color = COLOR_WHITE);
 		static void Log(const int msg, COLOR color = COLOR_WHITE);

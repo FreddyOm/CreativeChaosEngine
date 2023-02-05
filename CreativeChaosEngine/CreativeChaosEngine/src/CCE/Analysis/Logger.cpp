@@ -16,6 +16,11 @@ namespace CCE
         printf("[%s] %s\n", DateTime::GetTime(), msg);
     }
 
+    void Logger::Log(const String msg, COLOR color)
+    {
+        Logger::Log(msg.Value(), color);
+    }
+
     void Logger::Log(const float msg, COLOR color)
     {
         if (hConsole == NULL)

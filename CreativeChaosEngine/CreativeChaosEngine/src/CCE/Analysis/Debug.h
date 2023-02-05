@@ -29,7 +29,7 @@ namespace CCE
 		static void DebugInfo(const char* msg, const char* file, const int line) noexcept;
 		static void DebugWarning(const char* msg, const char* file, const int line) noexcept;
 		static void DebugError(const char* msg, const char* file, const int line) noexcept;
-		static void DebugAssert(bool condition, const char* msg, const char* file, const int line) noexcept;
+		static void DebugAssert(const bool condition, const char* msg, const char* file, const int line) noexcept;
 
 	private:
 		static const char* infoTag;
