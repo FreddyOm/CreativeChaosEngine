@@ -29,3 +29,4 @@ namespace CCE
 
 // TODO: Maybe log everything into a file ..?
 // TODO: Collapse all of the different Logs into Log<T>
+// TODO: Add formatted logging

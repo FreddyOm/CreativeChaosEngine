@@ -10,7 +10,7 @@ namespace CCE
 	
 	// TODO: Add Unit tests!
 
-	// TODO: Add operator overloading String a == String b ...
+	// TODO: Implement Logging for custom strings
 	struct CCE_API String
 	{
 		String(const char* str = "")
@@ -20,12 +20,13 @@ namespace CCE
 			sId = GetStringID(str);
 
 #ifdef DEBUG
-			bool collision = gStringTable.find(sId) != gStringTable.end() && !strcmp(gStringTable[sId], str);
+			bool collision = gStringTable.find(sId) != gStringTable.end() 
+				&& strcmp(gStringTable[sId], str) != 0;
 			if (collision)
 			{
-				printf("Hash-Collision on strings %s and %s!", str, gStringTable[sId]);
+				printf("Hash-Collision on strings '%s' and '%s'.", str, gStringTable[sId]);
 			}
-			DASSERT(collision, "There has been a hash function collision");
+			DASSERT(!collision, "There has been a hash function collision");
 #endif // DEBUG
 
 			// Add String if it doesn't exist already (copy str)
@@ -44,13 +45,34 @@ namespace CCE
 			gStringTable.clear();
 		}
 
+		String& operator=(const String& other)
+		{
+			// check if both refs are the same instance
+			if (this == &other)
+			{
+				return *this;
+			}
+
+			this->sId = other.sId;
+			return *this;
+		}
+
+		bool operator==(const String& other)
+		{
+			// compare strings by their string id
+			return this->sId == other.sId;
+		}
+
+		const size_t Length();
+		const char* Value();
+
 	public:
 		unsigned long long sId = 0;
-
+		
 	private:
 		inline static std::unordered_map<unsigned long long, const char*> gStringTable;
 
 	private:
-		unsigned long long GetStringID(const char* str);
+		const unsigned long long GetStringID(const char* str);
 	};
 }
