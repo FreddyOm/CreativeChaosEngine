@@ -1,8 +1,6 @@
 #include "Logger.h"
 #include "Time.h"
 
-
-
 namespace CCE
 {    
     void Logger::Log(const char* msg, COLOR color)

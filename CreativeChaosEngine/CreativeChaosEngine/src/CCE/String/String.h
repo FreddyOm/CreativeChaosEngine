@@ -9,7 +9,6 @@ namespace CCE
 	// TODO: Implement something so that the struct constructor 
 	// will return the string to the used function
 
-	// TODO: Implement Logging for custom strings
 	struct CCE_API String
 	{
 		String(const char* str = "")
