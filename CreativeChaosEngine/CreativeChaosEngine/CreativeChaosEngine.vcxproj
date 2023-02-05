@@ -34,6 +34,7 @@
     <ClCompile Include="src\CCE\Analysis\UnitTesting\UnitTestStackAlloc.cpp" />
     <ClCompile Include="src\CCE\Analysis\UnitTesting\UnitTestPoolAlloc.cpp" />
     <ClCompile Include="src\CCE\String\String.cpp" />
+    <ClCompile Include="src\CCE\Analysis\UnitTesting\UnitTestString.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\Utilities\CRCHash.h" />
@@ -56,6 +57,7 @@
     <ClInclude Include="src\CCE\Analysis\UnitTesting\UnitTestStackAlloc.h" />
     <ClInclude Include="src\CCE\Analysis\UnitTesting\UnitTestPoolAlloc.h" />
     <ClInclude Include="src\CCE\String\String.h" />
+    <ClInclude Include="src\CCE\Analysis\UnitTesting\UnitTestString.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

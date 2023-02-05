@@ -27,19 +27,25 @@ int main(int argc, char* argv[])
             {
                 unittesting = true;
             }
-        }
+        } 
 
         if (unittesting)
         {
+            // TODO: Wrap in class / struct
+            // TODO: Add - test details to show which tests failed / suceeded
+            // and normally show [30 / 30 tests suceeded!]
             // ------ UNIT TESTING 
             LOGC("----------- UNIT TESTS -----------", COLOR_BLUE);
             CCE_Testing::UnitTestStackAlloc stallocTest;
             CCE_Testing::UnitTestPoolAlloc poolallocTest;
+            CCE_Testing::UnitTestString stringTest;
 
             stallocTest.Test();
             stallocTest.Cleanup();
             poolallocTest.Test();
             poolallocTest.Cleanup();
+            stringTest.Test();
+            stringTest.Cleanup();
 
             LOGC("----------------------------------", COLOR_BLUE);
         }
@@ -53,7 +59,7 @@ int main(int argc, char* argv[])
     mPhysicsManager.StartUp();
     
 
-    // ------ RUN LOOP ------    
+    // ------ RUN LOOP ------
     
     std::cin.get(); // Placeholder to prevent the window from closing
 

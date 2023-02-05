@@ -22,6 +22,7 @@
 #include "CCE/Analysis/UnitTesting/UnitTestMath.h"
 #include "CCE/Analysis/UnitTesting/UnitTestStackAlloc.h"
 #include "CCE/Analysis/UnitTesting/UnitTestPoolAlloc.h"
+#include "CCE/Analysis/UnitTesting/UnitTestString.h"
 
 // -------------------------
 

@@ -57,10 +57,22 @@ namespace CCE
 			return *this;
 		}
 
+		String& operator=(const char* other)
+		{
+			*this = String(other);
+			return *this;
+		}
+
 		bool operator==(const String& other)
 		{
 			// compare strings by their string id
 			return this->sId == other.sId;
+		}
+
+		bool operator!=(const String& other)
+		{
+			// compare strings by their string id
+			return this->sId != other.sId;
 		}
 
 		const size_t Length();
