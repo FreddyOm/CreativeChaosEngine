@@ -32,7 +32,8 @@ namespace CCE_Testing
 
 		return s1 == s2 && s2 != s3 
 			&& s1.Length() == 5 
-			&& s3.Length() == 6;
+			&& s3.Length() == 6
+			&& s1 != "aHllo" && s1 != "hallo";
 	}
 
 	bool UnitTestString::TestString2() noexcept
@@ -55,7 +56,8 @@ namespace CCE_Testing
 
 		return s1.Length() - 1 == s2.Length()
 			&& s1.Length() == 16 && s2.sId != s1.sId
-			&& s3.Length() == 10;
+			&& s3.Length() == 10 && s1 == "Mein Test String"
+			&& s2 != "Mein Test String" && s2 != "mein Test String";
 	}
 
 	bool UnitTestString::TestString4() noexcept

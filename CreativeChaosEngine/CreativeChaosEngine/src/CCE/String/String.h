@@ -73,6 +73,16 @@ namespace CCE
 			return this->sId != other.sId;
 		}
 
+		bool operator==(const char* other)
+		{
+			return this->sId == GetStringID(other);
+		}
+
+		bool operator!=(const char* other)
+		{
+			return this->sId != GetStringID(other);
+		}
+
 		size_t Length() const;
 		const char* Value() const;
 
