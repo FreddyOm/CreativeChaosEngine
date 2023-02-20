@@ -115,12 +115,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\EditorWindow\EditorWindow.cpp" />
     <ClCompile Include="src\CreativeChaosEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CreativeChaosEngine\CreativeChaosEngine.vcxproj">
       <Project>{97d57b0b-dd36-45ff-8004-cf9b9bba596d}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\CreativeChaosEditor.h" />
+    <ClInclude Include="src\EditorWindow\EditorWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

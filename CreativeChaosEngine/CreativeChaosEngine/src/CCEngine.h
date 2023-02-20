@@ -14,20 +14,6 @@
 
 // -------------------------
 
-#if defined(DEBUG) || defined(DEBUG_PROFILE)
-
-// -------- Testing ---------
-
-#include "CCE/Analysis/UnitTesting/UnitTest.h"
-#include "CCE/Analysis/UnitTesting/UnitTestMath.h"
-#include "CCE/Analysis/UnitTesting/UnitTestStackAlloc.h"
-#include "CCE/Analysis/UnitTesting/UnitTestPoolAlloc.h"
-#include "CCE/Analysis/UnitTesting/UnitTestString.h"
-
-// -------------------------
-
-#endif // Only include Debug and Testing facilities when in debug or profile config (?)
-
 // -------- Manager ---------
 
 #include "CCE/Manager/ProfilingManager.h"

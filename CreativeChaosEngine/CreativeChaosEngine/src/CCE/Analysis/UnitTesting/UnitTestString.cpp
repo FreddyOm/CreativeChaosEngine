@@ -63,6 +63,12 @@ namespace CCE_Testing
 	bool UnitTestString::TestString4() noexcept
 	{
 		CCE::String s1("Mein Test String");
+		CCE::String s0;
+		{
+			CCE::String scopeString("Default Test Text");
+			s0 = scopeString.Value();
+		}
+
 		CCE::String s2("Ein Test String");
 		s2 = s1;
 		CCE::String s3 = CCE::String("TestString");
@@ -70,6 +76,7 @@ namespace CCE_Testing
 		return s1.Length() == s2.Length()
 			&& s1 == s2 && s2.sId == s1.sId
 			&& s3.Length() == 10 && s3.sId != s1.sId
-			&& s3 != s1 && s3 != s2;
+			&& s3 != s1 && s3 != s2 && s0 == "Default Test Text"
+			&& s0.Length() == 17;
 	}
 }

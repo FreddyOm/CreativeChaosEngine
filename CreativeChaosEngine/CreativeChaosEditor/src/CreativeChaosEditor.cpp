@@ -1,5 +1,20 @@
-#include <iostream>
-#include <CCEngine.h>
+#include "CreativeChaosEditor.h"
+#include "EditorWindow/EditorWindow.h"
+
+// -------- Testing ---------
+
+#ifdef DEBUG
+
+#include "CCE/Analysis/UnitTesting/UnitTest.h"
+#include "CCE/Analysis/UnitTesting/UnitTestMath.h"
+#include "CCE/Analysis/UnitTesting/UnitTestStackAlloc.h"
+#include "CCE/Analysis/UnitTesting/UnitTestPoolAlloc.h"
+#include "CCE/Analysis/UnitTesting/UnitTestString.h"
+
+#endif
+
+// -------------------------
+
 
 int main(int argc, char* argv[])
 {  
@@ -28,6 +43,7 @@ int main(int argc, char* argv[])
 
         if (unittesting)
         {
+
             // TODO: Wrap in class / struct
             // TODO: Add - test details to show which tests failed / suceeded
             // and normally show [30 / 30 tests suceeded!]
@@ -57,10 +73,20 @@ int main(int argc, char* argv[])
     mPhysicsManager.StartUp();
     
 
-    // ------ RUN LOOP ------
-    
-    std::cin.get(); // Placeholder to prevent the window from closing
+    // ------ OPEN ENGINE WINDOW ------
 
+    {
+        EditorWindow window = EditorWindow();
+        window.OpenWindow(GetModuleHandle(NULL));
+
+        // ------ RUN LOOP ------
+        
+        // TODO: Evaluate if it's nessecary to update the win
+        // using a specific method call or if it's also fine to
+        // inti the msg pump at the end of OpenWindow (look into
+        // child window creation here)
+        window.UpdateWindow();
+    }
 
     // ------ SHUTDOWN MANAGER ------
 
