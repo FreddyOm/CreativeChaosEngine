@@ -69,7 +69,7 @@ int EditorWindow::UpdateWindow()
 int EditorWindow::CloseEditorWindow()
 {
 	DASSERT(DestroyWindow(hWnd) != 0, "Failed destroying the editor window!");
-	LOG(GetLastErrorAsString().c_str());
+		
 	LOG("Window was implicitly closed.");
 	windowRunning = false;
 	PostQuitMessage(0);

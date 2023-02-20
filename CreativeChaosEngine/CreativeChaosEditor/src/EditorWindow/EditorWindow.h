@@ -9,7 +9,7 @@ struct EditorWindow
 	EditorWindow() = default;
 	~EditorWindow()
 	{
-		CloseEditorWindow();
+        windowRunning = false;
 	}
 
 	int OpenWindow(HINSTANCE hInstance, CCE::String winName = "Creative Chaos Engine - v0.1");
