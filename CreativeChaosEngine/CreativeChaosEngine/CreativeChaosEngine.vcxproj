@@ -15,6 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CCE\Manager\InputManager.cpp" />
     <ClCompile Include="src\CCE\Utilities\CRCHash.cpp" />
     <ClCompile Include="src\CCE\Memory\PoolAllocator.cpp" />
     <ClCompile Include="src\CCE\Memory\Allocator.cpp" />
@@ -37,6 +38,8 @@
     <ClCompile Include="src\CCE\Analysis\UnitTesting\UnitTestString.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CCE\Input\InputDevice.h" />
+    <ClInclude Include="src\CCE\Manager\InputManager.h" />
     <ClInclude Include="src\CCE\Utilities\CRCHash.h" />
     <ClInclude Include="src\CCE\Memory\PoolAllocator.h" />
     <ClInclude Include="src\CCE\Memory\Allocator.h" />

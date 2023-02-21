@@ -7,24 +7,22 @@ namespace CCE
 {
 	void RenderManager::StartUp()
 	{
-		auto startTime = Time::CurrentTick();
-		if (initialized)
-		{
-			DWARNING("RenderManager has already been initialized!");
-			return;
-		}
-		LOGC("Starting RenderManager...", COLOR_BLUE);
+		DASSERT(Instance == nullptr, "RenderManager was instantiated more than once!");
+		Instance = this;
 
+		auto startTime = Time::CurrentTick();
 		initialized = true;
 
 		auto endTime = Time::CurrentTick();
 		double initDuration = Time::GetDurationInMicroSec(startTime, endTime);
-		LOGC("RenderManager initialization done in...", COLOR_BLUE);
-		LOGC(initDuration, COLOR_BLUE);
+		LOGC("RenderManager initialized!", COLOR_BLUE);
 	}
 	void RenderManager::ShutDown()
 	{
 		LOGC("Shutting down RenderManager...", COLOR_BLUE);
+		initialized = false;
+		Instance = nullptr;
 	}
+	
+	RenderManager* RenderManager::Instance = nullptr;
 }
-

@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
     CCE::ProfilingManager mProfilingManager = CCE::ProfilingManager();
     CCE::RenderManager mRenderManager = CCE::RenderManager();
     CCE::PhysicsManager mPhysicsManager = CCE::PhysicsManager();
-
+    CCE::InputManager mInputManager = CCE::InputManager();
     {
 #ifdef DEBUG
         // Conduct unit tests by opening the application with '-test'
@@ -71,12 +71,12 @@ int main(int argc, char* argv[])
     mProfilingManager.StartUp();
     mRenderManager.StartUp();
     mPhysicsManager.StartUp();
-    
+    mInputManager.StartUp();
 
     // ------ OPEN ENGINE WINDOW ------
 
     {
-        EditorWindow window = EditorWindow();
+        EditorWindow window = EditorWindow(&mInputManager);
         window.OpenWindow(GetModuleHandle(NULL));
 
         // ------ RUN LOOP ------
@@ -90,6 +90,7 @@ int main(int argc, char* argv[])
 
     // ------ SHUTDOWN MANAGER ------
 
+    mInputManager.ShutDown();
     mPhysicsManager.ShutDown();
     mRenderManager.ShutDown();
     mProfilingManager.ShutDown();

@@ -1,6 +1,14 @@
 #include "EditorWindow.h"
 #include <string.h>
 
+/// <summary>
+/// Callback for window procedure.
+/// </summary>
+/// <param name="hwnd"></param>
+/// <param name="uMsg"></param>
+/// <param name="wParam"></param>
+/// <param name="lParam"></param>
+/// <returns>Result code.</returns>
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 /// <summary>
@@ -37,10 +45,10 @@ int EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 		NULL        // Additional application data
 	);
 
-	DASSERT(hWnd != NULL, "Window handle is invalid!");
+	DASSERT(GetEditorWindowHandle() != NULL, "Window handle is invalid!");
 	
-	SetWindowTextA(hWnd, windowName.Value());
-	ShowWindow(hWnd, SW_NORMAL); // Returns nonzero if previously visible
+	SetWindowTextA(GetEditorWindowHandle(), windowName.Value());
+	ShowWindow(GetEditorWindowHandle(), SW_NORMAL); // Returns nonzero if previously visible
 	windowRunning = true;
 
 	return 0;
@@ -50,7 +58,7 @@ int EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 /// Initializes the window's message pump.
 /// </summary>
 /// <returns>The return code whenever the window is closed.</returns>
-int EditorWindow::UpdateWindow()
+int EditorWindow::UpdateWindow() const
 {
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))
@@ -63,9 +71,9 @@ int EditorWindow::UpdateWindow()
 }
 
 /// <summary>
-/// Closes 
+/// Closes the editor window.
 /// </summary>
-/// <returns></returns>
+/// <returns>Return code for more detailed info.</returns>
 int EditorWindow::CloseEditorWindow()
 {
 	DASSERT(DestroyWindow(hWnd) != 0, "Failed destroying the editor window!");
@@ -76,23 +84,56 @@ int EditorWindow::CloseEditorWindow()
 	return WM_CLOSE;
 }
 
-HWND EditorWindow::GetEditorWindowHandle()
+/// <summary>
+/// Get the current editor window's handle.
+/// </summary>
+/// <returns>Window handle.</returns>
+HWND EditorWindow::GetEditorWindowHandle() const
 {
 	return hWnd;
 }
 
-WNDCLASS EditorWindow::GetEditorWindowClass()
+/// <summary>
+/// Get the current editor window's class.
+/// </summary>
+/// <returns>Window class.</returns>
+WNDCLASS EditorWindow::GetEditorWindowClass() const
 {
 	return wndClass;
 }
 
-CCE::String EditorWindow::GetEditorWindowName()
+/// <summary>
+/// Get the current editor window's name.
+/// </summary>
+/// <returns>Window name.</returns>
+CCE::String EditorWindow::GetEditorWindowName() const
 {
 	return windowName;
 }
 
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+/// <summary>
+/// Set the current editor window's name.
+/// </summary>
+/// <param name="">Window name.</param>
+void EditorWindow::SetEditorWindowName(CCE::String name)
 {
+	windowName = name;
+	SetWindowTextA(GetEditorWindowHandle(), windowName.Value());
+}
+
+/// <summary>
+/// Window Procedure.
+/// </summary>
+/// <param name="hwnd"></param>
+/// <param name="uMsg"></param>
+/// <param name="wParam"></param>
+/// <param name="lParam"></param>
+/// <returns>Result code.</returns>
+LRESULT CALLBACK EditorWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	// TODO: Handle Input and write it into an input class
+	p_inputManager->HandleWinInput(uMsg, wParam, lParam);
+
 	switch (uMsg)
 	{
 	case WM_SIZE:
@@ -111,8 +152,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 	}
-	// TODO: Handle Input and write it into an input class
 	}
 
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
+
+CCE::InputManager* EditorWindow::p_inputManager = nullptr;

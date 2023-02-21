@@ -2,6 +2,9 @@
 #include "../Core.h"
 #include "../String/String.h"
 
+// TODO: Add LogLevel (DEBUG, INPUT, RENDERING, ... )
+// TODO: Add va list for logging
+
 #ifdef DEBUG
 #define LOG(msg) CCE::Logger::Log(msg, COLOR_WHITE)
 #define LOGC(msg, c) CCE::Logger::Log(msg, c)

@@ -20,6 +20,7 @@
 #include "CCE/Manager/RenderManager.h"
 #include "CCE/Manager/PhysicsManager.h"
 #include "CCE/Manager/JobManager.h"
+#include "CCE/Manager/InputManager.h"
  
 // --------------------------
 

@@ -5,6 +5,7 @@
 // Windows header
 // TODO: Maybe split up so that its a bit more lightweight
 #include <Windows.h>
+#include <windowsx.h>
 
 #ifdef CCE_BUILD_DLL
 #define CCE_API __declspec(dllexport)

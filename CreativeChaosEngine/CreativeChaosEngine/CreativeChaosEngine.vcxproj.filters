@@ -75,6 +75,9 @@
     <ClCompile Include="src\CCE\Analysis\UnitTesting\UnitTestString.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\CCE\Manager\InputManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\Core.h">
@@ -138,6 +141,12 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\CCE\Analysis\UnitTesting\UnitTestString.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Manager\InputManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Input\InputDevice.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

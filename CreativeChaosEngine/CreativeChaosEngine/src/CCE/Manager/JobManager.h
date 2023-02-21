@@ -11,5 +11,7 @@ namespace CCE
 
 		void StartUp() override;
 		void ShutDown() override;
+
+		static JobManager* Instance;
 	};
 }
