@@ -132,7 +132,7 @@ void EditorWindow::SetEditorWindowName(CCE::String name)
 LRESULT CALLBACK EditorWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	// TODO: Handle Input and write it into an input class
-	p_inputManager->HandleWinInput(uMsg, wParam, lParam);
+	p_inputManager->HandleWinInput(hwnd, uMsg, wParam, lParam);
 
 	switch (uMsg)
 	{

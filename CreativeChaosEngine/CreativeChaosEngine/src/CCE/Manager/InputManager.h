@@ -16,7 +16,7 @@ namespace CCE
 
 		static InputManager* Instance;
 
-		void HandleWinInput(UINT msg, WPARAM wParam, LPARAM lParam);
+		void HandleWinInput(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 		void HandleXInput();
 
 	private:
@@ -24,13 +24,13 @@ namespace CCE
 		// TODO: Store input values per bit in DWORD (or similar)
 		struct Mouse : private Input::InputDevice  // 64 bytes
 		{
-			float deltaX;					// 4 bytes
-			float deltaY;					// 4 bytes
-			float lastDeltaX;				// 4 bytes
-			float lastDeltay;				// 4 bytes
+			int xPos = 0;					// 4 bytes
+			int yPos = 0;					// 4 bytes
+			int deltaX = 0;					// 4 bytes
+			int deltay = 0;					// 4 bytes
 
-			float wheelDelta;				// 4 bytes
-			float lastWheelDelta;			// 4 bytes
+			float wheelDelta = 0;			// 4 bytes
+			float lastWheelDelta = 0;		// 4 bytes
 			MouseSensorState positionState; // 4 bytes
 			MouseWheelState wheelState;		// 4 bytes
 			
@@ -77,9 +77,10 @@ namespace CCE
 			byte padding[24];				// 24 bytes
 		};
 
-		Mouse mouse;
-		Keyboard keyboard;
-		Controller controller[4];
+		Mouse mouse = {};
+		Keyboard keyboard = {};
+		Controller controller[4] = {};
+		LPTRACKMOUSEEVENT lpMouseTrack = {};
 	};	
 }
 
