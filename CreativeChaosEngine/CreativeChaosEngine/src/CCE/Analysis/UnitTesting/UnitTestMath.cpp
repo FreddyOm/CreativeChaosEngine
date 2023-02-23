@@ -6,36 +6,36 @@ namespace CCE_Testing
 {
 	void UnitTestMath::Test()
 	{
-		if (TestAdd1()) { LOGC("[TEST] Testing CCMath::Add1: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing CCMath::Add1: failed", COLOR_RED); }
+		if (TestAdd1()) { LOGC_TEST("Testing CCMath::Add1: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing CCMath::Add1: failed", COLOR_RED); }
 
-		if (TestAdd2()) { LOGC("[TEST] Testing CCMath::Add2: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing CCMath::Add2: failed", COLOR_RED); }
+		if (TestAdd2()) { LOGC_TEST("Testing CCMath::Add2: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing CCMath::Add2: failed", COLOR_RED); }
 
-		if (TestAdd3()) { LOGC("[TEST] Testing CCMath::Add3: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing CCMath::Add3: failed", COLOR_RED); }
+		if (TestAdd3()) { LOGC_TEST("Testing CCMath::Add3: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing CCMath::Add3: failed", COLOR_RED); }
 
-		if (TestAdd4()) { LOGC("[TEST] Testing CCMath::Add4: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing CCMath::Add4: failed", COLOR_RED); }
+		if (TestAdd4()) { LOGC_TEST("Testing CCMath::Add4: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing CCMath::Add4: failed", COLOR_RED); }
 
-		if (TestAdd5()) { LOGC("[TEST] Testing CCMath::Add5: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing CCMath::Add5: failed", COLOR_RED); }
+		if (TestAdd5()) { LOGC_TEST("Testing CCMath::Add5: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing CCMath::Add5: failed", COLOR_RED); }
 
 
-		if(TestSub1()) { LOGC("[TEST] Testing CCMath::Sub1: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing CCMath::Sub1: failed", COLOR_RED); }
+		if(TestSub1()) { LOGC_TEST("Testing CCMath::Sub1: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing CCMath::Sub1: failed", COLOR_RED); }
 
-		if (TestSub2()) { LOGC("[TEST] Testing CCMath::Sub2: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing CCMath::Sub2: failed", COLOR_RED); }
+		if (TestSub2()) { LOGC_TEST("Testing CCMath::Sub2: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing CCMath::Sub2: failed", COLOR_RED); }
 
-		if (TestSub3()) { LOGC("[TEST] Testing CCMath::Sub3: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing CCMath::Sub3: failed", COLOR_RED); }
+		if (TestSub3()) { LOGC_TEST("Testing CCMath::Sub3: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing CCMath::Sub3: failed", COLOR_RED); }
 
-		if (TestSub4()) { LOGC("[TEST] Testing CCMath::Sub4: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing CCMath::Sub4: failed", COLOR_RED); }
+		if (TestSub4()) { LOGC_TEST("Testing CCMath::Sub4: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing CCMath::Sub4: failed", COLOR_RED); }
 
-		if (TestSub5()) { LOGC("[TEST] Testing CCMath::Sub5: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing CCMath::Sub5: failed", COLOR_RED); }
+		if (TestSub5()) { LOGC_TEST("Testing CCMath::Sub5: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing CCMath::Sub5: failed", COLOR_RED); }
 	}
 
 	void UnitTestMath::Cleanup()

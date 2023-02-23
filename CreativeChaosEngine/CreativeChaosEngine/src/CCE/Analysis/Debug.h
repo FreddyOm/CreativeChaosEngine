@@ -32,9 +32,6 @@ namespace CCE
 		static void DebugAssert(const bool condition, const char* msg, const char* file, const int line) noexcept;
 
 	private:
-		static const char* infoTag;
-		static const char* warningTag;
-		static const char* errorTag;
-		static const char* assertTag;
+
 	};
 }

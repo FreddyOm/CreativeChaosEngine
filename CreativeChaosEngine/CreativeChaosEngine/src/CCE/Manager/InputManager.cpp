@@ -69,25 +69,25 @@ namespace CCE
 		case WM_KEYDOWN:
 		{
 			// handle normal key down events
-			LOG("Key down");
+			LOG_INPUT("Key down");
 			break;
 		}
 		case WM_SYSKEYDOWN:
 		{
 			// handle system key down events
-			LOG("SysKey down");
+			LOG_INPUT("SysKey down");
 			break;
 		}
 		case WM_KEYUP:
 		{
 			// handle normal key up events
-			LOG("Key up");
+			LOG_INPUT("Key up");
 			break;
 		}
 		case WM_SYSKEYUP:
 		{
 			// handle system key up events
-			LOG("SysKey up");
+			LOG_INPUT("SysKey up");
 			break;
 		}
 		// ------------------------------------------------
@@ -112,9 +112,10 @@ namespace CCE
 
 				if (mouse.positionState == MOUSE_SENS_STATE::JUST_MOVED)
 				{
-					printf("Mouse moved from [x: %i y: %i]\n", mouse.xPos, mouse.yPos);
+					// mouse just moved event
 				}
 			}
+			LOG_INPUT("Mouse position [x: %i y: %i]", mouse.xPos, mouse.yPos);
 			break;
 		}
 		case WM_MOUSELEAVE:
@@ -142,7 +143,7 @@ namespace CCE
 		{
 			mouse.lastWheelDelta = mouse.wheelDelta;
 			mouse.wheelDelta = GET_WHEEL_DELTA_WPARAM(wParam);
-			printf("Mousewheel [%f]\n", mouse.wheelDelta);
+			LOG_INPUT("Mousewheel [%f]", mouse.wheelDelta);
 			break;
 		}
 		case WM_LBUTTONDOWN:
@@ -158,7 +159,7 @@ namespace CCE
 
 				if (mouse.leftMouseButton == BUTTON_STATE::JUST_PRESSED)
 				{
-					LOG("Left Mouse button down");
+					LOG_INPUT("Left Mouse button down");
 				}
 			}
 			break;
@@ -176,7 +177,7 @@ namespace CCE
 
 				if (mouse.leftMouseButton == BUTTON_STATE::JUST_RELEASED)
 				{
-					LOG("Left Mouse button up");
+					LOG_INPUT("Left Mouse button up");
 				}
 			}
 			break;
@@ -194,7 +195,7 @@ namespace CCE
 
 				if (mouse.rightMouseButton == BUTTON_STATE::JUST_PRESSED)
 				{
-					LOG("Right Mouse button down");
+					LOG_INPUT("Right Mouse button down");
 				}
 			}			
 			break;
@@ -212,7 +213,7 @@ namespace CCE
 
 				if (mouse.rightMouseButton == BUTTON_STATE::JUST_RELEASED)
 				{
-					LOG("Right Mouse button up");
+					LOG_INPUT("Right Mouse button up");
 				}
 			}
 			break;
@@ -230,7 +231,7 @@ namespace CCE
 
 				if (mouse.middleMouseButton == BUTTON_STATE::JUST_PRESSED)
 				{
-					LOG("Middle Mouse button down");
+					LOG_INPUT("Middle Mouse button down");
 				}
 			}
 			break;
@@ -248,7 +249,7 @@ namespace CCE
 
 				if (mouse.middleMouseButton == BUTTON_STATE::JUST_RELEASED)
 				{
-					LOG("Middle Mouse button up");
+					LOG_INPUT("Middle Mouse button up");
 				}
 			}
 			break;
@@ -272,7 +273,7 @@ namespace CCE
 
 					if (mouse.extraButton1 == BUTTON_STATE::JUST_PRESSED)
 					{
-						LOG("Extra mouse button down");
+						LOG_INPUT("Extra mouse button down");
 					}
 				}
 			}
@@ -289,7 +290,7 @@ namespace CCE
 
 					if (mouse.extraButton2 == BUTTON_STATE::JUST_PRESSED)
 					{
-						LOG("Extra mouse button 2 down");
+						LOG_INPUT("Extra mouse button 2 down");
 					}
 				}				
 			}
@@ -315,7 +316,7 @@ namespace CCE
 				}
 				if (mouse.extraButton1 == BUTTON_STATE::JUST_RELEASED)
 				{
-					LOG("Extra mouse button up");
+					LOG_INPUT("Extra mouse button up");
 				}
 			}
 			else if (button == XBUTTON2)
@@ -331,7 +332,7 @@ namespace CCE
 				}
 				if (mouse.extraButton2 == BUTTON_STATE::JUST_RELEASED)
 				{
-					LOG("Extra mouse button 2 up");
+					LOG_INPUT("Extra mouse button 2 up");
 				}
 				
 			}

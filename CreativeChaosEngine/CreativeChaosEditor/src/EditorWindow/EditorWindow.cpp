@@ -51,6 +51,7 @@ int EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 	ShowWindow(GetEditorWindowHandle(), SW_NORMAL); // Returns nonzero if previously visible
 	windowRunning = true;
 
+	InitWindow();
 	return 0;
 }
 
@@ -58,7 +59,7 @@ int EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 /// Initializes the window's message pump.
 /// </summary>
 /// <returns>The return code whenever the window is closed.</returns>
-int EditorWindow::UpdateWindow() const
+int EditorWindow::InitWindow() const
 {
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))
@@ -132,6 +133,7 @@ void EditorWindow::SetEditorWindowName(CCE::String name)
 LRESULT CALLBACK EditorWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	// TODO: Handle Input and write it into an input class
+	// TODO: Handle Input in one place & make explicit code platform independent
 	p_inputManager->HandleWinInput(hwnd, uMsg, wParam, lParam);
 
 	switch (uMsg)
@@ -157,4 +159,7 @@ LRESULT CALLBACK EditorWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
+/// <summary>
+/// Pointer to input manager.
+/// </summary>
 CCE::InputManager* EditorWindow::p_inputManager = nullptr;

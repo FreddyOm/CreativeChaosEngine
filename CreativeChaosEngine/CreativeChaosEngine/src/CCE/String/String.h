@@ -17,6 +17,7 @@ namespace CCE
 			// hashed values in the running game (GAE: 459)
 			sId = GetStringID(str);
 
+			// FIX ME: "" and " " get hash collision
 #ifdef DEBUG
 			bool collision = gStringTable.find(sId) != gStringTable.end() 
 				&& strcmp(gStringTable[sId], str) != 0;

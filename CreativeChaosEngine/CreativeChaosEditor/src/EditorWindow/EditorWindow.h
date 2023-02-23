@@ -16,7 +16,6 @@ struct EditorWindow
 	}
 
 	int OpenWindow(HINSTANCE hInstance, CCE::String winName = "Creative Chaos Engine - v0.1");
-	int UpdateWindow() const;
 	int CloseEditorWindow();
 
 	HWND GetEditorWindowHandle() const;
@@ -27,6 +26,7 @@ struct EditorWindow
 	bool windowRunning = false;
 
 private:
+	int InitWindow() const;
 	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	static CCE::InputManager* p_inputManager;
 	CCE::String windowName = "";

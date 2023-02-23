@@ -5,75 +5,75 @@ namespace CCE_Testing
 {
 	void UnitTestStackAlloc::Test()
 	{
-		if (TestAlloc1()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestAlloc1: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestAlloc1: failed", COLOR_RED); }
+		if (TestAlloc1()) { LOGC_TEST("Testing UnitTestStackAlloc::TestAlloc1: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestAlloc1: failed", COLOR_RED); }
 
-		if (TestAlloc2()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestAlloc2: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestAlloc2: failed", COLOR_RED); }
+		if (TestAlloc2()) { LOGC_TEST("Testing UnitTestStackAlloc::TestAlloc2: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestAlloc2: failed", COLOR_RED); }
 
-		if (TestAlloc3()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestAlloc3: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestAlloc3: failed", COLOR_RED); }
+		if (TestAlloc3()) { LOGC_TEST("Testing UnitTestStackAlloc::TestAlloc3: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestAlloc3: failed", COLOR_RED); }
 
-		if (TestAlloc4()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestAlloc4: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestAlloc4: failed", COLOR_RED); }
-
-
-		if (TestFree1()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestFree1: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestFree1: failed", COLOR_RED); }
-
-		if (TestFree2()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestFree2: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestFree2: failed", COLOR_RED); }
-
-		if (TestFree3()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestFree3: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestFree3: failed", COLOR_RED); }
-
-		if (TestFree4()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestFree4: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestFree4: failed", COLOR_RED); }
+		if (TestAlloc4()) { LOGC_TEST("Testing UnitTestStackAlloc::TestAlloc4: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestAlloc4: failed", COLOR_RED); }
 
 
-		if (TestClear1()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestClear1: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestClear1: failed", COLOR_RED); }
+		if (TestFree1()) { LOGC_TEST("Testing UnitTestStackAlloc::TestFree1: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestFree1: failed", COLOR_RED); }
 
-		if (TestClear2()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestClear2: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestClear2: failed", COLOR_RED); }
+		if (TestFree2()) { LOGC_TEST("Testing UnitTestStackAlloc::TestFree2: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestFree2: failed", COLOR_RED); }
 
-		if (TestClear3()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestClear3: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestClear3: failed", COLOR_RED); }
+		if (TestFree3()) { LOGC_TEST("Testing UnitTestStackAlloc::TestFree3: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestFree3: failed", COLOR_RED); }
 
-		if (TestClear4()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestClear4: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestClear4: failed", COLOR_RED); }
+		if (TestFree4()) { LOGC_TEST("Testing UnitTestStackAlloc::TestFree4: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestFree4: failed", COLOR_RED); }
+
+
+		if (TestClear1()) { LOGC_TEST("Testing UnitTestStackAlloc::TestClear1: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestClear1: failed", COLOR_RED); }
+
+		if (TestClear2()) { LOGC_TEST("Testing UnitTestStackAlloc::TestClear2: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestClear2: failed", COLOR_RED); }
+
+		if (TestClear3()) { LOGC_TEST("Testing UnitTestStackAlloc::TestClear3: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestClear3: failed", COLOR_RED); }
+
+		if (TestClear4()) { LOGC_TEST("Testing UnitTestStackAlloc::TestClear4: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestClear4: failed", COLOR_RED); }
 
 	
-		if (TestMarker1()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestMarker1: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestMarker1: failed", COLOR_RED); }
+		if (TestMarker1()) { LOGC_TEST("Testing UnitTestStackAlloc::TestMarker1: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestMarker1: failed", COLOR_RED); }
 	
-		if (TestMarker2()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestMarker2: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestMarker2: failed", COLOR_RED); }
+		if (TestMarker2()) { LOGC_TEST("Testing UnitTestStackAlloc::TestMarker2: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestMarker2: failed", COLOR_RED); }
 
-		if (TestMarker3()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestMarker3: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestMarker3: failed", COLOR_RED); }
+		if (TestMarker3()) { LOGC_TEST("Testing UnitTestStackAlloc::TestMarker3: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestMarker3: failed", COLOR_RED); }
 
-		if (TestMarker4()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestMarker4: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestMarker4: failed", COLOR_RED); }
+		if (TestMarker4()) { LOGC_TEST("Testing UnitTestStackAlloc::TestMarker4: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestMarker4: failed", COLOR_RED); }
 
 
-		if (TestGetTotalMem()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestGetTotalMem: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestGetTotalMem: failed", COLOR_RED); }
+		if (TestGetTotalMem()) { LOGC_TEST("Testing UnitTestStackAlloc::TestGetTotalMem: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestGetTotalMem: failed", COLOR_RED); }
 
-		if (TestGetUsedMem()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestGetUsedMem: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestGetUsedMem: failed", COLOR_RED); }
+		if (TestGetUsedMem()) { LOGC_TEST("Testing UnitTestStackAlloc::TestGetUsedMem: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestGetUsedMem: failed", COLOR_RED); }
 
-		if (TestGetFreeMem()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestGetFreeMem: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestGetFreeMem: failed", COLOR_RED); }
+		if (TestGetFreeMem()) { LOGC_TEST("Testing UnitTestStackAlloc::TestGetFreeMem: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestGetFreeMem: failed", COLOR_RED); }
 		
-		if (TestGetNumAllocs()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestGetNumAllocs: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestGetNumAllocs: failed", COLOR_RED); }
+		if (TestGetNumAllocs()) { LOGC_TEST("Testing UnitTestStackAlloc::TestGetNumAllocs: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestGetNumAllocs: failed", COLOR_RED); }
 
-		if (TestGetNumFrees()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestGetNumFrees: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestGetNumFrees: failed", COLOR_RED); }
+		if (TestGetNumFrees()) { LOGC_TEST("Testing UnitTestStackAlloc::TestGetNumFrees: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestGetNumFrees: failed", COLOR_RED); }
 
-		if (TestGetCurrentTop()) { LOGC("[TEST] Testing UnitTestStackAlloc::TestGetCurrentTop: successful", COLOR_GREEN); }
-		else { LOGC("[TEST] Testing UnitTestStackAlloc::TestGetCurrentTop: failed", COLOR_RED); }
+		if (TestGetCurrentTop()) { LOGC_TEST("Testing UnitTestStackAlloc::TestGetCurrentTop: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestStackAlloc::TestGetCurrentTop: failed", COLOR_RED); }
 	}
 
 	void UnitTestStackAlloc::Cleanup()

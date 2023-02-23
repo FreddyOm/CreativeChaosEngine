@@ -17,9 +17,9 @@
 
 
 int main(int argc, char* argv[])
-{  
+{
     // ------ HELLO ------
-    LOGC("Starting Creative Chaos Engine - v0.1", COLOR_BLUE);
+    LOGC("Starting %s", COLOR_BLUE, "Creative Chaos Engine - v0.1");
     //TODO: Load config file
 
     CCE::JobManager mJobManager = CCE::JobManager();
@@ -43,7 +43,6 @@ int main(int argc, char* argv[])
 
         if (unittesting)
         {
-
             // TODO: Wrap in class / struct
             // TODO: Add - test details to show which tests failed / suceeded
             // and normally show [30 / 30 tests suceeded!]
@@ -77,15 +76,7 @@ int main(int argc, char* argv[])
 
     {
         EditorWindow window = EditorWindow(&mInputManager);
-        window.OpenWindow(GetModuleHandle(NULL));
-
-        // ------ RUN LOOP ------
-        
-        // TODO: Evaluate if it's nessecary to update the win
-        // using a specific method call or if it's also fine to
-        // inti the msg pump at the end of OpenWindow (look into
-        // child window creation here)
-        window.UpdateWindow();
+        window.OpenWindow(GetModuleHandle(NULL));        
     }
 
     // ------ SHUTDOWN MANAGER ------
@@ -99,7 +90,7 @@ int main(int argc, char* argv[])
 
     // ------ BYE ------
 
-    LOGC("Shutting down Creative Chaos Engine - v0.1", COLOR_BLUE);
+    LOGC("Shutting down %s", COLOR_BLUE, "Creative Chaos Engine - v0.1");
     Sleep(500);
     
     return 0;
