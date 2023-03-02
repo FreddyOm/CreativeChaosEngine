@@ -27,13 +27,13 @@ namespace CCE
 			int xPos = 0;					// 4 bytes
 			int yPos = 0;					// 4 bytes
 			int deltaX = 0;					// 4 bytes
-			int deltay = 0;					// 4 bytes
+			int deltaY = 0;					// 4 bytes
 
+			int lastXPos = 0;				// 4 bytes
+			int lastYPos = 0;				// 4 bytes
 			float wheelDelta = 0;			// 4 bytes
 			float lastWheelDelta = 0;		// 4 bytes
-			MouseSensorState positionState; // 4 bytes
-			MouseWheelState wheelState;		// 4 bytes
-			
+
 			ButtonState rightMouseButton;	// 4 bytes
 			ButtonState leftMouseButton;	// 4 bytes
 			ButtonState middleMouseButton;	// 4 bytes
@@ -41,6 +41,7 @@ namespace CCE
 			
 			ButtonState extraButton2;		// 4 bytes
 			byte padding[12];				// 12 bytes
+			
 		};
 
 		struct Keyboard : private Input::InputDevice

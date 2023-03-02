@@ -134,6 +134,7 @@ LRESULT CALLBACK EditorWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 {
 	// TODO: Handle Input and write it into an input class
 	// TODO: Handle Input in one place & make explicit code platform independent
+	// TODO: Create possibility to set values to 0 again
 	p_inputManager->HandleWinInput(hwnd, uMsg, wParam, lParam);
 
 	switch (uMsg)

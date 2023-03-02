@@ -4,7 +4,6 @@
 #include "../Analysis/Time.h"
 
 #define BUTTON_STATE CCE::Input::InputDevice::ButtonState
-#define MOUSE_SENS_STATE CCE::Input::InputDevice::MouseSensorState
 
 namespace CCE
 {
@@ -47,7 +46,7 @@ namespace CCE
 	/// <param name="wParam">The high word parameter.</param>
 	/// <param name="lParam">The low word parameter.</param>
 	void InputManager::HandleWinInput(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-	{		
+	{
 		switch (msg)
 		{
 		// -------------------- CONFIG --------------------
@@ -93,28 +92,20 @@ namespace CCE
 		// ------------------------------------------------
 		
 		// --------------------- MOUSE --------------------
-		//TODO: Fix mouse delta not going to 0 when no input is detected
 		case WM_MOUSEMOVE:
-		{
+		{			
 			// handle mouse movement
+			mouse.lastXPos = mouse.xPos;
+			mouse.lastYPos = mouse.yPos;
+
+			mouse.deltaX = mouse.lastXPos - mouse.xPos;
+			mouse.deltaY = mouse.lastYPos - mouse.yPos;
+
 			mouse.xPos = GET_X_LPARAM(lParam);
 			mouse.yPos = GET_Y_LPARAM(lParam);
 
 			DASSERT(TrackMouseEvent(lpMouseTrack), "Tracking mouse events unsuccessful!");
 
-			if (mouse.positionState != MOUSE_SENS_STATE::JUST_MOVED &&
-				mouse.positionState != MOUSE_SENS_STATE::MOVING)
-			{
-				mouse.positionState =
-					mouse.positionState == MOUSE_SENS_STATE::JUST_MOVED ?
-					MOUSE_SENS_STATE::MOVING :
-					MOUSE_SENS_STATE::JUST_MOVED;
-
-				if (mouse.positionState == MOUSE_SENS_STATE::JUST_MOVED)
-				{
-					// mouse just moved event
-				}
-			}
 			LOG_INPUT("Mouse position [x: %i y: %i]", mouse.xPos, mouse.yPos);
 			break;
 		}
@@ -138,7 +129,6 @@ namespace CCE
 			// handle mouse enter event
 			break;
 		}
-		//TODO: Fix mouse wheel not going to 0 when no input is detected
 		case WM_MOUSEWHEEL:
 		{
 			mouse.lastWheelDelta = mouse.wheelDelta;
@@ -341,6 +331,8 @@ namespace CCE
 		}
 		// ------------------------------------------------
 		}
+		// reset value
+		mouse.wheelDelta = 0;
 	}
 	
 	/// <summary>
