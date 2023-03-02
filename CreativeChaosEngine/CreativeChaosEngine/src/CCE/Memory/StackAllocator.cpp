@@ -15,6 +15,10 @@ namespace CCMemory
 			UpdateFreeSpace();
 			numFrees++;
 		}
+		else 
+		{
+			DWARNING("You are trying to free memory from an empty allocator!");
+		}
 	}
 
 	/// <summary>
@@ -56,7 +60,10 @@ namespace CCMemory
 			UpdateFreeSpace();
 			top = _marker;
 		}
-			
+		else 
+		{
+			DWARNING("You are trying to rollback to a higher mem adress!");
+		}
 	}
 
 	/// <summary>

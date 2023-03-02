@@ -67,5 +67,3 @@ namespace CCMemory
 		void UpdateFreeSpace();
 	};
 }
-
-
