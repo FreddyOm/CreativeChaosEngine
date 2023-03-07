@@ -1,6 +1,8 @@
 #include "Logger.h"
 #include "Time.h"
 
+
+// TODO: Implement ability to filter Log lvl
 namespace CCE
 {
     /// <summary>
@@ -43,6 +45,11 @@ namespace CCE
         case LogLevel::TEST:
         {
             printf("[%s] [TEST] ", DateTime::GetTime());
+            break;
+        }
+        case LogLevel::JOBS:
+        {
+            printf("[%s] [JOBS] ", DateTime::GetTime());
             break;
         }
         }

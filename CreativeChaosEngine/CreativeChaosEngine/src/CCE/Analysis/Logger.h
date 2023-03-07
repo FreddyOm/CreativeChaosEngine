@@ -2,9 +2,6 @@
 #include "../Core.h"
 #include "../String/String.h"
 
-// TODO: Add LogLevel (DEBUG, INPUT, RENDERING, ... )
-// TODO: Add va list for logging
-
 #ifdef DEBUG
 
 #define LOG(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::NONE, ##__VA_ARGS__)
@@ -18,6 +15,9 @@
 
 #define LOG_REND(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::RENDERING, ##__VA_ARGS__)
 #define LOGC_REND(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::RENDERING, ##__VA_ARGS__)
+
+#define LOG_JOBS(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::JOBS, ##__VA_ARGS__)
+#define LOGC_JOBS(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::JOBS, ##__VA_ARGS__)
 
 #endif // DEBUG
 
@@ -34,6 +34,9 @@
 #define LOG_REND(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::RENDERING, ##__VA_ARGS__)
 #define LOGC_REND(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::RENDERING, ##__VA_ARGS__)
 
+#define LOG_JOBS(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::JOBS, ##__VA_ARGS__)
+#define LOGC_JOBS(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::JOBS, ##__VA_ARGS__)
+
 #endif // PROFILE
 
 #ifdef NDEBUG
@@ -49,6 +52,8 @@
 #define LOG_REND(msg, ...)
 #define LOGC_REND(msg, c, ...)
 
+#define LOG_JOBS(msg, ...)
+#define LOGC_JOBS(msg, c, ...)
 
 #endif // RELEASE
 
@@ -67,7 +72,8 @@ namespace CCE
 		NONE,
 		INPUT,
 		RENDERING,
-		TEST
+		TEST,
+		JOBS
 	};
 
 	struct CCE_API Logger
