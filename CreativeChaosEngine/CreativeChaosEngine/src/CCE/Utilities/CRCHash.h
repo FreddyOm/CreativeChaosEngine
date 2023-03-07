@@ -3,7 +3,7 @@
 
 namespace CCE::Math
 {
-    static const unsigned long long CRC64_TABLE_REF[256] = {
+    static const UINT64 CRC64_TABLE_REF[256] = {
     0x0000000000000000, 0xB32E4CBE03A75F6F, 0xF4843657A840A05B, 0x47AA7AE9ABE7FF34, 0x7BD0C384FF8F5E33, 0xC8FE8F3AFC28015C, 0x8F54F5D357CFFE68, 0x3C7AB96D5468A107,
     0xF7A18709FF1EBC66, 0x448FCBB7FCB9E309, 0x0325B15E575E1C3D, 0xB00BFDE054F94352, 0x8C71448D0091E255, 0x3F5F08330336BD3A, 0x78F572DAA8D1420E, 0xCBDB3E64AB761D61,
     0x7D9BA13851336649, 0xCEB5ED8652943926, 0x891F976FF973C612, 0x3A31DBD1FAD4997D, 0x064B62BCAEBC387A, 0xB5652E02AD1B6715, 0xF2CF54EB06FC9821, 0x41E11855055BC74E,
@@ -41,9 +41,9 @@ namespace CCE::Math
     //TODO: Implement Unit tests for CRC Hashing
 	struct CCE_API CRCHash
 	{
-		static unsigned long long HashValue(const char* data, size_t size = 64);
+		static UINT64 HashValue(const char* data, size_t size = 64);
 	private:
-		static unsigned long long ReverseBits(unsigned long long bits, size_t size);
+		static UINT64 ReverseBits(UINT64 bits, size_t size);
 	};
 }
 

@@ -38,7 +38,7 @@ namespace CCE
 	/// A singelton instance pointer that points to itself.
 	/// </summary>
 	InputManager* InputManager::Instance = nullptr;
-
+#ifdef CCE_PLATFORM_WINDOWS // PLATFORM WINDOWS
 	/// <summary>
 	/// Handle window input (Mouse + Keyoard).
 	/// </summary>
@@ -68,25 +68,65 @@ namespace CCE
 		case WM_KEYDOWN:
 		{
 			// handle normal key down events
-			LOG_INPUT("Key down");
+			if (keyboard.keys[(int)wParam] != BUTTON_STATE::PRESSED)
+			{
+				keyboard.keys[(int)wParam] =
+					keyboard.keys[(int)wParam] == BUTTON_STATE::JUST_PRESSED ?
+					BUTTON_STATE::PRESSED : BUTTON_STATE::JUST_PRESSED;
+
+				if (keyboard.keys[(int)wParam] == BUTTON_STATE::JUST_PRESSED)
+				{
+					LOG_INPUT("Key down: %x", wParam);
+				}
+			}			
 			break;
 		}
 		case WM_SYSKEYDOWN:
 		{
 			// handle system key down events
-			LOG_INPUT("SysKey down");
+			if (keyboard.keys[(int)wParam] != BUTTON_STATE::PRESSED)
+			{
+				keyboard.keys[(int)wParam] =
+					keyboard.keys[(int)wParam] == BUTTON_STATE::JUST_PRESSED ?
+					BUTTON_STATE::PRESSED : BUTTON_STATE::JUST_PRESSED;
+
+				if (keyboard.keys[(int)wParam] == BUTTON_STATE::JUST_PRESSED)
+				{
+					LOG_INPUT("SysKey down: %x", wParam);
+				}
+			}
 			break;
 		}
 		case WM_KEYUP:
 		{
 			// handle normal key up events
-			LOG_INPUT("Key up");
+			if (keyboard.keys[(int)wParam] != BUTTON_STATE::RELEASED)
+			{
+				keyboard.keys[(int)wParam] =
+					keyboard.keys[(int)wParam] == BUTTON_STATE::JUST_RELEASED ?
+					BUTTON_STATE::RELEASED : BUTTON_STATE::JUST_RELEASED;
+
+				if (keyboard.keys[(int)wParam] == BUTTON_STATE::JUST_RELEASED)
+				{
+					LOG_INPUT("Key up: %x", wParam);
+				}
+			}
 			break;
 		}
 		case WM_SYSKEYUP:
 		{
 			// handle system key up events
-			LOG_INPUT("SysKey up");
+			if (keyboard.keys[(int)wParam] != BUTTON_STATE::RELEASED)
+			{
+				keyboard.keys[(int)wParam] =
+					keyboard.keys[(int)wParam] == BUTTON_STATE::JUST_RELEASED ?
+					BUTTON_STATE::RELEASED : BUTTON_STATE::JUST_RELEASED;
+
+				if (keyboard.keys[(int)wParam] == BUTTON_STATE::JUST_RELEASED)
+				{
+					LOG_INPUT("SysKey up: %x", wParam);
+				}
+			}
 			break;
 		}
 		// ------------------------------------------------
@@ -341,5 +381,10 @@ namespace CCE
 	void InputManager::HandleXInput()
 	{
 		// TODO: Handle XInput Controller Input
+
 	}
+
+#else
+#error CCE is currently only supported for Windows
+#endif // CCE_PLATFORM_WINDOWS
 }

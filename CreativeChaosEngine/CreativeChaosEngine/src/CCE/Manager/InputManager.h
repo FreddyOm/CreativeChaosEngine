@@ -46,7 +46,7 @@ namespace CCE
 
 		struct Keyboard : private Input::InputDevice
 		{
-			ButtonState keys[52];
+			ButtonState keys[256] = {};
 		};
 
 		struct Controller : private Input::InputDevice // 128 bytes
@@ -82,6 +82,7 @@ namespace CCE
 		Keyboard keyboard = {};
 		Controller controller[4] = {};
 		LPTRACKMOUSEEVENT lpMouseTrack = {};
+
 	};	
 }
 

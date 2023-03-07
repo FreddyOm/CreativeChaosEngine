@@ -23,7 +23,7 @@ namespace CCE
 				&& strcmp(gStringTable[sId], str) != 0;
 			if (collision)
 			{
-				printf("Hash-Collision on strings '%s' and '%s'.", str, gStringTable[sId]);
+				printf("Hash-Collision on strings \"%s\" and \"%s\".", str, gStringTable[sId]);
 			}
 			DASSERT(!collision, "There has been a hash function collision!");
 #endif // DEBUG
