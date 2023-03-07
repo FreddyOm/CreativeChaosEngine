@@ -117,7 +117,7 @@ namespace CCE
 		mainFiber = ConvertThreadToFiber(NULL);
 		DASSERT(mainFiber != nullptr, "Conversion main thread -> fiber not succesful!");
 		
-		worker_threads = std::vector<std::thread>(numOfThreads);
+		//worker_threads = std::vector<std::thread>(numOfThreads);
 
 		for (unsigned short t_index = 0; t_index < numOfThreads; t_index++)
 		{
@@ -138,4 +138,6 @@ namespace CCE
 	/// Singelton instance of the job manager.
 	/// </summary>
 	JobManager* JobManager::Instance = nullptr;
+
+	unsigned int JobManager::Job::g_index = 0;
 }

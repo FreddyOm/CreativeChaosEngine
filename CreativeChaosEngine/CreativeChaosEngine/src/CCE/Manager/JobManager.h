@@ -78,7 +78,7 @@ namespace CCE
 		
 	private:
 		LPVOID mainFiber = nullptr;
-		std::vector<std::thread> worker_threads;
+		//std::vector<std::thread> worker_threads;
 		std::vector<Fiber> fiber_pool;
 		std::vector<Job> wait_list;
 		
