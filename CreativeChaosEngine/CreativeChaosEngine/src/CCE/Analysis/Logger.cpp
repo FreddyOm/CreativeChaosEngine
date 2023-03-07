@@ -23,7 +23,7 @@ namespace CCE
         }
 
         SetConsoleTextAttribute(hConsole, color);
-        char* loglevel;
+        char* loglevel = nullptr;
 
         switch (level)
         {
