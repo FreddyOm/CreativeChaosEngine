@@ -16,6 +16,7 @@ namespace CCE
 
 		auto startTime = Time::CurrentTick();
 		SpawnWorkerThreads();
+		PopulateFiberPool();
 		initialized = true;
 
 		auto endTime = Time::CurrentTick();
@@ -29,6 +30,15 @@ namespace CCE
 	void JobManager::ShutDown()
 	{
 		LOGC("Shutting down JobManager...", COLOR_BLUE);
+		for (short i = 0; i < worker_threads.size(); i++)
+		{
+			if(worker_threads.at(i)->joinable())
+				worker_threads.at(i)->join();
+			worker_threads.at(i)->~thread();
+			delete(worker_threads.at(i));
+		}
+
+		worker_threads.clear();
 		initialized = false;
 		Instance = nullptr;
 	}
@@ -37,7 +47,7 @@ namespace CCE
 	/// Spawns the worker threads.
 	/// </summary>
 	/// <param name="numOfThreads"></param>
-	void JobManager::SpawnWorkerThreads(short numOfThreads)
+	void JobManager::SpawnWorkerThreads(const short numOfThreads)
 	{
 #ifdef CCE_PLATFORM_WINDOWS // PLATFORM WINDOWS
 
@@ -47,6 +57,21 @@ namespace CCE
 #error CCE is currently only supported for Windows
 #endif // CCE_PLATFORM_WINDOWS
 
+	}
+
+	/// <summary>
+	/// Populate the fiber pool with a given amount of fibers.
+	/// </summary>
+	/// <param name="numOfFibers">The amount of fibers to spawn. Default is 100.</param>
+	void JobManager::PopulateFiberPool(const short numOfFibers)
+	{
+#ifdef CCE_PLATFORM_WINDOWS // PLATFORM WINDOWS
+
+		PopulateFiberPoolWin(numOfFibers);
+
+#else
+#error CCE is currently only supported for Windows
+#endif // CCE_PLATFORM_WINDOWS
 	}
 
 	/// <summary>
@@ -112,26 +137,57 @@ namespace CCE
 			numOfThreads = std::thread::hardware_concurrency();
 		}
 		
-		LOG_JOBS("Number of physical cpu cores: %i", numOfThreads);
+		LOG_JOBS("Number of virtual cpu cores (hyper threads): %i", numOfThreads);
+
+		DASSERT(SetProcessAffinityMask(GetCurrentProcess(), 0b11111111) != 0,
+			"Setting process affinity mask wasn't successful!");
 
 		mainFiber = ConvertThreadToFiber(NULL);
 		DASSERT(mainFiber != nullptr, "Conversion main thread -> fiber not succesful!");
-		
-		//worker_threads = std::vector<std::thread>(numOfThreads);
 
 		for (unsigned short t_index = 0; t_index < numOfThreads; t_index++)
 		{
-			// spawn threads with cpu affinity
+			// spawn threads
+			std::thread* workerThread = new std::thread(JobManager::RunThread);
+			auto hndl = workerThread->native_handle();
 
+			// set affinity
+			DASSERT(SetThreadAffinityMask(hndl, DWORD_PTR(1) << t_index) != 0,
+				"Setting thread affinity wasn't successful!");
+			
+			// add to list
+			worker_threads.push_back(workerThread);
 		}
 
-		/*
-		cpu_set_t cpuset;
-		CPU_ZERO(&cpuset);
-		CPU_SET(i, &cpuset);
-		int rc = pthread_setaffinity_np(threads[i].native_handle(),
-			sizeof(cpu_set_t), &cpuset);
-			*/
+		
+	}
+
+	/// <summary>
+	/// Creates fibers inside the fiber pool. Windows only version.
+	/// </summary>
+	/// <param name="numOfFibers">The number of fibers to spawn.
+	/// Default is 100.</param>
+	void JobManager::PopulateFiberPoolWin(const short numOfFibers)
+	{
+		// populate the fiber pools
+		for (int i = 0; i < numOfFibers; i++)
+		{
+			fiber_pool.push_back(Fiber(i, Fiber::FiberContext()));
+		}
+	}
+
+	// TODO: Pull jobs and work on them
+	/// <summary>
+	/// Do some work for now
+	/// </summary>
+	void JobManager::RunThread()
+	{
+		// convert thread to fiver
+		ConvertThreadToFiber(NULL);
+		DASSERT(IsThreadAFiber(), "Thread could not be converted to fiber.");
+		
+		// do stuff
+		LOG_JOBS("Doing work...");
 	}
 
 	/// <summary>
@@ -139,5 +195,8 @@ namespace CCE
 	/// </summary>
 	JobManager* JobManager::Instance = nullptr;
 
+	/// <summary>
+	/// Static index for the jobs.
+	/// </summary>
 	unsigned int JobManager::Job::g_index = 0;
 }

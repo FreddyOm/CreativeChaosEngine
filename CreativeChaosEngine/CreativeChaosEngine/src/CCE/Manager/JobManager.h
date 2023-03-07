@@ -67,21 +67,34 @@ namespace CCE
 				// Stack space
 			};
 
+			Fiber(unsigned int _id, FiberContext _cntxt)
+			{
+				id = _id;
+				cntxt = _cntxt;
+			}
+
 			unsigned int id = 0;
 			FiberContext cntxt;
 		};
-		void SpawnWorkerThreads(short numOfThreads = -1);
+		void SpawnWorkerThreads(const short numOfThreads = -1);
+		void PopulateFiberPool(const short numOfFibers = 100);
 		bool KickJob(const Job::Declaration& decl);
 		bool KickJobs(int count, const Job::Declaration decls[]);
 	private:
-		void SpawnWorkerThreadsWin(short numOfThreads = -1);
+		void SpawnWorkerThreadsWin(const short numOfThreads = -1);
+		void PopulateFiberPoolWin(const short numOfFibers);
+		
+		static void RunThread();
 		
 	private:
 		LPVOID mainFiber = nullptr;
-		//std::vector<std::thread> worker_threads;
+
+		// TODO: Implement custom vector / list class
+		std::vector<std::thread*> worker_threads;
 		std::vector<Fiber> fiber_pool;
 		std::vector<Job> wait_list;
 		
+		// TODO: Implement custom queue class
 		std::queue<Job> jobQueue_High;
 		std::queue<Job> jobQueue_Normal;
 		std::queue<Job> jobQueue_Low;
