@@ -134,6 +134,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying DLL into Editor Folder</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Profile|x64'">
     <ClCompile>
@@ -152,6 +158,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying DLL into Editor Folder</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -174,6 +186,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying DLL into Editor Folder</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
