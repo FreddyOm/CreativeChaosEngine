@@ -69,27 +69,35 @@ namespace CCE
 
 	enum LogLevel
 	{
-		NONE,
-		INPUT,
-		RENDERING,
-		TEST,
-		JOBS
+		NONE = 0,
+		INPUT = 1,
+		RENDERING = 2,
+		TEST = 3,
+		JOBS = 4,
 	};
 
 	struct CCE_API Logger
 	{
 		Logger() = default;
 		~Logger() = default;
-		//static void Log(const char* msg, COLOR color, LogLevel level);
-		static void Log(const char* msg, COLOR color, LogLevel level, ...);
-		//static void Log(const String msg, COLOR color, LogLevel level);
-		static void Log(const String msg, COLOR color, LogLevel level, ...);
+		static void Log(const char* msg, const COLOR color, const LogLevel level, ...);
+		static void Log(const String msg, const COLOR color, const LogLevel level, ...);
+
+		static void SetLogLvlMaks(const DWORD mask)
+		{
+			logLvLFilterMask = mask;
+		}
+
+	private:
+		static bool LogLvlActive(const LogLevel msgLogLvl)
+		{
+			return (logLvLFilterMask & 1 << (int)msgLogLvl) != 0;
+		}
 
 	private:
 		static HANDLE hConsole;
+		static DWORD logLvLFilterMask; // 0b00000001
 	};
 }
 
 // TODO: Maybe log everything into a file ..?
-// TODO: Collapse all of the different Logs into Log<T>
-// TODO: Add formatted logging

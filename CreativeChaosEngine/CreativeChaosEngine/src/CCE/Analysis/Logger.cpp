@@ -1,8 +1,6 @@
 #include "Logger.h"
 #include "Time.h"
 
-
-// TODO: Implement ability to filter Log lvl
 namespace CCE
 {
     /// <summary>
@@ -12,8 +10,10 @@ namespace CCE
     /// <param name="color">The color code for the message.</param>
     /// <param name="level">The log level.</param>
     /// <param name="">additional arguments</param>
-    void Logger::Log(const char* msg, COLOR color = COLOR_WHITE, LogLevel level = NONE, ...)
+    void Logger::Log(const char* msg, const COLOR color = COLOR_WHITE, const LogLevel level = NONE, ...)
     {
+        if (!LogLvlActive(level)) { return; }
+
         static char s_buffer[1024];
 
         if (hConsole == NULL)
@@ -70,8 +70,10 @@ namespace CCE
     /// <param name="color">The color code for the message.</param>
     /// <param name="level">The log level.</param>
     /// <param name="">additional arguments</param>
-    void Logger::Log(const String msg, COLOR color = COLOR_WHITE, LogLevel level = NONE, ...)
+    void Logger::Log(const String msg, const COLOR color = COLOR_WHITE, const LogLevel level = NONE, ...)
     {
+        if (!LogLvlActive(level)) { return; }
+
         static char s_buffer[1024];
 
         if (hConsole == NULL)
@@ -80,7 +82,7 @@ namespace CCE
         }
 
         SetConsoleTextAttribute(hConsole, color);
-        char* loglevel;
+        char* loglevel = nullptr;
 
         switch (level)
         {
@@ -119,4 +121,9 @@ namespace CCE
     /// The console window handle.
     /// </summary>
     HANDLE Logger::hConsole = NULL;
+
+    /// <summary>
+    /// The bitmask to set the logging verbosity.
+    /// </summary>
+    DWORD Logger::logLvLFilterMask = 0b000000001;
 }
