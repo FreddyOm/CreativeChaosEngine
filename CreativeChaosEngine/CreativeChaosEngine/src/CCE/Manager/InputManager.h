@@ -24,23 +24,23 @@ namespace CCE
 		// TODO: Store input values per bit in DWORD (or similar)
 		struct Mouse : private Input::InputDevice  // 64 bytes
 		{
-			int xPos = 0;					// 4 bytes
-			int yPos = 0;					// 4 bytes
-			int deltaX = 0;					// 4 bytes
-			int deltaY = 0;					// 4 bytes
+			int xPos = 0;						// 4 bytes
+			int yPos = 0;						// 4 bytes
+			int deltaX = 0;						// 4 bytes
+			int deltaY = 0;						// 4 bytes
 
-			int lastXPos = 0;				// 4 bytes
-			int lastYPos = 0;				// 4 bytes
-			float wheelDelta = 0;			// 4 bytes
-			float lastWheelDelta = 0;		// 4 bytes
+			int lastXPos = 0;					// 4 bytes
+			int lastYPos = 0;					// 4 bytes
+			float wheelDelta = 0;				// 4 bytes
+			float lastWheelDelta = 0;			// 4 bytes
 
-			ButtonState rightMouseButton;	// 4 bytes
-			ButtonState leftMouseButton;	// 4 bytes
-			ButtonState middleMouseButton;	// 4 bytes
-			ButtonState extraButton1;		// 4 bytes
+			ButtonState rightMouseButton = {};	// 4 bytes
+			ButtonState leftMouseButton = {};	// 4 bytes
+			ButtonState middleMouseButton = {};	// 4 bytes
+			ButtonState extraButton1 = {};		// 4 bytes
 			
-			ButtonState extraButton2;		// 4 bytes
-			byte padding[12];				// 12 bytes
+			ButtonState extraButton2 = {};		// 4 bytes
+			byte padding[12] = {};				// 12 bytes
 			
 		};
 
@@ -51,30 +51,30 @@ namespace CCE
 
 		struct Controller : private Input::InputDevice // 128 bytes
 		{
-			ButtonState RUpper;				// 4 bytes
-			ButtonState RRight;				// 4 bytes
-			ButtonState RLower;				// 4 bytes
-			ButtonState RLeft;				// 4 bytes
+			ButtonState RUpper = {};		// 4 bytes
+			ButtonState RRight = {};		// 4 bytes
+			ButtonState RLower = {};		// 4 bytes
+			ButtonState RLeft = {};			// 4 bytes
 
-			ButtonState LUpper;				// 4 bytes
-			ButtonState LRight;				// 4 bytes
-			ButtonState LLower;				// 4 bytes
-			ButtonState LLeft;				// 4 bytes
+			ButtonState LUpper = {};		// 4 bytes
+			ButtonState LRight = {};		// 4 bytes
+			ButtonState LLower = {};		// 4 bytes
+			ButtonState LLeft = {};			// 4 bytes
 
-			ButtonState RShoulder;			// 4 bytes
-			ButtonState LShoulder;			// 4 bytes
-			ButtonState Start;				// 4 bytes
-			ButtonState Select;				// 4 bytes
+			ButtonState RShoulder = {};		// 4 bytes
+			ButtonState LShoulder = {};		// 4 bytes
+			ButtonState Start = {};			// 4 bytes
+			ButtonState Select = {};		// 4 bytes
 			
-			Axis RTrigger;					// 8 bytes
-			Axis LTrigger;					// 8 bytes
+			Axis RTrigger = {};				// 8 bytes
+			Axis LTrigger = {};				// 8 bytes
 			
-			Joypad RJoypad;					// 16 bytes
+			Joypad RJoypad = {};			// 16 bytes
 			
-			Joypad LJoypad;					// 16 bytes
+			Joypad LJoypad = {};			// 16 bytes
 
-			ButtonState RJoypadButton;		// 4 bytes
-			ButtonState LJoypadButton;		// 4 bytes
+			ButtonState RJoypadButton = {};	// 4 bytes
+			ButtonState LJoypadButton = {};	// 4 bytes
 			byte padding[24];				// 24 bytes
 		};
 
