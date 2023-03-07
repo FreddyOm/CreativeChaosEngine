@@ -37,14 +37,3 @@ namespace CCE::Math
 		return rBits;
 	}
 }
-
-
-
-/* update the MSB of crc value with next input byte 
-crc = (crc ^ (curByte << (width - 8))) & castMask;
-/* this MSB byte value is the index into the lookup table 
-var pos = (crc >> (width - 8)) & 0xFF;
-/* shift out this index 
-crc = (crc << 8) & castMask;
-/* XOR-in remainder from lookup table using the calculated index
-crc = (crc ^ crcTable[pos]) & castMask; */

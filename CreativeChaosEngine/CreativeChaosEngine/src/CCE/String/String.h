@@ -6,9 +6,6 @@
 
 namespace CCE
 {
-	// TODO: Implement something so that the struct constructor 
-	// will return the string to the used function
-
 	struct CCE_API String
 	{
 		String(const char* str = "");
