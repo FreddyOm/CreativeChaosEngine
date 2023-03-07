@@ -13,7 +13,7 @@ namespace CCMemory
 			DASSERT(elements >= 0, "The element length must be at least 1!");
 			DASSERT(_poolSize >= 0, "The pool must be at least 1!");
 
-			totalSpace = _poolSize * elements;
+			totalSpace = (intptr_t)(_poolSize * elements);
 			this->poolSize = _poolSize;
 			freeSpace = totalSpace;
 			numPoolElements = elements;
