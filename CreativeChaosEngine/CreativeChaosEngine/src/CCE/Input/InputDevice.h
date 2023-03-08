@@ -8,8 +8,8 @@ namespace CCE::Input
 		// TODO: Evaluate whether or not it makes sense to use union here
 		enum AxisState // 4 bytes
 		{
-			AXIS_STILL,
-			AXIS_JUST_STILL,
+			AXIS_RELEASED,
+			AXIS_JUST_RELEASED,
 			AXIS_MOVED,
 			AXIS_JUST_MOVED
 		};
@@ -25,15 +25,15 @@ namespace CCE::Input
 		//TODO: Check alignment again
 		union Axis // 8 bytes
 		{
-			alignas (8)float value;
-			AxisState state;
+			alignas (8) float value;
+			alignas (8) AxisState state;
 		};
 
 		// TODO: Check alignment again
 		union Axis2D // 16 bytes
 		{
 			alignas (16) Axis x;
-			Axis y;
+			alignas (16) Axis y;
 		};
 
 		enum Keycode // 131 bytes -> 136 bytes

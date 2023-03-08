@@ -2,8 +2,11 @@
 #include "../Analysis/Logger.h"
 #include "../Analysis/Debug.h"
 #include "../Analysis/Time.h"
+#include "../Utilities/CCMath.h"
 
 #define BUTTON_STATE CCE::Input::InputDevice::ButtonState
+#define AXIS_STATE CCE::Input::InputDevice::AxisState
+#define AXIS CCE::Input::InputDevice::Axis
 
 namespace CCE
 {
@@ -16,6 +19,7 @@ namespace CCE
 		Instance = this;
 
 		auto startTime = Time::CurrentTick();
+
 		initialized = true;
 
 		auto endTime = Time::CurrentTick();
@@ -28,9 +32,10 @@ namespace CCE
 	/// </summary>
 	void CCE::InputManager::ShutDown()
 	{
-		delete lpMouseTrack;
-		LOGC("Shutting down InputManager...", COLOR_BLUE);
 		initialized = false;
+		delete lpMouseTrack;
+		delete controller;
+		LOGC("Shutting down InputManager...", COLOR_BLUE);
 		Instance = nullptr;
 	}
 
@@ -374,13 +379,25 @@ namespace CCE
 		}
 		// reset value
 		mouse.wheelDelta = 0;
+	}
 
-		// ------------------- CONTROLLER ------------------
+	void InputManager::InitControllerInput()
+	{
+		HRESULT coInitRes = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+		DASSERT(coInitRes == S_OK || coInitRes == S_FALSE,
+			"Initializing COM on this thread failed!");
+		DERROR(GetLastError());
 
-		HandleXInput();
-		HandleDirectInput();
+		while (true)
+		{
+			HandleXInput();
+			HandleDirectInput();
 
-		// ------------------------------------------------
+			if (!initialized)
+			{
+				break;
+			}
+		}
 	}
 	
 	/// <summary>
@@ -388,7 +405,37 @@ namespace CCE
 	/// </summary>
 	void InputManager::HandleXInput()
 	{
-		// TODO: Handle XInput Controller Input
+		connectedDeviceCount = 0;
+
+		DWORD dwResult;
+		for (DWORD controller_index = 0; controller_index < XUSER_MAX_COUNT; controller_index++)
+		{
+			ZeroMemory(&state, sizeof(XINPUT_STATE));
+
+			// Simply get the state of the _controller from XInput.
+			dwResult = XInputGetState(controller_index, &state);
+
+			if (dwResult == ERROR_SUCCESS)
+			{
+				// controller is connected
+				connectedDeviceCount++;
+				// maybe only check the input if state.dwPacketNumber has changed
+				GetXInput(controller_index);
+			}
+			else
+			{
+				// controller is disconnected
+
+				if (activeController.at(controller_index))
+				{
+					activeController.at(controller_index) = false;
+				}
+			}
+		}
+
+		if (lastConnectedDeviceCount != connectedDeviceCount) {
+			UpdateXInputControllerCount();
+		}
 
 	}
 
@@ -399,6 +446,631 @@ namespace CCE
 	{
 		// TODO: Handle Direct Input ?
 
+	}
+
+	void InputManager::UpdateXInputControllerCount()
+	{
+		// Do stuff here when Controller was connected / disconnected
+	}
+
+	/// <summary>
+	/// Collects the actual input data.
+	/// </summary>
+	/// <param name="controller_Index"></param>
+	void InputManager::GetXInput(const unsigned char controller_Index)
+	{
+		_currentController = &controller[controller_Index];
+
+		if (!activeController.at(controller_Index))
+		{
+			activeController.at(controller_Index) = true;
+		}
+
+#pragma region buttons
+
+		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_A)
+		{
+			BUTTON_STATE* pButton = &_currentController->RLower;
+
+			if (*pButton == BUTTON_STATE::RELEASED) {
+				*pButton = BUTTON_STATE::JUST_PRESSED;
+				LOG_INPUT("Button [%s] pressed on Device: %i" ,"A", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
+			{
+				*pButton = BUTTON_STATE::PRESSED;
+			}
+		}
+		else
+		{
+			BUTTON_STATE* pButton = &_currentController->RLower;
+
+			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
+				*pButton = BUTTON_STATE::JUST_RELEASED;
+				LOG_INPUT("Button [%s] released on Device: %i", "A", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
+			{
+				*pButton = BUTTON_STATE::RELEASED;
+			}
+		}
+
+		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_B)
+		{
+			BUTTON_STATE* pButton = &_currentController->RRight;
+
+			if (*pButton == BUTTON_STATE::RELEASED) {
+				*pButton = BUTTON_STATE::JUST_PRESSED;
+				LOG_INPUT("Button [%s] pressed on Device: %i", "B", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
+			{
+				*pButton = BUTTON_STATE::PRESSED;
+			}
+		}
+		else
+		{
+			BUTTON_STATE* pButton = &_currentController->RRight;
+
+			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
+				*pButton = BUTTON_STATE::JUST_RELEASED;
+				LOG_INPUT("Button [%s] released on Device: %i", "B", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
+			{
+				*pButton = BUTTON_STATE::RELEASED;
+			}
+		}
+
+		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_X)
+		{
+			BUTTON_STATE* pButton = &_currentController->RLeft;
+
+			if (*pButton == BUTTON_STATE::RELEASED) {
+				*pButton = BUTTON_STATE::JUST_PRESSED;
+				LOG_INPUT("Button [%s] pressed on Device: %i", "X", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
+			{
+				*pButton = BUTTON_STATE::PRESSED;
+			}
+		}
+		else
+		{
+			BUTTON_STATE* pButton = &_currentController->RLeft;
+
+			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
+				*pButton = BUTTON_STATE::JUST_RELEASED;
+				LOG_INPUT("Button [%s] released on Device: %i", "X", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
+			{
+				*pButton = BUTTON_STATE::RELEASED;
+			}
+		}
+
+		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_Y)
+		{
+			BUTTON_STATE* pButton = &_currentController->RUpper;
+
+			if (*pButton == BUTTON_STATE::RELEASED) {
+				*pButton = BUTTON_STATE::JUST_PRESSED;
+				LOG_INPUT("Button [%s] pressed on Device: %i", "Y", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
+			{
+				*pButton = BUTTON_STATE::PRESSED;
+			}
+		}
+		else
+		{
+			BUTTON_STATE* pButton = &_currentController->RUpper;
+
+			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
+				*pButton = BUTTON_STATE::JUST_RELEASED;
+				LOG_INPUT("Button [%s] released on Device: %i", "Y", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
+			{
+				*pButton = BUTTON_STATE::RELEASED;
+			}
+		}
+
+#pragma endregion buttons
+
+#pragma region dpad
+
+		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)
+		{
+			BUTTON_STATE* pButton = &_currentController->LUpper;
+
+			if (*pButton == BUTTON_STATE::RELEASED) {
+				*pButton = BUTTON_STATE::JUST_PRESSED;
+				LOG_INPUT("Button [%s] pressed on Device: %i" ,"DPAD UP", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
+			{
+				*pButton = BUTTON_STATE::PRESSED;
+			}
+	}
+		else
+		{
+			BUTTON_STATE* pButton = &_currentController->LUpper;
+
+			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
+				*pButton = BUTTON_STATE::JUST_RELEASED;
+				LOG_INPUT("Button [%s] released on Device: %i", "DPAD UP", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
+			{
+				*pButton = BUTTON_STATE::RELEASED;
+			}
+		}
+
+		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT)
+		{
+			BUTTON_STATE* pButton = &_currentController->LRight;
+
+			if (*pButton == BUTTON_STATE::RELEASED) {
+				*pButton = BUTTON_STATE::JUST_PRESSED;
+				LOG_INPUT("Button [%s] pressed on Device: %i" ,"DPAD RIGHT", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
+			{
+				*pButton = BUTTON_STATE::PRESSED;
+			}
+		}
+		else
+		{
+			BUTTON_STATE* pButton = &_currentController->LRight;
+
+			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
+				*pButton = BUTTON_STATE::JUST_RELEASED;
+				LOG_INPUT("Button [%s] released on Device: %i", "DPAD RIGHT", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
+			{
+				*pButton = BUTTON_STATE::RELEASED;
+			}
+		}
+
+		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)
+		{
+			BUTTON_STATE* pButton = &_currentController->LLower;
+
+			if (*pButton == BUTTON_STATE::RELEASED) {
+				*pButton = BUTTON_STATE::JUST_PRESSED;
+				LOG_INPUT("Button [%s] pressed on Device: %i" ,"DPAD DOWN", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
+			{
+				*pButton = BUTTON_STATE::PRESSED;
+			}
+		}
+		else
+		{
+			BUTTON_STATE* pButton = &_currentController->LLower;
+
+			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
+				*pButton = BUTTON_STATE::JUST_RELEASED;
+				LOG_INPUT("Button [%s] released on Device: %i", "DPAD DOWN", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
+			{
+				*pButton = BUTTON_STATE::RELEASED;
+			}
+		}
+
+		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT)
+		{
+			BUTTON_STATE* pButton = &_currentController->LLeft;
+
+			if (*pButton == BUTTON_STATE::RELEASED) {
+				*pButton = BUTTON_STATE::JUST_PRESSED;
+				LOG_INPUT("Button [%s] pressed on Device: %i" ,"DPAD LEFT", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
+			{
+				*pButton = BUTTON_STATE::PRESSED;
+			}
+		}
+		else
+		{
+			BUTTON_STATE* pButton = &_currentController->LLeft;
+
+			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
+				*pButton = BUTTON_STATE::JUST_RELEASED;
+				LOG_INPUT("Button [%s] released on Device: %i", "DPAD LEFT", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
+			{
+				*pButton = BUTTON_STATE::RELEASED;
+			}
+		}
+
+#pragma endregion dpad
+
+#pragma region options
+
+		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_START)
+		{
+			BUTTON_STATE* pButton = &_currentController->Start;
+
+			if (*pButton == BUTTON_STATE::RELEASED) {
+				*pButton = BUTTON_STATE::JUST_PRESSED;
+				LOG_INPUT("Button [%s] pressed on Device: %i" ,"START", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
+			{
+				*pButton = BUTTON_STATE::PRESSED;
+			}
+		}
+		else
+		{
+			BUTTON_STATE* pButton = &_currentController->Start;
+
+			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
+				*pButton = BUTTON_STATE::JUST_RELEASED;
+				LOG_INPUT("Button [%s] released on Device: %i", "START", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
+			{
+				*pButton = BUTTON_STATE::RELEASED;
+			}
+		}
+
+		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_BACK)
+		{
+			BUTTON_STATE* pButton = &_currentController->Select;
+
+			if (*pButton == BUTTON_STATE::RELEASED) {
+				*pButton = BUTTON_STATE::JUST_PRESSED;
+				LOG_INPUT("Button [%s] pressed on Device: %i" ,"BACK", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
+			{
+				*pButton = BUTTON_STATE::PRESSED;
+			}
+		}
+		else
+		{
+			BUTTON_STATE* pButton = &_currentController->Select;
+
+			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
+				*pButton = BUTTON_STATE::JUST_RELEASED;
+				LOG_INPUT("Button [%s] released on Device: %i", "BACK", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
+			{
+				*pButton = BUTTON_STATE::RELEASED;
+			}
+		}
+
+#pragma endregion options
+
+#pragma region soulder buttons
+
+		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
+		{
+			BUTTON_STATE* pButton = &_currentController->LShoulder;
+
+			if (*pButton == BUTTON_STATE::RELEASED) {
+				*pButton = BUTTON_STATE::JUST_PRESSED;
+				LOG_INPUT("Button [%s] pressed on Device: %i" ,"LEFT_SHOULDER", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
+			{
+				*pButton = BUTTON_STATE::PRESSED;
+			}
+		}
+		else
+		{
+			BUTTON_STATE* pButton = &_currentController->LShoulder;
+
+			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
+				*pButton = BUTTON_STATE::JUST_RELEASED;
+				LOG_INPUT("Button [%s] released on Device: %i", "LEFT_SHOULDER", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
+			{
+				*pButton = BUTTON_STATE::RELEASED;
+			}
+		}
+
+		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
+		{
+			BUTTON_STATE* pButton = &_currentController->RShoulder;
+
+			if (*pButton == BUTTON_STATE::RELEASED) {
+				*pButton = BUTTON_STATE::JUST_PRESSED;
+				LOG_INPUT("Button [%s] pressed on Device: %i" ,"RIGHT_SHOULDER", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
+			{
+				*pButton = BUTTON_STATE::PRESSED;
+			}
+		}
+		else
+		{
+			BUTTON_STATE* pButton = &_currentController->RShoulder;
+
+			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
+				*pButton = BUTTON_STATE::JUST_RELEASED;
+				LOG_INPUT("Button [%s] released on Device: %i", "RIGHT_SHOULDER", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
+			{
+				*pButton = BUTTON_STATE::RELEASED;
+			}
+		}
+
+#pragma endregion soulder buttons
+
+#pragma region joystick buttons
+
+		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB)
+		{
+			BUTTON_STATE* pButton = &_currentController->LJoypadButton;
+
+			if (*pButton == BUTTON_STATE::RELEASED) {
+				*pButton = BUTTON_STATE::JUST_PRESSED;
+				LOG_INPUT("Button [%s] pressed on Device: %i" ,"LEFT_THUMB", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
+			{
+				*pButton = BUTTON_STATE::PRESSED;
+			}
+		}
+		else
+		{
+			BUTTON_STATE* pButton = &_currentController->LJoypadButton;
+
+			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
+				*pButton = BUTTON_STATE::JUST_RELEASED;
+				LOG_INPUT("Button [%s] released on Device: %i", "LEFT_THUMB", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
+			{
+				*pButton = BUTTON_STATE::RELEASED;
+			}
+		}
+
+		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
+		{
+			BUTTON_STATE* pButton = &_currentController->RJoypadButton;
+
+			if (*pButton == BUTTON_STATE::RELEASED) {
+				*pButton = BUTTON_STATE::JUST_PRESSED;
+				LOG_INPUT("Button [%s] pressed on Device: %i" ,"RIGHT_THUMB", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
+			{
+				*pButton = BUTTON_STATE::PRESSED;
+			}
+		}
+		else
+		{
+			BUTTON_STATE* pButton = &_currentController->RJoypadButton;
+
+			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
+				*pButton = BUTTON_STATE::JUST_RELEASED;
+				LOG_INPUT("Button [%s] released on Device: %i", "RIGHT_THUMB", controller_Index);
+			}
+			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
+			{
+				*pButton = BUTTON_STATE::RELEASED;
+			}
+		}
+
+#pragma endregion joystick buttons
+
+#pragma region stick axis
+
+		// left stick
+
+		if (state.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ||
+			state.Gamepad.sThumbLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+		{
+			AXIS* pAxis = &_currentController->LJoypad.x;
+
+			pAxis->value = Math::CCMath::Clamp((float)state.Gamepad.sThumbLX / 32767.0f, -1.0f, 1.0f);
+
+			if (pAxis->state == AXIS_STATE::AXIS_RELEASED) {
+				pAxis->state = AXIS_STATE::AXIS_JUST_MOVED;
+				LOG_INPUT("Axis [%s] moved on device: %i", "LStick X", controller_Index);
+			}
+			else if (pAxis->state == AXIS_STATE::AXIS_JUST_MOVED)
+			{
+				pAxis->state = AXIS_STATE::AXIS_MOVED;
+			}
+			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "LStick X", controller_Index, pAxis->value);
+		}
+		else
+		{
+			AXIS* pAxis = &_currentController->LJoypad.x;
+
+			if (pAxis->state == AXIS_STATE::AXIS_MOVED || pAxis->state == AXIS_STATE::AXIS_JUST_MOVED) {
+				pAxis->state = AXIS_STATE::AXIS_JUST_RELEASED;
+				pAxis->value = 0.0f;
+				LOG_INPUT("Axis [%s] released on device: %i", "LStick Y", controller_Index);
+			}
+			else if (pAxis->state == AXIS_STATE::AXIS_JUST_RELEASED)
+			{
+				pAxis->state = AXIS_STATE::AXIS_RELEASED;
+			}
+		}
+
+		if (state.Gamepad.sThumbLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ||
+			state.Gamepad.sThumbLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+		{
+			AXIS* pAxis = &_currentController->LJoypad.y;
+
+			pAxis->value = Math::CCMath::Clamp((float)state.Gamepad.sThumbLY / 32767.0f, -1.0f, 1.0f);
+
+			if (pAxis->state == AXIS_STATE::AXIS_RELEASED) {
+				pAxis->state = AXIS_STATE::AXIS_JUST_MOVED;
+				LOG_INPUT("Axis [%s] moved on device: %i" , "LStick Y", controller_Index);
+			}
+			else if (pAxis->state == AXIS_STATE::AXIS_JUST_MOVED)
+			{
+				pAxis->state = AXIS_STATE::AXIS_MOVED;
+			}
+			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "LStick Y", controller_Index, pAxis->value);
+		}
+		else
+		{
+			AXIS* pAxis = &_currentController->LJoypad.y;
+
+			if (pAxis->state == AXIS_STATE::AXIS_MOVED || pAxis->state == AXIS_STATE::AXIS_JUST_MOVED) {
+				pAxis->state = AXIS_STATE::AXIS_JUST_RELEASED;
+				pAxis->value = 0.0f;
+				LOG_INPUT("Axis [%s] released on device: %i", "LStick Y", controller_Index);
+			}
+			else if (pAxis->state == AXIS_STATE::AXIS_JUST_RELEASED)
+			{
+				pAxis->state = AXIS_STATE::AXIS_RELEASED;
+			}
+		}
+
+		// right stick
+
+		if (state.Gamepad.sThumbRX > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE ||
+			state.Gamepad.sThumbRX < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
+		{
+			AXIS* pAxis = &_currentController->RJoypad.x;
+
+			pAxis->value = Math::CCMath::Clamp((float)state.Gamepad.sThumbRX / 32767.0f, -1.0f, 1.0f);
+
+			if (pAxis->state == AXIS_STATE::AXIS_RELEASED) {
+				pAxis->state = AXIS_STATE::AXIS_JUST_MOVED;
+				LOG_INPUT("Axis [%s] moved on device: %i" , "RStick X", controller_Index);
+			}
+			else if (pAxis->state == AXIS_STATE::AXIS_JUST_MOVED)
+			{
+				pAxis->state = AXIS_STATE::AXIS_MOVED;
+			}
+			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "RStick X", controller_Index, pAxis->value);
+		}
+		else
+		{
+			AXIS* pAxis = &_currentController->RJoypad.x;
+
+			if (pAxis->state == AXIS_STATE::AXIS_MOVED || pAxis->state == AXIS_STATE::AXIS_JUST_MOVED) {
+				pAxis->state = AXIS_STATE::AXIS_JUST_RELEASED;
+				pAxis->value = 0.0f;
+				LOG_INPUT("Axis [%s] released on device: %i", "RStick X", controller_Index);
+			}
+			else if (pAxis->state == AXIS_STATE::AXIS_JUST_RELEASED)
+			{
+				pAxis->state = AXIS_STATE::AXIS_RELEASED;
+			}
+		}
+
+		if (state.Gamepad.sThumbRY > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE ||
+			state.Gamepad.sThumbRY < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
+		{
+			AXIS* pAxis = &_currentController->RJoypad.y;
+
+			pAxis->value = Math::CCMath::Clamp((float)state.Gamepad.sThumbRY / 32767.0f, -1.0f, 1.0f);
+
+			if (pAxis->state == AXIS_STATE::AXIS_RELEASED) {
+				pAxis->state = AXIS_STATE::AXIS_JUST_MOVED;
+				LOG_INPUT("Axis [%s] moved on device: %i" , "RStick Y", controller_Index);
+			}
+			else if (pAxis->state == AXIS_STATE::AXIS_JUST_MOVED)
+			{
+				pAxis->state = AXIS_STATE::AXIS_MOVED;
+			}
+			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "RStick Y", controller_Index, pAxis->value);
+		}
+		else
+		{
+			AXIS* pAxis = &_currentController->RJoypad.y;
+
+			if (pAxis->state == AXIS_STATE::AXIS_MOVED || pAxis->state == AXIS_STATE::AXIS_JUST_MOVED) {
+				pAxis->state = AXIS_STATE::AXIS_JUST_RELEASED;
+				pAxis->value = 0.0f;
+				LOG_INPUT("Axis [%s] released on device: %i", "RStick Y", controller_Index);
+			}
+			else if (pAxis->state == AXIS_STATE::AXIS_JUST_RELEASED)
+			{
+				pAxis->state = AXIS_STATE::AXIS_RELEASED;
+			}
+		}
+
+#pragma endregion stick axis
+
+#pragma region trigger
+
+		// left trigger
+
+		if (state.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
+		{
+			AXIS* pAxis = &_currentController->LTrigger;
+
+			pAxis->value = Math::CCMath::Clamp01((float)state.Gamepad.bLeftTrigger / 255.0f);
+
+			if (pAxis->state == AXIS_STATE::AXIS_RELEASED) {
+				pAxis->state = AXIS_STATE::AXIS_JUST_MOVED;
+				LOG_INPUT("Axis [%s] moved on device: %i" , "LTrigger", controller_Index);
+			}
+			else if (pAxis->state == AXIS_STATE::AXIS_JUST_MOVED)
+			{
+				pAxis->state = AXIS_STATE::AXIS_MOVED;
+			}
+
+			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "LTrigger", controller_Index, pAxis->value);
+		}
+		else
+		{
+			AXIS* pAxis = &_currentController->LTrigger;
+
+			if (pAxis->state == AXIS_STATE::AXIS_MOVED || pAxis->state == AXIS_STATE::AXIS_JUST_MOVED) {
+				pAxis->state = AXIS_STATE::AXIS_JUST_RELEASED;
+				pAxis->value = 0.0f;
+				LOG_INPUT("Axis [%s] released on device: %i", "LTrigger", controller_Index);
+			}
+			else if (pAxis->state == AXIS_STATE::AXIS_JUST_RELEASED)
+			{
+				pAxis->state = AXIS_STATE::AXIS_RELEASED;
+			}
+		}
+
+
+		// right trigger
+
+		if (state.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
+		{
+			AXIS* pAxis = &_currentController->RTrigger;
+
+			pAxis->value = Math::CCMath::Clamp01((float)state.Gamepad.bRightTrigger / 255.0f);
+
+			if (pAxis->state == AXIS_STATE::AXIS_RELEASED) {
+				pAxis->state = AXIS_STATE::AXIS_JUST_MOVED;
+				LOG_INPUT("Axis [%s] moved on device: %i" , "RTrigger", controller_Index);
+			}
+			else if (pAxis->state == AXIS_STATE::AXIS_JUST_MOVED)
+			{
+				pAxis->state = AXIS_STATE::AXIS_MOVED;
+			}
+			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "RTrigger", controller_Index, pAxis->value);
+		}
+		else
+		{
+			AXIS* pAxis = &_currentController->RTrigger;
+
+			if (pAxis->state == AXIS_STATE::AXIS_MOVED || pAxis->state == AXIS_STATE::AXIS_JUST_MOVED) {
+				pAxis->state = AXIS_STATE::AXIS_JUST_RELEASED;
+				pAxis->value = 0.0f;
+				LOG_INPUT("Axis [%s] released on device: %i", "RTrigger", controller_Index);
+			}
+			else if (pAxis->state == AXIS_STATE::AXIS_JUST_RELEASED)
+			{
+				pAxis->state = AXIS_STATE::AXIS_RELEASED;
+			}
+		}
+
+#pragma endregion trigger
 	}
 
 #else

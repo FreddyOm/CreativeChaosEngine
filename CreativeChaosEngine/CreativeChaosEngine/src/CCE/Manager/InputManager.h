@@ -2,6 +2,10 @@
 #include "BaseManager.h"
 #include "../Input/InputDevice.h"
 #include "../String/String.h"
+#include <vector>
+
+#include <Xinput.h>
+#pragma comment(lib, "XInput.lib")
 
 namespace CCE
 {
@@ -17,12 +21,12 @@ namespace CCE
 		static InputManager* Instance;
 
 		void HandleWinInput(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-		
-	protected:
-		void HandleXInput();
-		void HandleDirectInput();
+		void InitControllerInput();
 
 	private:
+
+		void HandleXInput();
+		void HandleDirectInput();
 		// TODO: Keep left handed mouse layout in mind
 		// TODO: Store input values per bit in DWORD (or similar)
 		struct Mouse : private Input::InputDevice  // 64 bytes
@@ -81,11 +85,21 @@ namespace CCE
 			byte padding[24];				// 24 bytes
 		};
 
+		LPTRACKMOUSEEVENT lpMouseTrack = {};
 		alignas (64)	Mouse mouse = {};
 		alignas (256)	Keyboard keyboard = {};
 		alignas (128)	Controller controller[4] = {};
-		LPTRACKMOUSEEVENT lpMouseTrack = {};
+		Controller* _currentController = nullptr;					// 8 bytes ?
+		unsigned char connectedDeviceCount = 0;						// 1 byte
+		unsigned char lastConnectedDeviceCount = 0;					// 1 byte
+		std::vector<bool> activeController = { false, false, false, false };
+		std::vector<bool> lastActiveController = { false, false, false, false };
+		XINPUT_STATE state = {};
 
+	private:
+
+		void UpdateXInputControllerCount();
+		void GetXInput(const unsigned char controller_Index);
 	};	
 }
 
