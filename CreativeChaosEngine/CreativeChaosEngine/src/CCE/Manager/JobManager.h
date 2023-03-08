@@ -4,9 +4,17 @@
 #include <vector>
 #include <queue>
 #include "../String/String.h"
+#include "../Memory/PoolAllocator.h"
+#include <emmintrin.h>
 
 namespace CCE
 {
+	static void (*get_context)(JobManager::Fiber::FiberContext*) = (void (*)(JobManager::Fiber::FiberContext*)) get_context_code;
+	static void (*set_context)(JobManager::Fiber::FiberContext*) = (void (*)(JobManager::Fiber::FiberContext*)) set_context_code;
+
+#define NUM_FIBERS 100
+#define SIZE_FIBER_CNTXT 65776
+
 	struct CCE_API JobManager : public BaseManager
 	{
 	public:
@@ -68,25 +76,34 @@ namespace CCE
 
 		struct Fiber // 8 bytes
 		{
-			struct FiberContext // 1 byte
+			struct FiberContext // 65776 byte
 			{
-				// Registers
-				// Stack space
+				char stack[65536];					// 65536 bytes
+				void* rip, * rsp;					// 8 bytes
+				void* rbx, * rbp, * r12, * r13, * r14, * r15, * rdi, * rsi;
+				__m128i xmm6, xmm7, xmm8, xmm9, xmm10, xmm11, xmm12, xmm13, xmm14, xmm15;
 			};
 
 			Fiber() = default;
 
-			Fiber(unsigned int _id, FiberContext _cntxt)
+			Fiber(unsigned int _id, FiberContext* _cntxt)
 			{
 				id = _id;
 				cntxt = _cntxt;
 			}
+			~Fiber()
+			{
+				id = 0;
+				currentJob = nullptr;
+				cntxt = nullptr;
+			}
 
 			unsigned int id = 0;						// 4 bytes
-			FiberContext cntxt;							// 1 byte
+			Job* currentJob = nullptr;					// 4 bytes ?
+			FiberContext* cntxt = nullptr;				// 1 byte
 		};
 		void SpawnWorkerThreads(const short numOfThreads = -1);
-		void PopulateFiberPool(const short numOfFibers = 100);
+		void PopulateFiberPool(const short numOfFibers = NUM_FIBERS);
 		bool KickJob(const Job::Declaration& decl);
 		bool KickJobs(int count, const Job::Declaration decls[]);
 	private:
@@ -107,5 +124,8 @@ namespace CCE
 		alignas(64) std::queue<Job> jobQueue_High;
 		alignas(64) std::queue<Job> jobQueue_Normal;
 		alignas(64) std::queue<Job> jobQueue_Low;
+
+		alignas(256) CCMemory::PoolAllocator fiberContextPool =
+			CCMemory::PoolAllocator(NUM_FIBERS, SIZE_FIBER_CNTXT);
 	};
 }

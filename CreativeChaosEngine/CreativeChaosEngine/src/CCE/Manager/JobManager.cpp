@@ -30,6 +30,12 @@ namespace CCE
 	void JobManager::ShutDown()
 	{
 		LOGC("Shutting down JobManager...", COLOR_BLUE);
+		initialized = false;
+
+		fiber_pool.clear();
+		fiberContextPool.~PoolAllocator();
+		wait_list.clear();
+
 		for (short i = 0; i < worker_threads.size(); i++)
 		{
 			if(worker_threads.at(i)->joinable())
@@ -37,9 +43,8 @@ namespace CCE
 			worker_threads.at(i)->~thread();
 			delete(worker_threads.at(i));
 		}
-
+		
 		worker_threads.clear();
-		initialized = false;
 		Instance = nullptr;
 	}
 
@@ -86,17 +91,17 @@ namespace CCE
 		{
 		case Job::Priority::HIGH:
 		{
-			jobQueue_High.push(_job);
+			jobQueue_High.push(std::move(_job));
 			break;
 		}
 		case Job::Priority::NORMAL:
 		{
-			jobQueue_Normal.push(_job);
+			jobQueue_Normal.push(std::move(_job));
 			break;
 		}
 		default:
 		{
-			jobQueue_Low.push(_job);
+			jobQueue_Low.push(std::move(_job));
 			break;
 		}
 		}
@@ -176,7 +181,7 @@ namespace CCE
 		// populate the fiber pools
 		for (int i = 0; i < numOfFibers; i++)
 		{
-			fiber_pool.push_back(Fiber(i, Fiber::FiberContext()));
+			fiber_pool.push_back(Fiber(i, fiberContextPool.Alloc<Fiber::FiberContext>()));
 		}
 	}
 
@@ -207,4 +212,37 @@ namespace CCE
 	{
 		g_index = 0;
 	}
+
+#pragma section(".text")
+	__declspec(allocate(".text")) static unsigned char get_context_code[] = 
+	{
+		0x4c, 0x8b, 0x04, 0x24,
+		0x4c, 0x89, 0x07,
+		0x4c, 0x8d, 0x44, 0x24, 0x08,
+		0x4c, 0x89, 0x47, 0x08,
+		0x48, 0x89, 0x5f, 0x10,
+		0x48, 0x89, 0x6f, 0x18,
+		0x4c, 0x89, 0x67, 0x20,
+		0x4c, 0x89, 0x6f, 0x28,
+		0x4c, 0x89, 0x77, 0x30,
+		0x4c, 0x89, 0x7f, 0x38,
+		0x31, 0xc0,
+		0xc3
+	};
+	// TODO: Make set context into binary
+	__declspec(allocate(".text")) static unsigned char set_context_code[] =
+	{
+		0x4c, 0x8b, 0x04, 0x24,
+		0x4c, 0x89, 0x07,
+		0x4c, 0x8d, 0x44, 0x24, 0x08,
+		0x4c, 0x89, 0x47, 0x08,
+		0x48, 0x89, 0x5f, 0x10,
+		0x48, 0x89, 0x6f, 0x18,
+		0x4c, 0x89, 0x67, 0x20,
+		0x4c, 0x89, 0x6f, 0x28,
+		0x4c, 0x89, 0x77, 0x30,
+		0x4c, 0x89, 0x7f, 0x38,
+		0x31, 0xc0,
+		0xc3
+	};
 }

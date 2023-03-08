@@ -37,7 +37,7 @@ namespace CCMemory
 	// free. This is still error prone since you might give arbitrary
 	// values to the function which in consequence breaks the memory
 	// counting (free mem / used mem).
-	void PoolAllocator::Free(intptr_t addr, unsigned int size)
+	void PoolAllocator::Free(const intptr_t addr, const unsigned int size)
 	{
 		// check
 		DASSERT(addr < allocatableMemBottom + totalSpace,

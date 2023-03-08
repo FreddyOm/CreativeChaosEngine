@@ -8,7 +8,7 @@ namespace CCMemory
 	struct CCE_API PoolAllocator : public Allocator
 	{
 		//TODO: Align!!
-		PoolAllocator(unsigned int elements, unsigned long _poolSize)
+		PoolAllocator(const unsigned int elements, const unsigned long _poolSize)
 		{
 			DASSERT(elements >= 0, "The element length must be at least 1!");
 			DASSERT(_poolSize >= 0, "The pool must be at least 1!");
@@ -83,7 +83,7 @@ namespace CCMemory
 
 			return ptr;
 		}
-		void Free(intptr_t addr, unsigned int size);
+		void Free(const intptr_t addr, const unsigned int size);
 		void Clear();
 		const unsigned long GetPoolSize();
 		const unsigned int GetNumPoolElements();
