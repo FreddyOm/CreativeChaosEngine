@@ -51,8 +51,7 @@ int EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 	ShowWindow(GetEditorWindowHandle(), SW_NORMAL); // Returns nonzero if previously visible
 	windowRunning = true;
 
-	InitWindow();
-	return 0;
+	return InitWindow();
 }
 
 /// <summary>

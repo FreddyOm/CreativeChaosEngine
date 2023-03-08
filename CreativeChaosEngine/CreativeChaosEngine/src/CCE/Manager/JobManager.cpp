@@ -138,10 +138,8 @@ namespace CCE
 		}
 		
 		LOG_JOBS("Number of logical cpu cores: %i", numOfThreads);
-
 		DWORD_PTR processAffinityMask = (DWORD_PTR(1) << numOfThreads) - 1;
-		LOG("Process Affinity Mask: %u", processAffinityMask); // FIX ME: Remove this later
-
+		
 		// check for errors with process affinity
 		bool processAffinityError = SetProcessAffinityMask(GetCurrentProcess(), processAffinityMask) == 0;
 		if (processAffinityError) { DERROR(GetLastError()); }
@@ -159,8 +157,6 @@ namespace CCE
 			auto hndl = workerThread->native_handle();
 
 			// set affinity and hanle error
-			LOG("Parameter %i", DWORD_PTR(1) << t_index);
-
 			bool threadAffinityError = SetThreadAffinityMask(hndl, DWORD_PTR(1) << t_index) == 0;
 			if (threadAffinityError) { DERROR(GetLastError()); }
 			DASSERT(!threadAffinityError,"Setting thread affinity wasn't successful!");
@@ -168,8 +164,6 @@ namespace CCE
 			// add to list
 			worker_threads.push_back(workerThread);
 		}
-
-		
 	}
 
 	/// <summary>
@@ -209,4 +203,8 @@ namespace CCE
 	/// Static index for the jobs.
 	/// </summary>
 	unsigned int JobManager::Job::g_index = 0;
+	void JobManager::Job::ResetIdIndex()
+	{
+		g_index = 0;
+	}
 }

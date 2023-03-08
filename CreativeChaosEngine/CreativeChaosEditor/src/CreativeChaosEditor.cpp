@@ -74,10 +74,17 @@ int main(int argc, char* argv[])
 
     // ------ OPEN ENGINE WINDOW ------
 
+    CCE::String s("Test String mit Leerzeichen");
+    const char* c = "Hallo";
+
+    LOG("String size: %u bytes", sizeof(c));
+
     {
         EditorWindow window = EditorWindow(&mInputManager);
-        window.OpenWindow(GetModuleHandle(NULL));        
+        window.OpenWindow(GetModuleHandle(NULL));       
     }
+
+
 
     // ------ SHUTDOWN MANAGER ------
 

@@ -6,7 +6,7 @@
 
 namespace CCE
 {
-	struct CCE_API String
+	struct CCE_API String // 8 bytes
 	{
 		String(const char* str = "");
 		~String();

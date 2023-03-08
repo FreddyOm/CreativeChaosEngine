@@ -3,6 +3,7 @@
 #include <thread>
 #include <vector>
 #include <queue>
+#include "../String/String.h"
 
 namespace CCE
 {
@@ -35,7 +36,8 @@ namespace CCE
 
 			struct Declaration
 			{
-				EntryPoint* m_pEntryPoint;
+				CCE::String m_Description;	// 8 bytes
+				EntryPoint* m_pEntryPoint;	// 4 bytes
 				va_list m_param;
 				Priority m_priority;
 				Counter* m_pCounter;
@@ -45,18 +47,28 @@ namespace CCE
 			{
 				id = g_index++;
 				
+				m_Description = decl.m_Description;
 				m_pEntrancePoint = decl.m_pEntryPoint;
 				m_params = decl.m_param;
 				m_pCounter = decl.m_pCounter;
 				m_priority = decl.m_priority;
 			}
+			
+		public:
+
+			static void ResetIdIndex();
+
+		public:
+
 			static unsigned int g_index;
 			unsigned int id = 0;
 
+			CCE::String m_Description;
 			EntryPoint* m_pEntrancePoint = nullptr;
 			va_list m_params= nullptr;
 			Priority m_priority = Priority::LOW;
 			Counter* m_pCounter = nullptr;
+
 		};
 
 		struct Fiber
