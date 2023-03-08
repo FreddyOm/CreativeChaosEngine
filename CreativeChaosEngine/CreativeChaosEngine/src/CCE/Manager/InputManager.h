@@ -17,7 +17,10 @@ namespace CCE
 		static InputManager* Instance;
 
 		void HandleWinInput(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+		
+	protected:
 		void HandleXInput();
+		void HandleDirectInput();
 
 	private:
 		// TODO: Keep left handed mouse layout in mind

@@ -38,6 +38,7 @@ namespace CCE
 	/// A singelton instance pointer that points to itself.
 	/// </summary>
 	InputManager* InputManager::Instance = nullptr;
+
 #ifdef CCE_PLATFORM_WINDOWS // PLATFORM WINDOWS
 	/// <summary>
 	/// Handle window input (Mouse + Keyoard).
@@ -373,6 +374,13 @@ namespace CCE
 		}
 		// reset value
 		mouse.wheelDelta = 0;
+
+		// ------------------- CONTROLLER ------------------
+
+		HandleXInput();
+		HandleDirectInput();
+
+		// ------------------------------------------------
 	}
 	
 	/// <summary>
@@ -381,6 +389,15 @@ namespace CCE
 	void InputManager::HandleXInput()
 	{
 		// TODO: Handle XInput Controller Input
+
+	}
+
+	/// <summary>
+	/// Handle DirectInput (Controller).
+	/// </summary>
+	void InputManager::HandleDirectInput()
+	{
+		// TODO: Handle Direct Input ?
 
 	}
 
