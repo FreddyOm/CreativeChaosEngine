@@ -137,9 +137,15 @@ namespace CCE
 			numOfThreads = std::thread::hardware_concurrency();
 		}
 		
-		LOG_JOBS("Number of virtual cpu cores (hyper threads): %i", numOfThreads);
+		LOG_JOBS("Number of logical cpu cores: %i", numOfThreads);
 
-		DASSERT(SetProcessAffinityMask(GetCurrentProcess(), 0b11111111) != 0,
+		DWORD_PTR processAffinityMask;
+		for (unsigned short i = 0; i < numOfThreads; i++)
+		{
+			processAffinityMask = DWORD_PTR(1) << i;
+		}
+
+		DASSERT(SetProcessAffinityMask(GetCurrentProcess(), processAffinityMask) != 0,
 			"Setting process affinity mask wasn't successful!");
 
 		mainFiber = ConvertThreadToFiber(NULL);
