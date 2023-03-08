@@ -18,6 +18,23 @@ namespace CCE
 		CCE::Logger::Log("[ERROR] %s\n%s\n%i", COLOR_RED, CCE::NONE, msg, file, line);
 	}
 
+	void Debug::DebugError(const DWORD error, const char* file, const int line) noexcept
+	{
+		if (error == 0) {
+			return; //No error message has been recorded
+		}
+
+		LPSTR messageBuffer = nullptr;
+		size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+			FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_ENGLISH_US), 
+			(LPSTR)&messageBuffer, 0, NULL);
+
+		DebugError(messageBuffer, file, line);
+
+		LocalFree(messageBuffer);
+	}
+
 	void Debug::DebugAssert(const bool condition, const char* msg, const char* file, const int line) noexcept
 	{
 		if (condition)

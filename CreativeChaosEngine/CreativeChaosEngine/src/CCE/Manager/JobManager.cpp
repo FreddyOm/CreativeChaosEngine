@@ -158,9 +158,14 @@ namespace CCE
 			auto hndl = workerThread->native_handle();
 
 			// set affinity
-			DASSERT(SetThreadAffinityMask(hndl, DWORD_PTR(1) << t_index) != 0,
-				"Setting thread affinity wasn't successful!");
-			
+			LOG("Parameter %i", DWORD_PTR(1) << t_index);
+			bool threadAffinityError =
+				SetThreadAffinityMask(hndl, DWORD_PTR(1) << t_index) == 0;
+			if (threadAffinityError)
+			{
+				DERROR(GetLastError());
+			}
+			DASSERT(!threadAffinityError,"Setting thread affinity wasn't successful!");
 			// add to list
 			worker_threads.push_back(workerThread);
 		}
