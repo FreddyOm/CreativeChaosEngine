@@ -51,17 +51,17 @@ int EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 	ShowWindow(GetEditorWindowHandle(), SW_NORMAL); // Returns nonzero if previously visible
 	windowRunning = true;
 
-	return InitWindow();
+	return UpdateEditorWindow();
 }
 
 /// <summary>
 /// Initializes the window's message pump.
 /// </summary>
 /// <returns>The return code whenever the window is closed.</returns>
-int EditorWindow::InitWindow() const
+int EditorWindow::UpdateEditorWindow() const
 {
 	MSG msg;
-	while (GetMessage(&msg, NULL, 0, 0))
+	while (GetMessage(&msg, NULL, 0, 0) != 0)
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
@@ -76,10 +76,9 @@ int EditorWindow::InitWindow() const
 /// <returns>Return code for more detailed info.</returns>
 int EditorWindow::CloseEditorWindow()
 {
-	DASSERT(DestroyWindow(hWnd) != 0, "Failed destroying the editor window!");
-		
-	LOG("Window was implicitly closed.");
 	windowRunning = false;
+	DASSERT(DestroyWindow(hWnd) != 0, "Failed destroying the editor window!");
+	LOG("Window was implicitly closed.");
 	PostQuitMessage(0);
 	return WM_CLOSE;
 }

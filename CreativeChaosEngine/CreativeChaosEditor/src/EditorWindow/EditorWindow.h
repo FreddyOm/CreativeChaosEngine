@@ -26,7 +26,7 @@ struct EditorWindow
 	bool windowRunning = false;
 
 private:
-	int InitWindow() const;
+	int UpdateEditorWindow() const;
 	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	static CCE::InputManager* p_inputManager;
 	CCE::String windowName = "";

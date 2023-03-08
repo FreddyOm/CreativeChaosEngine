@@ -21,12 +21,11 @@ namespace CCE
 		static InputManager* Instance;
 
 		void HandleWinInput(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-		void InitControllerInput();
-
-	private:
-
 		void HandleXInput();
 		void HandleDirectInput();
+
+	private:
+		
 		// TODO: Keep left handed mouse layout in mind
 		// TODO: Store input values per bit in DWORD (or similar)
 		struct Mouse : private Input::InputDevice  // 64 bytes

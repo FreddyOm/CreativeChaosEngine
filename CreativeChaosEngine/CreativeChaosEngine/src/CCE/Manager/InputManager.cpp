@@ -32,10 +32,9 @@ namespace CCE
 	/// </summary>
 	void CCE::InputManager::ShutDown()
 	{
-		initialized = false;
 		delete lpMouseTrack;
-		delete controller;
 		LOGC("Shutting down InputManager...", COLOR_BLUE);
+		initialized = false;
 		Instance = nullptr;
 	}
 
@@ -379,25 +378,6 @@ namespace CCE
 		}
 		// reset value
 		mouse.wheelDelta = 0;
-	}
-
-	void InputManager::InitControllerInput()
-	{
-		HRESULT coInitRes = CoInitializeEx(NULL, COINIT_MULTITHREADED);
-		DASSERT(coInitRes == S_OK || coInitRes == S_FALSE,
-			"Initializing COM on this thread failed!");
-		DERROR(GetLastError());
-
-		while (true)
-		{
-			HandleXInput();
-			HandleDirectInput();
-
-			if (!initialized)
-			{
-				break;
-			}
-		}
 	}
 	
 	/// <summary>

@@ -125,5 +125,5 @@ namespace CCE
     /// <summary>
     /// The bitmask to set the logging verbosity.
     /// </summary>
-    DWORD Logger::logLvLFilterMask = 0b000001001;
+    DWORD Logger::logLvLFilterMask = 0b000001011;
 }
