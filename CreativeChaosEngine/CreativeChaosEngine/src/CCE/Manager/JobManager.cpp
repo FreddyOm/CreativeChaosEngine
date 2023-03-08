@@ -191,7 +191,7 @@ namespace CCE
 		DASSERT(IsThreadAFiber(), "Thread could not be converted to fiber.");
 		
 		// do stuff
-		LOG_JOBS("Doing work...");
+		//LOG_JOBS("Doing work...");
 	}
 
 	/// <summary>

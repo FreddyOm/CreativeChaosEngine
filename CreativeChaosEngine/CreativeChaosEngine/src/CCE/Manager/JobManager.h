@@ -18,8 +18,8 @@ namespace CCE
 
 		static JobManager* Instance;
 	
-	protected:
-		struct Job
+//	protected:
+		struct Job // 64 bytes
 		{
 			typedef void EntryPoint(uintptr_t param);
 			enum class Priority
@@ -34,24 +34,23 @@ namespace CCE
 
 			};
 
-			struct Declaration
+			struct Declaration // 48 bytes
 			{
 				CCE::String m_Description;	// 8 bytes
-				EntryPoint* m_pEntryPoint;	// 4 bytes
-				va_list m_param;
-				Priority m_priority;
-				Counter* m_pCounter;
+				EntryPoint* m_pEntryPoint;	// 8 bytes
+
+				va_list m_param;			// 8 bytes
+				Counter* m_pCounter;		// 8 bytes
+				
+				Priority m_priority;		// 4 bytes
+				byte padding[12];			// 12 bytes
 			};
 
+			Job() = default;
 			Job(Declaration decl)
 			{
 				id = g_index++;
-				
-				m_Description = decl.m_Description;
-				m_pEntrancePoint = decl.m_pEntryPoint;
-				m_params = decl.m_param;
-				m_pCounter = decl.m_pCounter;
-				m_priority = decl.m_priority;
+				m_Declaration = decl;
 			}
 			
 		public:
@@ -60,24 +59,22 @@ namespace CCE
 
 		public:
 
-			static unsigned int g_index;
-			unsigned int id = 0;
+			Declaration m_Declaration = {};				// 48 bytes
 
-			CCE::String m_Description;
-			EntryPoint* m_pEntrancePoint = nullptr;
-			va_list m_params= nullptr;
-			Priority m_priority = Priority::LOW;
-			Counter* m_pCounter = nullptr;
-
+			static unsigned int g_index;				// 4 bytes
+			unsigned int id = 0;						// 4 bytes			
+			byte padding[8] = {};						// 8 bytes
 		};
 
-		struct Fiber
+		struct Fiber // 8 bytes
 		{
-			struct FiberContext
+			struct FiberContext // 1 byte
 			{
 				// Registers
 				// Stack space
 			};
+
+			Fiber() = default;
 
 			Fiber(unsigned int _id, FiberContext _cntxt)
 			{
@@ -85,8 +82,8 @@ namespace CCE
 				cntxt = _cntxt;
 			}
 
-			unsigned int id = 0;
-			FiberContext cntxt;
+			unsigned int id = 0;						// 4 bytes
+			FiberContext cntxt;							// 1 byte
 		};
 		void SpawnWorkerThreads(const short numOfThreads = -1);
 		void PopulateFiberPool(const short numOfFibers = 100);
@@ -103,12 +100,12 @@ namespace CCE
 
 		// TODO: Implement custom vector / list class
 		std::vector<std::thread*> worker_threads;
-		std::vector<Fiber> fiber_pool;
-		std::vector<Job> wait_list;
+		alignas(8) std::vector<Fiber> fiber_pool;
+		alignas(64) std::vector<Job> wait_list;
 		
 		// TODO: Implement custom queue class
-		std::queue<Job> jobQueue_High;
-		std::queue<Job> jobQueue_Normal;
-		std::queue<Job> jobQueue_Low;
+		alignas(64) std::queue<Job> jobQueue_High;
+		alignas(64) std::queue<Job> jobQueue_Normal;
+		alignas(64) std::queue<Job> jobQueue_Low;
 	};
 }
