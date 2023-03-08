@@ -15,6 +15,8 @@ namespace CCE::Math
 		static void Substract(double* a, double* b, double* res) noexcept;
 		static void Substract(float* a, float* b, float* res) noexcept;
 	
+		static float Clamp(const float value, const float min, const float max) noexcept;
+		static float Clamp01(const float value) noexcept;
 	};
 }
 
