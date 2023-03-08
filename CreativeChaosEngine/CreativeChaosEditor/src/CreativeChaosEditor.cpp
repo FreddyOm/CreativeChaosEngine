@@ -75,7 +75,8 @@ int main(int argc, char* argv[])
     // ------ OPEN ENGINE WINDOW ------
 
     // TODO: Handle inputs on different thread (-> via job system)
-        
+        // mInputManager.HandleXInput();
+        // mInputManager.HandleDirectInput();
 
     {
         EditorWindow window = EditorWindow(&mInputManager);
