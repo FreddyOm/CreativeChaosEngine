@@ -19,7 +19,7 @@ namespace CCE
 		Instance = this;
 
 		auto startTime = Time::CurrentTick();
-
+		CoInitializeEx(NULL, COINIT_MULTITHREADED);
 		initialized = true;
 
 		auto endTime = Time::CurrentTick();
@@ -428,8 +428,12 @@ namespace CCE
 
 	}
 
+	/// <summary>
+	/// Updates the controller count and sends connected / disconnected events
+	/// </summary>
 	void InputManager::UpdateXInputControllerCount()
 	{
+		// TODO: Implement
 		// Do stuff here when Controller was connected / disconnected
 	}
 
