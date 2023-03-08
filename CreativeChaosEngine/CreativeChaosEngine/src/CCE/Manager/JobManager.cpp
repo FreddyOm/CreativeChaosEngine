@@ -139,33 +139,32 @@ namespace CCE
 		
 		LOG_JOBS("Number of logical cpu cores: %i", numOfThreads);
 
-		DWORD_PTR processAffinityMask;
-		for (unsigned short i = 0; i < numOfThreads; i++)
-		{
-			processAffinityMask = DWORD_PTR(1) << i;
-		}
+		DWORD_PTR processAffinityMask = (DWORD_PTR(1) << numOfThreads) - 1;
+		LOG("Process Affinity Mask: %u", processAffinityMask); // FIX ME: Remove this later
 
-		DASSERT(SetProcessAffinityMask(GetCurrentProcess(), processAffinityMask) != 0,
-			"Setting process affinity mask wasn't successful!");
+		// check for errors with process affinity
+		bool processAffinityError = SetProcessAffinityMask(GetCurrentProcess(), processAffinityMask) == 0;
+		if (processAffinityError) { DERROR(GetLastError()); }
+		DASSERT(!processAffinityError,"Setting process affinity mask wasn't successful!");
 
+		// convert main thread to fiber
 		mainFiber = ConvertThreadToFiber(NULL);
 		DASSERT(mainFiber != nullptr, "Conversion main thread -> fiber not succesful!");
 
+		// spawn worker threads and set affinity
 		for (unsigned short t_index = 0; t_index < numOfThreads; t_index++)
 		{
 			// spawn threads
 			std::thread* workerThread = new std::thread(JobManager::RunThread);
 			auto hndl = workerThread->native_handle();
 
-			// set affinity
+			// set affinity and hanle error
 			LOG("Parameter %i", DWORD_PTR(1) << t_index);
-			bool threadAffinityError =
-				SetThreadAffinityMask(hndl, DWORD_PTR(1) << t_index) == 0;
-			if (threadAffinityError)
-			{
-				DERROR(GetLastError());
-			}
+
+			bool threadAffinityError = SetThreadAffinityMask(hndl, DWORD_PTR(1) << t_index) == 0;
+			if (threadAffinityError) { DERROR(GetLastError()); }
 			DASSERT(!threadAffinityError,"Setting thread affinity wasn't successful!");
+			
 			// add to list
 			worker_threads.push_back(workerThread);
 		}
