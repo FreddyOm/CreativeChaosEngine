@@ -30,7 +30,7 @@ namespace CCE::Input
 		};
 
 		// TODO: Check alignment again
-		union Joypad // 16 bytes
+		union Axis2D // 16 bytes
 		{
 			Axis x;
 			Axis y;
