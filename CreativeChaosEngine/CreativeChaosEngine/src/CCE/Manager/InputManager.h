@@ -69,9 +69,9 @@ namespace CCE
 			Axis RTrigger = {};				// 8 bytes
 			Axis LTrigger = {};				// 8 bytes
 			
-			Joypad RJoypad = {};			// 16 bytes
+			Axis2D RJoypad = {};			// 16 bytes
 			
-			Joypad LJoypad = {};			// 16 bytes
+			Axis2D LJoypad = {};			// 16 bytes
 
 			ButtonState RJoypadButton = {};	// 4 bytes
 			ButtonState LJoypadButton = {};	// 4 bytes
