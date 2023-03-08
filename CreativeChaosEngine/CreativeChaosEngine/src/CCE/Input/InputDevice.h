@@ -25,18 +25,18 @@ namespace CCE::Input
 		//TODO: Check alignment again
 		union Axis // 8 bytes
 		{
-			float value;
+			alignas (8)float value;
 			AxisState state;
 		};
 
 		// TODO: Check alignment again
 		union Axis2D // 16 bytes
 		{
-			Axis x;
+			alignas (16) Axis x;
 			Axis y;
 		};
 
-		enum Keycode
+		enum Keycode // 131 bytes -> 136 bytes
 		{
 			BACKSPACE = 0x08,
 			TAB = 0x09,

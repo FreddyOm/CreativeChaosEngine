@@ -19,10 +19,10 @@ namespace CCE
 			const cr::high_resolution_clock::time_point end);
 	};
 
-	struct CCE_API DateTime
+	struct CCE_API DateTime // 16 bytes
 	{
-		static char currentTime[8];
-		static const char* GetTime();
+		alignas(16) static char currentTime[8];		// 8 bytes
+		static const char* GetTime();				// 8 bytes
 	};
 
 }

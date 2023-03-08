@@ -95,8 +95,8 @@ namespace CCE
 		}
 
 	private:
-		static HANDLE hConsole;
-		static DWORD logLvLFilterMask; // 0b00000001
+		static HANDLE hConsole;								// 8 bytes
+		static DWORD logLvLFilterMask; // 0b00000001		// 8 bytes
 	};
 }
 

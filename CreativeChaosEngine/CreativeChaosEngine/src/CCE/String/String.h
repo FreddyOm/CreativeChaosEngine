@@ -55,7 +55,7 @@ namespace CCE
 		const char* Value() const;
 
 	public:
-		unsigned long long sId = 0;
+		unsigned long long sId = 0;			// 8 bytes
 		
 	private:
 		static std::unordered_map<unsigned long long, const char*> gStringTable;

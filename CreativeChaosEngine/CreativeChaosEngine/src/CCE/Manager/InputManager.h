@@ -44,7 +44,7 @@ namespace CCE
 			
 		};
 
-		struct Keyboard : private Input::InputDevice
+		struct Keyboard : private Input::InputDevice // 256
 		{
 			ButtonState keys[256] = {};
 		};
@@ -78,9 +78,9 @@ namespace CCE
 			byte padding[24];				// 24 bytes
 		};
 
-		Mouse mouse = {};
-		Keyboard keyboard = {};
-		Controller controller[4] = {};
+		alignas (64)	Mouse mouse = {};
+		alignas (256)	Keyboard keyboard = {};
+		alignas (128)	Controller controller[4] = {};
 		LPTRACKMOUSEEVENT lpMouseTrack = {};
 
 	};	
