@@ -37,14 +37,14 @@ namespace CCMemory
 	// free. This is still error prone since you might give arbitrary
 	// values to the function which in consequence breaks the memory
 	// counting (free mem / used mem).
-	void PoolAllocator::Free(const intptr_t addr, const unsigned int size)
+	void PoolAllocator::Free(const intptr_t adr, const unsigned int size)
 	{
 		// check
-		DASSERT(addr < allocatableMemBottom + totalSpace,
+		DASSERT(adr < allocatableMemBottom + totalSpace,
 			"Trying to free a memory adress which is not part of the allocated memory!");
 
 		// free
-		intptr_t poolIndex = (addr - allocatableMemBottom) / poolSize;
+		intptr_t poolIndex = (adr - allocatableMemBottom) / poolSize;
 		
 		if (pool[poolIndex])
 		{
@@ -55,7 +55,36 @@ namespace CCMemory
 			numFrees++;
 			usedSpace -= size;
 			freeSpace += size;
+		}
+	}
 
+	/// <summary>
+	/// Frees a pool element with aligned data.
+	/// </summary>
+	/// <param name="adr">The adress of the aligned object.</param>
+	/// <param name="size">The size of the aligned object.</param>
+	void PoolAllocator::FreeAligned(const intptr_t adr, const unsigned int size)
+	{
+		// check
+		DASSERT(adr < allocatableMemBottom + totalSpace,
+			"Trying to free a memory adress which is not part of the allocated memory!");
+
+		// calc actual start adress
+		AllocOffset* pOffset = reinterpret_cast<AllocOffset*> (adr - 1);
+		intptr_t poolStartAdress = adr - *pOffset;
+
+		// free
+		intptr_t poolIndex = (poolStartAdress - allocatableMemBottom) / poolSize;
+
+		if (pool[poolIndex])
+		{
+			pool[poolIndex] = false;
+
+			// update
+			freePoolElements++;
+			numFrees++;
+			usedSpace -= size;
+			freeSpace += size;
 		}
 	}
 

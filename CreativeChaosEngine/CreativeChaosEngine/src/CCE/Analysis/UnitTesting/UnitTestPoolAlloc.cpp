@@ -59,6 +59,18 @@ namespace CCE_Testing
 		if (TestGetNumFrees()) { LOGC_TEST("Testing UnitTestPoolAlloc::TestGetNumFrees: successful", COLOR_GREEN); }
 		else { LOGC_TEST("Testing UnitTestPoolAlloc::TestGetNumFrees: failed", COLOR_RED); }
 
+
+		if (TestAlignedAlloc1()) { LOGC_TEST("Testing UnitTestPoolAlloc::TestAlignedAlloc1: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestPoolAlloc::TestAlignedAlloc1: failed", COLOR_RED); }
+
+		if (TestAlignedAlloc2()) { LOGC_TEST("Testing UnitTestPoolAlloc::TestAlignedAlloc2: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestPoolAlloc::TestAlignedAlloc2: failed", COLOR_RED); }
+
+		if (TestFreeAligned1()) { LOGC_TEST("Testing UnitTestPoolAlloc::TestFreeAligned1: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestPoolAlloc::TestFreeAligned1: failed", COLOR_RED); }
+
+		if (TestFreeAligned2()) { LOGC_TEST("Testing UnitTestPoolAlloc::TestFreeAligned2: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestPoolAlloc::TestFreeAligned2: failed", COLOR_RED); }
 	}
 
 	void UnitTestPoolAlloc::Cleanup()
@@ -473,5 +485,85 @@ namespace CCE_Testing
 		bool check4 = ta.GetNumFrees() == 190;
 
 		return check1 && check2 && check3 && check4;
+	}
+
+	bool UnitTestPoolAlloc::TestAlignedAlloc1() noexcept
+	{
+		bool check1 = alloc7.GetUsedMem() == 0;
+
+		p_testAlloc1 = alloc7.AllocAligned<TestStruct1>();
+		p_testAlloc1->a = 8;
+		p_testAlloc1->b = 12;
+		p_testAlloc1->c = p_testAlloc1->a + p_testAlloc1->b;
+
+		bool check2 = p_testAlloc1->c == 20;
+		bool check3 = (intptr_t)p_testAlloc1 % sizeof(TestStruct1) == 0;
+
+		p_testAlloc2 = alloc7.AllocAligned<TestStruct2>();
+		p_testAlloc2->a = 0.25f;
+
+		bool check4 = p_testAlloc2->a == 0.25f;
+		bool check5 = alloc7.GetNumAllocs() == 2;
+		bool check6 = alloc7.GetNumFreePoolElements() == 6;
+		bool check7 = alloc7.GetUsedMem() == 40;
+		bool check8 = (intptr_t)p_testAlloc2 % sizeof(TestStruct2) == 0;
+
+		return check1 && check2 && check3 && check4 && check5 && check6 && check7
+			&& check8;
+	}
+
+	bool UnitTestPoolAlloc::TestAlignedAlloc2() noexcept
+	{
+		alloc7.Clear();
+		bool check1 = alloc7.GetUsedMem() == 0;
+		bool check2 = alloc7.GetNumPoolElements() == alloc7.GetNumFreePoolElements();
+
+		p_testAlloc3 = alloc7.AllocAligned<TestStruct3>();
+
+		bool check3 = alloc7.GetNumAllocs() == 3;
+		bool check4 = alloc7.GetNumFrees() == 0;
+		bool check5 = alloc7.GetUsedMem() == 128;
+		bool check6 = alloc7.GetNumPoolElements() == 8;
+		bool check7 = alloc7.GetPoolSize() == 256;
+		bool check8 = (intptr_t)p_testAlloc3 % sizeof(TestStruct3) == 0;
+
+		return check1 && check2 && check3 && check4
+			&& check5 && check6 && check7 && check8;
+	}
+
+	bool UnitTestPoolAlloc::TestFreeAligned1() noexcept
+	{
+		TestStruct2* p_testAlloc5 = alloc5.AllocAligned<TestStruct2>();
+		TestStruct1* p_testAlloc4 = alloc5.AllocAligned<TestStruct1>();
+
+		bool check1 = alloc5.GetNumFreePoolElements() == 8;
+		alloc5.Free((intptr_t)p_testAlloc5, sizeof(TestStruct2));
+
+
+		bool check2 = alloc5.GetNumFreePoolElements() == 9;
+		alloc5.Free((intptr_t)p_testAlloc4, sizeof(TestStruct1));
+
+		bool check3 = alloc5.GetFreeMem() == alloc5.GetTotalMem();
+
+		bool check4 = alloc5.GetNumFrees() == 2;
+		bool check5 = alloc5.GetNumAllocs() == alloc5.GetNumFrees();
+
+		return check1 && check2 && check3 && check4 && check5;
+	}
+
+	bool UnitTestPoolAlloc::TestFreeAligned2() noexcept
+	{
+		TestStruct1* p_testAlloc3 = alloc6.AllocAligned<TestStruct1>();
+
+		bool check1 = alloc6.GetFreeMem() != alloc6.GetTotalMem();
+		bool check2 = alloc6.GetNumFreePoolElements() != alloc6.GetNumPoolElements();
+		bool check3 = alloc6.GetUsedMem() == 8;
+
+		alloc6.FreeAligned((uintptr_t)p_testAlloc3, sizeof(TestStruct1));
+
+		bool check4 = alloc6.GetFreeMem() == 4 * 32;
+		bool check5 = alloc6.GetNumFreePoolElements() == 4;
+
+		return check1 && check2 && check3 && check4 && check5;
 	}
 }

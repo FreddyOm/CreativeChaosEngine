@@ -18,6 +18,9 @@ namespace CCE_Testing
 		bool TestAlloc3() noexcept;
 		bool TestAlloc4() noexcept;
 
+		bool TestAlignedAlloc1() noexcept;
+		bool TestAlignedAlloc2() noexcept;
+
 		bool TestFree1() noexcept;
 		bool TestFree2() noexcept;
 		bool TestFree3() noexcept;
@@ -34,13 +37,19 @@ namespace CCE_Testing
 		bool TestGetNumAllocs() noexcept;
 		bool TestGetNumFrees() noexcept;
 
+		bool TestFreeAligned1() noexcept;
+		bool TestFreeAligned2() noexcept;
+
 	private:
 
 		CCMemory::PoolAllocator alloc1 = CCMemory::PoolAllocator(12, 64);
 		CCMemory::PoolAllocator alloc2 = CCMemory::PoolAllocator(8, 128);
 		CCMemory::PoolAllocator alloc3 = CCMemory::PoolAllocator(32, 256);
 		CCMemory::PoolAllocator alloc4 = CCMemory::PoolAllocator(2, 32);
-
+		CCMemory::PoolAllocator alloc5 = CCMemory::PoolAllocator(10, 128);
+		CCMemory::PoolAllocator alloc6 = CCMemory::PoolAllocator(4, 32);
+		CCMemory::PoolAllocator alloc7 = CCMemory::PoolAllocator(8, 256);
+		
 		struct TestStruct1 // size = 8 bytes
 		{
 			char a = 0;
@@ -83,8 +92,5 @@ namespace CCE_Testing
 		TestStruct2* p_testAlloc2_3 = nullptr;
 		TestStruct2* p_testAlloc2_4 = nullptr;
 		TestStruct2* p_testAlloc2_5 = nullptr;
-
-
-
 	};
 }
