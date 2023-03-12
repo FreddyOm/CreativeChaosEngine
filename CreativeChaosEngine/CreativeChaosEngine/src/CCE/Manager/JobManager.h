@@ -9,9 +9,6 @@
 
 namespace CCE
 {
-	static void (*get_context)(JobManager::Fiber::FiberContext*) = (void (*)(JobManager::Fiber::FiberContext*)) get_context_code;
-	static void (*set_context)(JobManager::Fiber::FiberContext*) = (void (*)(JobManager::Fiber::FiberContext*)) set_context_code;
-
 #define NUM_FIBERS 100
 #define SIZE_FIBER_CNTXT 65776
 
