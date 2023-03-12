@@ -25,6 +25,11 @@ namespace CCE
 
 	String::~String()
 	{
+
+	}
+
+	void String::ClearGlobalStringTable()
+	{
 		std::unordered_map<unsigned long long, const char*>::iterator it;
 
 		// Free all the memory allocated by _strdup
@@ -37,6 +42,11 @@ namespace CCE
 
 	size_t String::Length() const
 	{
+		if (gStringTable[sId] == NULL)
+		{
+			DERROR(GetLastError());
+			return -1;
+		}
 		return strlen(gStringTable[sId]);
 	}
 

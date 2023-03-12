@@ -5,10 +5,10 @@
 
 namespace CCMemory
 {
-	//TODO: Aligned alloc
 	typedef intptr_t StackAllocMarker;
 	struct CCE_API StackAllocator : public Allocator
 	{
+		typedef unsigned char AllocOffset;
 		StackAllocator(unsigned long size)
 		{
 			totalSpace = size;
@@ -32,7 +32,7 @@ namespace CCMemory
 		/// <param name="size">The size of the object.</param>
 		/// <returns>A pointer to the object.</returns>
 		template<typename T>
-		T* Alloc(unsigned long _size)
+		T* Alloc(const unsigned long _size)
 		{
 			if (_size > freeSpace)
 			{
@@ -50,7 +50,39 @@ namespace CCMemory
 
 			return _ptr;
 		}
-		void Free(unsigned long _size);
+
+		template<typename T>
+		T* AllocAligned()
+		{
+			const unsigned int _size = sizeof(T);
+			const unsigned int alignedSize = _size * 2;
+
+			if (_size*2 > freeSpace)
+			{
+				DWARNING("The allocator ran out of memory!");
+				return nullptr;
+			}
+
+			// calc offset
+			const char offset = _size - (top % _size);
+			DASSERT(_size - (top % _size) <= 255, "The offset is greater than the savable info byte.");
+			AllocOffset* pOffset = top + offset - 1;
+			*pOffset = offset;
+
+			// set pointer
+			T* _ptr = new(reinterpret_cast<T*>(top + offset)) T();
+			top += _size + offset;
+
+			usedSpace += _size;
+			UpdateFreeSpace();
+
+			numAllocs++;
+
+			return _ptr;
+		}
+
+		void Free(const unsigned long _size);
+		void FreeAligned(const unsigned long _size);
 
 		void RollbackToMarker(StackAllocMarker _marker);
 		void ClearAll();

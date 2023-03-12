@@ -4,9 +4,9 @@
 namespace CCMemory
 {
 	/// <summary>
-	/// Frees the memory to the marker.
+	/// Frees the memory.
 	/// </summary>
-	void StackAllocator::Free(unsigned long _size)
+	void StackAllocator::Free(const unsigned long _size)
 	{
 		if (usedSpace > 0)
 		{
@@ -16,6 +16,28 @@ namespace CCMemory
 			numFrees++;
 		}
 		else 
+		{
+			DWARNING("You are trying to free memory from an empty allocator!");
+		}
+	}
+
+	/// <summary>
+	/// Free aligned memory.
+	/// </summary>
+	/// <param name="_size">Size of the memory to free.</param>
+	void StackAllocator::FreeAligned(const unsigned long _size)
+	{
+		if (usedSpace > 0)
+		{
+			AllocOffset* pOffset = (AllocOffset*)(top - _size - 1);
+
+
+			top -= (_size + *pOffset);
+			usedSpace -= _size;
+			UpdateFreeSpace();
+			numFrees++;
+		}
+		else
 		{
 			DWARNING("You are trying to free memory from an empty allocator!");
 		}

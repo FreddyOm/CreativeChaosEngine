@@ -11,6 +11,8 @@ namespace CCE
 		String(const char* str = "");
 		~String();
 
+		void ClearGlobalStringTable();
+
 		String& operator=(const String& other)
 		{
 			// check if both refs are the same instance

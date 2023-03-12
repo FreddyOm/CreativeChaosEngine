@@ -5,9 +5,9 @@
 
 namespace CCMemory
 {
-	typedef unsigned char AllocOffset;
 	struct CCE_API PoolAllocator : public Allocator
 	{
+		typedef unsigned char AllocOffset;
 		PoolAllocator(const unsigned int elements, const unsigned long _poolSize)
 		{
 			DASSERT(elements >= 0, "The element length must be at least 1!");
@@ -126,7 +126,7 @@ namespace CCMemory
 					// align ptr
 					adress += offset;
 
-					AllocOffset* pOffset = new (reinterpret_cast<AllocOffset*>(adress -1)) AllocOffset();
+					AllocOffset* pOffset = (AllocOffset*)(adress -1);
 					*pOffset = offset;
 					ptr = new (reinterpret_cast<T*> (adress)) T();
 					*(bool*)elementStatus = true;
