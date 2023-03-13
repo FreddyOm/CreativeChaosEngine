@@ -31,8 +31,7 @@ namespace CCMemory
 		{
 			AllocOffset* pOffset = (AllocOffset*)(top - _size - 1);
 
-
-			top -= (_size + *pOffset);
+			top -= ((intptr_t)_size + *pOffset);
 			usedSpace -= _size;
 			UpdateFreeSpace();
 			numFrees++;

@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
             {
                 unittesting = true;
             }
-        } 
+        }
 
         if (unittesting)
         {
@@ -47,6 +47,7 @@ int main(int argc, char* argv[])
             // TODO: Add - test details to show which tests failed / suceeded
             // and normally show [30 / 30 tests suceeded!]
             // ------ UNIT TESTING 
+            CCE::Logger::SetLogLvlMaks(0b00001001);
             LOGC("----------- UNIT TESTS -----------", COLOR_BLUE);
             CCE_Testing::UnitTestStackAlloc stallocTest;
             CCE_Testing::UnitTestPoolAlloc poolallocTest;

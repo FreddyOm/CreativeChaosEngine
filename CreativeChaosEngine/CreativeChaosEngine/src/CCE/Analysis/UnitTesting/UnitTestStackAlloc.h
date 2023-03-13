@@ -34,6 +34,10 @@ namespace CCE_Testing
 		bool TestGetNumAllocs() noexcept;
 		bool TestGetNumFrees() noexcept;
 		bool TestGetCurrentTop() noexcept;
+		bool TestAlignedAlloc1() noexcept;
+		bool TestAlignedAlloc2() noexcept;
+		bool TestAlignedFree1() noexcept;
+		bool TestAlignedFree2() noexcept;
 
 	};
 
@@ -41,6 +45,8 @@ namespace CCE_Testing
 	CCMemory::StackAllocator alloc2(32); // 32
 	CCMemory::StackAllocator alloc3(2048000); // 2048000
 	CCMemory::StackAllocator alloc4(8192); // 8192
+	CCMemory::StackAllocator alloc5(256); // 265
+	CCMemory::StackAllocator alloc6(8); // 8
 
 	struct TestStruct1 // size = 8 bytes
 	{

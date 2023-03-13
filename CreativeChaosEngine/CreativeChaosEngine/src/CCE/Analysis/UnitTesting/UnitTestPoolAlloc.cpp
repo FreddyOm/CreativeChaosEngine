@@ -79,11 +79,17 @@ namespace CCE_Testing
 		alloc2.Clear();
 		alloc3.Clear();
 		alloc4.Clear();
+		alloc5.Clear();
+		alloc6.Clear();
+		alloc7.Clear();
 
 		alloc1.~PoolAllocator();
 		alloc2.~PoolAllocator();
 		alloc3.~PoolAllocator();
 		alloc4.~PoolAllocator();
+		alloc5.~PoolAllocator();
+		alloc6.~PoolAllocator();
+		alloc7.~PoolAllocator();
 	}
 
 	bool UnitTestPoolAlloc::TestAlloc1() noexcept

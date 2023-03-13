@@ -61,7 +61,7 @@ namespace CCMemory
 				{
 					// element not used yet
 					intptr_t adress = (allocatableMemBottom +
-						poolSize * elementIndex);
+						(intptr_t)poolSize * elementIndex);
 					ptr = new (reinterpret_cast<T*> (adress)) T();
 					*(bool*)elementStatus = true;
 					break;
@@ -116,7 +116,7 @@ namespace CCMemory
 				{
 					// element not used yet
 					intptr_t adress = (allocatableMemBottom +
-						poolSize * elementIndex);
+						(intptr_t)poolSize * elementIndex);
 
 					// calc offset
 

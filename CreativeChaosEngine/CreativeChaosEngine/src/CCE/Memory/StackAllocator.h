@@ -32,8 +32,9 @@ namespace CCMemory
 		/// <param name="size">The size of the object.</param>
 		/// <returns>A pointer to the object.</returns>
 		template<typename T>
-		T* Alloc(const unsigned long _size)
+		T* Alloc()
 		{
+			const unsigned long _size = sizeof(T);
 			if (_size > freeSpace)
 			{
 				DWARNING("The allocator ran out of memory!");
@@ -66,7 +67,7 @@ namespace CCMemory
 			// calc offset
 			const char offset = _size - (top % _size);
 			DASSERT(_size - (top % _size) <= 255, "The offset is greater than the savable info byte.");
-			AllocOffset* pOffset = top + offset - 1;
+			AllocOffset* pOffset = reinterpret_cast<AllocOffset*>(top) + offset - 1;
 			*pOffset = offset;
 
 			// set pointer
