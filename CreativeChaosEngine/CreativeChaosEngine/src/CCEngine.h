@@ -17,17 +17,23 @@
 // -------- Manager ---------
 
 #include "CCE/Manager/ProfilingManager.h"
-#include "CCE/Manager/RenderManager.h"
 #include "CCE/Manager/PhysicsManager.h"
 #include "CCE/Manager/JobManager.h"
 #include "CCE/Manager/InputManager.h"
- 
+
+// -------------------------
+
+// ------- Graphics --------
+
+#include "CCE/Graphics/RenderPipeline.h"
+
 // --------------------------
 
 // ------- Utilities --------
 
 #include "CCE/String/String.h"
-#include "CCE/Utilities/CCMath.h"
-#include "CCE/Utilities/CRCHash.h"
+#include "CCE/Utilities/Math/CCMath.h"
+#include "CCE/Utilities/Math/CRCHash.h"
+#include "CCE/Utilities/Color/Color.h"
 
 // --------------------------

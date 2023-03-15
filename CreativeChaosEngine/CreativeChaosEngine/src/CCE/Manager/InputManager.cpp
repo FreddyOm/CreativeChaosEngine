@@ -2,7 +2,7 @@
 #include "../Analysis/Logger.h"
 #include "../Analysis/Debug.h"
 #include "../Analysis/Time.h"
-#include "../Utilities/CCMath.h"
+#include "../Utilities/Math/CCMath.h"
 
 #define BUTTON_STATE CCE::Input::InputDevice::ButtonState
 #define AXIS_STATE CCE::Input::InputDevice::AxisState

@@ -33,9 +33,6 @@
     <ClCompile Include="src\CCE\Manager\BaseManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\CCE\Manager\RenderManager.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\CCE\Manager\PhysicsManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -48,7 +45,7 @@
     <ClCompile Include="src\CCE\Analysis\UnitTesting\UnitTestMath.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\CCE\Utilities\CCMath.cpp">
+    <ClCompile Include="src\CCE\Utilities\Math\CCMath.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\CCE\Memory\Allocator.cpp">
@@ -69,13 +66,19 @@
     <ClCompile Include="src\CCE\String\String.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\CCE\Utilities\CRCHash.cpp">
+    <ClCompile Include="src\CCE\Utilities\Math\CRCHash.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\CCE\Analysis\UnitTesting\UnitTestString.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\CCE\Manager\InputManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCE\Graphics\RenderPipeline.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCE\Utilities\Color\Color.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -101,9 +104,6 @@
     <ClInclude Include="src\CCE\Manager\BaseManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\CCE\Manager\RenderManager.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="src\CCE\Manager\PhysicsManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -116,7 +116,7 @@
     <ClInclude Include="src\CCE\Analysis\UnitTesting\UnitTestMath.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\CCE\Utilities\CCMath.h">
+    <ClInclude Include="src\CCE\Utilities\Math\CCMath.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\CCE\Memory\Allocator.h">
@@ -137,7 +137,7 @@
     <ClInclude Include="src\CCE\String\String.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\CCE\Utilities\CRCHash.h">
+    <ClInclude Include="src\CCE\Utilities\Math\CRCHash.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\CCE\Analysis\UnitTesting\UnitTestString.h">
@@ -147,6 +147,12 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\CCE\Input\InputDevice.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Graphics\RenderPipeline.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Utilities\Color\Color.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

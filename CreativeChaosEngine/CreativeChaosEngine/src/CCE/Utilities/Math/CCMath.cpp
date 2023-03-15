@@ -1,5 +1,5 @@
 #include "CCMath.h"
-#include "../Analysis/Debug.h"
+#include "../../Analysis/Debug.h"
 
 namespace CCE::Math
 {

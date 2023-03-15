@@ -7,10 +7,9 @@
 struct EditorWindow
 { 
 	EditorWindow() = default;
-	EditorWindow(CCE::InputManager* pIM, CCE::RenderManager* pRM)
+	EditorWindow(CCE::InputManager* pIM)
 	{
 		p_inputManager = pIM;
-		p_renderManager = pRM;
 	}
 	~EditorWindow()
 	{
@@ -21,8 +20,12 @@ struct EditorWindow
 	std::optional<int> UpdateEditorWindow() const;
 	int CloseEditorWindow();
 
+	int GetEditorWindowWidth() const;
+	int GetEditorWindowHeight() const;
+
 	HWND GetEditorWindowHandle() const;
 	WNDCLASS GetEditorWindowClass() const;
+	CCE::Graphics::RenderPipeline* GetRenderPipeline();
 	CCE::String GetEditorWindowName() const;
 	void SetEditorWindowName(CCE::String name);
 
@@ -31,9 +34,9 @@ struct EditorWindow
 private:
 	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	static CCE::InputManager* p_inputManager;
-	static CCE::RenderManager* p_renderManager;
 	CCE::String windowName = "";
 	WNDCLASS wndClass = {}; // TODO: Make this a reference to a style class
 	HWND hWnd = {};
+	CCE::Graphics::RenderPipeline renderPipeline;
 };
 

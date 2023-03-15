@@ -1,6 +1,6 @@
 #pragma once
 #include "UnitTest.h"
-#include "../../Utilities/CCMath.h"
+#include "../../Utilities/Math/CCMath.h"
 
 namespace CCE_Testing
 {

@@ -25,7 +25,6 @@ int main(int argc, char* argv[])
 
     CCE::JobManager mJobManager = CCE::JobManager();
     CCE::ProfilingManager mProfilingManager = CCE::ProfilingManager();
-    CCE::RenderManager mRenderManager = CCE::RenderManager();
     CCE::PhysicsManager mPhysicsManager = CCE::PhysicsManager();
     CCE::InputManager mInputManager = CCE::InputManager();
     {
@@ -70,15 +69,16 @@ int main(int argc, char* argv[])
 
     mJobManager.StartUp();
     mProfilingManager.StartUp();
-    mRenderManager.StartUp();
     mPhysicsManager.StartUp();
     mInputManager.StartUp();
 
     // ------ OPEN ENGINE WINDOW ------
 
 
+    CCE::Color backgroundColor = CCE::Color("#00747C");
+
     {
-        EditorWindow window = EditorWindow(&mInputManager, &mRenderManager);
+        EditorWindow window = EditorWindow(&mInputManager);
         window.OpenWindow(GetModuleHandle(NULL));
 
         while (true)
@@ -89,8 +89,12 @@ int main(int argc, char* argv[])
             mInputManager.HandleDirectInput();
 
             // update window input & update gfx
-            if (window.UpdateEditorWindow() == (int)WM_QUIT)
-            { break; }
+            if (window.UpdateEditorWindow() == (int)WM_QUIT) { break; }
+
+            // gfx
+            window.GetRenderPipeline()->BeginFrame(backgroundColor);
+
+            window.GetRenderPipeline()->EndFrame();
         }
 
     }
@@ -100,7 +104,6 @@ int main(int argc, char* argv[])
 
     mInputManager.ShutDown();
     mPhysicsManager.ShutDown();
-    mRenderManager.ShutDown();
     mProfilingManager.ShutDown();
     mJobManager.ShutDown();
 

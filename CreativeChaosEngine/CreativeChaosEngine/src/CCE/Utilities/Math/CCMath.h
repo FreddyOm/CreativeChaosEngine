@@ -1,5 +1,5 @@
 #pragma once
-#include "../Core.h"
+#include "../../Core.h"
 
 namespace CCE::Math
 {
@@ -19,5 +19,3 @@ namespace CCE::Math
 		static float Clamp01(const float value) noexcept;
 	};
 }
-
-

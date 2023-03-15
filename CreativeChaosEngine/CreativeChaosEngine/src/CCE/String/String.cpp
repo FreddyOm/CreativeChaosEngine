@@ -1,5 +1,5 @@
 #include "String.h"
-#include "../Utilities/CRCHash.h"
+#include "../Utilities/Math/CRCHash.h"
 
 namespace CCE
 {

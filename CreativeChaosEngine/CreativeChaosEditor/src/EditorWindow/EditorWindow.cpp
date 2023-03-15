@@ -52,7 +52,7 @@ bool EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 	windowRunning = true;
 
 	// init d3d11 for this editor window
-	p_renderManager->InitializeD3D11(hWnd);
+	renderPipeline.InitializeD3D11(hWnd, GetEditorWindowWidth(), GetEditorWindowHeight());
 
 	return windowRunning;
 }
@@ -92,6 +92,30 @@ int EditorWindow::CloseEditorWindow()
 }
 
 /// <summary>
+/// Get the windows width.
+/// </summary>
+/// <returns></returns>
+int EditorWindow::GetEditorWindowWidth() const
+{
+	RECT rect = {};
+	GetWindowRect(hWnd,&rect);
+
+	return rect.right - rect.left;
+}
+
+/// <summary>
+/// Get the windows height.
+/// </summary>
+/// <returns></returns>
+int EditorWindow::GetEditorWindowHeight() const
+{
+	RECT rect = {};
+	GetWindowRect(hWnd, &rect);
+
+	return rect.bottom - rect.top;
+}
+
+/// <summary>
 /// Get the current editor window's handle.
 /// </summary>
 /// <returns>Window handle.</returns>
@@ -107,6 +131,15 @@ HWND EditorWindow::GetEditorWindowHandle() const
 WNDCLASS EditorWindow::GetEditorWindowClass() const
 {
 	return wndClass;
+}
+
+/// <summary>
+/// Get the render pipeline.
+/// </summary>
+/// <returns></returns>
+CCE::Graphics::RenderPipeline* EditorWindow::GetRenderPipeline()
+{
+	return &renderPipeline;
 }
 
 /// <summary>
@@ -170,8 +203,3 @@ LRESULT CALLBACK EditorWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 /// Pointer to input manager.
 /// </summary>
 CCE::InputManager* EditorWindow::p_inputManager = nullptr;
-
-/// <summary>
-/// Pointer to render manager.
-/// </summary>
-CCE::RenderManager* EditorWindow::p_renderManager = nullptr;
