@@ -404,11 +404,10 @@ namespace CCE
 			}
 			else
 			{
-				// controller is disconnected
-
-				if (activeController.at(controller_index))
+				// controller is disconnected			
+				if (activeController[controller_index])
 				{
-					activeController.at(controller_index) = false;
+					activeController[controller_index] = false;
 				}
 			}
 		}
@@ -417,6 +416,7 @@ namespace CCE
 			UpdateXInputControllerCount();
 		}
 
+		lastConnectedDeviceCount = connectedDeviceCount;
 	}
 
 	/// <summary>
@@ -435,6 +435,22 @@ namespace CCE
 	{
 		// TODO: Implement
 		// Do stuff here when Controller was connected / disconnected
+		for (unsigned short i = 0; i < XUSER_MAX_COUNT; i++)
+		{
+			if (activeController[i] != lastActiveController[i])
+			{
+				if (activeController[i])
+				{
+					LOG_INPUT("Controller %i connected", i);
+				}
+				else 
+				{
+					LOG_INPUT("Controller %i disconnected", i);
+				}
+			}
+
+			lastActiveController[i] = activeController[i];
+		}
 	}
 
 	/// <summary>

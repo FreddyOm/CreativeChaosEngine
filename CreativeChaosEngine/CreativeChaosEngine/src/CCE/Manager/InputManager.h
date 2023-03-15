@@ -101,5 +101,3 @@ namespace CCE
 		void GetXInput(const unsigned char controller_Index);
 	};	
 }
-
-

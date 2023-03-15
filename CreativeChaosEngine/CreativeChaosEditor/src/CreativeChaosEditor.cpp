@@ -74,8 +74,7 @@ int main(int argc, char* argv[])
 
     // ------ OPEN ENGINE WINDOW ------
 
-
-    CCE::Color backgroundColor = CCE::Color("#00747C");
+    CCE::Color backgroundColor = CCE::Color("#F4C167");
 
     {
         EditorWindow window = EditorWindow(&mInputManager);
@@ -88,15 +87,13 @@ int main(int argc, char* argv[])
             mInputManager.HandleXInput();
             mInputManager.HandleDirectInput();
 
-            // update window input & update gfx
+            // update window input
             if (window.UpdateEditorWindow() == (int)WM_QUIT) { break; }
 
-            // gfx
+            // update gfx
             window.GetRenderPipeline()->BeginFrame(backgroundColor);
-
             window.GetRenderPipeline()->EndFrame();
         }
-
     }
 
 
