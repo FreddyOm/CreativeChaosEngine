@@ -15,11 +15,12 @@
 
 // -------------------------
 
+#define EDITOR_VERSION "Creative Chaos Engine - v0.1"
 
 int main(int argc, char* argv[])
 {
     // ------ HELLO ------
-    LOGC("Starting %s", COLOR_BLUE, "Creative Chaos Engine - v0.1");
+    LOGC("Starting %s", COLOR_BLUE, EDITOR_VERSION);
     //TODO: Load config file
 
     CCE::JobManager mJobManager = CCE::JobManager();
@@ -75,13 +76,23 @@ int main(int argc, char* argv[])
 
     // ------ OPEN ENGINE WINDOW ------
 
-    // TODO: Handle inputs on different thread (-> via job system)
-        // mInputManager.HandleXInput();
-        // mInputManager.HandleDirectInput();
 
     {
-        EditorWindow window = EditorWindow(&mInputManager);
+        EditorWindow window = EditorWindow(&mInputManager, &mRenderManager);
         window.OpenWindow(GetModuleHandle(NULL));
+
+        while (true)
+        {
+            // TODO: Handle inputs on different thread (-> via job system)
+            // update controller input
+            mInputManager.HandleXInput();
+            mInputManager.HandleDirectInput();
+
+            // update window input & update gfx
+            if (window.UpdateEditorWindow() == (int)WM_QUIT)
+            { break; }
+        }
+
     }
 
 
@@ -96,7 +107,7 @@ int main(int argc, char* argv[])
 
     // ------ BYE ------
 
-    LOGC("Shutting down %s", COLOR_BLUE, "Creative Chaos Engine - v0.1");
+    LOGC("Shutting down %s", COLOR_BLUE, EDITOR_VERSION);
     Sleep(500);
     
     return 0;

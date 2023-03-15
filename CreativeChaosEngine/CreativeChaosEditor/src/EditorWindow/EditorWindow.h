@@ -1,21 +1,24 @@
 #pragma once
 #include <CCEngine.h>
 #include <string>
+#include <optional>
 #include "../CreativeChaosEditor.h"
 
 struct EditorWindow
 { 
 	EditorWindow() = default;
-	EditorWindow(CCE::InputManager* pIM)
+	EditorWindow(CCE::InputManager* pIM, CCE::RenderManager* pRM)
 	{
 		p_inputManager = pIM;
+		p_renderManager = pRM;
 	}
 	~EditorWindow()
 	{
         windowRunning = false;
 	}
 
-	int OpenWindow(HINSTANCE hInstance, CCE::String winName = "Creative Chaos Engine - v0.1");
+	bool OpenWindow(HINSTANCE hInstance, CCE::String winName = "Creative Chaos Engine - v0.1");
+	std::optional<int> UpdateEditorWindow() const;
 	int CloseEditorWindow();
 
 	HWND GetEditorWindowHandle() const;
@@ -26,9 +29,9 @@ struct EditorWindow
 	bool windowRunning = false;
 
 private:
-	int UpdateEditorWindow() const;
 	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	static CCE::InputManager* p_inputManager;
+	static CCE::RenderManager* p_renderManager;
 	CCE::String windowName = "";
 	WNDCLASS wndClass = {}; // TODO: Make this a reference to a style class
 	HWND hWnd = {};

@@ -17,7 +17,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 /// <param name="hInstance"></param>
 /// <param name="winName"></param>
 /// <returns>A return code that indicates whether or not the window opened correctly.</returns>
-int EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
+bool EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 {
 	// Set window name	
 	windowName = winName;
@@ -51,23 +51,31 @@ int EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 	ShowWindow(GetEditorWindowHandle(), SW_NORMAL); // Returns nonzero if previously visible
 	windowRunning = true;
 
-	return UpdateEditorWindow();
+	// init d3d11 for this editor window
+	p_renderManager->InitializeD3D11(hWnd);
+
+	return windowRunning;
 }
 
 /// <summary>
 /// Initializes the window's message pump.
 /// </summary>
 /// <returns>The return code whenever the window is closed.</returns>
-int EditorWindow::UpdateEditorWindow() const
+std::optional<int> EditorWindow::UpdateEditorWindow() const
 {
 	MSG msg;
-	while (GetMessage(&msg, NULL, 0, 0) != 0)
+	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 	{
+		if (msg.message == (int)WM_QUIT)
+		{
+			return (int)msg.message;
+		}
+
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
 
-	return (int) msg.wParam;
+	return {};
 }
 
 /// <summary>
@@ -162,3 +170,8 @@ LRESULT CALLBACK EditorWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 /// Pointer to input manager.
 /// </summary>
 CCE::InputManager* EditorWindow::p_inputManager = nullptr;
+
+/// <summary>
+/// Pointer to render manager.
+/// </summary>
+CCE::RenderManager* EditorWindow::p_renderManager = nullptr;
