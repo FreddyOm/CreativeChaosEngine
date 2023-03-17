@@ -39,6 +39,7 @@
     <ClCompile Include="src\CCE\Analysis\UnitTesting\UnitTestString.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CCE\Input\ds5w.h" />
     <ClInclude Include="src\CCE\Utilities\Color\Color.h" />
     <ClInclude Include="src\CCE\Graphics\RenderPipeline.h" />
     <ClInclude Include="src\CCE\Input\InputDevice.h" />
@@ -63,6 +64,12 @@
     <ClInclude Include="src\CCE\Analysis\UnitTesting\UnitTestPoolAlloc.h" />
     <ClInclude Include="src\CCE\String\String.h" />
     <ClInclude Include="src\CCE\Analysis\UnitTesting\UnitTestString.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\sdk\ds5w_x64.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="resources\sdk\ds5w_x64.lib" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -135,12 +142,15 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>./resources/sdk/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ds5w_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"</Command>
+      <Command>xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
+xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copying DLL into Editor Folder</Message>
+      <Message>Copying DLLs into Editor Folder</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Profile|x64'">
@@ -159,12 +169,15 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>./resources/sdk/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ds5w_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"</Command>
+      <Command>xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
+xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copying DLL into Editor Folder</Message>
+      <Message>Copying DLLs into Editor Folder</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -187,12 +200,15 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>./resources/sdk/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ds5w_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"</Command>
+      <Command>xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
+xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copying DLL into Editor Folder</Message>
+      <Message>Copying DLLs into Editor Folder</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

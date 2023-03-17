@@ -20,6 +20,21 @@ namespace CCE
 
 		auto startTime = Time::CurrentTick();
 		CoInitializeEx(NULL, COINIT_MULTITHREADED);
+
+		unsigned int dualSenseCount = 0;
+
+		//TODO: Maybe do this during update to get (re)connected devices
+		switch (DS5W::enumDevices(infos, XUSER_MAX_COUNT,
+			&dualSenseCount))
+		{
+
+		}
+
+		for (int i = 0; i < dualSenseCount; i++)
+		{
+			DASSERT(DS5W::initDeviceContext(&infos[0], &con[i]) == _DS5W_ReturnValue::OK,
+				"Initialization of Dual Sense device was unsuccessful!");
+		}
 		initialized = true;
 
 		auto endTime = Time::CurrentTick();
@@ -32,6 +47,9 @@ namespace CCE
 	/// </summary>
 	void CCE::InputManager::ShutDown()
 	{
+		for(int i = 0; i < XUSER_MAX_COUNT; i++)
+			DS5W::freeDeviceContext(&con[i]);
+
 		delete lpMouseTrack;
 		LOGC("Shutting down InputManager...", COLOR_BLUE);
 		initialized = false;
@@ -426,6 +444,21 @@ namespace CCE
 	{
 		// TODO: Handle Direct Input ?
 
+	}
+
+	/// <summary>
+	/// Handle inputs by Sonys Dual Sense Controller
+	/// </summary>
+	void InputManager::HandleDualSenseInput()
+	{
+		for(DWORD controller_index = 0; controller_index < XUSER_MAX_COUNT; controller_index++)
+		{
+			if (DS5W_SUCCESS(DS5W::getDeviceInputState(&con[controller_index], &inState[controller_index])))
+			{
+				
+			}
+		}
+		
 	}
 
 	/// <summary>

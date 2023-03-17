@@ -7,6 +7,9 @@
 #include <Xinput.h>
 #pragma comment(lib, "XInput.lib")
 
+#include "../Input/ds5w.h"
+//#pragma comment(lib, "ds5w_x64.lib")
+
 namespace CCE
 {
 	struct CCE_API InputManager : public BaseManager
@@ -23,6 +26,7 @@ namespace CCE
 		void HandleWinInput(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 		void HandleXInput();
 		void HandleDirectInput();
+		void HandleDualSenseInput();
 
 	private:
 		
@@ -47,7 +51,6 @@ namespace CCE
 			
 			ButtonState extraButton2 = {};		// 4 bytes
 			byte padding[12] = {};				// 12 bytes
-			
 		};
 
 		struct Keyboard : private Input::InputDevice // 256
@@ -93,7 +96,14 @@ namespace CCE
 		unsigned char lastConnectedDeviceCount = 0;					// 1 byte
 		std::vector<bool> activeController = { false, false, false, false };
 		std::vector<bool> lastActiveController = { false, false, false, false };
+		// xinput
 		XINPUT_STATE state = {};
+		
+		// dual sense
+		DS5W::DeviceEnumInfo infos[XUSER_MAX_COUNT];
+		DS5W::DeviceContext con[XUSER_MAX_COUNT];
+		DS5W::DS5InputState inState[XUSER_MAX_COUNT];
+		DS5W::DS5OutputState outState[XUSER_MAX_COUNT];
 
 	private:
 

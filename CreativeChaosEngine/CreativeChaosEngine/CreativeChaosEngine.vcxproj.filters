@@ -155,5 +155,14 @@
     <ClInclude Include="src\CCE\Utilities\Color\Color.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="src\CCE\Input\ds5w.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\sdk\ds5w_x64.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="resources\sdk\ds5w_x64.lib" />
   </ItemGroup>
 </Project>
