@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
         EditorWindow window = EditorWindow(&mInputManager);
 
         JOBDECL decl = JOBDECL(LoadTest::DoWork, 
-            CCE::JobManager::Job::Priority::NORMAL);
+            CCE::JobManager::Priority::NORMAL);
 
         window.OpenWindow(GetModuleHandle(NULL));
 

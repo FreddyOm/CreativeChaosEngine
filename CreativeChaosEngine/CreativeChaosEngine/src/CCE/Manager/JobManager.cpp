@@ -86,25 +86,22 @@ namespace CCE
 	/// </summary>
 	/// <param name="decl">Declaration of the job.</param>
 	/// <returns>True if job was successfully kicked, false if an error occured.</returns>
-	bool JobManager::KickJob(const Job::Declaration& decl)
+	bool JobManager::KickJob(const JobManager::JobDeclaration& decl)
 	{
-		Job _job = Job(decl);
+		// Add job to queue depending on its priority
 		switch(decl.m_priority)
 		{
-			case Job::Priority::HIGH:
+			case JobManager::Priority::HIGH:
 			{
-				jobQueue_High.push(std::move(_job));
-				break;
+				jobQueue_High.push(std::move(decl)); break;
 			}
-			case Job::Priority::NORMAL:
+			case JobManager::Priority::LOW:
 			{
-				jobQueue_Normal.push(std::move(_job));
-				break;
+				jobQueue_Low.push(std::move(decl)); break;
 			}
 			default:
 			{
-				jobQueue_Low.push(std::move(_job));
-				break;
+				jobQueue_Normal.push(std::move(decl)); break;
 			}
 		}
 
@@ -117,7 +114,7 @@ namespace CCE
 	/// <param name="count">The amount of jobs to kick.</param>
 	/// <param name="decls">The declarations of the jobs.</param>
 	/// <returns>True if jobs were successfully kicked, false if an error occured.</returns>
-	bool JobManager::KickJobs(int count, const JobManager::Job::Declaration decls[])
+	bool JobManager::KickJobs(int count, const JobManager::JobDeclaration decls[])
 	{
 		auto lock = ScopedLock(&kickJobMutex);
 		bool success = true;
@@ -185,7 +182,7 @@ namespace CCE
 		// populate the fiber pools
 		for (int i = 0; i < numOfFibers; i++)
 		{
-			fiber_pool.push(Fiber(i, fiberContextPool.Alloc<Fiber::FiberContext>()));
+			fiber_pool.push(Fiber());
 		}
 	}
 
@@ -204,12 +201,12 @@ namespace CCE
 			// TODO: check wait list
 
 			// get the next job
-			Job j = GetNextJob();
-			DASSERT(j.m_Declaration.m_pEntryPoint != nullptr,
+			JOBDECL decl = GetNextJob();
+			DASSERT(decl.m_pEntryPoint != nullptr,
 				"The jobs decleration is invalid!\n This is probably due to a race condition.");
 
 			// execute job
-			j.m_Declaration.m_pEntryPoint(j.m_Declaration.m_param);
+			decl.m_pEntryPoint(decl.m_param);
 		}
 		
 		LOG_JOBS("Fiber ran out of jobs!");
@@ -219,39 +216,39 @@ namespace CCE
 	/// Fetches the next job from the job queue and 
 	/// </summary>
 	/// <returns></returns>
-	JobManager::Job JobManager::GetNextJob()
+	JobManager::JobDeclaration JobManager::GetNextJob()
 	{
+		// TODO: Change this to intelligent spin lock (GEA: p. 555)
 		// mutex lock for thread safety
 		auto lock = CCE::ScopedLock(&getJobMutex);
-		Job::Declaration decl = {nullptr, Job::Priority::NORMAL};
-		Job job = Job(decl);
+		JobDeclaration decl = {nullptr, Priority::NORMAL};
 
 		if (!jobQueue_High.empty())
 		{
-			job = jobQueue_High.front();
+			decl = jobQueue_High.front();
 			jobQueue_High.pop();
 
-			return job;
+			return decl;
 		}
 
 		if (!jobQueue_Normal.empty())
 		{
-			job = jobQueue_Normal.front();
+			decl = jobQueue_Normal.front();
 			jobQueue_Normal.pop();
 
-			return job;
+			return decl;
 		}
 
 		if (!jobQueue_Low.empty())
 		{
-			job = jobQueue_Low.front();
+			decl = jobQueue_Low.front();
 			jobQueue_Low.pop();
 
-			return job;
+			return decl;
 		}
 
-		// nullptr job (check for nullptr / NULL to see if job queues were empty)
-		return job;
+		// nullptr job decl (check for nullptr / NULL to see if job queues were empty)
+		return decl;
 	}
 
 	/// <summary>
@@ -271,11 +268,6 @@ namespace CCE
 	JobManager* JobManager::Instance = nullptr;
 
 	/// <summary>
-	/// Static index for the jobs.
-	/// </summary>
-	unsigned int JobManager::Job::g_index = 0;
-
-	/// <summary>
 	/// A mutex lock for getting jobInformation;
 	/// </summary>
 	std::mutex JobManager::getJobMutex = std::mutex();
@@ -286,14 +278,6 @@ namespace CCE
 	std::mutex JobManager::kickJobMutex = std::mutex();
 
 	/// <summary>
-	/// Resets the index counter of the jobs.
-	/// </summary>
-	void JobManager::Job::ResetIdIndex()
-	{
-		g_index = 0;
-	}
-
-	/// <summary>
 	/// A collection of fibers to use by the threads.
 	/// </summary>
 	alignas(8) std::queue<JobManager::Fiber> JobManager::fiber_pool;
@@ -301,20 +285,20 @@ namespace CCE
 	/// <summary>
 	/// A wait list for jobs to wait on.
 	/// </summary>
-	alignas(64) std::vector<std::pair<JobManager::Job, JobManager::Fiber>> JobManager::wait_list;
+	alignas(64) std::vector<std::pair<JobManager::JobDeclaration, JobManager::Fiber>> JobManager::wait_list;
 
 	/// <summary>
 	/// The high priority queue for jobs.
 	/// </summary>
-	alignas(64) std::queue<JobManager::Job> JobManager::jobQueue_High;
+	alignas(64) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_High;
 
 	/// <summary>
 	/// The normal priority queue for jobs.
 	/// </summary>
-	alignas(64) std::queue<JobManager::Job> JobManager::jobQueue_Normal;
+	alignas(64) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Normal;
 
 	/// <summary>
 	/// The low priority queue for jobs.
 	/// </summary>
-	alignas(64) std::queue<JobManager::Job> JobManager::jobQueue_Low;
+	alignas(64) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Low;
 }
