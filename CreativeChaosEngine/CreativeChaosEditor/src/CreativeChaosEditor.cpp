@@ -1,5 +1,6 @@
 #include "CreativeChaosEditor.h"
 #include "EditorWindow/EditorWindow.h"
+#include "LoadTest.h"
 
 // -------- Testing ---------
 
@@ -19,6 +20,7 @@
 
 int main(int argc, char* argv[])
 {
+
     // ------ HELLO ------
     LOGC("Starting %s", COLOR_BLUE, EDITOR_VERSION);
     //TODO: Load config file
@@ -78,8 +80,15 @@ int main(int argc, char* argv[])
 
     {
         EditorWindow window = EditorWindow(&mInputManager);
+
+        JOBDECL decl = JOBDECL(LoadTest::DoWork, 
+            CCE::JobManager::Job::Priority::NORMAL);
+
         window.OpenWindow(GetModuleHandle(NULL));
 
+        mJobManager.KickJob(decl);
+
+        // Update loop
         while (true)
         {
             // TODO: Handle inputs on different thread (-> via job system)

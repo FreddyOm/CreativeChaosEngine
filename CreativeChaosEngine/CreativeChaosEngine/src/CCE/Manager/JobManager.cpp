@@ -2,6 +2,9 @@
 #include "../Analysis/Logger.h"
 #include "../Analysis/Debug.h"
 #include "../Analysis/Time.h"
+#include "../Utilities/Concurrency/ScopedLock.h"
+
+#include <winternl.h>
 
 namespace CCE
 {
@@ -15,8 +18,8 @@ namespace CCE
 		Instance = this;
 
 		auto startTime = Time::CurrentTick();
+		//PopulateFiberPool();
 		SpawnWorkerThreads();
-		PopulateFiberPool();
 		initialized = true;
 
 		auto endTime = Time::CurrentTick();
@@ -32,7 +35,7 @@ namespace CCE
 		LOGC("Shutting down JobManager...", COLOR_BLUE);
 		initialized = false;
 
-		fiber_pool.clear();
+		fiber_pool._Get_container().~deque();
 		fiberContextPool.~PoolAllocator();
 		wait_list.clear();
 
@@ -117,6 +120,7 @@ namespace CCE
 	/// <returns>True if jobs were successfully kicked, false if an error occured.</returns>
 	bool JobManager::KickJobs(int count, const JobManager::Job::Declaration decls[])
 	{
+		auto lock = ScopedLock(&kickJobMutex);
 		bool success = true;
 		for (unsigned short i = 0; i < count; i++)
 		{
@@ -181,7 +185,7 @@ namespace CCE
 		// populate the fiber pools
 		for (int i = 0; i < numOfFibers; i++)
 		{
-			fiber_pool.push_back(Fiber(i, fiberContextPool.Alloc<Fiber::FiberContext>()));
+			fiber_pool.push(Fiber(i, fiberContextPool.Alloc<Fiber::FiberContext>()));
 		}
 	}
 
@@ -192,12 +196,73 @@ namespace CCE
 	void JobManager::RunThread()
 	{
 		// convert thread to fiver
-		ConvertThreadToFiber(NULL);
+		LPVOID _fiber = ConvertThreadToFiber(NULL);
 		DASSERT(IsThreadAFiber(), "Thread could not be converted to fiber.");
+
+		while (true)
+		{
+			if (HasNextJob())
+			{
+				Job j = GetNextJob();
+
+				DASSERT(j.m_Declaration.m_pEntryPoint != nullptr,
+					"The jobs decleration is invalid!\n This is probably due to a race condition.");
+
+				void* ep = j.m_Declaration.m_pEntryPoint;
+				va_list args = j.m_Declaration.m_param;
+
+				// execute job
+				j.m_Declaration.m_pEntryPoint(j.m_Declaration.m_param);
+			}
+			else
+			{
+				//LOG_JOBS("Fiber ran out of jobs!");
+			}
+		}
 		
-		// do stuff
-		//LOG_JOBS("Doing work...");
+		LOG_JOBS("Fiber ran out of jobs!");
 	}
+
+	JobManager::Job JobManager::GetNextJob()
+	{
+		// mutex lock for thread safety
+		auto lock = CCE::ScopedLock(&getJobMutex);
+		Job::Declaration decl = {nullptr, Job::Priority::NORMAL};
+		Job job = Job(decl);
+
+		if (!jobQueue_High.empty())
+		{
+			job = jobQueue_High.front();
+			jobQueue_High.pop();
+
+			return job;
+		}
+
+		if (!jobQueue_Normal.empty())
+		{
+			job = jobQueue_Normal.front();
+			jobQueue_Normal.pop();
+
+			return job;
+		}
+
+		if (!jobQueue_Low.empty())
+		{
+			job = jobQueue_Low.front();
+			jobQueue_Low.pop();
+
+			return job;
+		}
+
+		// nullptr job (check for nullptr / NULL to see if job queues were empty)
+		return job;
+	}
+
+	bool JobManager::HasNextJob()
+	{
+		return !jobQueue_High.empty() || !jobQueue_Normal.empty() || !jobQueue_Low.empty();
+	}
+
 
 	/// <summary>
 	/// Singelton instance of the job manager.
@@ -210,10 +275,27 @@ namespace CCE
 	unsigned int JobManager::Job::g_index = 0;
 
 	/// <summary>
+	/// A mutex lock for getting jobInformation;
+	/// </summary>
+	std::mutex JobManager::getJobMutex = std::mutex();
+	
+	/// <summary>
+	/// A mutex lock for kicking jobs;
+	/// </summary>
+	std::mutex JobManager::kickJobMutex = std::mutex();
+
+	/// <summary>
 	/// Resets the index counter of the jobs.
 	/// </summary>
 	void JobManager::Job::ResetIdIndex()
 	{
 		g_index = 0;
 	}
+
+	std::queue<JobManager::Fiber> JobManager::fiber_pool;
+	std::vector<JobManager::Job> JobManager::wait_list;
+
+	std::queue<JobManager::Job> JobManager::jobQueue_High;
+	std::queue<JobManager::Job> JobManager::jobQueue_Normal;
+	std::queue<JobManager::Job> JobManager::jobQueue_Low;
 }

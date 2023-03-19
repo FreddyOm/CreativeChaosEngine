@@ -3,14 +3,17 @@
 #include <thread>
 #include <vector>
 #include <queue>
+#include <emmintrin.h>
+#include <winnt.h>
+#include <mutex>
 #include "../String/String.h"
 #include "../Memory/PoolAllocator.h"
-#include <emmintrin.h>
 
 namespace CCE
 {
 #define NUM_FIBERS 100
 #define SIZE_FIBER_CNTXT 65776
+#define JOBDECL CCE::JobManager::Job::Declaration
 
 	struct CCE_API JobManager : public BaseManager
 	{
@@ -21,12 +24,12 @@ namespace CCE
 		void StartUp() override;
 		void ShutDown() override;
 
-		static JobManager* Instance;
-	
+		static JobManager* Instance;		
+
 //	protected:
 		struct Job // 64 bytes
 		{
-			typedef void EntryPoint(uintptr_t param);
+			typedef void EntryPoint(va_list param);
 			enum class Priority
 			{
 				HIGH,
@@ -49,6 +52,22 @@ namespace CCE
 				
 				Priority m_priority;		// 4 bytes
 				byte padding[12];			// 12 bytes
+
+				Declaration() = default;
+				Declaration(void* ep, Priority pr, ...)
+				{
+					m_Description = "Job";
+					m_pEntryPoint = (EntryPoint*)ep;
+					
+					va_list args;
+					va_start(args, pr);
+					va_end(args);
+
+					m_param = args;
+					m_pCounter = nullptr;
+					m_priority = pr;
+
+				}
 			};
 
 			Job() = default;
@@ -71,14 +90,12 @@ namespace CCE
 			byte padding[8] = {};						// 8 bytes
 		};
 
-		struct Fiber // 8 bytes
+		struct CCE_API Fiber // 8 bytes
 		{
 			struct FiberContext // 65776 byte
 			{
-				char stack[65536];					// 65536 bytes
-				void* rip, * rsp;					// 8 bytes
-				void* rbx, * rbp, * r12, * r13, * r14, * r15, * rdi, * rsi;
-				__m128i xmm6, xmm7, xmm8, xmm9, xmm10, xmm11, xmm12, xmm13, xmm14, xmm15;
+				NT_TIB64 stackInfo;			// stackInfo
+				byte fls[65536];			// fiber locas stack
 			};
 
 			Fiber() = default;
@@ -108,19 +125,22 @@ namespace CCE
 		void PopulateFiberPoolWin(const short numOfFibers);
 		
 		static void RunThread();
-		
+		static Job GetNextJob();
+		static bool HasNextJob();
+		static std::mutex getJobMutex;
+		static std::mutex kickJobMutex;
 	private:
 		LPVOID mainFiber = nullptr;
 
 		// TODO: Implement custom vector / list class
 		std::vector<std::thread*> worker_threads;
-		alignas(8) std::vector<Fiber> fiber_pool;
-		alignas(64) std::vector<Job> wait_list;
+		alignas(8) static std::queue<Fiber> fiber_pool;
+		alignas(64) static std::vector<Job> wait_list;
 		
 		// TODO: Implement custom queue class
-		alignas(64) std::queue<Job> jobQueue_High;
-		alignas(64) std::queue<Job> jobQueue_Normal;
-		alignas(64) std::queue<Job> jobQueue_Low;
+		alignas(64) static std::queue<Job> jobQueue_High;
+		alignas(64) static std::queue<Job> jobQueue_Normal;
+		alignas(64) static std::queue<Job> jobQueue_Low;
 
 		alignas(256) CCMemory::PoolAllocator fiberContextPool =
 			CCMemory::PoolAllocator(NUM_FIBERS, SIZE_FIBER_CNTXT);
