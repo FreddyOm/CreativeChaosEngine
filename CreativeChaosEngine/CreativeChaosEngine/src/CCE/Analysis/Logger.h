@@ -1,7 +1,7 @@
 #pragma once
+#include <mutex>
 #include "../Core.h"
 #include "../String/String.h"
-#include <mutex>
 
 #ifdef DEBUG
 

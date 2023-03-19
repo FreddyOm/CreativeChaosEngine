@@ -1,10 +1,9 @@
 #include "JobManager.h"
+#include <winternl.h>
 #include "../Analysis/Logger.h"
 #include "../Analysis/Debug.h"
 #include "../Analysis/Time.h"
 #include "../Utilities/Concurrency/ScopedLock.h"
-
-#include <winternl.h>
 
 namespace CCE
 {

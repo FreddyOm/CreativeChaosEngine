@@ -1,6 +1,6 @@
 #pragma once
-#include "Allocator.h"
 #include <memory>
+#include "Allocator.h"
 #include "../Analysis/Debug.h"
 
 namespace CCMemory
