@@ -92,21 +92,21 @@ namespace CCE
 		Job _job = Job(decl);
 		switch(decl.m_priority)
 		{
-		case Job::Priority::HIGH:
-		{
-			jobQueue_High.push(std::move(_job));
-			break;
-		}
-		case Job::Priority::NORMAL:
-		{
-			jobQueue_Normal.push(std::move(_job));
-			break;
-		}
-		default:
-		{
-			jobQueue_Low.push(std::move(_job));
-			break;
-		}
+			case Job::Priority::HIGH:
+			{
+				jobQueue_High.push(std::move(_job));
+				break;
+			}
+			case Job::Priority::NORMAL:
+			{
+				jobQueue_Normal.push(std::move(_job));
+				break;
+			}
+			default:
+			{
+				jobQueue_Low.push(std::move(_job));
+				break;
+			}
 		}
 
 		return true;
@@ -147,7 +147,7 @@ namespace CCE
 		}
 		
 		LOG_JOBS("Number of logical cpu cores: %i", numOfThreads);
-		DWORD_PTR processAffinityMask = (DWORD_PTR(1) << numOfThreads) - 1;
+		DWORD_PTR processAffinityMask = (DWORD_PTR(1) << (numOfThreads)) - 1;
 		
 		// check for errors with process affinity
 		bool processAffinityError = SetProcessAffinityMask(GetCurrentProcess(), processAffinityMask) == 0;
@@ -182,6 +182,7 @@ namespace CCE
 	/// Default is 100.</param>
 	void JobManager::PopulateFiberPoolWin(const short numOfFibers)
 	{
+		LOG_JOBS("Creating %i fibers...", numOfFibers);
 		// populate the fiber pools
 		for (int i = 0; i < numOfFibers; i++)
 		{
@@ -199,30 +200,26 @@ namespace CCE
 		LPVOID _fiber = ConvertThreadToFiber(NULL);
 		DASSERT(IsThreadAFiber(), "Thread could not be converted to fiber.");
 
-		while (true)
+		while (HasNextJob() || wait_list.size() != 0)
 		{
-			if (HasNextJob())
-			{
-				Job j = GetNextJob();
+			// TODO: check wait list
 
-				DASSERT(j.m_Declaration.m_pEntryPoint != nullptr,
-					"The jobs decleration is invalid!\n This is probably due to a race condition.");
+			// get the next job
+			Job j = GetNextJob();
+			DASSERT(j.m_Declaration.m_pEntryPoint != nullptr,
+				"The jobs decleration is invalid!\n This is probably due to a race condition.");
 
-				void* ep = j.m_Declaration.m_pEntryPoint;
-				va_list args = j.m_Declaration.m_param;
-
-				// execute job
-				j.m_Declaration.m_pEntryPoint(j.m_Declaration.m_param);
-			}
-			else
-			{
-				//LOG_JOBS("Fiber ran out of jobs!");
-			}
+			// execute job
+			j.m_Declaration.m_pEntryPoint(j.m_Declaration.m_param);
 		}
 		
 		LOG_JOBS("Fiber ran out of jobs!");
 	}
 
+	/// <summary>
+	/// Fetches the next job from the job queue and 
+	/// </summary>
+	/// <returns></returns>
 	JobManager::Job JobManager::GetNextJob()
 	{
 		// mutex lock for thread safety
@@ -258,11 +255,16 @@ namespace CCE
 		return job;
 	}
 
+	/// <summary>
+	/// Returns the status of the job queues.
+	/// </summary>
+	/// <returns>True if there are any jobs left. False if all job queues are empty.</returns>
 	bool JobManager::HasNextJob()
 	{
-		return !jobQueue_High.empty() || !jobQueue_Normal.empty() || !jobQueue_Low.empty();
+		return !jobQueue_High.empty() || 
+			!jobQueue_Normal.empty() || 
+			!jobQueue_Low.empty();
 	}
-
 
 	/// <summary>
 	/// Singelton instance of the job manager.
@@ -292,10 +294,28 @@ namespace CCE
 		g_index = 0;
 	}
 
-	std::queue<JobManager::Fiber> JobManager::fiber_pool;
-	std::vector<JobManager::Job> JobManager::wait_list;
+	/// <summary>
+	/// A collection of fibers to use by the threads.
+	/// </summary>
+	alignas(8) std::queue<JobManager::Fiber> JobManager::fiber_pool;
 
-	std::queue<JobManager::Job> JobManager::jobQueue_High;
-	std::queue<JobManager::Job> JobManager::jobQueue_Normal;
-	std::queue<JobManager::Job> JobManager::jobQueue_Low;
+	/// <summary>
+	/// A wait list for jobs to wait on.
+	/// </summary>
+	alignas(64) std::vector<std::pair<JobManager::Job, JobManager::Fiber>> JobManager::wait_list;
+
+	/// <summary>
+	/// The high priority queue for jobs.
+	/// </summary>
+	alignas(64) std::queue<JobManager::Job> JobManager::jobQueue_High;
+
+	/// <summary>
+	/// The normal priority queue for jobs.
+	/// </summary>
+	alignas(64) std::queue<JobManager::Job> JobManager::jobQueue_Normal;
+
+	/// <summary>
+	/// The low priority queue for jobs.
+	/// </summary>
+	alignas(64) std::queue<JobManager::Job> JobManager::jobQueue_Low;
 }

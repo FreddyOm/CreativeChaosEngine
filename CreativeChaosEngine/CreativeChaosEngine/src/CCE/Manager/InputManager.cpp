@@ -19,22 +19,10 @@ namespace CCE
 		Instance = this;
 
 		auto startTime = Time::CurrentTick();
-		CoInitializeEx(NULL, COINIT_MULTITHREADED);
+		DASSERT(CoInitializeEx(NULL, COINIT_MULTITHREADED) == S_OK,
+			"Failed initializing COM on this thread!");
 
-		unsigned int dualSenseCount = 0;
-
-		//TODO: Maybe do this during update to get (re)connected devices
-		switch (DS5W::enumDevices(infos, XUSER_MAX_COUNT,
-			&dualSenseCount))
-		{
-
-		}
-
-		for (int i = 0; i < dualSenseCount; i++)
-		{
-			DASSERT(DS5W::initDeviceContext(&infos[0], &con[i]) == _DS5W_ReturnValue::OK,
-				"Initialization of Dual Sense device was unsuccessful!");
-		}
+		InitializeDualSense();
 		initialized = true;
 
 		auto endTime = Time::CurrentTick();
@@ -444,6 +432,27 @@ namespace CCE
 	{
 		// TODO: Handle Direct Input ?
 
+	}
+
+	/// <summary>
+	/// Initializes the DualSense input.
+	/// </summary>
+	void InputManager::InitializeDualSense()
+	{
+		unsigned int dualSenseCount = 0;
+
+		//TODO: Maybe do this during update to get (re)connected devices
+		switch (DS5W::enumDevices(infos, XUSER_MAX_COUNT,
+			&dualSenseCount))
+		{
+
+		}
+
+		for (int i = 0; i < dualSenseCount; i++)
+		{
+			DASSERT(DS5W::initDeviceContext(&infos[0], &con[i]) == _DS5W_ReturnValue::OK,
+				"Initialization of Dual Sense device was unsuccessful!");
+		}
 	}
 
 	/// <summary>

@@ -8,7 +8,6 @@
 #pragma comment(lib, "XInput.lib")
 
 #include "../Input/ds5w.h"
-//#pragma comment(lib, "ds5w_x64.lib")
 
 namespace CCE
 {
@@ -26,6 +25,7 @@ namespace CCE
 		void HandleWinInput(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 		void HandleXInput();
 		void HandleDirectInput();
+		void InitializeDualSense();
 		void HandleDualSenseInput();
 
 	private:
