@@ -35,24 +35,22 @@ namespace CCE
 			NORMAL,
 			LOW
 		};
-		struct Counter
+		struct Counter	// 4 bytes
 		{
-
+			unsigned int counter = 0;		// 4 bytes
 		};
 		struct Fiber
 		{
 
 		};
-		struct JobDeclaration // 64 bytes
+		struct JobDeclaration // 32 bytes
 		{
 			CCE::String m_Description = "Job";		// 8 bytes
 			EntryPoint* m_pEntryPoint = nullptr;	// 8 bytes
 
 			va_list m_param = NULL;					// 8 bytes
-			Counter* m_pCounter = nullptr;			// 8 bytes
-
 			Priority m_priority = Priority::NORMAL;	// 4 bytes
-			byte padding[28] = {};					// 28 bytes
+			byte padding[4] = {};					// 4 bytes
 
 			JobDeclaration() = default;
 			JobDeclaration(void* ep, Priority pr, ...)
@@ -65,19 +63,19 @@ namespace CCE
 				va_end(args);
 
 				m_param = args;
-				m_pCounter = nullptr;
 				m_priority = pr;
 			}
 		};
 
-		void SpawnWorkerThreads(const short numOfThreads = -1);
-		void PopulateFiberPool(const short numOfFibers = NUM_FIBERS);
-		bool KickJob(const JobDeclaration& decl);
-		bool KickJobs(int count, const JobDeclaration decls[]);
-
+		bool KickJob(const JobDeclaration& decl, const Counter* cnt);
+		bool KickJobs(int count, const JobDeclaration decls[], const Counter* pJobCounter);
+		void WaitForCounter(const Counter* pJobCounter, const int desiredCnt);
+	
 	private:
 		void SpawnWorkerThreadsWin(const short numOfThreads = -1);
 		void PopulateFiberPoolWin(const short numOfFibers);
+		void SpawnWorkerThreads(const short numOfThreads = -1);
+		void PopulateFiberPool(const short numOfFibers = NUM_FIBERS);
 		
 		static void RunThread();
 		static JobDeclaration GetNextJob();
@@ -91,12 +89,12 @@ namespace CCE
 		// TODO: Implement custom vector / list class
 		std::vector<std::thread*> worker_threads;
 		alignas(8) static std::queue<Fiber> fiber_pool;
-		alignas(64) static std::vector<std::pair<JobDeclaration, Fiber>> wait_list;
+		alignas(32) static std::vector<std::pair<JobDeclaration, Fiber>> wait_list;
 		
 		// TODO: Implement custom queue class
-		alignas(64) static std::queue<JobDeclaration> jobQueue_High;
-		alignas(64) static std::queue<JobDeclaration> jobQueue_Normal;
-		alignas(64) static std::queue<JobDeclaration> jobQueue_Low;
+		alignas(32) static std::queue<JobDeclaration> jobQueue_High;
+		alignas(32) static std::queue<JobDeclaration> jobQueue_Normal;
+		alignas(32) static std::queue<JobDeclaration> jobQueue_Low;
 
 		alignas(256) CCMemory::PoolAllocator fiberContextPool =
 			CCMemory::PoolAllocator(NUM_FIBERS, SIZE_FIBER_CNTXT);

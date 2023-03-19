@@ -17,7 +17,7 @@ namespace CCE
 		Instance = this;
 
 		auto startTime = Time::CurrentTick();
-		//PopulateFiberPool();
+		PopulateFiberPool();
 		SpawnWorkerThreads();
 		initialized = true;
 
@@ -86,7 +86,7 @@ namespace CCE
 	/// </summary>
 	/// <param name="decl">Declaration of the job.</param>
 	/// <returns>True if job was successfully kicked, false if an error occured.</returns>
-	bool JobManager::KickJob(const JobManager::JobDeclaration& decl)
+	bool JobManager::KickJob(const JobManager::JobDeclaration& decl, const JobManager::Counter* cnt)
 	{
 		// Add job to queue depending on its priority
 		switch(decl.m_priority)
@@ -104,6 +104,7 @@ namespace CCE
 				jobQueue_Normal.push(std::move(decl)); break;
 			}
 		}
+		*cnt++;
 
 		return true;
 	}
@@ -114,19 +115,29 @@ namespace CCE
 	/// <param name="count">The amount of jobs to kick.</param>
 	/// <param name="decls">The declarations of the jobs.</param>
 	/// <returns>True if jobs were successfully kicked, false if an error occured.</returns>
-	bool JobManager::KickJobs(int count, const JobManager::JobDeclaration decls[])
+	bool JobManager::KickJobs(int count, const JobManager::JobDeclaration decls[], const JobManager::Counter* cnt)
 	{
 		auto lock = ScopedLock(&kickJobMutex);
 		bool success = true;
 		for (unsigned short i = 0; i < count; i++)
 		{
-			if (!KickJob(decls[i]))
+			if (!KickJob(decls[i], cnt))
 			{
 				success = false;
 			}
 		}
 
 		return success;
+	}
+
+	/// <summary>
+	/// Waits for the counter to become equal to or less than the desired count.
+	/// </summary>
+	/// <param name="pJobCounter">A pointer to the counter.</param>
+	/// <param name="desiredCnt">The desired count for contination.</param>
+	void JobManager::WaitForCounter(const Counter* pJobCounter, const int desiredCnt = 0)
+	{
+		while (pJobCounter->counter > desiredCnt) continue;
 	}
 
 	/// <summary>
@@ -198,8 +209,6 @@ namespace CCE
 
 		while (HasNextJob() || wait_list.size() != 0)
 		{
-			// TODO: check wait list
-
 			// get the next job
 			JOBDECL decl = GetNextJob();
 			DASSERT(decl.m_pEntryPoint != nullptr,
@@ -285,20 +294,20 @@ namespace CCE
 	/// <summary>
 	/// A wait list for jobs to wait on.
 	/// </summary>
-	alignas(64) std::vector<std::pair<JobManager::JobDeclaration, JobManager::Fiber>> JobManager::wait_list;
+	alignas(32) std::vector<std::pair<JobManager::JobDeclaration, JobManager::Fiber>> JobManager::wait_list;
 
 	/// <summary>
 	/// The high priority queue for jobs.
 	/// </summary>
-	alignas(64) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_High;
+	alignas(32) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_High;
 
 	/// <summary>
 	/// The normal priority queue for jobs.
 	/// </summary>
-	alignas(64) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Normal;
+	alignas(32) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Normal;
 
 	/// <summary>
 	/// The low priority queue for jobs.
 	/// </summary>
-	alignas(64) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Low;
+	alignas(32) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Low;
 }
