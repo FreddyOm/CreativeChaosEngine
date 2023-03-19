@@ -44,6 +44,7 @@
     <ClInclude Include="src\CCE\Graphics\RenderPipeline.h" />
     <ClInclude Include="src\CCE\Input\InputDevice.h" />
     <ClInclude Include="src\CCE\Manager\InputManager.h" />
+    <ClInclude Include="src\CCE\Utilities\Concurrency\ScopedLock.h" />
     <ClInclude Include="src\CCE\Utilities\Math\CRCHash.h" />
     <ClInclude Include="src\CCE\Memory\PoolAllocator.h" />
     <ClInclude Include="src\CCE\Memory\Allocator.h" />

@@ -18,10 +18,10 @@ namespace CCE::Graphics
 			dxgiModeDesc,						// backbuffer settings
 			dxgiSampleDesc,						// sample description
 			DXGI_USAGE_RENDER_TARGET_OUTPUT,	// swap chain is used as back buffer
-			1,									// amount of swap chain buffers
+			2,									// amount of swap chain buffers
 			hWnd,								// handle to window
 			TRUE,								// windowed or fullscreen (?)
-			DXGI_SWAP_EFFECT_DISCARD,			// swap fx
+			DXGI_SWAP_EFFECT_FLIP_DISCARD,		// swap fx
 			NULL								// flags
 		};
 

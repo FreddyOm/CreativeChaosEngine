@@ -1,6 +1,7 @@
 #pragma once
 #include "../Core.h"
 #include "../String/String.h"
+#include <mutex>
 
 #ifdef DEBUG
 
@@ -95,6 +96,7 @@ namespace CCE
 		}
 
 	private:
+		static std::mutex logMutex;
 		static HANDLE hConsole;								// 8 bytes
 		static DWORD logLvLFilterMask; // 0b00000001		// 8 bytes
 	};

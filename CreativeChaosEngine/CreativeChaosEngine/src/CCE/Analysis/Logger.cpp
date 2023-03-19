@@ -1,5 +1,6 @@
 #include "Logger.h"
 #include "Time.h"
+#include "../Utilities/Concurrency/ScopedLock.h"
 
 namespace CCE
 {
@@ -12,6 +13,7 @@ namespace CCE
     /// <param name="">additional arguments</param>
     void Logger::Log(const char* msg, const COLOR color = COLOR_WHITE, const LogLevel level = NONE, ...)
     {
+        auto lock = ScopedLock(&logMutex);
         if (!LogLvlActive(level)) { return; }
 
         static char s_buffer[1024];
@@ -72,6 +74,7 @@ namespace CCE
     /// <param name="">additional arguments</param>
     void Logger::Log(const String msg, const COLOR color = COLOR_WHITE, const LogLevel level = NONE, ...)
     {
+        auto lock = ScopedLock(&logMutex);
         if (!LogLvlActive(level)) { return; }
 
         static char s_buffer[1024];
@@ -116,6 +119,8 @@ namespace CCE
         printf(s_buffer);
         printf("\n");
     }
+
+    std::mutex Logger::logMutex = std::mutex();
 
     /// <summary>
     /// The console window handle.
