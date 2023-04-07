@@ -3,6 +3,7 @@
 #include "../Analysis/Debug.h"
 #include "../Analysis/Time.h"
 #include "../Utilities/Math/CCMath.h"
+#include "JobManager.h"
 
 #define BUTTON_STATE CCE::Input::InputDevice::ButtonState
 #define AXIS_STATE CCE::Input::InputDevice::AxisState

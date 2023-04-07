@@ -34,6 +34,12 @@ namespace CCE
 		LOGC("Shutting down JobManager...", COLOR_BLUE);
 		initialized = false;
 
+		for (int i = 0; i < fiber_pool.size(); i++)
+		{
+			DeleteFiber(fiber_pool.front());
+			fiber_pool.pop();
+		}
+
 		fiber_pool._Get_container().~deque();
 		fiberContextPool.~PoolAllocator();
 		wait_list.clear();
@@ -104,7 +110,8 @@ namespace CCE
 				jobQueue_Normal.push(std::move(decl)); break;
 			}
 		}
-		*cnt++;
+		if(cnt != nullptr)
+			*cnt++;
 
 		return true;
 	}
@@ -193,11 +200,17 @@ namespace CCE
 		// populate the fiber pools
 		for (int i = 0; i < numOfFibers; i++)
 		{
-			fiber_pool.push(Fiber());
+			// Create multiple fibers
+			fiber_pool.push(CreateFiber(
+				0,
+				(LPFIBER_START_ROUTINE) &JobManager::RunThread, 
+				NULL
+			));
 		}
 	}
 
 	// TODO: Pull jobs and work on them
+	// TODO: Fix job pulling and working on JobDecls
 	/// <summary>
 	/// Do some work for now
 	/// </summary>
@@ -206,18 +219,28 @@ namespace CCE
 		// convert thread to fiver
 		LPVOID _fiber = ConvertThreadToFiber(NULL);
 		DASSERT(IsThreadAFiber(), "Thread could not be converted to fiber.");
-
-		while (HasNextJob() || wait_list.size() != 0)
+/*
+		while (true)
 		{
-			// get the next job
-			JOBDECL decl = GetNextJob();
-			DASSERT(decl.m_pEntryPoint != nullptr,
-				"The jobs decleration is invalid!\n This is probably due to a race condition.");
+			if (HasNextJob() || wait_list.size() != 0)
+			{
+				// get the next job
+				JOBDECL decl = GetNextJob();
+				DASSERT(decl.m_pEntryPoint != nullptr,
+					"The jobs decleration is invalid!\n This is probably due to a race condition.");
 
-			// execute job
-			decl.m_pEntryPoint(decl.m_param);
+				// switch to fiber to execute job
+				LPVOID _fiber = fiber_pool.front();
+				fiber_pool.pop();
+				SwitchToFiber(_fiber);
+
+				// execute job
+				decl.m_pEntryPoint(decl.m_param);
+
+				fiber_pool.push(_fiber);
+			}
 		}
-		
+		*/
 		LOG_JOBS("Fiber ran out of jobs!");
 	}
 
@@ -287,9 +310,14 @@ namespace CCE
 	std::mutex JobManager::kickJobMutex = std::mutex();
 
 	/// <summary>
+	/// A pointer to the main fiber.
+	/// </summary>
+	LPVOID JobManager::mainFiber = nullptr;
+
+	/// <summary>
 	/// A collection of fibers to use by the threads.
 	/// </summary>
-	alignas(8) std::queue<JobManager::Fiber> JobManager::fiber_pool;
+	alignas(8) std::queue<LPVOID> JobManager::fiber_pool;
 
 	/// <summary>
 	/// A wait list for jobs to wait on.

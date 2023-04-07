@@ -9,12 +9,15 @@
 #include "../String/String.h"
 #include "../Memory/PoolAllocator.h"
 #include "../Analysis/Logger.h"
+#include "../Utilities/Events/Delegate.h"
 
 namespace CCE
 {
 #define NUM_FIBERS 100
 #define SIZE_FIBER_CNTXT 65776
 #define JOBDECL CCE::JobManager::JobDeclaration
+
+using namespace Events;
 
 	struct CCE_API JobManager : public BaseManager
 	{
@@ -43,20 +46,21 @@ namespace CCE
 		{
 
 		};
+
 		struct JobDeclaration // 32 bytes
 		{
 			CCE::String m_Description = "Job";		// 8 bytes
-			EntryPoint* m_pEntryPoint = nullptr;	// 8 bytes
+			std::function<void(va_list)> m_pEntryPoint;	// 8 bytes
 
 			va_list m_param = NULL;					// 8 bytes
 			Priority m_priority = Priority::NORMAL;	// 4 bytes
 			byte padding[4] = {};					// 4 bytes
 
 			JobDeclaration() = default;
-			JobDeclaration(void* ep, Priority pr, ...)
+			JobDeclaration(const std::function<void(va_list)>& ep, Priority pr, ...)
 			{
 				m_Description = "Job";
-				m_pEntryPoint = (EntryPoint*)ep;
+				m_pEntryPoint = ep;
 
 				va_list args;
 				va_start(args, pr);
@@ -67,8 +71,8 @@ namespace CCE
 			}
 		};
 
-		bool KickJob(const JobDeclaration& decl, const Counter* cnt);
-		bool KickJobs(int count, const JobDeclaration decls[], const Counter* pJobCounter);
+		bool KickJob(const JobDeclaration& decl, const Counter* cnt = nullptr);
+		bool KickJobs(int count, const JobDeclaration decls[], const Counter* pJobCounter = nullptr);
 		void WaitForCounter(const Counter* pJobCounter, const int desiredCnt);
 	
 	private:
@@ -84,11 +88,11 @@ namespace CCE
 		static std::mutex kickJobMutex;
 
 	private:
-		LPVOID mainFiber = nullptr;
+		static LPVOID mainFiber;
 
 		// TODO: Implement custom vector / list class
 		std::vector<std::thread*> worker_threads;
-		alignas(8) static std::queue<Fiber> fiber_pool;
+		alignas(8) static std::queue<LPVOID> fiber_pool;
 		alignas(32) static std::vector<std::pair<JobDeclaration, Fiber>> wait_list;
 		
 		// TODO: Implement custom queue class

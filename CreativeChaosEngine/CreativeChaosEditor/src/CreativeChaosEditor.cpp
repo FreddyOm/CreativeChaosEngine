@@ -1,6 +1,8 @@
 #include "CreativeChaosEditor.h"
 #include "EditorWindow/EditorWindow.h"
 #include "LoadTest.h"
+#include "CCE/Manager/JobManager.h"
+#include <functional>
 
 // -------- Testing ---------
 
@@ -80,13 +82,14 @@ int main(int argc, char* argv[])
 
     {
         EditorWindow window = EditorWindow(&mInputManager);
-
-        JOBDECL decl = JOBDECL(LoadTest::DoWork, 
-            CCE::JobManager::Priority::NORMAL);
-
         window.OpenWindow(GetModuleHandle(NULL));
 
-        mJobManager.KickJob(decl);
+        std::function<void(va_list)> fn = std::bind(&CCE::InputManager::HandleXInput, mInputManager);
+
+        CCE::JobManager::JobDeclaration decl =
+            CCE::JobManager::JobDeclaration(fn,
+                CCE::JobManager::Priority::HIGH);
+        &CCE::InputManager::HandleXInput;
 
         // Update loop
         while (true)
@@ -120,4 +123,9 @@ int main(int argc, char* argv[])
     Sleep(500);
     
     return 0;
+}
+
+void TestLoad()
+{
+
 }
