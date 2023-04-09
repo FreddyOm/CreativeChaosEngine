@@ -219,7 +219,7 @@ namespace CCE
 		// convert thread to fiver
 		LPVOID _fiber = ConvertThreadToFiber(NULL);
 		DASSERT(IsThreadAFiber(), "Thread could not be converted to fiber.");
-/*
+
 		while (true)
 		{
 			if (HasNextJob() || wait_list.size() != 0)
@@ -240,7 +240,7 @@ namespace CCE
 				fiber_pool.push(_fiber);
 			}
 		}
-		*/
+		
 		LOG_JOBS("Fiber ran out of jobs!");
 	}
 

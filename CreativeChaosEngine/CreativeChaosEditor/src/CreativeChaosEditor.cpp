@@ -84,30 +84,43 @@ int main(int argc, char* argv[])
         EditorWindow window = EditorWindow(&mInputManager);
         window.OpenWindow(GetModuleHandle(NULL));
 
-        std::function<void(va_list)> fn = std::bind(&CCE::InputManager::HandleXInput, mInputManager);
+        using namespace CCE;
 
-        CCE::JobManager::JobDeclaration decl =
-            CCE::JobManager::JobDeclaration(fn,
-                CCE::JobManager::Priority::HIGH);
-        &CCE::InputManager::HandleXInput;
+        JobManager::EntryPoint handleXInput = 
+            BIND(InputManager::HandleXInput, mInputManager);
+        JOBDECL declHandleXInput = JOBDECL(handleXInput,JobManager::Priority::HIGH);
+        
+        JobManager::EntryPoint beginFrame =
+            BIND(Graphics::RenderPipeline::BeginFrame, window.GetRenderPipeline(), backgroundColor);
+        JOBDECL declBeginFrame = JOBDECL(beginFrame, JobManager::Priority::HIGH);
+
+        JobManager::EntryPoint endFrame =
+            BIND(Graphics::RenderPipeline::EndFrame, window.GetRenderPipeline());
+        JOBDECL declEndFrame = JOBDECL(endFrame, JobManager::Priority::HIGH);
 
         // Update loop
         while (true)
         {
             // TODO: Handle inputs on different thread (-> via job system)
             // update controller input
-            mInputManager.HandleXInput();
-            mInputManager.HandleDirectInput();
+            //mInputManager.HandleXInput();
+            mJobManager.KickJob(declHandleXInput);
+            //mInputManager.HandleDirectInput();
 
             // update window input
             if (window.UpdateEditorWindow() == (int)WM_QUIT) { break; }
 
             // update gfx
-            window.GetRenderPipeline()->BeginFrame(backgroundColor);
-            window.GetRenderPipeline()->EndFrame();
+            mJobManager.KickJob(declBeginFrame);
+            mJobManager.KickJob(declEndFrame);
+            //window.GetRenderPipeline()->BeginFrame(backgroundColor);
+            //window.GetRenderPipeline()->EndFrame();
         }
     }
 
+    // HOW TO HANDLE DIFFERENT RETURN TYPES? 
+    // AND IS IT POSSIBLE TO RUN NON JOBIFIED CODE?
+    // OR DOES EVERYTHING HAVE TO BE A JOB?
 
     // ------ SHUTDOWN MANAGER ------
 

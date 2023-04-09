@@ -16,6 +16,7 @@ namespace CCE
 #define NUM_FIBERS 100
 #define SIZE_FIBER_CNTXT 65776
 #define JOBDECL CCE::JobManager::JobDeclaration
+#define BIND(func, obj, ...) std::bind(&func, obj, ##__VA_ARGS__)
 
 using namespace Events;
 
@@ -30,7 +31,7 @@ using namespace Events;
 
 		static JobManager* Instance;		
 
-		typedef void EntryPoint(va_list param);
+		typedef std::function<void(va_list)> EntryPoint;
 
 		enum class Priority
 		{
@@ -50,14 +51,14 @@ using namespace Events;
 		struct JobDeclaration // 32 bytes
 		{
 			CCE::String m_Description = "Job";		// 8 bytes
-			std::function<void(va_list)> m_pEntryPoint;	// 8 bytes
+			EntryPoint m_pEntryPoint;	// 8 bytes
 
 			va_list m_param = NULL;					// 8 bytes
 			Priority m_priority = Priority::NORMAL;	// 4 bytes
 			byte padding[4] = {};					// 4 bytes
 
 			JobDeclaration() = default;
-			JobDeclaration(const std::function<void(va_list)>& ep, Priority pr, ...)
+			JobDeclaration(const EntryPoint& ep, Priority pr, ...)
 			{
 				m_Description = "Job";
 				m_pEntryPoint = ep;
