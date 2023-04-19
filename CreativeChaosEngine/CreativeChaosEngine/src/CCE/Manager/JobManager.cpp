@@ -41,7 +41,6 @@ namespace CCE
 		}
 
 		fiber_pool._Get_container().~deque();
-		fiberContextPool.~PoolAllocator();
 		wait_list.clear();
 
 		for (short i = 0; i < worker_threads.size(); i++)
@@ -168,10 +167,6 @@ namespace CCE
 		if (processAffinityError) { DERROR(GetLastError()); }
 		DASSERT(!processAffinityError,"Setting process affinity mask wasn't successful!");
 
-		// convert main thread to fiber
-		mainFiber = ConvertThreadToFiber(NULL);
-		DASSERT(mainFiber != nullptr, "Conversion main thread -> fiber not succesful!");
-
 		// spawn worker threads and set affinity
 		for (unsigned short t_index = 0; t_index < numOfThreads; t_index++)
 		{
@@ -197,8 +192,14 @@ namespace CCE
 	void JobManager::PopulateFiberPoolWin(const short numOfFibers)
 	{
 		LOG_JOBS("Creating %i fibers...", numOfFibers);
+
+		// convert main thread to fiber
+		mainFiber = ConvertThreadToFiber(NULL);
+		DASSERT(mainFiber != nullptr, "Conversion main thread -> fiber not succesful!");
+		fiber_pool.push(mainFiber);
+
 		// populate the fiber pools
-		for (int i = 0; i < numOfFibers; i++)
+		for (int i = 0; i < numOfFibers - 1; i++)
 		{
 			// Create multiple fibers
 			fiber_pool.push(CreateFiber(
@@ -216,11 +217,11 @@ namespace CCE
 	/// </summary>
 	void JobManager::RunThread()
 	{
-		// convert thread to fiver
-		LPVOID _fiber = ConvertThreadToFiber(NULL);
-		DASSERT(IsThreadAFiber(), "Thread could not be converted to fiber.");
+		// convert thread to fiber
+		LPVOID _fiber = fiber_pool.front();
+		fiber_pool.pop();
 
-		while (true)
+		while (HasNextJob())
 		{
 			if (HasNextJob() || wait_list.size() != 0)
 			{
@@ -230,18 +231,27 @@ namespace CCE
 					"The jobs decleration is invalid!\n This is probably due to a race condition.");
 
 				// switch to fiber to execute job
-				LPVOID _fiber = fiber_pool.front();
-				fiber_pool.pop();
-				SwitchToFiber(_fiber);
+				if (decl.m_pFiber == NULL)
+				{
+					decl.m_pFiber = fiber_pool.front();
+					fiber_pool.pop();
+				}
+				
+				// set context
+				SwitchToFiber(decl.m_pFiber);
 
 				// execute job
 				decl.m_pEntryPoint(decl.m_param);
 
-				fiber_pool.push(_fiber);
+				// reset context
+				SwitchToFiber(_fiber);
+				fiber_pool.push(decl.m_pFiber);
+				decl.m_pFiber = NULL;
 			}
 		}
 		
 		LOG_JOBS("Fiber ran out of jobs!");
+		fiber_pool.push(_fiber);
 	}
 
 	/// <summary>

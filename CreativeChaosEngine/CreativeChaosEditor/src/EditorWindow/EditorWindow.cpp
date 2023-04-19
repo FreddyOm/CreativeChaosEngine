@@ -61,21 +61,20 @@ bool EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 /// Initializes the window's message pump.
 /// </summary>
 /// <returns>The return code whenever the window is closed.</returns>
-std::optional<int> EditorWindow::UpdateEditorWindow() const
+void EditorWindow::UpdateEditorWindow(int& _returnVal)
 {
+	_returnVal = 0;
 	MSG msg;
 	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 	{
 		if (msg.message == (int)WM_QUIT)
 		{
-			return (int)msg.message;
+			_returnVal = (int)msg.message;
 		}
 
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-
-	return {};
 }
 
 /// <summary>

@@ -90,6 +90,8 @@ int main(int argc, char* argv[])
             BIND(InputManager::HandleXInput, mInputManager);
         JOBDECL declHandleXInput = JOBDECL(handleXInput,JobManager::Priority::HIGH);
         
+        
+
         JobManager::EntryPoint beginFrame =
             BIND(Graphics::RenderPipeline::BeginFrame, window.GetRenderPipeline(), backgroundColor);
         JOBDECL declBeginFrame = JOBDECL(beginFrame, JobManager::Priority::HIGH);
@@ -108,8 +110,16 @@ int main(int argc, char* argv[])
             //mInputManager.HandleDirectInput();
 
             // update window input
-            if (window.UpdateEditorWindow() == (int)WM_QUIT) { break; }
+            int rValue = 0;
 
+            JobManager::EntryPoint updateEditorWin =
+                BIND(EditorWindow::UpdateEditorWindow, window, rValue);
+            JOBDECL declUpdateEditorWin = JOBDECL(updateEditorWin, JobManager::Priority::HIGH);
+
+            mJobManager.KickJob(declUpdateEditorWin);
+
+            //window.UpdateEditorWindow(rValue);
+            if (rValue == (int)WM_QUIT) { break; }
             // update gfx
             mJobManager.KickJob(declBeginFrame);
             mJobManager.KickJob(declEndFrame);

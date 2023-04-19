@@ -51,11 +51,11 @@ using namespace Events;
 		struct JobDeclaration // 32 bytes
 		{
 			CCE::String m_Description = "Job";		// 8 bytes
-			EntryPoint m_pEntryPoint;	// 8 bytes
+			EntryPoint m_pEntryPoint;				// 8 bytes
 
 			va_list m_param = NULL;					// 8 bytes
 			Priority m_priority = Priority::NORMAL;	// 4 bytes
-			byte padding[4] = {};					// 4 bytes
+			LPVOID m_pFiber = NULL;					// 4 bytes
 
 			JobDeclaration() = default;
 			JobDeclaration(const EntryPoint& ep, Priority pr, ...)
@@ -89,11 +89,7 @@ using namespace Events;
 		static std::mutex kickJobMutex;
 
 	private:
-		static LPVOID mainFiber;
 
-		// TODO: Implement custom vector / list class
-		std::vector<std::thread*> worker_threads;
-		alignas(8) static std::queue<LPVOID> fiber_pool;
 		alignas(32) static std::vector<std::pair<JobDeclaration, Fiber>> wait_list;
 		
 		// TODO: Implement custom queue class
@@ -101,7 +97,10 @@ using namespace Events;
 		alignas(32) static std::queue<JobDeclaration> jobQueue_Normal;
 		alignas(32) static std::queue<JobDeclaration> jobQueue_Low;
 
-		alignas(256) CCMemory::PoolAllocator fiberContextPool =
-			CCMemory::PoolAllocator(NUM_FIBERS, SIZE_FIBER_CNTXT);
+		// TODO: Implement custom vector / list class
+		std::vector<std::thread*> worker_threads;
+		alignas(8) static std::queue<LPVOID> fiber_pool;
+
+		static LPVOID mainFiber;
 	};
 }

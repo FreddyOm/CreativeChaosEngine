@@ -17,7 +17,7 @@ struct EditorWindow
 	}
 
 	bool OpenWindow(HINSTANCE hInstance, CCE::String winName = "Creative Chaos Engine - v0.1");
-	std::optional<int> UpdateEditorWindow() const;
+	void UpdateEditorWindow(int& _returnVal);
 	int CloseEditorWindow();
 
 	int GetEditorWindowWidth() const;
