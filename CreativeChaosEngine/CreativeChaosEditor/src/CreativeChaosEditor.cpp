@@ -86,11 +86,19 @@ int main(int argc, char* argv[])
 
         using namespace CCE;
 
+        JobManager::EntryPoint test =
+            BIND(ProfilingManager::TestFunc, mProfilingManager);
+        JOBDECL declTest = JOBDECL(test, JobManager::Priority::HIGH);
+
+        mJobManager.KickJob(declTest);
+        mJobManager.SpawnWorkerThreads();
+
+
         JobManager::EntryPoint handleXInput = 
             BIND(InputManager::HandleXInput, mInputManager);
         JOBDECL declHandleXInput = JOBDECL(handleXInput,JobManager::Priority::HIGH);
         
-        
+        // ----------------------------------------
 
         JobManager::EntryPoint beginFrame =
             BIND(Graphics::RenderPipeline::BeginFrame, window.GetRenderPipeline(), backgroundColor);
@@ -100,6 +108,14 @@ int main(int argc, char* argv[])
             BIND(Graphics::RenderPipeline::EndFrame, window.GetRenderPipeline());
         JOBDECL declEndFrame = JOBDECL(endFrame, JobManager::Priority::HIGH);
 
+        // update window input
+        int rValue = 0;
+
+        JobManager::EntryPoint updateEditorWin =
+            BIND(EditorWindow::UpdateEditorWindow, window, rValue);
+        JOBDECL declUpdateEditorWin = JOBDECL(updateEditorWin, JobManager::Priority::HIGH);
+
+        bool initialized = false;
         // Update loop
         while (true)
         {
@@ -109,12 +125,6 @@ int main(int argc, char* argv[])
             mJobManager.KickJob(declHandleXInput);
             //mInputManager.HandleDirectInput();
 
-            // update window input
-            int rValue = 0;
-
-            JobManager::EntryPoint updateEditorWin =
-                BIND(EditorWindow::UpdateEditorWindow, window, rValue);
-            JOBDECL declUpdateEditorWin = JOBDECL(updateEditorWin, JobManager::Priority::HIGH);
 
             mJobManager.KickJob(declUpdateEditorWin);
 
@@ -125,6 +135,12 @@ int main(int argc, char* argv[])
             mJobManager.KickJob(declEndFrame);
             //window.GetRenderPipeline()->BeginFrame(backgroundColor);
             //window.GetRenderPipeline()->EndFrame();
+
+            if (!initialized)
+            {
+                initialized = true;
+                //mJobManager.SpawnWorkerThreads();
+            }
         }
     }
 

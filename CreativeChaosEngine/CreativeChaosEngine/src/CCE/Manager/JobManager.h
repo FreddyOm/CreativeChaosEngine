@@ -14,7 +14,6 @@
 namespace CCE
 {
 #define NUM_FIBERS 100
-#define SIZE_FIBER_CNTXT 65776
 #define JOBDECL CCE::JobManager::JobDeclaration
 #define BIND(func, obj, ...) std::bind(&func, obj, ##__VA_ARGS__)
 
@@ -42,10 +41,6 @@ using namespace Events;
 		struct Counter	// 4 bytes
 		{
 			unsigned int counter = 0;		// 4 bytes
-		};
-		struct Fiber
-		{
-
 		};
 
 		struct JobDeclaration // 32 bytes
@@ -75,22 +70,35 @@ using namespace Events;
 		bool KickJob(const JobDeclaration& decl, const Counter* cnt = nullptr);
 		bool KickJobs(int count, const JobDeclaration decls[], const Counter* pJobCounter = nullptr);
 		void WaitForCounter(const Counter* pJobCounter, const int desiredCnt);
+		void SpawnWorkerThreads(const short numOfThreads = -1);
 	
 	private:
+
 		void SpawnWorkerThreadsWin(const short numOfThreads = -1);
 		void PopulateFiberPoolWin(const short numOfFibers);
-		void SpawnWorkerThreads(const short numOfThreads = -1);
 		void PopulateFiberPool(const short numOfFibers = NUM_FIBERS);
 		
+		static LPVOID GetFiber();
+		static void ReturnFiber(LPVOID fiber);
+
 		static void RunThread();
+		static void ExecuteJob();
 		static JobDeclaration GetNextJob();
 		static bool HasNextJob();
+		static LPVOID GetThreadFiber();
+
 		static std::mutex getJobMutex;
+		static std::mutex getFiberMutex;
+		static std::mutex returnFiberMutex;
 		static std::mutex kickJobMutex;
+		static std::mutex kickJobsMutex;
+		static std::mutex hasNextMutex;
+		static std::mutex pushThreadIdMutex;
 
 	private:
 
-		alignas(32) static std::vector<std::pair<JobDeclaration, Fiber>> wait_list;
+		// Wait list for Fibers and their jobs
+		alignas(32) static std::vector<std::pair<JobDeclaration, LPVOID>> wait_list;
 		
 		// TODO: Implement custom queue class
 		alignas(32) static std::queue<JobDeclaration> jobQueue_High;
@@ -100,6 +108,7 @@ using namespace Events;
 		// TODO: Implement custom vector / list class
 		std::vector<std::thread*> worker_threads;
 		alignas(8) static std::queue<LPVOID> fiber_pool;
+		static std::vector<std::pair<DWORD, LPVOID>> thread_fibers;
 
 		static LPVOID mainFiber;
 	};

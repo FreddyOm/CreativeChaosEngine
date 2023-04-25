@@ -1,6 +1,5 @@
 #include "JobManager.h"
 #include <winternl.h>
-#include "../Analysis/Logger.h"
 #include "../Analysis/Debug.h"
 #include "../Analysis/Time.h"
 #include "../Utilities/Concurrency/ScopedLock.h"
@@ -18,7 +17,7 @@ namespace CCE
 
 		auto startTime = Time::CurrentTick();
 		PopulateFiberPool();
-		SpawnWorkerThreads();
+		//SpawnWorkerThreads();
 		initialized = true;
 
 		auto endTime = Time::CurrentTick();
@@ -93,6 +92,7 @@ namespace CCE
 	/// <returns>True if job was successfully kicked, false if an error occured.</returns>
 	bool JobManager::KickJob(const JobManager::JobDeclaration& decl, const JobManager::Counter* cnt)
 	{
+		auto lock = ScopedLock(&kickJobMutex);
 		// Add job to queue depending on its priority
 		switch(decl.m_priority)
 		{
@@ -123,7 +123,7 @@ namespace CCE
 	/// <returns>True if jobs were successfully kicked, false if an error occured.</returns>
 	bool JobManager::KickJobs(int count, const JobManager::JobDeclaration decls[], const JobManager::Counter* cnt)
 	{
-		auto lock = ScopedLock(&kickJobMutex);
+		auto lock = ScopedLock(&kickJobsMutex);
 		bool success = true;
 		for (unsigned short i = 0; i < count; i++)
 		{
@@ -196,17 +196,17 @@ namespace CCE
 		// convert main thread to fiber
 		mainFiber = ConvertThreadToFiber(NULL);
 		DASSERT(mainFiber != nullptr, "Conversion main thread -> fiber not succesful!");
-		fiber_pool.push(mainFiber);
 
 		// populate the fiber pools
-		for (int i = 0; i < numOfFibers - 1; i++)
+		for (int i = 0; i < numOfFibers; i++)
 		{
-			// Create multiple fibers
-			fiber_pool.push(CreateFiber(
+			auto fiber = CreateFiber(
 				0,
-				(LPFIBER_START_ROUTINE) &JobManager::RunThread, 
-				NULL
-			));
+				(LPFIBER_START_ROUTINE)&JobManager::ExecuteJob,
+				NULL);
+
+			DASSERT(fiber != NULL, "Failed creating fiber pool!");
+			fiber_pool.push(fiber);
 		}
 	}
 
@@ -218,46 +218,81 @@ namespace CCE
 	void JobManager::RunThread()
 	{
 		// convert thread to fiber
-		LPVOID _fiber = fiber_pool.front();
-		fiber_pool.pop();
+		LPVOID _fiber = ConvertThreadToFiber(NULL);
+		std::pair<DWORD, LPVOID> thrd_fbr = std::make_pair(GetThreadId(GetCurrentThread()), _fiber);
+
+		{
+			auto lock = ScopedLock(&pushThreadIdMutex);
+			thread_fibers.push_back(thrd_fbr);
+		}		
 
 		while (HasNextJob())
 		{
 			if (HasNextJob() || wait_list.size() != 0)
 			{
-				// get the next job
-				JOBDECL decl = GetNextJob();
-				DASSERT(decl.m_pEntryPoint != nullptr,
-					"The jobs decleration is invalid!\n This is probably due to a race condition.");
-
-				// switch to fiber to execute job
-				if (decl.m_pFiber == NULL)
-				{
-					decl.m_pFiber = fiber_pool.front();
-					fiber_pool.pop();
-				}
+				// Get new fiber and switch context
+				LPVOID fiber = GetFiber();
+				SwitchToFiber(fiber);
 				
-				// set context
-				SwitchToFiber(decl.m_pFiber);
-
-				// execute job
-				decl.m_pEntryPoint(decl.m_param);
-
-				// reset context
-				SwitchToFiber(_fiber);
-				fiber_pool.push(decl.m_pFiber);
-				decl.m_pFiber = NULL;
+				// Finished executing job
+				LOG_JOBS("Executed job");
+				
+				// Return fiber to pool
+				ReturnFiber(fiber);
 			}
 		}
 		
+		// No jobs left
 		LOG_JOBS("Fiber ran out of jobs!");
-		fiber_pool.push(_fiber);
+		DeleteFiber(_fiber);
 	}
 
 	/// <summary>
-	/// Fetches the next job from the job queue and 
+	/// The main execution routine for work.
 	/// </summary>
-	/// <returns></returns>
+	void JobManager::ExecuteJob()
+	{
+		// Pull the next job
+		JOBDECL decl = GetNextJob();
+		DASSERT(decl.m_pEntryPoint != nullptr,
+			"The jobs decleration is invalid!\n This is probably due to a race condition.");
+		decl.m_pFiber = GetCurrentFiber();
+
+		// Execute function
+		decl.m_pEntryPoint(decl.m_param);
+
+		// Exit the routine
+		// Hier kommt die Rückführung hin
+		SwitchToFiber(GetThreadFiber());
+	}
+
+	/// <summary>
+	/// Fetches the fiber that was initially running on the current thread.
+	/// </summary>
+	/// <returns>A pointer to the fiber.</returns>
+	LPVOID JobManager::GetThreadFiber()
+	{
+		DWORD threadId = GetThreadId(GetCurrentThread());
+
+		auto lock = ScopedLock(&pushThreadIdMutex);
+
+		// TODO: Make this more performant by using hashed values
+		for (size_t i = 0; i < thread_fibers.size(); i++)
+		{
+			if (thread_fibers[i].first == threadId)
+			{
+				return thread_fibers[i].second;
+			}
+		}
+
+		DASSERT(false, "The thread was not found!");
+		return NULL;
+	}
+
+	/// <summary>
+	/// Fetches the next job from the job queue.
+	/// </summary>
+	/// <returns>The next jobs declearation.</returns>
 	JobManager::JobDeclaration JobManager::GetNextJob()
 	{
 		// TODO: Change this to intelligent spin lock (GEA: p. 555)
@@ -299,9 +334,39 @@ namespace CCE
 	/// <returns>True if there are any jobs left. False if all job queues are empty.</returns>
 	bool JobManager::HasNextJob()
 	{
-		return !jobQueue_High.empty() || 
-			!jobQueue_Normal.empty() || 
+		auto lock = CCE::ScopedLock(&hasNextMutex);
+
+		return !jobQueue_High.empty() ||
+			!jobQueue_Normal.empty() ||
 			!jobQueue_Low.empty();
+	}
+
+
+	/// <summary>
+	/// Retrives a fiber from the pool. Thread safe.
+	/// </summary>
+	/// <returns>A fiber from the pool. NULL if empty.</returns>
+	LPVOID JobManager::GetFiber()
+	{
+		if (fiber_pool.empty()) { return NULL; }
+
+		auto lock = CCE::ScopedLock(&getFiberMutex);
+		LPVOID fiber = fiber_pool.front();
+		fiber_pool.pop();
+
+		return fiber;
+	}
+
+	/// <summary>
+	/// Returns a fiber to the pool. Thread safe.
+	/// </summary>
+	/// <param name="fiber">The fiber to return.</param>
+	void JobManager::ReturnFiber(LPVOID fiber)
+	{
+		// TODO: Reset the fibers context if possible using 
+		// SetThreadContext and CONTEXT or in any other way
+		auto lock = ScopedLock(&returnFiberMutex);
+		fiber_pool.push(fiber);
 	}
 
 	/// <summary>
@@ -315,9 +380,34 @@ namespace CCE
 	std::mutex JobManager::getJobMutex = std::mutex();
 	
 	/// <summary>
-	/// A mutex lock for kicking jobs;
+	/// A mutex lock for getting jobInformation;
+	/// </summary>
+	std::mutex JobManager::getFiberMutex = std::mutex();
+
+	/// <summary>
+	/// A mutex lock for getting jobInformation;
+	/// </summary>
+	std::mutex JobManager::returnFiberMutex = std::mutex();
+
+	/// <summary>
+	/// A mutex lock for kicking a job;
 	/// </summary>
 	std::mutex JobManager::kickJobMutex = std::mutex();
+
+	/// <summary>
+	/// A mutex lock for kicking jobs;
+	/// </summary>
+	std::mutex JobManager::kickJobsMutex = std::mutex();
+
+	/// <summary>
+	/// A mutex lock for checking if jobs are left;
+	/// </summary>
+	std::mutex JobManager::hasNextMutex = std::mutex();
+
+	/// <summary>
+	/// A mutex lock for pushing the thread id and the fiber;
+	/// </summary>
+	std::mutex JobManager::pushThreadIdMutex = std::mutex();
 
 	/// <summary>
 	/// A pointer to the main fiber.
@@ -332,7 +422,7 @@ namespace CCE
 	/// <summary>
 	/// A wait list for jobs to wait on.
 	/// </summary>
-	alignas(32) std::vector<std::pair<JobManager::JobDeclaration, JobManager::Fiber>> JobManager::wait_list;
+	alignas(32) std::vector<std::pair<JobManager::JobDeclaration, LPVOID>> JobManager::wait_list;
 
 	/// <summary>
 	/// The high priority queue for jobs.
@@ -348,4 +438,9 @@ namespace CCE
 	/// The low priority queue for jobs.
 	/// </summary>
 	alignas(32) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Low;
+
+	/// <summary>
+	/// A list for th threads to store their fiber handles.
+	/// </summary>
+	std::vector<std::pair<DWORD, LPVOID>> JobManager::thread_fibers;
 }

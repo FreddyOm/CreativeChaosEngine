@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseManager.h"
+#include "../Analysis/Logger.h"
 
 namespace CCE
 {
@@ -13,5 +14,10 @@ namespace CCE
 		void ShutDown() override;
 
 		static ProfilingManager* Instance;
+
+		void TestFunc()
+		{
+			Logger::Log("Test", COLOR_WHITE, CCE::LogLevel::NONE);
+		}
 	};
 }
