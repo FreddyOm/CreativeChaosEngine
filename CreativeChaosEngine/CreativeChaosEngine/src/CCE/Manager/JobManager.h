@@ -6,6 +6,7 @@
 #include <emmintrin.h>
 #include <winnt.h>
 #include <mutex>
+#include <atomic>
 #include "../String/String.h"
 #include "../Memory/PoolAllocator.h"
 #include "../Analysis/Logger.h"
@@ -31,16 +32,13 @@ using namespace Events;
 		static JobManager* Instance;		
 
 		typedef std::function<void(va_list)> EntryPoint;
+		typedef std::atomic<unsigned int> Counter;
 
 		enum class Priority
 		{
 			HIGH,
 			NORMAL,
 			LOW
-		};
-		struct Counter	// 4 bytes
-		{
-			unsigned int counter = 0;		// 4 bytes
 		};
 
 		struct JobDeclaration // 32 bytes
@@ -52,10 +50,12 @@ using namespace Events;
 			Priority m_priority = Priority::NORMAL;	// 4 bytes
 			LPVOID m_pFiber = NULL;					// 4 bytes
 
+			Counter* m_pCounter = NULL;				// 4 bytes
+
 			JobDeclaration() = default;
 			JobDeclaration(const EntryPoint& ep, Priority pr, ...)
 			{
-				m_Description = "Job";
+				m_Description = CCE::String(__FUNCTION__);
 				m_pEntryPoint = ep;
 
 				va_list args;
@@ -67,9 +67,11 @@ using namespace Events;
 			}
 		};
 
-		bool KickJob(const JobDeclaration& decl, const Counter* cnt = nullptr);
-		bool KickJobs(int count, const JobDeclaration decls[], const Counter* pJobCounter = nullptr);
+		bool KickJob(JobDeclaration& decl, Counter* cnt = nullptr);
+		bool WaitAndKickJob(const JobDeclaration& decl, const Counter* waitForCnt);
+		bool KickJobs(int count, JobDeclaration decls[], Counter* pJobCounter = nullptr);
 		void WaitForCounter(const Counter* pJobCounter, const int desiredCnt);
+		void WaitForCounterAndFree(const Counter* pJobCounter, const int desiredCnt);
 		void SpawnWorkerThreads(const short numOfThreads = -1);
 	
 	private:
@@ -95,8 +97,8 @@ using namespace Events;
 		static std::mutex hasNextMutex;
 		static std::mutex pushThreadIdMutex;
 
-	private:
-
+	//private:
+	public:
 		// Wait list for Fibers and their jobs
 		alignas(32) static std::vector<std::pair<JobDeclaration, LPVOID>> wait_list;
 		

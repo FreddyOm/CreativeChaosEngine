@@ -22,7 +22,6 @@
 
 int main(int argc, char* argv[])
 {
-
     // ------ HELLO ------
     LOGC("Starting %s", COLOR_BLUE, EDITOR_VERSION);
     //TODO: Load config file
@@ -85,12 +84,6 @@ int main(int argc, char* argv[])
         window.OpenWindow(GetModuleHandle(NULL));
 
         using namespace CCE;
-
-        JobManager::EntryPoint test =
-            BIND(ProfilingManager::TestFunc, mProfilingManager);
-        JOBDECL declTest = JOBDECL(test, JobManager::Priority::HIGH);
-
-        mJobManager.KickJob(declTest);
         mJobManager.SpawnWorkerThreads();
 
 
@@ -117,6 +110,7 @@ int main(int argc, char* argv[])
 
         bool initialized = false;
         // Update loop
+        /*
         while (true)
         {
             // TODO: Handle inputs on different thread (-> via job system)
@@ -130,17 +124,55 @@ int main(int argc, char* argv[])
 
             //window.UpdateEditorWindow(rValue);
             if (rValue == (int)WM_QUIT) { break; }
+            
+            JobManager::Counter pCnt = JobManager::Counter();
+            pCnt = 1;
+
             // update gfx
-            mJobManager.KickJob(declBeginFrame);
+            mJobManager.KickJob(declBeginFrame, &pCnt);
+            mJobManager.WaitForCounterAndFree(&pCnt, 0);
             mJobManager.KickJob(declEndFrame);
             //window.GetRenderPipeline()->BeginFrame(backgroundColor);
             //window.GetRenderPipeline()->EndFrame();
+        }
+        */
 
-            if (!initialized)
-            {
-                initialized = true;
-                //mJobManager.SpawnWorkerThreads();
-            }
+        JobManager::EntryPoint one =
+            BIND(ProfilingManager::One, mProfilingManager);
+        JOBDECL declOne = 
+            JOBDECL(one, JobManager::Priority::HIGH);
+
+        JobManager::EntryPoint two =
+            BIND(ProfilingManager::Two, mProfilingManager);
+        JOBDECL declTwo =
+            JOBDECL(two, JobManager::Priority::LOW);
+
+        JobManager::EntryPoint three =
+            BIND(ProfilingManager::Three, mProfilingManager);
+        JOBDECL declThree =
+            JOBDECL(three, JobManager::Priority::HIGH);
+
+        JobManager::EntryPoint four =
+            BIND(ProfilingManager::Four, mProfilingManager);
+        JOBDECL declFour =
+            JOBDECL(four, JobManager::Priority::HIGH);
+
+        while (true)
+        {
+            mJobManager.KickJob(declOne);
+
+            JobManager::Counter cnt = JobManager::Counter();
+            cnt = 1;
+
+            mJobManager.KickJob(declTwo);
+            mJobManager.KickJob(declThree);
+            //mJobManager.WaitForCounterAndFree(&cnt2, 0);
+
+            JobManager::Counter cnt3 = JobManager::Counter();
+            cnt3 = 1;
+
+            mJobManager.KickJob(declFour, &cnt3);
+            //mJobManager.WaitForCounterAndFree(&cnt3, 0);
         }
     }
 

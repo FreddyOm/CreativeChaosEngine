@@ -15,9 +15,29 @@ namespace CCE
 
 		static ProfilingManager* Instance;
 
-		void TestFunc()
+		void One()
 		{
-			Logger::Log("Test", COLOR_WHITE, CCE::LogLevel::NONE);
+			Logger::Log("Test: 1", COLOR_WHITE, CCE::LogLevel::JOBS);
+		}
+
+		void Two()
+		{
+			Logger::Log("Test: 2", COLOR_WHITE, CCE::LogLevel::JOBS);
+		}
+
+		void Three()
+		{
+			Logger::Log("Test: 3", COLOR_WHITE, CCE::LogLevel::JOBS);
+		}
+
+		void Four()
+		{
+			int l = 0;
+			for (int i = 0; i < 100; i++)
+			{
+				l += i % 3;
+			}
+			Logger::Log("Test: 4 -> %i", COLOR_WHITE, CCE::LogLevel::JOBS, l);
 		}
 	};
 }

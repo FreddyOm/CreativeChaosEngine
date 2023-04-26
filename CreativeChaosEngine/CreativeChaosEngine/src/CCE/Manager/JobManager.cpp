@@ -90,9 +90,11 @@ namespace CCE
 	/// </summary>
 	/// <param name="decl">Declaration of the job.</param>
 	/// <returns>True if job was successfully kicked, false if an error occured.</returns>
-	bool JobManager::KickJob(const JobManager::JobDeclaration& decl, const JobManager::Counter* cnt)
+	bool JobManager::KickJob(JobManager::JobDeclaration& decl, JobManager::Counter* cnt)
 	{
+		decl.m_pCounter = cnt;
 		auto lock = ScopedLock(&kickJobMutex);
+		
 		// Add job to queue depending on its priority
 		switch(decl.m_priority)
 		{
@@ -110,7 +112,42 @@ namespace CCE
 			}
 		}
 		if(cnt != nullptr)
-			*cnt++;
+			*cnt--;
+
+		return true;
+	}
+
+	//TODO: Check how KickJobAndWait should be implemented
+
+	/// <summary>
+	/// Waits for another job to be kicked and kicks a job then.
+	/// </summary>
+	/// <param name="decl">Declaration of the job.</param>
+	/// <param name="waitForCnt">The counter to wait for to become 0.</param>
+	/// <returns>True if job was successfully kicked, false if an error occured.</returns>
+	bool JobManager::WaitAndKickJob(const JobManager::JobDeclaration& decl, const JobManager::Counter* waitForCnt)
+	{
+		while (*waitForCnt > 0)
+			continue;
+
+		auto lock = ScopedLock(&kickJobMutex);
+		// Add job to queue depending on its priority
+		switch (decl.m_priority)
+		{
+		case JobManager::Priority::HIGH:
+		{
+			jobQueue_High.push(std::move(decl)); break;
+		}
+		case JobManager::Priority::LOW:
+		{
+			jobQueue_Low.push(std::move(decl)); break;
+		}
+		default:
+		{
+			jobQueue_Normal.push(std::move(decl)); break;
+		}
+		}
+		DASSERT(waitForCnt != nullptr, "Conter may not be null!");
 
 		return true;
 	}
@@ -121,7 +158,7 @@ namespace CCE
 	/// <param name="count">The amount of jobs to kick.</param>
 	/// <param name="decls">The declarations of the jobs.</param>
 	/// <returns>True if jobs were successfully kicked, false if an error occured.</returns>
-	bool JobManager::KickJobs(int count, const JobManager::JobDeclaration decls[], const JobManager::Counter* cnt)
+	bool JobManager::KickJobs(int count, JobManager::JobDeclaration decls[], JobManager::Counter* cnt)
 	{
 		auto lock = ScopedLock(&kickJobsMutex);
 		bool success = true;
@@ -136,6 +173,8 @@ namespace CCE
 		return success;
 	}
 
+	//TODO: Check how the counters should be implemented
+
 	/// <summary>
 	/// Waits for the counter to become equal to or less than the desired count.
 	/// </summary>
@@ -143,7 +182,19 @@ namespace CCE
 	/// <param name="desiredCnt">The desired count for contination.</param>
 	void JobManager::WaitForCounter(const Counter* pJobCounter, const int desiredCnt = 0)
 	{
-		while (pJobCounter->counter > desiredCnt) continue;
+		while (*pJobCounter > desiredCnt) continue;
+	}
+
+	/// <summary>
+	/// Waits for the counter to become equal to or less than the desired count.
+	/// The counter is freed afterwards.
+	/// </summary>
+	/// <param name="pJobCounter">A pointer to the counter.</param>
+	/// <param name="desiredCnt">The desired count for contination.</param>
+	void JobManager::WaitForCounterAndFree(const Counter* pJobCounter, const int desiredCnt = 0)
+	{
+		while (*pJobCounter > desiredCnt) continue;
+		delete(pJobCounter);
 	}
 
 	/// <summary>
@@ -226,7 +277,7 @@ namespace CCE
 			thread_fibers.push_back(thrd_fbr);
 		}		
 
-		while (HasNextJob())
+		while (true)
 		{
 			if (HasNextJob() || wait_list.size() != 0)
 			{
@@ -254,8 +305,12 @@ namespace CCE
 	{
 		// Pull the next job
 		JOBDECL decl = GetNextJob();
-		DASSERT(decl.m_pEntryPoint != nullptr,
-			"The jobs decleration is invalid!\n This is probably due to a race condition.");
+		if (decl.m_pEntryPoint == nullptr)
+		{
+			SwitchToFiber(GetThreadFiber());
+		}
+//		DASSERT(decl.m_pEntryPoint != nullptr,
+//			"The jobs decleration is invalid!\n This is probably due to a race condition.");
 		decl.m_pFiber = GetCurrentFiber();
 
 		// Execute function
@@ -340,7 +395,6 @@ namespace CCE
 			!jobQueue_Normal.empty() ||
 			!jobQueue_Low.empty();
 	}
-
 
 	/// <summary>
 	/// Retrives a fiber from the pool. Thread safe.
