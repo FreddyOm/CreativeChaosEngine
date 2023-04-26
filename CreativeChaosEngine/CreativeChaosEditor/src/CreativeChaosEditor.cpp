@@ -137,42 +137,50 @@ int main(int argc, char* argv[])
         }
         */
 
-        JobManager::EntryPoint one =
-            BIND(ProfilingManager::One, mProfilingManager);
-        JOBDECL declOne = 
-            JOBDECL(one, JobManager::Priority::HIGH);
-
-        JobManager::EntryPoint two =
-            BIND(ProfilingManager::Two, mProfilingManager);
-        JOBDECL declTwo =
-            JOBDECL(two, JobManager::Priority::LOW);
-
-        JobManager::EntryPoint three =
-            BIND(ProfilingManager::Three, mProfilingManager);
-        JOBDECL declThree =
-            JOBDECL(three, JobManager::Priority::HIGH);
-
-        JobManager::EntryPoint four =
-            BIND(ProfilingManager::Four, mProfilingManager);
-        JOBDECL declFour =
-            JOBDECL(four, JobManager::Priority::HIGH);
-
+        // TODO: Where is the leak?
         while (true)
         {
+
+            JobManager::EntryPoint one =
+                BIND(ProfilingManager::One, mProfilingManager);
+            JOBDECL declOne =
+                JOBDECL(one, JobManager::Priority::HIGH);
+
             mJobManager.KickJob(declOne);
 
-            JobManager::Counter cnt = JobManager::Counter();
-            cnt = 1;
+
+
+
+            JobManager::EntryPoint two =
+                BIND(ProfilingManager::Two, mProfilingManager);
+            JOBDECL declTwo =
+                JOBDECL(two, JobManager::Priority::LOW);
 
             mJobManager.KickJob(declTwo);
+
+
+
+
+            JobManager::EntryPoint three =
+                BIND(ProfilingManager::Three, mProfilingManager);
+            JOBDECL declThree =
+                JOBDECL(three, JobManager::Priority::HIGH);
+
             mJobManager.KickJob(declThree);
-            //mJobManager.WaitForCounterAndFree(&cnt2, 0);
 
-            JobManager::Counter cnt3 = JobManager::Counter();
-            cnt3 = 1;
 
-            mJobManager.KickJob(declFour, &cnt3);
-            //mJobManager.WaitForCounterAndFree(&cnt3, 0);
+
+            JobManager::EntryPoint four =
+                BIND(ProfilingManager::Four, mProfilingManager);
+            JOBDECL declFour =
+                JOBDECL(four, JobManager::Priority::HIGH);
+
+            mJobManager.KickJob(declFour);
+
+            auto cnt = static_cast<unsigned int>(mJobManager.jobQueueLength);
+
+            mJobManager.WaitForCounter(&mJobManager.jobQueueLength, 0);
+            LOG("END OF LOOP");
         }
     }
 

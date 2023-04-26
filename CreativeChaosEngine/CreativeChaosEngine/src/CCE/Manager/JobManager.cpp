@@ -92,8 +92,10 @@ namespace CCE
 	/// <returns>True if job was successfully kicked, false if an error occured.</returns>
 	bool JobManager::KickJob(JobManager::JobDeclaration& decl, JobManager::Counter* cnt)
 	{
+		if (decl.m_pEntryPoint == nullptr) { return false; }
+
+		auto lock = ScopedLock(&jobQueueMutex);
 		decl.m_pCounter = cnt;
-		auto lock = ScopedLock(&kickJobMutex);
 		
 		// Add job to queue depending on its priority
 		switch(decl.m_priority)
@@ -111,8 +113,6 @@ namespace CCE
 				jobQueue_Normal.push(std::move(decl)); break;
 			}
 		}
-		if(cnt != nullptr)
-			*cnt--;
 
 		return true;
 	}
@@ -125,12 +125,10 @@ namespace CCE
 	/// <param name="decl">Declaration of the job.</param>
 	/// <param name="waitForCnt">The counter to wait for to become 0.</param>
 	/// <returns>True if job was successfully kicked, false if an error occured.</returns>
-	bool JobManager::WaitAndKickJob(const JobManager::JobDeclaration& decl, const JobManager::Counter* waitForCnt)
+	bool JobManager::KickJobAndWait(const JobManager::JobDeclaration& decl, const JobManager::Counter* waitForCnt)
 	{
-		while (*waitForCnt > 0)
-			continue;
 
-		auto lock = ScopedLock(&kickJobMutex);
+		auto lock = ScopedLock(&jobQueueMutex);
 		// Add job to queue depending on its priority
 		switch (decl.m_priority)
 		{
@@ -160,7 +158,6 @@ namespace CCE
 	/// <returns>True if jobs were successfully kicked, false if an error occured.</returns>
 	bool JobManager::KickJobs(int count, JobManager::JobDeclaration decls[], JobManager::Counter* cnt)
 	{
-		auto lock = ScopedLock(&kickJobsMutex);
 		bool success = true;
 		for (unsigned short i = 0; i < count; i++)
 		{
@@ -173,6 +170,17 @@ namespace CCE
 		return success;
 	}
 
+	/// <summary>
+	/// Returns the amount of jobs inside the job system.
+	/// </summary>
+	/// <returns>The number of jobs in the system.</returns>
+	unsigned int JobManager::GetJobQueueLength()
+	{
+		auto lock = ScopedLock(&jobQueueMutex);
+		return jobQueue_High.size() + jobQueue_Normal.size() + 
+			jobQueue_Low.size() + wait_list.size();
+	}
+
 	//TODO: Check how the counters should be implemented
 
 	/// <summary>
@@ -182,7 +190,15 @@ namespace CCE
 	/// <param name="desiredCnt">The desired count for contination.</param>
 	void JobManager::WaitForCounter(const Counter* pJobCounter, const int desiredCnt = 0)
 	{
-		while (*pJobCounter > desiredCnt) continue;
+		auto now = Time::CurrentTick();
+		int loops = 0;
+		while ((*pJobCounter) > desiredCnt && loops < WAIT_CNTR_LOOPS)
+		{
+			//loops++;
+			continue;
+		}
+		auto after = Time::CurrentTick();
+		LOG_JOBS("IDLED %i ticks.", after - now);
 	}
 
 	/// <summary>
@@ -191,10 +207,18 @@ namespace CCE
 	/// </summary>
 	/// <param name="pJobCounter">A pointer to the counter.</param>
 	/// <param name="desiredCnt">The desired count for contination.</param>
-	void JobManager::WaitForCounterAndFree(const Counter* pJobCounter, const int desiredCnt = 0)
+	void JobManager::WaitForCounterAndFree(Counter* pJobCounter, const int desiredCnt = 0)
 	{
-		while (*pJobCounter > desiredCnt) continue;
-		delete(pJobCounter);
+		auto now = Time::CurrentTick();
+		int loops = 0;
+		while ((*pJobCounter) > desiredCnt && loops < WAIT_CNTR_LOOPS)
+		{
+			//loops++;
+			continue;
+		}
+		auto after = Time::CurrentTick();
+		LOG_JOBS("IDLED %i ticks.", after - now);
+		delete pJobCounter;
 	}
 
 	/// <summary>
@@ -273,7 +297,7 @@ namespace CCE
 		std::pair<DWORD, LPVOID> thrd_fbr = std::make_pair(GetThreadId(GetCurrentThread()), _fiber);
 
 		{
-			auto lock = ScopedLock(&pushThreadIdMutex);
+			auto lock = ScopedLock(&threadIdMutex);
 			thread_fibers.push_back(thrd_fbr);
 		}		
 
@@ -284,12 +308,10 @@ namespace CCE
 				// Get new fiber and switch context
 				LPVOID fiber = GetFiber();
 				SwitchToFiber(fiber);
-				
-				// Finished executing job
-				LOG_JOBS("Executed job");
-				
+
 				// Return fiber to pool
 				ReturnFiber(fiber);
+				continue;
 			}
 		}
 		
@@ -316,6 +338,13 @@ namespace CCE
 		// Execute function
 		decl.m_pEntryPoint(decl.m_param);
 
+		// Decrease counter after job executed successfully
+		if (decl.m_pCounter != nullptr)
+		{
+			(*decl.m_pCounter)--;
+		}
+		jobQueueLength = GetJobQueueLength();
+
 		// Exit the routine
 		// Hier kommt die Rückführung hin
 		SwitchToFiber(GetThreadFiber());
@@ -329,7 +358,7 @@ namespace CCE
 	{
 		DWORD threadId = GetThreadId(GetCurrentThread());
 
-		auto lock = ScopedLock(&pushThreadIdMutex);
+		auto lock = ScopedLock(&threadIdMutex);
 
 		// TODO: Make this more performant by using hashed values
 		for (size_t i = 0; i < thread_fibers.size(); i++)
@@ -352,7 +381,8 @@ namespace CCE
 	{
 		// TODO: Change this to intelligent spin lock (GEA: p. 555)
 		// mutex lock for thread safety
-		auto lock = CCE::ScopedLock(&getJobMutex);
+		auto lock = CCE::ScopedLock(&jobQueueMutex);
+
 		JobDeclaration decl = {nullptr, Priority::NORMAL};
 
 		if (!jobQueue_High.empty())
@@ -389,7 +419,7 @@ namespace CCE
 	/// <returns>True if there are any jobs left. False if all job queues are empty.</returns>
 	bool JobManager::HasNextJob()
 	{
-		auto lock = CCE::ScopedLock(&hasNextMutex);
+		auto lock = CCE::ScopedLock(&jobQueueMutex);
 
 		return !jobQueue_High.empty() ||
 			!jobQueue_Normal.empty() ||
@@ -404,7 +434,7 @@ namespace CCE
 	{
 		if (fiber_pool.empty()) { return NULL; }
 
-		auto lock = CCE::ScopedLock(&getFiberMutex);
+		auto lock = CCE::ScopedLock(&fiberMutex);
 		LPVOID fiber = fiber_pool.front();
 		fiber_pool.pop();
 
@@ -419,7 +449,7 @@ namespace CCE
 	{
 		// TODO: Reset the fibers context if possible using 
 		// SetThreadContext and CONTEXT or in any other way
-		auto lock = ScopedLock(&returnFiberMutex);
+		auto lock = ScopedLock(&fiberMutex);
 		fiber_pool.push(fiber);
 	}
 
@@ -429,39 +459,24 @@ namespace CCE
 	JobManager* JobManager::Instance = nullptr;
 
 	/// <summary>
-	/// A mutex lock for getting jobInformation;
+	/// A counter of the jobs currently in the job system.
 	/// </summary>
-	std::mutex JobManager::getJobMutex = std::mutex();
-	
-	/// <summary>
-	/// A mutex lock for getting jobInformation;
-	/// </summary>
-	std::mutex JobManager::getFiberMutex = std::mutex();
+	JobManager::Counter JobManager::jobQueueLength = 0;
 
 	/// <summary>
 	/// A mutex lock for getting jobInformation;
 	/// </summary>
-	std::mutex JobManager::returnFiberMutex = std::mutex();
+	std::mutex JobManager::jobQueueMutex = std::mutex();
 
 	/// <summary>
-	/// A mutex lock for kicking a job;
+	/// A mutex lock for getting jobInformation;
 	/// </summary>
-	std::mutex JobManager::kickJobMutex = std::mutex();
-
-	/// <summary>
-	/// A mutex lock for kicking jobs;
-	/// </summary>
-	std::mutex JobManager::kickJobsMutex = std::mutex();
-
-	/// <summary>
-	/// A mutex lock for checking if jobs are left;
-	/// </summary>
-	std::mutex JobManager::hasNextMutex = std::mutex();
+	std::mutex JobManager::fiberMutex = std::mutex();
 
 	/// <summary>
 	/// A mutex lock for pushing the thread id and the fiber;
 	/// </summary>
-	std::mutex JobManager::pushThreadIdMutex = std::mutex();
+	std::mutex JobManager::threadIdMutex = std::mutex();
 
 	/// <summary>
 	/// A pointer to the main fiber.

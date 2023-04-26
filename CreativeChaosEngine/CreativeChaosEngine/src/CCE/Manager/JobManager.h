@@ -15,6 +15,7 @@
 namespace CCE
 {
 #define NUM_FIBERS 100
+#define WAIT_CNTR_LOOPS 200
 #define JOBDECL CCE::JobManager::JobDeclaration
 #define BIND(func, obj, ...) std::bind(&func, obj, ##__VA_ARGS__)
 
@@ -29,10 +30,11 @@ using namespace Events;
 		void StartUp() override;
 		void ShutDown() override;
 
-		static JobManager* Instance;		
-
 		typedef std::function<void(va_list)> EntryPoint;
 		typedef std::atomic<unsigned int> Counter;
+
+		static JobManager* Instance;		
+		static Counter jobQueueLength;
 
 		enum class Priority
 		{
@@ -68,12 +70,13 @@ using namespace Events;
 		};
 
 		bool KickJob(JobDeclaration& decl, Counter* cnt = nullptr);
-		bool WaitAndKickJob(const JobDeclaration& decl, const Counter* waitForCnt);
+		bool KickJobAndWait(const JobDeclaration& decl, const Counter* waitForCnt);
 		bool KickJobs(int count, JobDeclaration decls[], Counter* pJobCounter = nullptr);
 		void WaitForCounter(const Counter* pJobCounter, const int desiredCnt);
-		void WaitForCounterAndFree(const Counter* pJobCounter, const int desiredCnt);
+		void WaitForCounterAndFree(Counter* pJobCounter, const int desiredCnt);
 		void SpawnWorkerThreads(const short numOfThreads = -1);
-	
+		static unsigned int GetJobQueueLength();
+
 	private:
 
 		void SpawnWorkerThreadsWin(const short numOfThreads = -1);
@@ -89,16 +92,13 @@ using namespace Events;
 		static bool HasNextJob();
 		static LPVOID GetThreadFiber();
 
-		static std::mutex getJobMutex;
-		static std::mutex getFiberMutex;
-		static std::mutex returnFiberMutex;
-		static std::mutex kickJobMutex;
-		static std::mutex kickJobsMutex;
-		static std::mutex hasNextMutex;
-		static std::mutex pushThreadIdMutex;
+		// TODO: Fix problem with accessing resources using different mutexes
+		static std::mutex jobQueueMutex;
+		static std::mutex fiberMutex;
+		static std::mutex threadIdMutex;
 
-	//private:
-	public:
+	private:
+
 		// Wait list for Fibers and their jobs
 		alignas(32) static std::vector<std::pair<JobDeclaration, LPVOID>> wait_list;
 		
