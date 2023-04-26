@@ -36,23 +36,26 @@ using namespace Events;
 		static JobManager* Instance;		
 		static Counter jobQueueLength;
 
-		enum class Priority
+		enum class alignas(4) Priority
 		{
 			HIGH,
 			NORMAL,
 			LOW
 		};
 
-		struct JobDeclaration // 32 bytes
+		struct alignas(128) JobDeclaration // 128 bytes
 		{
+			EntryPoint m_pEntryPoint;				// 64 bytes
+
 			CCE::String m_Description = "Job";		// 8 bytes
-			EntryPoint m_pEntryPoint;				// 8 bytes
+			LPVOID m_pFiber = NULL;					// 8 bytes
+
+			Counter* m_pCounter = NULL;				// 8 bytes
+			Priority m_priority = Priority::NORMAL;	// 4 bytes
+			unsigned int mDesiredCount = 0;			// 4 bytes
 
 			va_list m_param = NULL;					// 8 bytes
-			Priority m_priority = Priority::NORMAL;	// 4 bytes
-			LPVOID m_pFiber = NULL;					// 4 bytes
-
-			Counter* m_pCounter = NULL;				// 4 bytes
+			byte padding[20];						// 20 bytes
 
 			JobDeclaration() = default;
 			JobDeclaration(const EntryPoint& ep, Priority pr, ...)
@@ -100,18 +103,18 @@ using namespace Events;
 	private:
 
 		// Wait list for Fibers and their jobs
-		alignas(32) static std::vector<std::pair<JobDeclaration, LPVOID>> wait_list;
+		alignas(128) static std::vector<JobDeclaration> wait_list;
 		
 		// TODO: Implement custom queue class
-		alignas(32) static std::queue<JobDeclaration> jobQueue_High;
-		alignas(32) static std::queue<JobDeclaration> jobQueue_Normal;
-		alignas(32) static std::queue<JobDeclaration> jobQueue_Low;
+		alignas(128) static std::queue<JobDeclaration> jobQueue_High;
+		alignas(128) static std::queue<JobDeclaration> jobQueue_Normal;
+		alignas(128) static std::queue<JobDeclaration> jobQueue_Low;
+
+		static LPVOID mainFiber;	// 8 bytes
+		alignas(8) static std::queue<LPVOID> fiber_pool;
+		alignas(16) static std::vector<std::pair<DWORD, LPVOID>> thread_fibers;
 
 		// TODO: Implement custom vector / list class
 		std::vector<std::thread*> worker_threads;
-		alignas(8) static std::queue<LPVOID> fiber_pool;
-		static std::vector<std::pair<DWORD, LPVOID>> thread_fibers;
-
-		static LPVOID mainFiber;
 	};
 }

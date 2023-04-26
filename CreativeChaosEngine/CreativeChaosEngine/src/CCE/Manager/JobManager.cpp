@@ -491,22 +491,22 @@ namespace CCE
 	/// <summary>
 	/// A wait list for jobs to wait on.
 	/// </summary>
-	alignas(32) std::vector<std::pair<JobManager::JobDeclaration, LPVOID>> JobManager::wait_list;
+	alignas(128) std::vector<JobManager::JobDeclaration> JobManager::wait_list;
 
 	/// <summary>
 	/// The high priority queue for jobs.
 	/// </summary>
-	alignas(32) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_High;
+	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_High;
 
 	/// <summary>
 	/// The normal priority queue for jobs.
 	/// </summary>
-	alignas(32) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Normal;
+	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Normal;
 
 	/// <summary>
 	/// The low priority queue for jobs.
 	/// </summary>
-	alignas(32) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Low;
+	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Low;
 
 	/// <summary>
 	/// A list for th threads to store their fiber handles.

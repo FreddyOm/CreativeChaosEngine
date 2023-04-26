@@ -150,14 +150,12 @@ int main(int argc, char* argv[])
 
 
 
-
             JobManager::EntryPoint two =
                 BIND(ProfilingManager::Two, mProfilingManager);
             JOBDECL declTwo =
                 JOBDECL(two, JobManager::Priority::LOW);
 
             mJobManager.KickJob(declTwo);
-
 
 
 
@@ -179,6 +177,7 @@ int main(int argc, char* argv[])
 
             auto cnt = static_cast<unsigned int>(mJobManager.jobQueueLength);
 
+            // This makes sure every job for this frame was finished!
             mJobManager.WaitForCounter(&mJobManager.jobQueueLength, 0);
             LOG("END OF LOOP");
         }
