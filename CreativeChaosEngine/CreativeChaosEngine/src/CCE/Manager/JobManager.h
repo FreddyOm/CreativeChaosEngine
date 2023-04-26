@@ -7,6 +7,7 @@
 #include <winnt.h>
 #include <mutex>
 #include <atomic>
+#include <unordered_map>
 #include "../String/String.h"
 #include "../Memory/PoolAllocator.h"
 #include "../Analysis/Logger.h"
@@ -112,7 +113,7 @@ using namespace Events;
 
 		static LPVOID mainFiber;	// 8 bytes
 		alignas(8) static std::queue<LPVOID> fiber_pool;
-		alignas(16) static std::vector<std::pair<DWORD, LPVOID>> thread_fibers;
+		alignas(16) static std::unordered_map<DWORD, LPVOID> thread_fibers;
 
 		// TODO: Implement custom vector / list class
 		std::vector<std::thread*> worker_threads;

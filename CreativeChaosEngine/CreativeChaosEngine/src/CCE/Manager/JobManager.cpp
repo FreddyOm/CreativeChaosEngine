@@ -294,11 +294,12 @@ namespace CCE
 	{
 		// convert thread to fiber
 		LPVOID _fiber = ConvertThreadToFiber(NULL);
-		std::pair<DWORD, LPVOID> thrd_fbr = std::make_pair(GetThreadId(GetCurrentThread()), _fiber);
+		//std::pair<DWORD, LPVOID> thrd_fbr = std::make_pair(GetThreadId(GetCurrentThread()), _fiber);
 
 		{
 			auto lock = ScopedLock(&threadIdMutex);
-			thread_fibers.push_back(thrd_fbr);
+			thread_fibers.insert({ GetThreadId(GetCurrentThread()), _fiber });
+			//thread_fibers.push_back(thrd_fbr);
 		}		
 
 		while (true)
@@ -359,15 +360,7 @@ namespace CCE
 		DWORD threadId = GetThreadId(GetCurrentThread());
 
 		auto lock = ScopedLock(&threadIdMutex);
-
-		// TODO: Make this more performant by using hashed values
-		for (size_t i = 0; i < thread_fibers.size(); i++)
-		{
-			if (thread_fibers[i].first == threadId)
-			{
-				return thread_fibers[i].second;
-			}
-		}
+		return thread_fibers.at(threadId);
 
 		DASSERT(false, "The thread was not found!");
 		return NULL;
@@ -511,5 +504,5 @@ namespace CCE
 	/// <summary>
 	/// A list for th threads to store their fiber handles.
 	/// </summary>
-	std::vector<std::pair<DWORD, LPVOID>> JobManager::thread_fibers;
+	std::unordered_map<DWORD, LPVOID> JobManager::thread_fibers;
 }
