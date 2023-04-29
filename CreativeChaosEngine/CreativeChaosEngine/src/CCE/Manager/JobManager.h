@@ -15,7 +15,8 @@
 
 namespace CCE
 {
-#define NUM_FIBERS 100
+#define NUM_FIBERS 10
+#define MAX_JOBS 500
 #define WAIT_CNTR_LOOPS 200
 #define JOBDECL CCE::JobManager::JobDeclaration
 #define BIND(func, obj, ...) std::bind(&func, obj, ##__VA_ARGS__)
@@ -34,8 +35,7 @@ using namespace Events;
 		typedef std::function<void(va_list)> EntryPoint;
 		typedef std::atomic<unsigned int> Counter;
 
-		static JobManager* Instance;		
-		static Counter jobQueueLength;
+		static JobManager* Instance;
 
 		enum class alignas(4) Priority
 		{
@@ -58,28 +58,30 @@ using namespace Events;
 			va_list m_param = NULL;					// 8 bytes
 			byte padding[20];						// 20 bytes
 
-			JobDeclaration() = default;
+			JobDeclaration()
+			{
+				m_pEntryPoint = nullptr;
+			}
+
 			JobDeclaration(const EntryPoint& ep, Priority pr, ...)
 			{
-				m_Description = CCE::String(__FUNCTION__);
 				m_pEntryPoint = ep;
+				m_priority = pr;
 
 				va_list args;
 				va_start(args, pr);
 				va_end(args);
 
 				m_param = args;
-				m_priority = pr;
 			}
 		};
 
 		bool KickJob(JobDeclaration& decl, Counter* cnt = nullptr);
-		bool KickJobAndWait(const JobDeclaration& decl, const Counter* waitForCnt);
+		bool KickJobAndWait(JobDeclaration& decl, const Counter* waitForCnt);
 		bool KickJobs(int count, JobDeclaration decls[], Counter* pJobCounter = nullptr);
 		void WaitForCounter(const Counter* pJobCounter, const int desiredCnt);
 		void WaitForCounterAndFree(Counter* pJobCounter, const int desiredCnt);
 		void SpawnWorkerThreads(const short numOfThreads = -1);
-		static unsigned int GetJobQueueLength();
 
 	private:
 

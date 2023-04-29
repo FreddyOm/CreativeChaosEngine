@@ -17,7 +17,7 @@ namespace CCE
 
 		auto startTime = Time::CurrentTick();
 		PopulateFiberPool();
-		//SpawnWorkerThreads();
+		SpawnWorkerThreads();
 		initialized = true;
 
 		auto endTime = Time::CurrentTick();
@@ -125,9 +125,9 @@ namespace CCE
 	/// <param name="decl">Declaration of the job.</param>
 	/// <param name="waitForCnt">The counter to wait for to become 0.</param>
 	/// <returns>True if job was successfully kicked, false if an error occured.</returns>
-	bool JobManager::KickJobAndWait(const JobManager::JobDeclaration& decl, const JobManager::Counter* waitForCnt)
+	bool JobManager::KickJobAndWait(JobManager::JobDeclaration& decl, const JobManager::Counter* waitForCnt)
 	{
-
+		throw E_NOTIMPL;
 		auto lock = ScopedLock(&jobQueueMutex);
 		// Add job to queue depending on its priority
 		switch (decl.m_priority)
@@ -170,17 +170,6 @@ namespace CCE
 		return success;
 	}
 
-	/// <summary>
-	/// Returns the amount of jobs inside the job system.
-	/// </summary>
-	/// <returns>The number of jobs in the system.</returns>
-	unsigned int JobManager::GetJobQueueLength()
-	{
-		auto lock = ScopedLock(&jobQueueMutex);
-		return jobQueue_High.size() + jobQueue_Normal.size() + 
-			jobQueue_Low.size() + wait_list.size();
-	}
-
 	//TODO: Check how the counters should be implemented
 
 	/// <summary>
@@ -190,15 +179,17 @@ namespace CCE
 	/// <param name="desiredCnt">The desired count for contination.</param>
 	void JobManager::WaitForCounter(const Counter* pJobCounter, const int desiredCnt = 0)
 	{
-		auto now = Time::CurrentTick();
+		auto now = Time::Now();
 		int loops = 0;
 		while ((*pJobCounter) > desiredCnt && loops < WAIT_CNTR_LOOPS)
 		{
+			auto test = jobQueue_High;
+			fiber_pool.front();
 			//loops++;
 			continue;
 		}
-		auto after = Time::CurrentTick();
-		LOG_JOBS("IDLED %i ticks.", after - now);
+		auto after = Time::Now();
+		LOG_JOBS("IDLED %i microseconds.", Time::GetDurationInMicroSec(now, after));
 	}
 
 	/// <summary>
@@ -245,6 +236,7 @@ namespace CCE
 		// spawn worker threads and set affinity
 		for (unsigned short t_index = 0; t_index < numOfThreads; t_index++)
 		{
+			// TODO allocate in custom allocator
 			// spawn threads
 			std::thread* workerThread = new std::thread(JobManager::RunThread);
 			auto hndl = workerThread->native_handle();
@@ -255,7 +247,7 @@ namespace CCE
 			DASSERT(!threadAffinityError,"Setting thread affinity wasn't successful!");
 			
 			// add to list
-			worker_threads.push_back(workerThread);
+			worker_threads.push_back(std::move(workerThread));
 		}
 	}
 
@@ -281,12 +273,10 @@ namespace CCE
 				NULL);
 
 			DASSERT(fiber != NULL, "Failed creating fiber pool!");
-			fiber_pool.push(fiber);
+			fiber_pool.push(std::move(fiber));
 		}
 	}
 
-	// TODO: Pull jobs and work on them
-	// TODO: Fix job pulling and working on JobDecls
 	/// <summary>
 	/// Do some work for now
 	/// </summary>
@@ -321,34 +311,41 @@ namespace CCE
 		DeleteFiber(_fiber);
 	}
 
+	// TODO: Implement job wait list functionality so jobs can be put to sleep and woke up later
 	/// <summary>
 	/// The main execution routine for work.
 	/// </summary>
 	void JobManager::ExecuteJob()
 	{
-		// Pull the next job
-		JOBDECL decl = GetNextJob();
-		if (decl.m_pEntryPoint == nullptr)
+		// This has to be in a while loop so that the fiber doesn't terminate ever.
+		// It seems lik  a terminated fiber will not execute from start again.
+		// So in order to not delete and create new fibers all the time we let this run
+		// in a loop and make sure the entrance point (SwitchToFiber(GetThreadFiber());) 
+		// is at the beginning of the loop!
+		while (true) 
 		{
+			// Pull the next job
+			JOBDECL decl = GetNextJob();
+
+			// This has to be done in here so we don't wake up in the middle of the function
+			// when the fiber is pulled next time
+			if (decl.m_pEntryPoint != nullptr)
+			{
+				decl.m_pFiber = GetCurrentFiber();
+
+				// Execute function
+				decl.m_pEntryPoint(decl.m_param);
+
+				// Decrease counter after job executed successfully
+				if (decl.m_pEntryPoint != nullptr && decl.m_pCounter != nullptr)
+				{
+					(*decl.m_pCounter)--;
+				}
+			}
+
+			// In a loop, the end is the beginning!!
 			SwitchToFiber(GetThreadFiber());
 		}
-//		DASSERT(decl.m_pEntryPoint != nullptr,
-//			"The jobs decleration is invalid!\n This is probably due to a race condition.");
-		decl.m_pFiber = GetCurrentFiber();
-
-		// Execute function
-		decl.m_pEntryPoint(decl.m_param);
-
-		// Decrease counter after job executed successfully
-		if (decl.m_pCounter != nullptr)
-		{
-			(*decl.m_pCounter)--;
-		}
-		jobQueueLength = GetJobQueueLength();
-
-		// Exit the routine
-		// Hier kommt die Rückführung hin
-		SwitchToFiber(GetThreadFiber());
 	}
 
 	/// <summary>
@@ -440,8 +437,6 @@ namespace CCE
 	/// <param name="fiber">The fiber to return.</param>
 	void JobManager::ReturnFiber(LPVOID fiber)
 	{
-		// TODO: Reset the fibers context if possible using 
-		// SetThreadContext and CONTEXT or in any other way
 		auto lock = ScopedLock(&fiberMutex);
 		fiber_pool.push(fiber);
 	}
@@ -450,11 +445,6 @@ namespace CCE
 	/// Singelton instance of the job manager.
 	/// </summary>
 	JobManager* JobManager::Instance = nullptr;
-
-	/// <summary>
-	/// A counter of the jobs currently in the job system.
-	/// </summary>
-	JobManager::Counter JobManager::jobQueueLength = 0;
 
 	/// <summary>
 	/// A mutex lock for getting jobInformation;
@@ -504,5 +494,5 @@ namespace CCE
 	/// <summary>
 	/// A list for th threads to store their fiber handles.
 	/// </summary>
-	std::unordered_map<DWORD, LPVOID> JobManager::thread_fibers;
+	alignas(16) std::unordered_map<DWORD, LPVOID> JobManager::thread_fibers;
 }

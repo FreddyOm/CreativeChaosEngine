@@ -65,14 +65,6 @@ namespace CCE
 		case WM_CREATE:
 		{
 			// Track additional mouse info
-			//TODO: Remove new and allocate memory in custom memalloc
-			lpMouseTrack = new TRACKMOUSEEVENT();
-			
-			lpMouseTrack->cbSize = sizeof(TRACKMOUSEEVENT);
-			lpMouseTrack->dwFlags = TME_HOVER, TME_LEAVE;
-			lpMouseTrack->dwHoverTime = HOVER_DEFAULT;
-			lpMouseTrack->hwndTrack = hWnd;
-
 			break;
 		}
 
