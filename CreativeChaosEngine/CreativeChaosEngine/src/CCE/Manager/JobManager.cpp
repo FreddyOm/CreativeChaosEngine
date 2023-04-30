@@ -4,6 +4,9 @@
 #include "../Analysis/Time.h"
 #include "../Utilities/Concurrency/ScopedLock.h"
 
+
+// TODO: Currently the threads fight for the next job. Fix that to make it more efficient.
+
 namespace CCE
 {
 	/// <summary>
@@ -117,6 +120,38 @@ namespace CCE
 		return true;
 	}
 
+	/// <summary>
+	/// Kicks a job.
+	/// </summary>
+	/// <param name="decl">Declaration of the job.</param>
+	/// <returns>True if job was successfully kicked, false if an error occured.</returns>
+	bool JobManager::KickJob(JobManager::JobDeclaration* decl, JobManager::Counter* cnt)
+	{
+		if (decl->m_pEntryPoint == nullptr) { return false; }
+
+		auto lock = ScopedLock(&jobQueueMutex);
+		decl->m_pCounter = cnt;
+
+		// Add job to queue depending on its priority
+		switch (decl->m_priority)
+		{
+		case JobManager::Priority::HIGH:
+		{
+			jobQueue_High.push(*decl); break;
+		}
+		case JobManager::Priority::LOW:
+		{
+			jobQueue_Low.push(*decl); break;
+		}
+		default:
+		{
+			jobQueue_Normal.push(*decl); break;
+		}
+		}
+
+		return true;
+	}
+
 	//TODO: Check how KickJobAndWait should be implemented
 
 	/// <summary>
@@ -180,12 +215,8 @@ namespace CCE
 	void JobManager::WaitForCounter(const Counter* pJobCounter, const int desiredCnt = 0)
 	{
 		auto now = Time::Now();
-		int loops = 0;
-		while ((*pJobCounter) > desiredCnt && loops < WAIT_CNTR_LOOPS)
+		while ((*pJobCounter) > desiredCnt)
 		{
-			auto test = jobQueue_High;
-			fiber_pool.front();
-			//loops++;
 			continue;
 		}
 		auto after = Time::Now();
@@ -201,10 +232,8 @@ namespace CCE
 	void JobManager::WaitForCounterAndFree(Counter* pJobCounter, const int desiredCnt = 0)
 	{
 		auto now = Time::CurrentTick();
-		int loops = 0;
-		while ((*pJobCounter) > desiredCnt && loops < WAIT_CNTR_LOOPS)
+		while ((*pJobCounter) > desiredCnt)
 		{
-			//loops++;
 			continue;
 		}
 		auto after = Time::CurrentTick();
@@ -221,32 +250,31 @@ namespace CCE
 	{
 		if (numOfThreads == -1)
 		{
-			// handle default worker threads amount
-			numOfThreads = std::thread::hardware_concurrency();
+			// Handle default worker threads amount
+			numOfThreads = std::thread::hardware_concurrency() - 1;
 		}
 		
-		LOG_JOBS("Number of logical cpu cores: %i", numOfThreads);
+		LOG_JOBS("Number of logical cpu cores: %i", numOfThreads + 1);
 		DWORD_PTR processAffinityMask = (DWORD_PTR(1) << (numOfThreads)) - 1;
 		
-		// check for errors with process affinity
+		// Check for errors with process affinity
 		bool processAffinityError = SetProcessAffinityMask(GetCurrentProcess(), processAffinityMask) == 0;
 		if (processAffinityError) { DERROR(GetLastError()); }
 		DASSERT(!processAffinityError,"Setting process affinity mask wasn't successful!");
 
-		// spawn worker threads and set affinity
+		// Spawn worker threads and set affinity
 		for (unsigned short t_index = 0; t_index < numOfThreads; t_index++)
 		{
-			// TODO allocate in custom allocator
-			// spawn threads
+			// Spawn threads		TODO: allocate in custom allocator
 			std::thread* workerThread = new std::thread(JobManager::RunThread);
 			auto hndl = workerThread->native_handle();
 
-			// set affinity and hanle error
+			// Set affinity and hanle error
 			bool threadAffinityError = SetThreadAffinityMask(hndl, DWORD_PTR(1) << t_index) == 0;
 			if (threadAffinityError) { DERROR(GetLastError()); }
 			DASSERT(!threadAffinityError,"Setting thread affinity wasn't successful!");
 			
-			// add to list
+			// Add to list
 			worker_threads.push_back(std::move(workerThread));
 		}
 	}
@@ -278,18 +306,16 @@ namespace CCE
 	}
 
 	/// <summary>
-	/// Do some work for now
+	/// The routine that runs on each thread.
 	/// </summary>
 	void JobManager::RunThread()
 	{
 		// convert thread to fiber
 		LPVOID _fiber = ConvertThreadToFiber(NULL);
-		//std::pair<DWORD, LPVOID> thrd_fbr = std::make_pair(GetThreadId(GetCurrentThread()), _fiber);
 
 		{
 			auto lock = ScopedLock(&threadIdMutex);
 			thread_fibers.insert({ GetThreadId(GetCurrentThread()), _fiber });
-			//thread_fibers.push_back(thrd_fbr);
 		}		
 
 		while (true)

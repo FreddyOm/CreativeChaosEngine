@@ -17,16 +17,31 @@ namespace CCE
 
 		void One()
 		{
+			int l = 0;
+			for (int i = 0; i < 10000; i++)
+			{
+				l += i % 3;
+			}
 			Logger::Log("Test: 1", COLOR_WHITE, CCE::LogLevel::JOBS);
 		}
 
 		void Two()
 		{
+			int l = 0;
+			for (int i = 0; i < 10000; i++)
+			{
+				l += i % 3;
+			}
 			Logger::Log("Test: 2", COLOR_WHITE, CCE::LogLevel::JOBS);
 		}
 
 		void Three()
 		{
+			int l = 0;
+			for (int i = 0; i < 1000; i++)
+			{
+				l += i % 3;
+			}
 			Logger::Log("Test: 3", COLOR_WHITE, CCE::LogLevel::JOBS);
 		}
 

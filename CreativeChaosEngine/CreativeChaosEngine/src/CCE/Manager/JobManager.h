@@ -77,6 +77,7 @@ using namespace Events;
 		};
 
 		bool KickJob(JobDeclaration& decl, Counter* cnt = nullptr);
+		bool KickJob(JobDeclaration* decl, Counter* cnt = nullptr);
 		bool KickJobAndWait(JobDeclaration& decl, const Counter* waitForCnt);
 		bool KickJobs(int count, JobDeclaration decls[], Counter* pJobCounter = nullptr);
 		void WaitForCounter(const Counter* pJobCounter, const int desiredCnt);
@@ -109,6 +110,7 @@ using namespace Events;
 		alignas(128) static std::vector<JobDeclaration> wait_list;
 		
 		// TODO: Implement custom queue class
+		// TODO: Preallocate -> use pool alloc
 		alignas(128) static std::queue<JobDeclaration> jobQueue_High;
 		alignas(128) static std::queue<JobDeclaration> jobQueue_Normal;
 		alignas(128) static std::queue<JobDeclaration> jobQueue_Low;

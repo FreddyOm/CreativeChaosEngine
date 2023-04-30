@@ -3,7 +3,11 @@
 
 namespace CCE
 {
+	alignas(16) double Time::average[AVG_BUF_LEN] = { 16.6, 16.6, 16.6, 16.6, 16.6, 16.6,
+		16.6, 16.6, 16.6, 16.6, 16.6, 16.6, 16.6, 16.6};
 	double Time::deltaTime = 16.6;
+	short Time::averageIndex = 0;
+
 
 	Time::time::time_point Time::Now()
 	{
@@ -32,7 +36,28 @@ namespace CCE
 		if (millis > 1000)
 		{
 			deltaTime = 16.6;
-		}		
+		}
+
+		average[averageIndex] = deltaTime;
+		
+		if (averageIndex < AVG_BUF_LEN)
+		{
+			++averageIndex;
+		}
+		else 
+		{
+			averageIndex = 0;
+		}
+	}
+
+	double Time::GetAverageFrameTime()
+	{
+		double avg = 0;
+		for (int i = 0; i < AVG_BUF_LEN; ++i)
+		{
+			avg += average[i] / AVG_BUF_LEN;
+		}
+		return avg;
 	}
 
 
