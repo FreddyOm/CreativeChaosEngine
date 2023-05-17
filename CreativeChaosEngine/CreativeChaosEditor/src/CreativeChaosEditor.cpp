@@ -202,7 +202,6 @@ int main(int argc, char* argv[])
             mProfilingManager.Three();
             mProfilingManager.Four();
 #endif
-
             auto end = Time::Now();
             Time::UpdateDeltaTime(Time::GetDurationInMilliSec(start,end));
             LOG("END OF LOOP. Frametime: %f milliseconds", Time::deltaTime);
@@ -228,9 +227,4 @@ int main(int argc, char* argv[])
     Sleep(500);
     
     return 0;
-}
-
-void TestLoad()
-{
-
 }
