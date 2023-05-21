@@ -115,7 +115,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\LoadTest.cpp" />
     <ClCompile Include="src\EditorWindow\EditorWindow.cpp" />
     <ClCompile Include="src\CreativeChaosEditor.cpp" />
   </ItemGroup>
@@ -125,7 +124,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\LoadTest.h" />
     <ClInclude Include="src\CreativeChaosEditor.h" />
     <ClInclude Include="src\EditorWindow\EditorWindow.h" />
   </ItemGroup>

@@ -24,8 +24,8 @@ namespace CCE
 		static time::time_point CurrentTick();
 		static double GetDurationInMilliSec(const time::time_point start, const time::time_point end);
 		static long GetDurationInMicroSec(const time::time_point start, const time::time_point end);
-		static void UpdateDeltaTime(const double millis);
 		static double GetAverageFrameTime();
+		static void SetDeltaTime(const double millis);
 	};
 
 	struct CCE_API DateTime

@@ -1,6 +1,5 @@
 #include "CreativeChaosEditor.h"
 #include "EditorWindow/EditorWindow.h"
-#include "LoadTest.h"
 #include "CCE/Manager/JobManager.h"
 #include <functional>
 
@@ -118,6 +117,7 @@ int main(int argc, char* argv[])
 
         while (rValue != (int)WM_QUIT)
         {
+            auto start = Time::Now();
 #if MULTITHREADED_MAINSYS_LOOP
             *cnt = 2;
 
@@ -142,6 +142,8 @@ int main(int argc, char* argv[])
             window.GetRenderPipeline()->BeginFrame(backgroundColor);
             window.GetRenderPipeline()->EndFrame();
 #endif
+            auto end = Time::Now();
+            Time::SetDeltaTime(Time::GetDurationInMilliSec(start, end));
         }
 
         /*

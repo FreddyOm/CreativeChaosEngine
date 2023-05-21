@@ -21,18 +21,12 @@
     <ClCompile Include="src\EditorWindow\EditorWindow.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\LoadTest.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\EditorWindow\EditorWindow.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\CreativeChaosEditor.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="src\LoadTest.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
