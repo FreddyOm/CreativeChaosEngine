@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
 
     // ------ OPEN ENGINE WINDOW ------
 
-    CCE::Color backgroundColor = CCE::Color("#506266");
+    CCE::Color backgroundColor = CCE::Color("#BCC5CE");
 
     {
         EditorWindow window = EditorWindow(&mInputManager);

@@ -126,9 +126,8 @@ namespace CCE::Graphics
 
 	void RenderPipeline::BeginFrame(const Color col) const
 	{
-		const float color[] = { col.r, col.g, col.b, col.a};
 		// Clear render view and draw background color
-		pContext->ClearRenderTargetView(pRenderTarget.Get(), color);
+		pContext->ClearRenderTargetView(pRenderTarget.Get(), col.RGBA());
 		pContext->ClearDepthStencilView(pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 
 		// Render triangles
