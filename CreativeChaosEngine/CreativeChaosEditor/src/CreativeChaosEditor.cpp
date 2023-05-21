@@ -20,7 +20,7 @@
 
 #define EDITOR_VERSION "Creative Chaos Engine - v0.1"
 
-#define MULTITHREADED 1
+#define MULTITHREADED_MAINSYS_LOOP 1
 
 
 int main(int argc, char* argv[])
@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
 
     // ------ OPEN ENGINE WINDOW ------
 
-    CCE::Color backgroundColor = CCE::Color("#F4C167");
+    CCE::Color backgroundColor = CCE::Color("#506266");
 
     {
         EditorWindow window = EditorWindow(&mInputManager);
@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
         // update window input
         int rValue = 0;
 
-#if MULTITHREADED    
+#if MULTITHREADED_MAINSYS_LOOP    
         JobManager::EntryPoint handleXInput = 
             BIND(InputManager::HandleXInput, mInputManager);
         JOBDECL declHandleXInput = JOBDECL(handleXInput,JobManager::Priority::NORMAL);
@@ -118,7 +118,7 @@ int main(int argc, char* argv[])
 
         while (rValue != (int)WM_QUIT)
         {
-#if MULTITHREADED
+#if MULTITHREADED_MAINSYS_LOOP
             *cnt = 2;
 
             // Update Editor Window
