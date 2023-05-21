@@ -60,20 +60,20 @@ namespace CCE
 
 		struct Controller : private Input::InputDevice // 128 bytes
 		{
-			ButtonState RUpper = {};		// 4 bytes
-			ButtonState RRight = {};		// 4 bytes
-			ButtonState RLower = {};		// 4 bytes
-			ButtonState RLeft = {};			// 4 bytes
+			ButtonState RNorth = {};		// 4 bytes
+			ButtonState REast = {};			// 4 bytes
+			ButtonState RSouth = {};		// 4 bytes
+			ButtonState RWest = {};			// 4 bytes
 
-			ButtonState LUpper = {};		// 4 bytes
-			ButtonState LRight = {};		// 4 bytes
-			ButtonState LLower = {};		// 4 bytes
-			ButtonState LLeft = {};			// 4 bytes
+			ButtonState LNorth = {};		// 4 bytes
+			ButtonState LEast = {};			// 4 bytes
+			ButtonState LSouth = {};		// 4 bytes
+			ButtonState LWest = {};			// 4 bytes
 
 			ButtonState RShoulder = {};		// 4 bytes
 			ButtonState LShoulder = {};		// 4 bytes
-			ButtonState Start = {};			// 4 bytes
-			ButtonState Select = {};		// 4 bytes
+			ButtonState Option1 = {};		// 4 bytes
+			ButtonState Option2 = {};		// 4 bytes
 			
 			Axis RTrigger = {};				// 8 bytes
 			Axis LTrigger = {};				// 8 bytes
@@ -87,7 +87,6 @@ namespace CCE
 			byte padding[24];				// 24 bytes
 		};
 
-		LPTRACKMOUSEEVENT lpMouseTrack = {};
 		alignas (64)	Mouse mouse = {};
 		alignas (256)	Keyboard keyboard = {};
 		alignas (128)	Controller controller[4] = {};

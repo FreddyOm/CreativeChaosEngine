@@ -88,10 +88,13 @@ int main(int argc, char* argv[])
 
         using namespace CCE;
 
-        /*
+        // update window input
+        int rValue = 0;
+
+#if MULTITHREADED    
         JobManager::EntryPoint handleXInput = 
             BIND(InputManager::HandleXInput, mInputManager);
-        JOBDECL declHandleXInput = JOBDECL(handleXInput,JobManager::Priority::HIGH);
+        JOBDECL declHandleXInput = JOBDECL(handleXInput,JobManager::Priority::NORMAL);
         
         // ----------------------------------------
 
@@ -103,45 +106,45 @@ int main(int argc, char* argv[])
             BIND(Graphics::RenderPipeline::EndFrame, window.GetRenderPipeline());
         JOBDECL declEndFrame = JOBDECL(endFrame, JobManager::Priority::HIGH);
 
-        // update window input
-        int rValue = 0;
-
         JobManager::EntryPoint updateEditorWin =
             BIND(EditorWindow::UpdateEditorWindow, window, rValue);
         JOBDECL declUpdateEditorWin = JOBDECL(updateEditorWin, JobManager::Priority::HIGH);
 
         bool initialized = false;
         // Update loop
+        JobManager::Counter* cnt = new JobManager::Counter(2);
+        
+#endif
 
-        */
+        while (rValue != (int)WM_QUIT)
+        {
+#if MULTITHREADED
+            *cnt = 2;
+
+            // Update Editor Window
+            window.UpdateEditorWindow(rValue);
+
+            // Update Inputs
+            mInputManager.HandleXInput();
+
+            // Update GFX
+            mJobManager.KickJob(&declBeginFrame, cnt);
+            mJobManager.WaitForCounter(cnt, 1);
+            mJobManager.KickJob(&declEndFrame, cnt);
+            mJobManager.WaitForCounter(cnt, 0);
+
+#else
+            window.UpdateEditorWindow(rValue);
+            if (rValue == (int)WM_QUIT) { LOG("Quit Application %i", rValue);  break; }
+            //mInputManager.HandleDirectInput();
+            mInputManager.HandleXInput();
+
+            window.GetRenderPipeline()->BeginFrame(backgroundColor);
+            window.GetRenderPipeline()->EndFrame();
+#endif
+        }
 
         /*
-        while (true)
-        {
-            // TODO: Handle inputs on different thread (-> via job system)
-            // update controller input
-            //mInputManager.HandleXInput();
-            mJobManager.KickJob(declHandleXInput);
-            //mInputManager.HandleDirectInput();
-
-
-            mJobManager.KickJob(declUpdateEditorWin);
-
-            //window.UpdateEditorWindow(rValue);
-            if (rValue == (int)WM_QUIT) { break; }
-            
-            JobManager::Counter pCnt = JobManager::Counter();
-            pCnt = 1;
-
-            // update gfx
-            mJobManager.KickJob(declBeginFrame, &pCnt);
-            mJobManager.WaitForCounterAndFree(&pCnt, 0);
-            mJobManager.KickJob(declEndFrame);
-            //window.GetRenderPipeline()->BeginFrame(backgroundColor);
-            //window.GetRenderPipeline()->EndFrame();
-        }
-        */
-
         JobManager::Counter* cnt = new JobManager::Counter(4);
 
         JobManager::EntryPoint one =
@@ -207,6 +210,7 @@ int main(int argc, char* argv[])
             LOG("END OF LOOP. Frametime: %f milliseconds", Time::deltaTime);
             LOG("END OF LOOP. Avg-Frametime: %f milliseconds", Time::GetAverageFrameTime());
         }
+        */
     }
 
     // HOW TO HANDLE DIFFERENT RETURN TYPES? 

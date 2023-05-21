@@ -58,7 +58,7 @@ bool EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 }
 
 /// <summary>
-/// Initializes the window's message pump.
+/// The window's message pump.
 /// </summary>
 /// <returns>The return code whenever the window is closed.</returns>
 void EditorWindow::UpdateEditorWindow(int& _returnVal)

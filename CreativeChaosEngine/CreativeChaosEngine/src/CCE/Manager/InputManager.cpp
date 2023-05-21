@@ -36,10 +36,10 @@ namespace CCE
 	/// </summary>
 	void CCE::InputManager::ShutDown()
 	{
+		CoUninitialize();
 		for(int i = 0; i < XUSER_MAX_COUNT; i++)
 			DS5W::freeDeviceContext(&con[i]);
 
-		delete lpMouseTrack;
 		LOGC("Shutting down InputManager...", COLOR_BLUE);
 		initialized = false;
 		Instance = nullptr;
@@ -64,7 +64,6 @@ namespace CCE
 		// -------------------- CONFIG --------------------
 		case WM_CREATE:
 		{
-			// Track additional mouse info
 			break;
 		}
 
@@ -147,8 +146,6 @@ namespace CCE
 
 			mouse.xPos = GET_X_LPARAM(lParam);
 			mouse.yPos = GET_Y_LPARAM(lParam);
-
-			DASSERT(TrackMouseEvent(lpMouseTrack), "Tracking mouse events unsuccessful!");
 
 			LOG_INPUT("Mouse position [x: %i y: %i]", mouse.xPos, mouse.yPos);
 			break;
@@ -383,7 +380,7 @@ namespace CCE
 	/// Handle XInput (Controller).
 	/// </summary>
 	void InputManager::HandleXInput()
-	{
+	{		
 		connectedDeviceCount = 0;
 
 		DWORD dwResult;
@@ -457,7 +454,7 @@ namespace CCE
 		{
 			if (DS5W_SUCCESS(DS5W::getDeviceInputState(&con[controller_index], &inState[controller_index])))
 			{
-				
+				// TODO: Handle Dual Sense Input
 			}
 		}
 		
@@ -505,11 +502,11 @@ namespace CCE
 
 		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_A)
 		{
-			BUTTON_STATE* pButton = &_currentController->RLower;
+			BUTTON_STATE* pButton = &_currentController->RSouth;
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i" ,"A", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i" ,"SOUTH", controller_Index);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -518,11 +515,11 @@ namespace CCE
 		}
 		else
 		{
-			BUTTON_STATE* pButton = &_currentController->RLower;
+			BUTTON_STATE* pButton = &_currentController->RSouth;
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "A", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "SOUTH", controller_Index);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -532,11 +529,11 @@ namespace CCE
 
 		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_B)
 		{
-			BUTTON_STATE* pButton = &_currentController->RRight;
+			BUTTON_STATE* pButton = &_currentController->REast;
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i", "B", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i", "EAST", controller_Index);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -545,11 +542,11 @@ namespace CCE
 		}
 		else
 		{
-			BUTTON_STATE* pButton = &_currentController->RRight;
+			BUTTON_STATE* pButton = &_currentController->REast;
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "B", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "EAST", controller_Index);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -559,11 +556,11 @@ namespace CCE
 
 		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_X)
 		{
-			BUTTON_STATE* pButton = &_currentController->RLeft;
+			BUTTON_STATE* pButton = &_currentController->RWest;
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i", "X", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i", "WEST", controller_Index);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -572,11 +569,11 @@ namespace CCE
 		}
 		else
 		{
-			BUTTON_STATE* pButton = &_currentController->RLeft;
+			BUTTON_STATE* pButton = &_currentController->RWest;
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "X", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "WEST", controller_Index);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -586,11 +583,11 @@ namespace CCE
 
 		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_Y)
 		{
-			BUTTON_STATE* pButton = &_currentController->RUpper;
+			BUTTON_STATE* pButton = &_currentController->RNorth;
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i", "Y", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i", "NORTH", controller_Index);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -599,11 +596,11 @@ namespace CCE
 		}
 		else
 		{
-			BUTTON_STATE* pButton = &_currentController->RUpper;
+			BUTTON_STATE* pButton = &_currentController->RNorth;
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "Y", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "NORTH", controller_Index);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -617,7 +614,7 @@ namespace CCE
 
 		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)
 		{
-			BUTTON_STATE* pButton = &_currentController->LUpper;
+			BUTTON_STATE* pButton = &_currentController->LNorth;
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
@@ -630,7 +627,7 @@ namespace CCE
 	}
 		else
 		{
-			BUTTON_STATE* pButton = &_currentController->LUpper;
+			BUTTON_STATE* pButton = &_currentController->LNorth;
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
@@ -644,7 +641,7 @@ namespace CCE
 
 		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT)
 		{
-			BUTTON_STATE* pButton = &_currentController->LRight;
+			BUTTON_STATE* pButton = &_currentController->LEast;
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
@@ -657,7 +654,7 @@ namespace CCE
 		}
 		else
 		{
-			BUTTON_STATE* pButton = &_currentController->LRight;
+			BUTTON_STATE* pButton = &_currentController->LEast;
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
@@ -671,7 +668,7 @@ namespace CCE
 
 		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)
 		{
-			BUTTON_STATE* pButton = &_currentController->LLower;
+			BUTTON_STATE* pButton = &_currentController->LSouth;
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
@@ -684,7 +681,7 @@ namespace CCE
 		}
 		else
 		{
-			BUTTON_STATE* pButton = &_currentController->LLower;
+			BUTTON_STATE* pButton = &_currentController->LSouth;
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
@@ -698,7 +695,7 @@ namespace CCE
 
 		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT)
 		{
-			BUTTON_STATE* pButton = &_currentController->LLeft;
+			BUTTON_STATE* pButton = &_currentController->LWest;
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
@@ -711,7 +708,7 @@ namespace CCE
 		}
 		else
 		{
-			BUTTON_STATE* pButton = &_currentController->LLeft;
+			BUTTON_STATE* pButton = &_currentController->LWest;
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
@@ -729,11 +726,11 @@ namespace CCE
 
 		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_START)
 		{
-			BUTTON_STATE* pButton = &_currentController->Start;
+			BUTTON_STATE* pButton = &_currentController->Option2;
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i" ,"START", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i" ,"OPTION2", controller_Index);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -742,11 +739,11 @@ namespace CCE
 		}
 		else
 		{
-			BUTTON_STATE* pButton = &_currentController->Start;
+			BUTTON_STATE* pButton = &_currentController->Option2;
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "START", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "OPTION2", controller_Index);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -756,11 +753,11 @@ namespace CCE
 
 		if (state.Gamepad.wButtons & XINPUT_GAMEPAD_BACK)
 		{
-			BUTTON_STATE* pButton = &_currentController->Select;
+			BUTTON_STATE* pButton = &_currentController->Option1;
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i" ,"BACK", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i" ,"OPTION1", controller_Index);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -769,11 +766,11 @@ namespace CCE
 		}
 		else
 		{
-			BUTTON_STATE* pButton = &_currentController->Select;
+			BUTTON_STATE* pButton = &_currentController->Option1;
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "BACK", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "OPTION1", controller_Index);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{

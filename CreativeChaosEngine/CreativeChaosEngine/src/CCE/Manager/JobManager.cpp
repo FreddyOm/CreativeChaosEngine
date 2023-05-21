@@ -4,7 +4,6 @@
 #include "../Analysis/Time.h"
 #include "../Utilities/Concurrency/ScopedLock.h"
 
-
 // TODO: Currently the threads fight for the next job. Fix that to make it more efficient.
 
 namespace CCE
@@ -14,14 +13,13 @@ namespace CCE
 	/// </summary>
 	void JobManager::StartUp()
 	{
-		static JobManager* Instance;
 		DASSERT(Instance == nullptr, "JobManager was instantiated more than once!");
-		Instance = this;
+		JobManager::Instance = this;
+		initialized = true;
 
 		auto startTime = Time::CurrentTick();
 		PopulateFiberPool();
 		SpawnWorkerThreads();
-		initialized = true;
 
 		auto endTime = Time::CurrentTick();
 		double initDuration = Time::GetDurationInMicroSec(startTime, endTime);
@@ -119,6 +117,8 @@ namespace CCE
 
 		return true;
 	}
+
+	//TODO: Implement KickJobAndDeleteDecl to clarify whether or not the decl is still valid afterwards.
 
 	/// <summary>
 	/// Kicks a job.
@@ -220,7 +220,7 @@ namespace CCE
 			continue;
 		}
 		auto after = Time::Now();
-		LOG_JOBS("IDLED %i microseconds.", Time::GetDurationInMicroSec(now, after));
+		//LOG_JOBS("IDLED %i microseconds.", Time::GetDurationInMicroSec(now, after));
 	}
 
 	/// <summary>
@@ -318,7 +318,7 @@ namespace CCE
 			thread_fibers.insert({ GetThreadId(GetCurrentThread()), _fiber });
 		}		
 
-		while (true)
+		while (JobManager::Instance->initialized)
 		{
 			if (HasNextJob() || wait_list.size() != 0)
 			{
@@ -348,7 +348,7 @@ namespace CCE
 		// So in order to not delete and create new fibers all the time we let this run
 		// in a loop and make sure the entrance point (SwitchToFiber(GetThreadFiber());) 
 		// is at the beginning of the loop!
-		while (true) 
+		while (JobManager::Instance->initialized)
 		{
 			// Pull the next job
 			JOBDECL decl = GetNextJob();
