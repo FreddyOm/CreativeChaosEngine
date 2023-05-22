@@ -23,7 +23,7 @@ The custom game engine of 'CreativeChaos UG'
 ### JobSystem
 Jobs can be created by using **JobManager::Declarations**. They get a bound ***JobManager::EntryPoint***, a ***Priority*** 
 and the ***Arguments*** for the call.
->Currently only ***void*** return types are supported. Values can be handed over as pointers to manipulate local objects.
+>Currently only ***void*** return types are supported. Values can be handed over as pointers to manipulate local objects.    
 The declarations are then queried by calling **JobManager::KickJob** which will automatically queue the job for execution
 and run it whenever the resources are available. To manage race conditions and concurrent resource management use 
 **JobManager::WaitForCounter**. This will busy wait for end of execution.
