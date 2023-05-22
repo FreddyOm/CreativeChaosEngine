@@ -91,7 +91,7 @@ namespace CCE
 	/// </summary>
 	/// <param name="decl">Declaration of the job.</param>
 	/// <returns>True if job was successfully kicked, false if an error occured.</returns>
-	bool JobManager::KickJob(JobManager::JobDeclaration& decl, JobManager::Counter* cnt)
+	bool JobManager::KickJobAndFreeDecl(JobManager::JobDeclaration& decl, JobManager::Counter* cnt)
 	{
 		if (decl.m_pEntryPoint == nullptr) { return false; }
 
@@ -117,8 +117,6 @@ namespace CCE
 
 		return true;
 	}
-
-	//TODO: Implement KickJobAndDeleteDecl to clarify whether or not the decl is still valid afterwards.
 
 	/// <summary>
 	/// Kicks a job.
@@ -196,7 +194,7 @@ namespace CCE
 		bool success = true;
 		for (unsigned short i = 0; i < count; i++)
 		{
-			if (!KickJob(decls[i], cnt))
+			if (!KickJobAndFreeDecl(decls[i], cnt))
 			{
 				success = false;
 			}

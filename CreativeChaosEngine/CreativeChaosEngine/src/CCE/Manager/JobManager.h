@@ -76,7 +76,7 @@ using namespace Events;
 			}
 		};
 
-		bool KickJob(JobDeclaration& decl, Counter* cnt = nullptr);
+		bool KickJobAndFreeDecl(JobDeclaration& decl, Counter* cnt = nullptr);
 		bool KickJob(JobDeclaration* decl, Counter* cnt = nullptr);
 		bool KickJobAndWait(JobDeclaration& decl, const Counter* waitForCnt);
 		bool KickJobs(int count, JobDeclaration decls[], Counter* pJobCounter = nullptr);
