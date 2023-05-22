@@ -111,7 +111,7 @@ int main(int argc, char* argv[])
 
         bool initialized = false;
         // Update loop
-        JobManager::Counter* cnt = new JobManager::Counter(2);
+        JobManager::Counter cnt = JobManager::Counter(2);
         
 #endif
 
@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
         {
             auto start = Time::Now();
 #if MULTITHREADED_MAINSYS_LOOP
-            *cnt = 2;
+            cnt = 2;
 
             // Update Editor Window
             window.UpdateEditorWindow(rValue);
@@ -128,96 +128,36 @@ int main(int argc, char* argv[])
             mInputManager.HandleXInput();
 
             // Update GFX
-            mJobManager.KickJob(&declBeginFrame, cnt);
-            mJobManager.WaitForCounter(cnt, 1);
-            mJobManager.KickJob(&declEndFrame, cnt);
-            mJobManager.WaitForCounter(cnt, 0);
+            window.PreGUIUpdate();
+            mJobManager.KickJob(&declBeginFrame, &cnt);
+            mJobManager.WaitForCounter(&cnt, 1);
+
+            window.UpdateGUI();
+
+            window.PostGUIUpdate();
+            mJobManager.KickJob(&declEndFrame, &cnt);
+            mJobManager.WaitForCounter(&cnt, 0);
 
 #else
             window.UpdateEditorWindow(rValue);
-            if (rValue == (int)WM_QUIT) { LOG("Quit Application %i", rValue);  break; }
+
+            window.GetRenderPipeline()->BeginFrame(backgroundColor);
+            window.PreGUIUpdate();
+
             //mInputManager.HandleDirectInput();
             mInputManager.HandleXInput();
 
-            window.GetRenderPipeline()->BeginFrame(backgroundColor);
+            window.UpdateGUI();
+
+            window.PostGUIUpdate();
             window.GetRenderPipeline()->EndFrame();
 #endif
             auto end = Time::Now();
             Time::SetDeltaTime(Time::GetDurationInMilliSec(start, end));
         }
-
-        /*
-        JobManager::Counter* cnt = new JobManager::Counter(4);
-
-        JobManager::EntryPoint one =
-            BIND(ProfilingManager::One, mProfilingManager);
-        JOBDECL declOne =
-            JOBDECL(one, JobManager::Priority::HIGH);
-
-        JobManager::EntryPoint two =
-            BIND(ProfilingManager::Two, mProfilingManager);
-        JOBDECL declTwo =
-            JOBDECL(two, JobManager::Priority::LOW);
-
-        JobManager::EntryPoint three =
-            BIND(ProfilingManager::Three, mProfilingManager);
-        JOBDECL declThree =
-            JOBDECL(three, JobManager::Priority::HIGH);
-
-        JobManager::EntryPoint four =
-            BIND(ProfilingManager::Four, mProfilingManager);
-        JOBDECL declFour =
-            JOBDECL(four, JobManager::Priority::HIGH);
-
-        while (true)
-        {
-            auto start = Time::Now();
-
-#if MULTITHREADED == 1
-
-            *cnt = 16;
-
-            mJobManager.KickJob(&declOne, cnt);
-            mJobManager.KickJob(&declTwo, cnt);
-            mJobManager.KickJob(&declThree, cnt);
-            mJobManager.KickJob(&declFour, cnt);
-            mJobManager.KickJob(&declOne, cnt);
-            mJobManager.KickJob(&declTwo, cnt);
-            mJobManager.KickJob(&declThree, cnt);
-            mJobManager.KickJob(&declFour, cnt);
-            mJobManager.KickJob(&declOne, cnt);
-            mJobManager.KickJob(&declTwo, cnt);
-            mJobManager.KickJob(&declThree, cnt);
-            mJobManager.KickJob(&declFour, cnt);
-            mJobManager.KickJob(&declOne, cnt);
-            mJobManager.KickJob(&declTwo, cnt);
-            mJobManager.KickJob(&declThree, cnt);
-            mJobManager.KickJob(&declFour, cnt);
-
-            // This makes sure every job for this frame was finished!
-            mJobManager.WaitForCounter(cnt, 0);
-
-#else
-            mProfilingManager.One();
-            mProfilingManager.Two();
-            mProfilingManager.Three();
-            mProfilingManager.Four();
-            mProfilingManager.One();
-            mProfilingManager.Two();
-            mProfilingManager.Three();
-            mProfilingManager.Four();
-#endif
-            auto end = Time::Now();
-            Time::UpdateDeltaTime(Time::GetDurationInMilliSec(start,end));
-            LOG("END OF LOOP. Frametime: %f milliseconds", Time::deltaTime);
-            LOG("END OF LOOP. Avg-Frametime: %f milliseconds", Time::GetAverageFrameTime());
-        }
-        */
     }
 
     // HOW TO HANDLE DIFFERENT RETURN TYPES? 
-    // AND IS IT POSSIBLE TO RUN NON JOBIFIED CODE?
-    // OR DOES EVERYTHING HAVE TO BE A JOB?
 
     // ------ SHUTDOWN MANAGER ------
 

@@ -6,6 +6,8 @@
 
 namespace CCE::Graphics
 {
+	// TODO: Jobify the initialization
+
 	/// <summary>
 	/// Initializes the D3D11 
 	/// </summary>
@@ -16,43 +18,46 @@ namespace CCE::Graphics
 
 		// TODO: Load from config
 		// swap chain
-		const DXGI_SWAP_CHAIN_DESC _swapChainDesc =
-		{
-			dxgiModeDesc,						// backbuffer settings
-			dxgiSampleDesc,						// sample description
-			DXGI_USAGE_RENDER_TARGET_OUTPUT,	// swap chain is used as back buffer
-			2,									// amount of swap chain buffers
-			hWnd,								// handle to window
-			TRUE,								// windowed or fullscreen (?)
-			DXGI_SWAP_EFFECT_FLIP_DISCARD,		// swap fx
-			NULL								// flags
-		};
+		DXGI_SWAP_CHAIN_DESC _swapChainDesc = {};
+		
+		_swapChainDesc.BufferDesc.Width = width;							// backbuffer settings
+		_swapChainDesc.BufferDesc.Height = height;							// backbuffer settings
+		_swapChainDesc.BufferDesc.RefreshRate = DXGI_RATIONAL{ 0,0 };		// backbuffer settings
+		_swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;		// backbuffer settings
+		_swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;	// backbuffer settings
+		_swapChainDesc.BufferDesc.ScanlineOrdering = 
+			DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;							// backbuffer settings
+		_swapChainDesc.SampleDesc.Count = 1;								// sample description
+		_swapChainDesc.SampleDesc.Quality = 0;								// sample description
+		_swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;		// swap chain is used as back buffer
+		_swapChainDesc.BufferCount = 2;										// amount of swap chain buffers
+		_swapChainDesc.OutputWindow = hWnd;									// handle to window
+		_swapChainDesc.Windowed = TRUE;										// windowed or fullscreen (?)
+		_swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;			// swap fx
+		_swapChainDesc.Flags = NULL;										// flags
+		
 
 		swapChainDesc = _swapChainDesc;
 
 		LOG_REND("Creating Swapchain & Device...");
 		// create device and swapchain
+		UINT swapCreateFlags = 0u;
+#ifdef DEBUG
+		swapCreateFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
 		HRESULT cdasc = D3D11CreateDeviceAndSwapChain(
 			NULL,									// default adapter
 			D3D_DRIVER_TYPE_HARDWARE,				// driver type
 			NULL,									// software module (Default: NULL)
-			D3D10_CREATE_DEVICE_SINGLETHREADED |
-#ifdef DEBUG
-			D3D11_CREATE_DEVICE_DEBUG |				// for debug use
-			D3D11_CREATE_DEVICE_PREVENT_INTERNAL_THREADING_OPTIMIZATIONS |
-#elif PROFILING
-			D3D11_CREATE_DEVICE_PREVENT_INTERNAL_THREADING_OPTIMIZATIONS |
-#elif NDEBUG
-			D3D11_CREATE_DEVICE_PREVENT_ALTERING_LAYER_SETTINGS_FROM_REGISTRY |
-#endif
-			D3D11_CREATE_DEVICE_BGRA_SUPPORT,		// for interuse of D3D and D2D
+			swapCreateFlags,						// flags
 			nullptr,								// featureLvl
 			0,										// length of feature Lvl
 			D3D11_SDK_VERSION,						// SDK-Version
 			&swapChainDesc,							// swap chain description pointer
 			&pSwapChain,							// swap chain pointer
 			&pDevice,								// device pointer
-			&featureLvl[0],							// feautre lvl pointer
+			NULL,									// feautre lvl pointer
 			&pContext								// context pointer
 		);
 
@@ -122,22 +127,29 @@ namespace CCE::Graphics
 		vp.TopLeftX = 0.0f;
 		vp.TopLeftY = 0.0f;
 		pContext->RSSetViewports(1u, &vp);
+
+		LOG_REND("Finished initializing Render-Pipeline");
 	}
 
 	void RenderPipeline::BeginFrame(const Color col) const
 	{
 		// Clear render view and draw background color
+		pContext->OMSetRenderTargets(1u, pRenderTarget.GetAddressOf(), pDSV.Get());
 		pContext->ClearRenderTargetView(pRenderTarget.Get(), col.RGBA());
 		pContext->ClearDepthStencilView(pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 
-		// Render triangles
+		// TODO: Render triangles
 
 	}
 
 	void RenderPipeline::EndFrame()
 	{
 		// Render buffer
-		HRESULT pres = pSwapChain->Present(1u, 0u);
+		HRESULT pres = pSwapChain->Present(1u, 0);
+		if (pres == DXGI_ERROR_DEVICE_REMOVED)
+		{
+			DERROR(pDevice->GetDeviceRemovedReason());
+		}
 		DERROR(pres);
 	}
 }

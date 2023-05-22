@@ -28,6 +28,17 @@ namespace CCE::Graphics
 		void BeginFrame(const Color col) const;
 		void EndFrame();
 
+	public:
+		ID3D11Device* GetDevicePtr() const
+		{
+			return pDevice.Get();
+		}
+
+		ID3D11DeviceContext* GetDeviceContextPtr() const
+		{
+			return pContext.Get();
+		}
+
 	private:
 		ComPtr<ID3D11Device> pDevice = nullptr;
 		ComPtr<IDXGISwapChain> pSwapChain = nullptr;
@@ -38,25 +49,5 @@ namespace CCE::Graphics
 
 		// TODO: Load from config
 		DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
-		D3D_FEATURE_LEVEL featureLvl[3] =
-		{
-			D3D_FEATURE_LEVEL_11_0,
-			D3D_FEATURE_LEVEL_10_1,
-			D3D_FEATURE_LEVEL_10_0
-		};
-		const DXGI_MODE_DESC dxgiModeDesc
-		{
-			0,										// width
-			0,										// height
-			DXGI_RATIONAL{0,0},						// refresh_rate
-			DXGI_FORMAT_B8G8R8A8_UNORM,				// color format
-			DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED,	// scanline order
-			DXGI_MODE_SCALING_UNSPECIFIED			// scaling mode
-		};
-		DXGI_SAMPLE_DESC dxgiSampleDesc
-		{
-			1,	// multisamples per pixel
-			0	// image quality lvl
-		};
 	};
 }
