@@ -19,7 +19,7 @@
 
 #define EDITOR_VERSION "Creative Chaos Engine - v0.1"
 
-#define MULTITHREADED_MAINSYS_LOOP 1
+#define MULTITHREADED 1
 
 
 int main(int argc, char* argv[])
@@ -90,23 +90,24 @@ int main(int argc, char* argv[])
         // update window input
         int rValue = 0;
 
-#if MULTITHREADED_MAINSYS_LOOP    
-        JobManager::EntryPoint handleXInput = 
-            BIND(InputManager::HandleXInput, mInputManager);
+#if MULTITHREADED    
+        JobManager::EntryPoint handleXInput = BIND(mInputManager.HandleXInput);
         JOBDECL declHandleXInput = JOBDECL(handleXInput,JobManager::Priority::NORMAL);
         
         // ----------------------------------------
-
+        /*
         JobManager::EntryPoint beginFrame =
             BIND(Graphics::RenderPipeline::BeginFrame, window.GetRenderPipeline(), backgroundColor);
         JOBDECL declBeginFrame = JOBDECL(beginFrame, JobManager::Priority::HIGH);
+        */
 
-        JobManager::EntryPoint endFrame =
-            BIND(Graphics::RenderPipeline::EndFrame, window.GetRenderPipeline());
+        JobManager::EntryPoint beginFrame = BIND(window.GetRenderPipeline()->BeginFrame,backgroundColor);
+        JOBDECL declBeginFrame = JOBDECL(beginFrame, JobManager::Priority::HIGH);
+
+        JobManager::EntryPoint endFrame = BIND(window.GetRenderPipeline()->EndFrame);
         JOBDECL declEndFrame = JOBDECL(endFrame, JobManager::Priority::HIGH);
 
-        JobManager::EntryPoint updateEditorWin =
-            BIND(EditorWindow::UpdateEditorWindow, window, rValue);
+        JobManager::EntryPoint updateEditorWin = BIND(window.UpdateEditorWindow, rValue);
         JOBDECL declUpdateEditorWin = JOBDECL(updateEditorWin, JobManager::Priority::HIGH);
 
         bool initialized = false;
@@ -118,7 +119,7 @@ int main(int argc, char* argv[])
         while (rValue != (int)WM_QUIT)
         {
             auto start = Time::Now();
-#if MULTITHREADED_MAINSYS_LOOP
+#if MULTITHREADED
             cnt = 2;
 
             // Update Editor Window

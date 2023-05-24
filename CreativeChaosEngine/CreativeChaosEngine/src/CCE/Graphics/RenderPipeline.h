@@ -3,6 +3,7 @@
 #include <wrl.h>
 #include "../Memory/StackAllocator.h"
 #include "../Utilities/Color/Color.h"
+#include "../Manager/JobManager.h"
 
 namespace CCE::Graphics
 {
@@ -40,6 +41,10 @@ namespace CCE::Graphics
 		}
 
 	private:
+		JOB_ENTRY_POINT ClearRenderTargetView(const Color col) const;
+		JOB_ENTRY_POINT ClearDepthStencilView() const;
+
+	private:
 		ComPtr<ID3D11Device> pDevice = nullptr;
 		ComPtr<IDXGISwapChain> pSwapChain = nullptr;
 		ComPtr<ID3D11DeviceContext> pContext = nullptr;
@@ -48,6 +53,6 @@ namespace CCE::Graphics
 		ComPtr<ID3D11Resource> pBackBuffer = nullptr;
 
 		// TODO: Load from config
-		DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
+		DXGI_SWAP_CHAIN_DESC swapChainDesc = {0};
 	};
 }

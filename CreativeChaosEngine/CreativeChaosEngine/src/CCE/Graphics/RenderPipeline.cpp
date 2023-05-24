@@ -1,7 +1,11 @@
 #include "RenderPipeline.h"
 #include "../Analysis/Logger.h"
+#include <dxgi.h>
+#include <d3dcompiler.h>
+#include <functional>
 
 #pragma comment(lib, "d3d11.lib")
+#pragma comment( lib, "dxgi.lib" )
 #pragma comment(lib, "D3DCompiler.lib")
 
 namespace CCE::Graphics
@@ -18,11 +22,11 @@ namespace CCE::Graphics
 
 		// TODO: Load from config
 		// swap chain
-		DXGI_SWAP_CHAIN_DESC _swapChainDesc = {};
+		DXGI_SWAP_CHAIN_DESC _swapChainDesc = {0};
 		
 		_swapChainDesc.BufferDesc.Width = width;							// backbuffer settings
 		_swapChainDesc.BufferDesc.Height = height;							// backbuffer settings
-		_swapChainDesc.BufferDesc.RefreshRate = DXGI_RATIONAL{ 0,0 };		// backbuffer settings
+		_swapChainDesc.BufferDesc.RefreshRate = DXGI_RATIONAL{ 0,1 };		// backbuffer settings
 		_swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;		// backbuffer settings
 		_swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;	// backbuffer settings
 		_swapChainDesc.BufferDesc.ScanlineOrdering = 
@@ -30,10 +34,10 @@ namespace CCE::Graphics
 		_swapChainDesc.SampleDesc.Count = 1;								// sample description
 		_swapChainDesc.SampleDesc.Quality = 0;								// sample description
 		_swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;		// swap chain is used as back buffer
-		_swapChainDesc.BufferCount = 2;										// amount of swap chain buffers
+		_swapChainDesc.BufferCount = 1;										// amount of swap chain buffers
 		_swapChainDesc.OutputWindow = hWnd;									// handle to window
 		_swapChainDesc.Windowed = TRUE;										// windowed or fullscreen (?)
-		_swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;			// swap fx
+		_swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;				// swap fx
 		_swapChainDesc.Flags = NULL;										// flags
 		
 
@@ -55,27 +59,27 @@ namespace CCE::Graphics
 			0,										// length of feature Lvl
 			D3D11_SDK_VERSION,						// SDK-Version
 			&swapChainDesc,							// swap chain description pointer
-			&pSwapChain,							// swap chain pointer
-			&pDevice,								// device pointer
+			pSwapChain.GetAddressOf(),				// swap chain pointer
+			pDevice.GetAddressOf(),					// device pointer
 			NULL,									// feautre lvl pointer
-			&pContext								// context pointer
+			pContext.GetAddressOf()					// context pointer
 		);
 
 		DERROR((HRESULT)cdasc);
 		DASSERT(cdasc == S_OK, "Creating Device and Swapchain unsuccessful!");
 
-		HRESULT sc = pSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &pBackBuffer);
+		HRESULT sc = pSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), (void**) pBackBuffer.GetAddressOf());
 		DERROR((HRESULT)sc);
-		DASSERT(sc == S_OK, "Getting buffer was unsuccessful!");
+		DASSERT(SUCCEEDED(sc), "Getting buffer was unsuccessful!");
 
 		LOG_REND("Creating Render Target View...");
 
-		HRESULT crtv = pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &pRenderTarget);
+		HRESULT crtv = pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, pRenderTarget.GetAddressOf());
 		DERROR((HRESULT)crtv);
-		DASSERT(crtv == S_OK, "Creating render target view was unsuccessful!");
+		DASSERT(SUCCEEDED(crtv), "Creating render target view was unsuccessful!");
 
 		// check again
-		D3D11_DEPTH_STENCIL_DESC dsDesc = {};
+		D3D11_DEPTH_STENCIL_DESC dsDesc = {0};
 		dsDesc.DepthEnable = TRUE;
 		dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 		dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
@@ -84,7 +88,7 @@ namespace CCE::Graphics
 
 		// creating depth stencil state
 		ComPtr<ID3D11DepthStencilState> pDSState;
-		DASSERT(pDevice->CreateDepthStencilState(&dsDesc, &pDSState) == S_OK,
+		DASSERT(SUCCEEDED(pDevice->CreateDepthStencilState(&dsDesc, pDSState.GetAddressOf())),
 			"Failed creating a depth stencil state!");
 
 		// bind depth state
@@ -92,7 +96,7 @@ namespace CCE::Graphics
 
 		// create depth stencil texture
 		ComPtr<ID3D11Texture2D> pDepthStencil;
-		D3D11_TEXTURE2D_DESC descDepth = {};
+		D3D11_TEXTURE2D_DESC descDepth = {0};
 		descDepth.Width = width;
 		descDepth.Height = height;
 		descDepth.MipLevels = 1u;
@@ -103,7 +107,7 @@ namespace CCE::Graphics
 		descDepth.Usage = D3D11_USAGE_DEFAULT;
 		descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 
-		DASSERT(pDevice->CreateTexture2D(&descDepth, nullptr, &pDepthStencil) == S_OK,
+		DASSERT(pDevice->CreateTexture2D(&descDepth, nullptr, pDepthStencil.GetAddressOf()) == S_OK,
 			"Failed creating depth stencil texture!");
 
 		// create view of depth stencil tex
@@ -112,14 +116,14 @@ namespace CCE::Graphics
 		descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		descDSV.Texture2D.MipSlice = 0u;
 
-		DASSERT(pDevice->CreateDepthStencilView(pDepthStencil.Get(), &descDSV, &pDSV) == S_OK,
+		DASSERT(pDevice->CreateDepthStencilView(pDepthStencil.Get(), &descDSV, pDSV.GetAddressOf()) == S_OK,
 			"Failed creating depth stencil view");
 
 		// bind depth stensil view to OM
 		pContext->OMSetRenderTargets(1u, pRenderTarget.GetAddressOf(), pDSV.Get());
 
 		// configure viewport
-		D3D11_VIEWPORT vp;
+		D3D11_VIEWPORT vp = { 0 };
 		vp.Width = (float)width;
 		vp.Height = (float)height;
 		vp.MinDepth = 0.0f;
@@ -131,25 +135,61 @@ namespace CCE::Graphics
 		LOG_REND("Finished initializing Render-Pipeline");
 	}
 
+	/// <summary>
+	/// Starts the frame by clearing the depth and the stencil buffer.
+	/// </summary>
+	/// <param name="col">The color of the background.</param>
 	void RenderPipeline::BeginFrame(const Color col) const
 	{
 		// Clear render view and draw background color
 		pContext->OMSetRenderTargets(1u, pRenderTarget.GetAddressOf(), pDSV.Get());
+
+#if FALSE
+		JobManager::Counter cnt = JobManager::Counter(2);
+		//JobManager::EntryPoint cdsvEp = [&JOB_ENTRY_POINT](...) (RenderPipeline::ClearDepthStencilView, this);
+		//JobManager::EntryPoint cdsvEp = [&](...){return ClearDepthStencilView(); };
+		JobManager::EntryPoint cdsvEp = BIND(ClearDepthStencilView);
+
+		JOBDECL cdsv = JOBDECL(cdsvEp, JobManager::Priority::NORMAL);
+
+		JobManager::EntryPoint crtvEp = BIND(ClearRenderTargetView, col);
+		JOBDECL crtv = JOBDECL(crtvEp, JobManager::Priority::NORMAL);
+
+		JobManager::Instance->KickJobAndFreeDecl(cdsv, &cnt);
+		JobManager::Instance->KickJobAndFreeDecl(crtv, &cnt);
+
+		JobManager::Instance->WaitForCounter(&cnt, 0);
+
+#else
 		pContext->ClearRenderTargetView(pRenderTarget.Get(), col.RGBA());
 		pContext->ClearDepthStencilView(pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+#endif	
 
 		// TODO: Render triangles
 
 	}
 
+	/// <summary>
+	/// Ends the frame by presenting the current frame.
+	/// </summary>
 	void RenderPipeline::EndFrame()
 	{
 		// Render buffer
-		HRESULT pres = pSwapChain->Present(1u, 0);
+		HRESULT pres = pSwapChain->Present(1, 0);
 		if (pres == DXGI_ERROR_DEVICE_REMOVED)
 		{
 			DERROR(pDevice->GetDeviceRemovedReason());
 		}
 		DERROR(pres);
+	}
+
+	JOB_ENTRY_POINT RenderPipeline::ClearRenderTargetView(const Color col) const
+	{
+		pContext->ClearRenderTargetView(pRenderTarget.Get(), col.RGBA());
+	}
+
+	JOB_ENTRY_POINT RenderPipeline::ClearDepthStencilView() const
+	{
+		pContext->ClearDepthStencilView(pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 	}
 }

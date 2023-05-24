@@ -3,6 +3,7 @@
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_impl_dx11.h"
 #include "../imgui/imgui_impl_win32.h"
+#include "CCE/Manager/JobManager.h"
 
 /// <summary>
 /// Callback for window procedure.
@@ -62,9 +63,6 @@ bool EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 	ImGui::CreateContext();
 	ImGui_ImplDX11_Init(renderPipeline.GetDevicePtr(), renderPipeline.GetDeviceContextPtr());
 
-	ImGuiIO& io = ImGui::GetIO();
-	io.DisplaySize = ImVec2(GetEditorWindowWidth(), GetEditorWindowHeight());
-
 	//ImFont* m_pFont = io.Fonts->AddFontFromMemoryTTF(g_fRubik, sizeof(g_fRubik), 16.0f, NULL, io.Fonts->GetGlyphRangesDefault());
 	//ImFont* m_pFont = io.Fonts->AddFontFromMemoryTTF(g_fRubik, sizeof(g_fRubik), 32.0f, NULL, io.Fonts->GetGlyphRangesDefault());
 
@@ -95,7 +93,7 @@ void EditorWindow::UpdateEditorWindow(int& _returnVal)
 
 void EditorWindow::UpdateGUI()
 {
-	DASSERT(imguiEnabled, "GUI currently not activated!");
+	//DASSERT(imguiEnabled, "GUI currently not activated!");
 
 	ImGui::ShowDemoWindow(&demoWindowShowing);
 }
@@ -236,6 +234,10 @@ LRESULT CALLBACK EditorWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 		DestroyWindow(hwnd);
 		PostQuitMessage(0);
 		break;
+	}
+	case WM_PAINT:
+	{
+
 	}
 	}
 
