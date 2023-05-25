@@ -77,10 +77,9 @@ void EditorWindow::InitializeGUI()
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-	//ImFont* m_pFont = io.Fonts->AddFontFromMemoryTTF(g_fRubik, sizeof(g_fRubik), 16.0f, NULL, io.Fonts->GetGlyphRangesDefault());
-	//ImFont* m_pFont = io.Fonts->AddFontFromMemoryTTF(g_fRubik, sizeof(g_fRubik), 32.0f, NULL, io.Fonts->GetGlyphRangesDefault());
+	io.Fonts->AddFontFromFileTTF("resources/fonts/Lexend-Light.ttf", 13);
 
-	ImGui::StyleColorsDark();
+	ImGui::StyleColorsLight();
 
 	DASSERT(ImGui_ImplDX11_Init(renderPipeline.GetDevicePtr(), renderPipeline.GetDeviceContextPtr()),
 		"Failed initializing GUI with D3D11.");
@@ -108,13 +107,17 @@ void EditorWindow::UpdateEditorWindow(int& _returnVal)
 	}
 }
 
+/// <summary>
+/// Do GUI setup here.
+/// </summary>
 void EditorWindow::UpdateGUI()
 {
-	//DASSERT(imguiEnabled, "GUI currently not activated!");
-
 	ImGui::ShowDemoWindow(&demoWindowShowing);
 }
 
+/// <summary>
+/// Render the GUI.
+/// </summary>
 void EditorWindow::PostGUIUpdate()
 {
 	if (imguiEnabled)
@@ -125,6 +128,9 @@ void EditorWindow::PostGUIUpdate()
 	}
 }
 
+/// <summary>
+/// Set new GUI frame.
+/// </summary>
 void EditorWindow::PreGUIUpdate()
 {
 	if (imguiEnabled)

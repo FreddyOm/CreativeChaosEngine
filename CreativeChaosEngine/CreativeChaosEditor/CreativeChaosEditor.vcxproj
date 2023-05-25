@@ -81,6 +81,12 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy  /E /Y "$(ProjectDir)resources\" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy fonts to editor exe location</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Profile|x64'">
     <ClCompile>
@@ -95,6 +101,12 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy  /E /Y "$(ProjectDir)resources\" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy fonts to editor exe location</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -113,6 +125,12 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy  /E /Y "$(ProjectDir)resources\" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy fonts to editor exe location</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorWindow\EditorWindow.cpp" />
