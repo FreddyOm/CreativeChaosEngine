@@ -1,5 +1,4 @@
 #include "EditorWindow.h"
-#include <string.h>
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_impl_dx11.h"
 #include "../imgui/imgui_impl_win32.h"
@@ -77,7 +76,7 @@ void EditorWindow::InitializeGUI()
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-	io.Fonts->AddFontFromFileTTF("resources/fonts/Lexend-Light.ttf", 13);
+	io.Fonts->AddFontFromFileTTF("resources/fonts/Lexend-Light.ttf", 14);
 
 	ImGui::StyleColorsLight();
 
@@ -112,7 +111,15 @@ void EditorWindow::UpdateEditorWindow(int& _returnVal)
 /// </summary>
 void EditorWindow::UpdateGUI()
 {
-	ImGui::ShowDemoWindow(&demoWindowShowing);
+	if (ImGui::Begin("Frametime Debugging"))
+	{
+		ImGui::Text("FPS: %f", 1000.0 / CCE::Time::deltaTime);
+		ImGui::Text("Frametime(ms): %f", CCE::Time::deltaTime);
+		ImGui::Text("Avg. Frametime(ms): %f", CCE::Time::GetAverageFrameTime());
+	}
+
+	ImGui::End();
+	//ImGui::ShowDemoWindow(&demoWindowShowing);
 }
 
 /// <summary>

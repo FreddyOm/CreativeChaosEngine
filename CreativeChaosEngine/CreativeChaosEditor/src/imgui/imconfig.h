@@ -117,9 +117,19 @@
 //#define IMGUI_DEBUG_PARANOID
 
 //---- Tip: You can add extra functions within the ImGui:: namespace, here or in your own headers files.
+
 /*
+#include "CCE/String/String.h"
+#include "CCE/Utilities/Color/Color.h"
+
 namespace ImGui
 {
-    void MyFunction(const char* name, const MyMatrix44& v);
+    void StringText(const CCE::String fmt, ...)
+    {
+        va_list args;
+        va_start(args, fmt);
+        ImGui::Text(fmt.Value(), args);
+        va_end(args);
+    }
 }
 */

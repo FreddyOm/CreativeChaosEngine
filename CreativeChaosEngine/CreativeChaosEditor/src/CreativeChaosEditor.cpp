@@ -167,7 +167,6 @@ int main(int argc, char* argv[])
     mProfilingManager.ShutDown();
     mJobManager.ShutDown();
 
-
     // ------ BYE ------
 
     LOGC("Shutting down %s", COLOR_BLUE, EDITOR_VERSION);
