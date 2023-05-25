@@ -17,6 +17,7 @@ struct EditorWindow
 	}
 
 	bool OpenWindow(HINSTANCE hInstance, CCE::String winName = "Creative Chaos Engine - v0.1");
+	void InitializeGUI();
 	void UpdateEditorWindow(int& _returnVal);
 	void PreGUIUpdate();
 	void UpdateGUI();

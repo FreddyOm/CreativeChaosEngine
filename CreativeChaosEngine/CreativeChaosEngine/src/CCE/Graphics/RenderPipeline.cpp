@@ -18,8 +18,6 @@ namespace CCE::Graphics
 	/// <param name="hWnd"></param>
 	void RenderPipeline::InitializeD3D11(const HWND hWnd, const int width, const int height)
 	{
-		LOG_REND("Initializing Direct3D...");
-
 		// TODO: Load from config
 		// swap chain
 		DXGI_SWAP_CHAIN_DESC _swapChainDesc = {0};
@@ -40,10 +38,8 @@ namespace CCE::Graphics
 		_swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;				// swap fx
 		_swapChainDesc.Flags = NULL;										// flags
 		
-
 		swapChainDesc = _swapChainDesc;
 
-		LOG_REND("Creating Swapchain & Device...");
 		// create device and swapchain
 		UINT swapCreateFlags = 0u;
 #ifdef DEBUG
@@ -72,8 +68,6 @@ namespace CCE::Graphics
 		DERROR((HRESULT)sc);
 		DASSERT(SUCCEEDED(sc), "Getting buffer was unsuccessful!");
 
-		LOG_REND("Creating Render Target View...");
-
 		HRESULT crtv = pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, pRenderTarget.GetAddressOf());
 		DERROR((HRESULT)crtv);
 		DASSERT(SUCCEEDED(crtv), "Creating render target view was unsuccessful!");
@@ -83,8 +77,6 @@ namespace CCE::Graphics
 		dsDesc.DepthEnable = TRUE;
 		dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 		dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
-
-		LOG_REND("Creating Depth Stencil...");
 
 		// creating depth stencil state
 		ComPtr<ID3D11DepthStencilState> pDSState;
@@ -131,8 +123,6 @@ namespace CCE::Graphics
 		vp.TopLeftX = 0.0f;
 		vp.TopLeftY = 0.0f;
 		pContext->RSSetViewports(1u, &vp);
-
-		LOG_REND("Finished initializing Render-Pipeline");
 	}
 
 	/// <summary>

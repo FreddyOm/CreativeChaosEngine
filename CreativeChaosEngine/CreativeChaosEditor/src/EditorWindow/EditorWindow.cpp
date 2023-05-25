@@ -56,19 +56,36 @@ bool EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 	windowRunning = true;
 
 	// Init d3d11 for this editor window
+	LOG_REND("Initializing Direct3D...");
 	renderPipeline.InitializeD3D11(hWnd, GetEditorWindowWidth(), GetEditorWindowHeight());
 
 	// Init ImGui
+	LOG_REND("Initializing GUI...");
+	InitializeGUI();
+	
+	return windowRunning;
+}
+
+/// <summary>
+/// Initializing ImGui with D3D11 and ImGui
+/// </summary>
+void EditorWindow::InitializeGUI()
+{
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGui_ImplDX11_Init(renderPipeline.GetDevicePtr(), renderPipeline.GetDeviceContextPtr());
+
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
 	//ImFont* m_pFont = io.Fonts->AddFontFromMemoryTTF(g_fRubik, sizeof(g_fRubik), 16.0f, NULL, io.Fonts->GetGlyphRangesDefault());
 	//ImFont* m_pFont = io.Fonts->AddFontFromMemoryTTF(g_fRubik, sizeof(g_fRubik), 32.0f, NULL, io.Fonts->GetGlyphRangesDefault());
 
-	//ImGui::StyleColorsDark();
+	ImGui::StyleColorsDark();
 
-	return windowRunning;
+	DASSERT(ImGui_ImplDX11_Init(renderPipeline.GetDevicePtr(), renderPipeline.GetDeviceContextPtr()),
+		"Failed initializing GUI with D3D11.");
+	DASSERT(ImGui_ImplWin32_Init(GetEditorWindowHandle()),
+		"Failed initializing GUI with Editor Window.");
 }
 
 /// <summary>
