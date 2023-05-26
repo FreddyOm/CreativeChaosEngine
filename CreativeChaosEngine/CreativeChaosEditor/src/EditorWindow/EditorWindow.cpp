@@ -123,10 +123,11 @@ void EditorWindow::UpdateGUI()
 	
 		ImGui::Spacing();
 		ImGui::Checkbox("Fullscreen", & fullScreen);
+		ImGui::InputText("Test-Text", &textbuf[0], 1024);
 	}
 
 	ImGui::End();
-	//ImGui::ShowDemoWindow(&demoWindowShowing);
+	ImGui::ShowDemoWindow(&demoWindowShowing);
 }
 
 /// <summary>
@@ -141,6 +142,7 @@ void EditorWindow::PostGUIUpdate()
 		ImGui_ImplDX11_RenderDrawData(drawData);
 	}
 }
+
 
 /// <summary>
 /// Set new GUI frame.
@@ -260,8 +262,8 @@ LRESULT CALLBACK EditorWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 		int width = LOWORD(lParam);  // Macro to get the low-order word.
 		int height = HIWORD(lParam); // Macro to get the high-order word.
 
-		// Respond to the message:
-		//OnSize(hwnd, (UINT)wParam, width, height);
+		// Update D3D11 and GUI
+		if (p_renderPipeline->GetDeviceContextPtr() == NULL) { break; }
 		p_renderPipeline->OnResize(hwnd, wParam, width, height);
 		break;
 	}
@@ -280,6 +282,11 @@ LRESULT CALLBACK EditorWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
+
+/// <summary>
+/// Pointer to this instance.
+/// </summary>
+EditorWindow* EditorWindow::Instance = nullptr;
 
 /// <summary>
 /// Pointer to input manager.

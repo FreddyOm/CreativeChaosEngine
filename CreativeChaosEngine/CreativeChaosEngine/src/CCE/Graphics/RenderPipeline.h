@@ -1,9 +1,12 @@
 #pragma once
 #include <d3d11.h>
 #include <wrl.h>
+#include <wrl/client.h>
 #include "../Memory/StackAllocator.h"
 #include "../Utilities/Color/Color.h"
 #include "../Manager/JobManager.h"
+#include <d3d11.h>
+#include <dxgidebug.h>
 
 namespace CCE::Graphics
 {
@@ -13,16 +16,18 @@ namespace CCE::Graphics
 	class CCE_API RenderPipeline
 	{
 	public:
+		
 		RenderPipeline() = default;
 		~RenderPipeline()
 		{
+			p_Context->OMSetRenderTargets(0, NULL, NULL);
 			p_Context->Flush();
-			p_renderTarget->Release();
-			p_device->Release();
-			pSwapChain->Release();
-			p_Context->Release();
-			p_backBuffer->Release();
-			p_DSV->Release();
+			p_renderTarget.Reset();
+			p_DSV.Reset();
+			p_backBuffer.Reset();
+			pSwapChain.Reset();
+			p_Context.Reset();
+			p_device.Reset();
 
 			p_device.~ComPtr();
 			pSwapChain.~ComPtr();
@@ -59,6 +64,9 @@ namespace CCE::Graphics
 		JOB_ENTRY_POINT ClearDepthStencilView() const;
 
 	private:
+		ComPtr<ID3D11Debug> pDebug;
+
+	private:
 		ComPtr<ID3D11Device> p_device = nullptr;
 		ComPtr<IDXGISwapChain> pSwapChain = nullptr;
 		ComPtr<ID3D11DeviceContext> p_Context = nullptr;
@@ -68,6 +76,10 @@ namespace CCE::Graphics
 		RECT clientRect;
 
 		// TODO: Load from config
-		DXGI_SWAP_CHAIN_DESC swapChainDesc = {0};
+		DXGI_SWAP_CHAIN_DESC swapChainDesc = { 0 };
+		D3D11_DEPTH_STENCIL_DESC dsDesc = { 0 };
+		D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = { };
+		ComPtr<ID3D11Texture2D> pDepthStencil = nullptr;
+		ComPtr<ID3D11DepthStencilState> pDSState = nullptr;
 	};
 }

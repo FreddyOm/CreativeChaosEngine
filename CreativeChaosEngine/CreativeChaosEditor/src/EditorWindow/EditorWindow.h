@@ -14,6 +14,9 @@ struct EditorWindow
 	}
 	~EditorWindow()
 	{
+		p_inputManager = nullptr;
+		p_renderPipeline = nullptr;
+		Instance = nullptr;
         windowRunning = false;
 	}
 
@@ -37,8 +40,10 @@ struct EditorWindow
 	bool windowRunning = false;
 	bool demoWindowShowing = false;
 	bool fullScreen = false;
+	char textbuf[1024];
 
 private:
+	static EditorWindow* Instance;
 	bool imguiEnabled = true;
 	CCE::String windowName = "";
 

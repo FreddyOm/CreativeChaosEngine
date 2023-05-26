@@ -6,6 +6,7 @@
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment( lib, "dxgi.lib" )
+#pragma comment( lib, "dxguid.lib" )
 #pragma comment(lib, "D3DCompiler.lib")
 
 namespace CCE::Graphics
@@ -57,13 +58,11 @@ namespace CCE::Graphics
 	/// </summary>
 	void RenderPipeline::CreateDepthStencil()
 	{
-		D3D11_DEPTH_STENCIL_DESC dsDesc = { 0 };
 		dsDesc.DepthEnable = TRUE;
 		dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 		dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
 
 		// creating depth stencil state
-		ComPtr<ID3D11DepthStencilState> pDSState;
 		DASSERT(SUCCEEDED(p_device->CreateDepthStencilState(&dsDesc, pDSState.GetAddressOf())),
 			"Failed creating a depth stencil state!");
 
@@ -71,23 +70,21 @@ namespace CCE::Graphics
 		p_Context->OMSetDepthStencilState(pDSState.Get(), 1u);
 
 		// create depth stencil texture
-		ComPtr<ID3D11Texture2D> pDepthStencil;
-		D3D11_TEXTURE2D_DESC descDepth = { 0 };
-		descDepth.Width = clientRect.right;
-		descDepth.Height = clientRect.bottom;
-		descDepth.MipLevels = 1u;
-		descDepth.ArraySize = 1u;
-		descDepth.Format = DXGI_FORMAT_D32_FLOAT;
-		descDepth.SampleDesc.Count = 1u;
-		descDepth.SampleDesc.Quality = 0u;
-		descDepth.Usage = D3D11_USAGE_DEFAULT;
-		descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		D3D11_TEXTURE2D_DESC decDepth = {0};
+		decDepth.Width = clientRect.right;
+		decDepth.Height = clientRect.bottom;
+		decDepth.MipLevels = 1u;
+		decDepth.ArraySize = 1u;
+		decDepth.Format = DXGI_FORMAT_D32_FLOAT;
+		decDepth.SampleDesc.Count = 1u;
+		decDepth.SampleDesc.Quality = 0u;
+		decDepth.Usage = D3D11_USAGE_DEFAULT;
+		decDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 
-		DASSERT(p_device->CreateTexture2D(&descDepth, nullptr, pDepthStencil.GetAddressOf()) == S_OK,
+		DASSERT(p_device->CreateTexture2D(&decDepth, nullptr, pDepthStencil.GetAddressOf()) == S_OK,
 			"Failed creating depth stencil texture!");
 
 		// create view of depth stencil tex
-		D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
 		descDSV.Format = DXGI_FORMAT_D32_FLOAT;
 		descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		descDSV.Texture2D.MipSlice = 0u;
@@ -138,7 +135,7 @@ namespace CCE::Graphics
 		DERROR((HRESULT)cdasc);
 		DASSERT(cdasc == S_OK, "Creating Device and Swapchain unsuccessful!");
 
-		HRESULT sc = pSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), (void**)p_backBuffer.GetAddressOf());
+		HRESULT sc = pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)p_backBuffer.GetAddressOf());
 		DERROR((HRESULT)sc);
 		DASSERT(SUCCEEDED(sc), "Getting buffer was unsuccessful!");
 	}
@@ -159,7 +156,7 @@ namespace CCE::Graphics
 		_swapChainDesc.BufferDesc.Height = clientRect.bottom;							// backbuffer settings
 		_swapChainDesc.BufferDesc.RefreshRate = DXGI_RATIONAL{ 0,1 };		// backbuffer settings
 		_swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;		// backbuffer settings
-		_swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;	// backbuffer settings
+		_swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_CENTERED;		// backbuffer settings
 		_swapChainDesc.BufferDesc.ScanlineOrdering =
 			DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;							// backbuffer settings
 		_swapChainDesc.SampleDesc.Count = 1;								// sample description
@@ -231,33 +228,63 @@ namespace CCE::Graphics
 	/// <param name="height">The new height.</param>
 	void RenderPipeline::OnResize(const HWND hWnd, const UINT wParam, const int width, const int height)
 	{
-		if (p_Context == NULL) { return; }
+		//if (p_Context == NULL) { return; }
 
 		GetClientRect(hWnd, &clientRect);
 
-		// Unbind render target
-		p_Context->OMSetRenderTargets(NULL, NULL, NULL);
-		p_DSV->Release();
-		p_backBuffer->Release();
-		p_renderTarget->Release();
+		// Unbind render target and reset resources
+		ID3D11RenderTargetView* nullViews[] = { nullptr };
+		p_Context->OMSetRenderTargets(_countof(nullViews), nullViews, NULL);
+		p_renderTarget.Reset();
+		p_DSV.Reset();
+		p_backBuffer.Reset();
+		pDepthStencil.Reset();
 		p_Context->ClearState();
 		p_Context->Flush();
-
 		
 		// resize buffers
-		HRESULT rsb = pSwapChain->ResizeBuffers((UINT)1, (UINT)0, (UINT)0, DXGI_FORMAT_UNKNOWN, NULL);
-		if (rsb == DXGI_ERROR_DEVICE_REMOVED)
+		HRESULT hr = pSwapChain->ResizeBuffers((UINT)1, (UINT)clientRect.right, (UINT)clientRect.bottom, DXGI_FORMAT_UNKNOWN, NULL);
+		if (hr == DXGI_ERROR_DEVICE_REMOVED)
 		{
 			DASSERT(false, "Resizing buffers failed because device was removed!");
 		}
-		else if (rsb == DXGI_ERROR_DEVICE_RESET)
+		else if (hr == DXGI_ERROR_DEVICE_RESET)
 		{
 			DASSERT(false, "Resizing buffers failed because device was reset!");
 		}
+		
+		hr = pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**) &p_backBuffer);
+		DERROR((HRESULT)hr);
+		DASSERT(SUCCEEDED(hr), "Getting buffer was unsuccessful!");
 
 		CreateRenderTargetView();
-		CreateDepthStencil();
+
+		D3D11_TEXTURE2D_DESC decDepth = { 0 };
+		decDepth.Width = clientRect.right;
+		decDepth.Height = clientRect.bottom;
+		decDepth.MipLevels = 1u;
+		decDepth.ArraySize = 1u;
+		decDepth.Format = DXGI_FORMAT_D32_FLOAT;
+		decDepth.SampleDesc.Count = 1u;
+		decDepth.SampleDesc.Quality = 0u;
+		decDepth.Usage = D3D11_USAGE_DEFAULT;
+		decDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+		DASSERT(p_device->CreateTexture2D(&decDepth, nullptr, pDepthStencil.GetAddressOf()) == S_OK,
+			"Failed creating depth stencil texture!");
+
+		DASSERT(p_device->CreateDepthStencilView(pDepthStencil.Get(), &descDSV, p_DSV.GetAddressOf()) == S_OK,
+			"Failed creating depth stencil view");
+
+		// bind depth stensil view to OM
+		p_Context->OMSetRenderTargets(1u, p_renderTarget.GetAddressOf(), p_DSV.Get());
+
 		CreateViewport();
+
+		if (SUCCEEDED(p_device.As(&pDebug)))
+		{
+			pDebug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL);
+		}
 	}
 
 	/// <summary>
