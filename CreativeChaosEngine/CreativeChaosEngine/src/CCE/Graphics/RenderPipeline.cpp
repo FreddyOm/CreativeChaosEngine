@@ -19,7 +19,9 @@ namespace CCE::Graphics
 	/// <param name="hWnd"></param>
 	void RenderPipeline::InitializeD3D11(const HWND hWnd, const int width, const int height)
 	{
-		// TODO: Load from config
+		// TODO: Load from config file
+		pipelineConfig.activateVSync = false;
+
 
 		// Create swap chain description
 		CreateSwapChainDesc(hWnd);
@@ -152,8 +154,8 @@ namespace CCE::Graphics
 		// swap chain
 		DXGI_SWAP_CHAIN_DESC _swapChainDesc = { 0 };
 
-		_swapChainDesc.BufferDesc.Width = clientRect.right;							// backbuffer settings
-		_swapChainDesc.BufferDesc.Height = clientRect.bottom;							// backbuffer settings
+		_swapChainDesc.BufferDesc.Width = clientRect.right;					// backbuffer settings
+		_swapChainDesc.BufferDesc.Height = clientRect.bottom;				// backbuffer settings
 		_swapChainDesc.BufferDesc.RefreshRate = DXGI_RATIONAL{ 0,1 };		// backbuffer settings
 		_swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;		// backbuffer settings
 		_swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_CENTERED;		// backbuffer settings
@@ -166,7 +168,7 @@ namespace CCE::Graphics
 		_swapChainDesc.OutputWindow = hWnd;									// handle to window
 		_swapChainDesc.Windowed = TRUE;										// windowed or fullscreen (?)
 		_swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;				// swap fx
-		_swapChainDesc.Flags = NULL;										// flags
+		_swapChainDesc.Flags = 0;											// flags
 
 		swapChainDesc = _swapChainDesc;
 	}
@@ -211,7 +213,7 @@ namespace CCE::Graphics
 	void RenderPipeline::EndFrame()
 	{
 		// Render buffer
-		HRESULT pres = pSwapChain->Present(1, 0);
+		HRESULT pres = pSwapChain->Present(pipelineConfig.activateVSync ? 1 : 0, 0);
 		if (pres == DXGI_ERROR_DEVICE_REMOVED)
 		{
 			DERROR(p_device->GetDeviceRemovedReason());

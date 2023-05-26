@@ -15,7 +15,14 @@ namespace CCE::Graphics
 
 	class CCE_API RenderPipeline
 	{
+		friend class EditorWindow;
+
 	public:
+
+		struct RenderPipelineConfig
+		{
+			bool activateVSync = true;
+		};
 		
 		RenderPipeline() = default;
 		~RenderPipeline()
@@ -59,12 +66,19 @@ namespace CCE::Graphics
 			return p_Context.Get();
 		}
 
+		
+		RenderPipelineConfig* GetRenderPipelineConfig()
+		{
+			return &pipelineConfig;
+		}
+		
 	private:
 		JOB_ENTRY_POINT ClearRenderTargetView(const Color col) const;
 		JOB_ENTRY_POINT ClearDepthStencilView() const;
 
 	private:
 		ComPtr<ID3D11Debug> pDebug;
+		RenderPipelineConfig pipelineConfig;
 
 	private:
 		ComPtr<ID3D11Device> p_device = nullptr;

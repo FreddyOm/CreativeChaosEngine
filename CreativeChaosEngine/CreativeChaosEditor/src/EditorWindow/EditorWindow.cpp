@@ -115,19 +115,17 @@ void EditorWindow::UpdateEditorWindow(int& _returnVal)
 /// </summary>
 void EditorWindow::UpdateGUI()
 {
-	if (ImGui::Begin("Frametime Debugging"))
+	if (ImGui::Begin("Rendering Debugging"))
 	{
 		ImGui::Text("FPS: %d", (short)(1000.0 / CCE::Time::deltaTime));
 		ImGui::Text("Frametime (ms): %f", CCE::Time::deltaTime);
 		ImGui::Text("Avg. Frametime (ms): %f", CCE::Time::GetAverageFrameTime());
 	
 		ImGui::Spacing();
-		ImGui::Checkbox("Fullscreen", & fullScreen);
-		ImGui::InputText("Test-Text", &textbuf[0], 1024);
+		ImGui::Checkbox("VSync", &p_renderPipeline->GetRenderPipelineConfig()->activateVSync);
 	}
 
 	ImGui::End();
-	ImGui::ShowDemoWindow(&demoWindowShowing);
 }
 
 /// <summary>
@@ -297,3 +295,8 @@ CCE::InputManager* EditorWindow::p_inputManager = nullptr;
 /// Pointer to render pipeline.
 /// </summary>
 CCE::Graphics::RenderPipeline* EditorWindow::p_renderPipeline = nullptr;
+
+/// <summary>
+/// Pointer to job manager.
+/// </summary>
+CCE::JobManager* EditorWindow::p_jobManager = nullptr;
