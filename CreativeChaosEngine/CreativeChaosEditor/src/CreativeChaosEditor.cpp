@@ -19,8 +19,7 @@
 
 #define EDITOR_VERSION "Creative Chaos Engine - v0.1"
 
-#define MULTITHREADED 1
-
+#define MULTITHREADED 0
 
 int main(int argc, char* argv[])
 {
@@ -82,7 +81,7 @@ int main(int argc, char* argv[])
     CCE::Color backgroundColor = CCE::Color("#BCC5CE");
 
     {
-        EditorWindow window = EditorWindow(&mInputManager);
+        EditorWindow window = EditorWindow(&mInputManager, window.GetRenderPipeline());
         window.OpenWindow(GetModuleHandle(NULL));
 
         using namespace CCE;

@@ -1,4 +1,5 @@
 #include "EditorWindow.h"
+#include "CCE/Manager/InputManager.h"
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_impl_dx11.h"
 #include "../imgui/imgui_impl_win32.h"
@@ -78,7 +79,10 @@ void EditorWindow::InitializeGUI()
 
 	io.Fonts->AddFontFromFileTTF("resources/fonts/Lexend-Light.ttf", 14);
 
-	ImGui::StyleColorsLight();
+	ImGui::StyleColorsCCE();
+
+	// Hook the editors input calls to the engines input
+	CCE::InputManager::Instance->inputCallback = &ImGui_ImplWin32_WndProcHandler;
 
 	DASSERT(ImGui_ImplDX11_Init(renderPipeline.GetDevicePtr(), renderPipeline.GetDeviceContextPtr()),
 		"Failed initializing GUI with D3D11.");
@@ -113,9 +117,12 @@ void EditorWindow::UpdateGUI()
 {
 	if (ImGui::Begin("Frametime Debugging"))
 	{
-		ImGui::Text("FPS: %f", 1000.0 / CCE::Time::deltaTime);
-		ImGui::Text("Frametime(ms): %f", CCE::Time::deltaTime);
-		ImGui::Text("Avg. Frametime(ms): %f", CCE::Time::GetAverageFrameTime());
+		ImGui::Text("FPS: %d", (short)(1000.0 / CCE::Time::deltaTime));
+		ImGui::Text("Frametime (ms): %f", CCE::Time::deltaTime);
+		ImGui::Text("Avg. Frametime (ms): %f", CCE::Time::GetAverageFrameTime());
+	
+		ImGui::Spacing();
+		ImGui::Checkbox("Fullscreen", & fullScreen);
 	}
 
 	ImGui::End();
@@ -242,7 +249,6 @@ void EditorWindow::SetEditorWindowName(CCE::String name)
 /// <returns>Result code.</returns>
 LRESULT CALLBACK EditorWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	// TODO: Handle Input and write it into an input class
 	// TODO: Handle input in one place & make explicit code platform independent
 	// TODO: Create possibility to set values to 0 again
 	p_inputManager->HandleWinInput(hwnd, uMsg, wParam, lParam);
@@ -278,3 +284,8 @@ LRESULT CALLBACK EditorWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 /// Pointer to input manager.
 /// </summary>
 CCE::InputManager* EditorWindow::p_inputManager = nullptr;
+
+/// <summary>
+/// Pointer to render pipeline
+/// </summary>
+CCE::Graphics::RenderPipeline* EditorWindow::p_renderPipeline = nullptr;

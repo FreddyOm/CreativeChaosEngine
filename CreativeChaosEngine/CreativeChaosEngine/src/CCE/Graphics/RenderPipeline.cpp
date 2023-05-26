@@ -19,11 +19,15 @@ namespace CCE::Graphics
 	void RenderPipeline::InitializeD3D11(const HWND hWnd, const int width, const int height)
 	{
 		// TODO: Load from config
+
+		RECT clientRect = {};
+		GetClientRect(hWnd, &clientRect);
+
 		// swap chain
 		DXGI_SWAP_CHAIN_DESC _swapChainDesc = {0};
 		
-		_swapChainDesc.BufferDesc.Width = width;							// backbuffer settings
-		_swapChainDesc.BufferDesc.Height = height;							// backbuffer settings
+		_swapChainDesc.BufferDesc.Width = clientRect.right;							// backbuffer settings
+		_swapChainDesc.BufferDesc.Height = clientRect.bottom;							// backbuffer settings
 		_swapChainDesc.BufferDesc.RefreshRate = DXGI_RATIONAL{ 0,1 };		// backbuffer settings
 		_swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;		// backbuffer settings
 		_swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;	// backbuffer settings
@@ -89,8 +93,8 @@ namespace CCE::Graphics
 		// create depth stencil texture
 		ComPtr<ID3D11Texture2D> pDepthStencil;
 		D3D11_TEXTURE2D_DESC descDepth = {0};
-		descDepth.Width = width;
-		descDepth.Height = height;
+		descDepth.Width = clientRect.right;
+		descDepth.Height = clientRect.bottom;
 		descDepth.MipLevels = 1u;
 		descDepth.ArraySize = 1u;
 		descDepth.Format = DXGI_FORMAT_D32_FLOAT;

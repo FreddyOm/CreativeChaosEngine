@@ -59,6 +59,11 @@ namespace CCE
 	/// <param name="lParam">The low word parameter.</param>
 	void InputManager::HandleWinInput(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
+		// TODO: Implement a callback or sth that allows to call here.
+		// Also check with calling over dll and stuff
+		if (inputCallback != NULL && inputCallback(hWnd, msg, wParam, lParam))
+			return;
+		
 		switch (msg)
 		{
 		// -------------------- CONFIG --------------------
