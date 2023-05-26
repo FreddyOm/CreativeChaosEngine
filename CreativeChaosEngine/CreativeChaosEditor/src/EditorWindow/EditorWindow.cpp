@@ -262,6 +262,7 @@ LRESULT CALLBACK EditorWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 
 		// Respond to the message:
 		//OnSize(hwnd, (UINT)wParam, width, height);
+		p_renderPipeline->OnResize(hwnd, wParam, width, height);
 		break;
 	}
 	case WM_CLOSE:
@@ -286,6 +287,6 @@ LRESULT CALLBACK EditorWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 CCE::InputManager* EditorWindow::p_inputManager = nullptr;
 
 /// <summary>
-/// Pointer to render pipeline
+/// Pointer to render pipeline.
 /// </summary>
 CCE::Graphics::RenderPipeline* EditorWindow::p_renderPipeline = nullptr;

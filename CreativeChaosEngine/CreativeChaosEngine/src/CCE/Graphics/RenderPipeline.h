@@ -16,28 +16,42 @@ namespace CCE::Graphics
 		RenderPipeline() = default;
 		~RenderPipeline()
 		{
-			pDevice.~ComPtr();
+			p_Context->Flush();
+			p_renderTarget->Release();
+			p_device->Release();
+			pSwapChain->Release();
+			p_Context->Release();
+			p_backBuffer->Release();
+			p_DSV->Release();
+
+			p_device.~ComPtr();
 			pSwapChain.~ComPtr();
-			pContext.~ComPtr();
-			pRenderTarget.~ComPtr();
-			pDSV.~ComPtr();
-			pBackBuffer.~ComPtr();
+			p_Context.~ComPtr();
+			p_renderTarget.~ComPtr();
+			p_DSV.~ComPtr();
+			p_backBuffer.~ComPtr();
 		}
 
 	public:
 		void InitializeD3D11(const HWND hWnd, const int width, const int height);
+		void CreateViewport();
+		void CreateDepthStencil();
+		void CreateRenderTargetView();
+		void CreateDeviceAndSwapChain();
+		void CreateSwapChainDesc(const HWND& hWnd);
 		void BeginFrame(const Color col) const;
 		void EndFrame();
+		void OnResize(const HWND hWnd, const UINT wParam, const int width, const int height);
 
 	public:
 		ID3D11Device* GetDevicePtr() const
 		{
-			return pDevice.Get();
+			return p_device.Get();
 		}
 
 		ID3D11DeviceContext* GetDeviceContextPtr() const
 		{
-			return pContext.Get();
+			return p_Context.Get();
 		}
 
 	private:
@@ -45,12 +59,13 @@ namespace CCE::Graphics
 		JOB_ENTRY_POINT ClearDepthStencilView() const;
 
 	private:
-		ComPtr<ID3D11Device> pDevice = nullptr;
+		ComPtr<ID3D11Device> p_device = nullptr;
 		ComPtr<IDXGISwapChain> pSwapChain = nullptr;
-		ComPtr<ID3D11DeviceContext> pContext = nullptr;
-		ComPtr<ID3D11RenderTargetView> pRenderTarget = nullptr;
-		ComPtr<ID3D11DepthStencilView> pDSV = nullptr;
-		ComPtr<ID3D11Resource> pBackBuffer = nullptr;
+		ComPtr<ID3D11DeviceContext> p_Context = nullptr;
+		ComPtr<ID3D11RenderTargetView> p_renderTarget = nullptr;
+		ComPtr<ID3D11DepthStencilView> p_DSV = nullptr;
+		ComPtr<ID3D11Resource> p_backBuffer = nullptr;
+		RECT clientRect;
 
 		// TODO: Load from config
 		DXGI_SWAP_CHAIN_DESC swapChainDesc = {0};
