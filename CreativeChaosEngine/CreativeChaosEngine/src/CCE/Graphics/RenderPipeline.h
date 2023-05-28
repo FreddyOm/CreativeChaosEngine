@@ -5,7 +5,6 @@
 #include "../Memory/StackAllocator.h"
 #include "../Utilities/Color/Color.h"
 #include "../Manager/JobManager.h"
-#include <d3d11.h>
 #include <dxgidebug.h>
 
 namespace CCE::Graphics
@@ -22,6 +21,7 @@ namespace CCE::Graphics
 		struct RenderPipelineConfig
 		{
 			bool activateVSync = true;
+			CCE::Color backgroundColor = CCE::Color("#BCC5CE");
 		};
 		
 		RenderPipeline() = default;
@@ -65,7 +65,6 @@ namespace CCE::Graphics
 		{
 			return p_Context.Get();
 		}
-
 		
 		RenderPipelineConfig* GetRenderPipelineConfig()
 		{

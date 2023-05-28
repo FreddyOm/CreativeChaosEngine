@@ -31,6 +31,7 @@ int main(int argc, char* argv[])
     CCE::ProfilingManager mProfilingManager = CCE::ProfilingManager();
     CCE::PhysicsManager mPhysicsManager = CCE::PhysicsManager();
     CCE::InputManager mInputManager = CCE::InputManager();
+
     {
 #ifdef DEBUG
         // Conduct unit tests by opening the application with '-test'
@@ -92,28 +93,26 @@ int main(int argc, char* argv[])
 #if MULTITHREADED    
         JobManager::EntryPoint handleXInput = BIND(mInputManager.HandleXInput);
         JOBDECL declHandleXInput = JOBDECL(handleXInput,JobManager::Priority::NORMAL);
-        
-        // ----------------------------------------
-        /*
-        JobManager::EntryPoint beginFrame =
-            BIND(Graphics::RenderPipeline::BeginFrame, window.GetRenderPipeline(), backgroundColor);
-        JOBDECL declBeginFrame = JOBDECL(beginFrame, JobManager::Priority::HIGH);
-        */
 
         JobManager::EntryPoint beginFrame = BIND(window.GetRenderPipeline()->BeginFrame,backgroundColor);
-        JOBDECL declBeginFrame = JOBDECL(beginFrame, JobManager::Priority::HIGH);
+        JOBDECL declBeginFrame;
+        declBeginFrame += beginFrame;
 
         JobManager::EntryPoint endFrame = BIND(window.GetRenderPipeline()->EndFrame);
-        JOBDECL declEndFrame = JOBDECL(endFrame, JobManager::Priority::HIGH);
+        JOBDECL declEndFrame;
+        declEndFrame += endFrame;
 
         JobManager::EntryPoint updateEditorWin = BIND(window.UpdateEditorWindow, rValue);
-        JOBDECL declUpdateEditorWin = JOBDECL(updateEditorWin, JobManager::Priority::HIGH);
+        JOBDECL declUpdateEditorWin;
+        declUpdateEditorWin += updateEditorWin;
 
         bool initialized = false;
         // Update loop
         JobManager::Counter cnt = JobManager::Counter(2);
         
 #endif
+
+        // ----------------------------------------
 
         while (rValue != (int)WM_QUIT)
         {
@@ -141,7 +140,7 @@ int main(int argc, char* argv[])
 #else
             window.UpdateEditorWindow(rValue);
 
-            window.GetRenderPipeline()->BeginFrame(backgroundColor);
+            window.GetRenderPipeline()->BeginFrame(window.GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
             window.PreGUIUpdate();
 
             //mInputManager.HandleDirectInput();

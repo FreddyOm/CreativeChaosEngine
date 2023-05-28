@@ -5,8 +5,8 @@
 #include <functional>
 
 #pragma comment(lib, "d3d11.lib")
-#pragma comment( lib, "dxgi.lib" )
-#pragma comment( lib, "dxguid.lib" )
+#pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
 namespace CCE::Graphics

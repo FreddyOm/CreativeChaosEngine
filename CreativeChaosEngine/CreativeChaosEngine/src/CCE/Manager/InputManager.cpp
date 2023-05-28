@@ -470,8 +470,6 @@ namespace CCE
 	/// </summary>
 	void InputManager::UpdateXInputControllerCount()
 	{
-		// TODO: Implement
-		// Do stuff here when Controller was connected / disconnected
 		for (unsigned short i = 0; i < XUSER_MAX_COUNT; i++)
 		{
 			if (activeController[i] != lastActiveController[i])

@@ -77,7 +77,23 @@ using namespace Events;
 
 				m_param = args;
 			}
+
+			void operator += (const EntryPoint& ep)
+			{
+				m_pEntryPoint = ep;
+				m_priority = Priority::NORMAL;
+			}
 		};
+
+		void operator += (JobDeclaration& jobDecl)
+		{
+			KickJobAndFreeDecl(jobDecl);
+		}
+
+		void operator += (JobDeclaration* jobDecl)
+		{
+			KickJob(jobDecl);
+		}
 
 		bool KickJobAndFreeDecl(JobDeclaration& decl, Counter* cnt = nullptr);
 		bool KickJob(JobDeclaration* decl, Counter* cnt = nullptr);
@@ -102,7 +118,6 @@ using namespace Events;
 		static bool HasNextJob();
 		static LPVOID GetThreadFiber();
 
-		// TODO: Fix problem with accessing resources using different mutexes
 		static std::mutex jobQueueMutex;
 		static std::mutex fiberMutex;
 		static std::mutex threadIdMutex;

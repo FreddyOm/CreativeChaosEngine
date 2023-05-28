@@ -25,7 +25,6 @@ bool EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 {
 	// Set window name	
 	windowName = winName;
-
 	// Create and register win class
 	wndClass.lpfnWndProc = WindowProc;
 	wndClass.hInstance = hInstance;
@@ -140,7 +139,6 @@ void EditorWindow::PostGUIUpdate()
 		ImGui_ImplDX11_RenderDrawData(drawData);
 	}
 }
-
 
 /// <summary>
 /// Set new GUI frame.
