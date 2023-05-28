@@ -19,7 +19,10 @@ namespace CCE
 #define MAX_JOBS 500
 #define WAIT_CNTR_LOOPS 200
 #define JOBDECL CCE::JobManager::JobDeclaration
+	// TODO: Override an operator to make the binding even more easy to use
 #define BIND(func, obj, ...) std::bind(&func, obj, ##__VA_ARGS__)
+#define BIND(func, ...) [&](...){return func(##__VA_ARGS__);};
+#define JOB_ENTRY_POINT void
 
 using namespace Events;
 
@@ -32,7 +35,7 @@ using namespace Events;
 		void StartUp() override;
 		void ShutDown() override;
 
-		typedef std::function<void(va_list)> EntryPoint;
+		typedef std::function<JOB_ENTRY_POINT(va_list)> EntryPoint;
 		typedef std::atomic<unsigned int> Counter;
 
 		static JobManager* Instance;
@@ -74,7 +77,23 @@ using namespace Events;
 
 				m_param = args;
 			}
+
+			void operator += (const EntryPoint& ep)
+			{
+				m_pEntryPoint = ep;
+				m_priority = Priority::NORMAL;
+			}
 		};
+
+		void operator += (JobDeclaration& jobDecl)
+		{
+			KickJobAndFreeDecl(jobDecl);
+		}
+
+		void operator += (JobDeclaration* jobDecl)
+		{
+			KickJob(jobDecl);
+		}
 
 		bool KickJobAndFreeDecl(JobDeclaration& decl, Counter* cnt = nullptr);
 		bool KickJob(JobDeclaration* decl, Counter* cnt = nullptr);
@@ -99,7 +118,6 @@ using namespace Events;
 		static bool HasNextJob();
 		static LPVOID GetThreadFiber();
 
-		// TODO: Fix problem with accessing resources using different mutexes
 		static std::mutex jobQueueMutex;
 		static std::mutex fiberMutex;
 		static std::mutex threadIdMutex;

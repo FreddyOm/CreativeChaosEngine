@@ -3,6 +3,7 @@
 #include "../Input/InputDevice.h"
 #include "../String/String.h"
 #include <vector>
+#include "../Utilities/Events/Delegate.h"
 
 #include <Xinput.h>
 #pragma comment(lib, "XInput.lib")
@@ -13,6 +14,8 @@ namespace CCE
 {
 	struct CCE_API InputManager : public BaseManager
 	{
+		typedef LRESULT (*GuiInputCallback)(HWND, UINT, WPARAM, LPARAM);
+
 	public:
 		InputManager() = default;
 		~InputManager() = default;
@@ -27,6 +30,8 @@ namespace CCE
 		void HandleDirectInput();
 		void InitializeDualSense();
 		void HandleDualSenseInput();
+
+		GuiInputCallback inputCallback = NULL;
 
 	private:
 		

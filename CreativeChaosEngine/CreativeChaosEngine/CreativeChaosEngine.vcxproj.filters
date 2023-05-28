@@ -84,6 +84,9 @@
     <ClCompile Include="src\CCE\Utilities\Events\Delegate.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\CCE\Graphics\Rendering\Mesh.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\Core.h">
@@ -165,6 +168,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\CCE\Utilities\Events\Delegate.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Graphics\Rendering\Mesh.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

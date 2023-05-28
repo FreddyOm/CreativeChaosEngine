@@ -59,6 +59,11 @@ namespace CCE
 	/// <param name="lParam">The low word parameter.</param>
 	void InputManager::HandleWinInput(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
+		// TODO: Implement a callback or sth that allows to call here.
+		// Also check with calling over dll and stuff
+		if (inputCallback != NULL && inputCallback(hWnd, msg, wParam, lParam))
+			return;
+		
 		switch (msg)
 		{
 		// -------------------- CONFIG --------------------
@@ -465,8 +470,6 @@ namespace CCE
 	/// </summary>
 	void InputManager::UpdateXInputControllerCount()
 	{
-		// TODO: Implement
-		// Do stuff here when Controller was connected / disconnected
 		for (unsigned short i = 0; i < XUSER_MAX_COUNT; i++)
 		{
 			if (activeController[i] != lastActiveController[i])
