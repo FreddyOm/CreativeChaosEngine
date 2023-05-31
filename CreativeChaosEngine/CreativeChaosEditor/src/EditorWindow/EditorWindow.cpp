@@ -76,6 +76,7 @@ void EditorWindow::InitializeGUI()
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
+	io.Fonts->AddFontFromFileTTF("resources/fonts/Inter-Light.ttf", 14);
 	io.Fonts->AddFontFromFileTTF("resources/fonts/Lexend-Light.ttf", 14);
 
 	ImGui::StyleColorsCCE();
