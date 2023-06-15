@@ -57,4 +57,3 @@ private:
 	HWND hWnd = {};
 	CCE::Graphics::RenderPipeline renderPipeline;
 };
-

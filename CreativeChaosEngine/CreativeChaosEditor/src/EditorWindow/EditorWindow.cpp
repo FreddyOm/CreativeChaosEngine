@@ -4,6 +4,7 @@
 #include "../imgui/imgui_impl_dx11.h"
 #include "../imgui/imgui_impl_win32.h"
 #include "CCE/Manager/JobManager.h"
+#include "CCE/Editor/CCEditor.h"
 
 /// <summary>
 /// Callback for window procedure.
@@ -61,7 +62,7 @@ bool EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 	// Init ImGui
 	LOG_REND("Initializing GUI...");
 	InitializeGUI();
-	
+
 	return windowRunning;
 }
 
@@ -116,10 +117,10 @@ void EditorWindow::UpdateGUI()
 {
 	if (ImGui::Begin("Rendering Debugging"))
 	{
-		ImGui::Text("FPS: %d", (short)(1000.0 / CCE::Time::deltaTime));
-		ImGui::Text("Frametime (ms): %f", CCE::Time::deltaTime);
-		ImGui::Text("Avg. Frametime (ms): %f", CCE::Time::GetAverageFrameTime());
-	
+		ImGui::Text("FPS: %d", GET_EDITOR_INT("fps"));
+		ImGui::Text("Frametime (ms): %f", GET_EDITOR_FLOAT("frameTime"));
+		ImGui::Text("Avg. Frametime (ms): %f", GET_EDITOR_FLOAT("avgFrameTime"));
+
 		ImGui::Spacing();
 		ImGui::Checkbox("VSync", &p_renderPipeline->GetRenderPipelineConfig()->activateVSync);
 	}

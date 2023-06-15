@@ -21,16 +21,19 @@
 
 #define MULTITHREADED 0
 
+using namespace CCE;
+
 int main(int argc, char* argv[])
 {
     // ------ HELLO ------
     LOGC("Starting %s", COLOR_BLUE, EDITOR_VERSION);
     //TODO: Load config file
 
-    CCE::JobManager mJobManager = CCE::JobManager();
-    CCE::ProfilingManager mProfilingManager = CCE::ProfilingManager();
-    CCE::PhysicsManager mPhysicsManager = CCE::PhysicsManager();
-    CCE::InputManager mInputManager = CCE::InputManager();
+    JobManager mJobManager = CCE::JobManager();
+    ProfilingManager mProfilingManager = CCE::ProfilingManager();
+    PhysicsManager mPhysicsManager = CCE::PhysicsManager();
+    InputManager mInputManager = CCE::InputManager();
+    CCE::CCEditor editor = CCE::CCEditor();
 
     {
 #ifdef DEBUG
