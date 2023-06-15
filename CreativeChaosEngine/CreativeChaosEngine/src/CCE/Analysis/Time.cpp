@@ -1,5 +1,6 @@
 #include "Time.h"
 #include "time.h"
+#include "../Editor/CCEditor.h"
 
 namespace CCE
 {
@@ -50,6 +51,10 @@ namespace CCE
 		{
 			averageIndex = 0;
 		}
+
+		PUSH_EDITOR_FLOAT("frameTime", (float)deltaTime);
+		PUSH_EDITOR_FLOAT("avgFrameTime", (float)GetAverageFrameTime());
+		PUSH_EDITOR_INT("fps", (int)(1000/deltaTime));
 	}
 
 	double Time::GetAverageFrameTime()

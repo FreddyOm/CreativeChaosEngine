@@ -1,14 +1,14 @@
-<mxfile host="app.diagrams.net" modified="2023-06-01T08:46:33.906Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36" etag="mFvNBBUpHnRXJbwWG9ao" version="21.2.1" type="device">
+<mxfile host="app.diagrams.net" modified="2023-06-15T09:52:05.982Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="DaLEjJUZb-F7L2nOYth3" version="21.3.8" type="device">
   <diagram id="8fpRgev41DCuqWQ1G-s_" name="Seite-1">
-    <mxGraphModel dx="1927" dy="565" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1707" dy="452" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="gojaec7avEjBhFBTUsYV-4" value="&lt;b&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;CCEditor(exe)&lt;/font&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
-          <mxGeometry x="-140" y="570" width="440" height="450" as="geometry" />
+        <mxCell id="gojaec7avEjBhFBTUsYV-4" value="&lt;b&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;CreativeChaosEditor&lt;/font&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="-40" y="570" width="440" height="450" as="geometry" />
         </mxCell>
-        <mxCell id="TZSPYtpd1QVZa2vFHFh5-9" value="&lt;b&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;CCEngine(dll)&lt;/font&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;glass=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
-          <mxGeometry x="520" y="570" width="450" height="1030" as="geometry" />
+        <mxCell id="TZSPYtpd1QVZa2vFHFh5-9" value="&lt;b&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;CreativeChaosEngine&lt;/font&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;glass=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="520" y="570" width="450" height="1100" as="geometry" />
         </mxCell>
         <mxCell id="gojaec7avEjBhFBTUsYV-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="TZSPYtpd1QVZa2vFHFh5-1" target="TZSPYtpd1QVZa2vFHFh5-3" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -32,8 +32,8 @@
         <mxCell id="gojaec7avEjBhFBTUsYV-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="TZSPYtpd1QVZa2vFHFh5-1" target="gojaec7avEjBhFBTUsYV-3" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="500" y="620" />
-              <mxPoint x="500" y="620" />
+              <mxPoint x="510" y="650" />
+              <mxPoint x="510" y="650" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -66,7 +66,7 @@
         <mxCell id="gojaec7avEjBhFBTUsYV-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="gojaec7avEjBhFBTUsYV-1" target="gojaec7avEjBhFBTUsYV-32" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="-50" y="760" />
+              <mxPoint x="50" y="760" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -88,18 +88,15 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="gojaec7avEjBhFBTUsYV-1" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;CreativeChaos&lt;br&gt;Editor&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="-110" y="610" width="120" height="60" as="geometry" />
+          <mxGeometry x="-10" y="610" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="gojaec7avEjBhFBTUsYV-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="gojaec7avEjBhFBTUsYV-2" edge="1">
+        <mxCell id="gojaec7avEjBhFBTUsYV-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="gojaec7avEjBhFBTUsYV-2" target="TZSPYtpd1QVZa2vFHFh5-1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="80" y="700" />
-              <mxPoint x="350" y="700" />
-              <mxPoint x="350" y="650" />
-              <mxPoint x="660" y="650" />
+              <mxPoint x="180" y="700" />
+              <mxPoint x="410" y="700" />
+              <mxPoint x="410" y="630" />
             </Array>
-            <mxPoint x="150" y="700" as="sourcePoint" />
-            <mxPoint x="660" y="650" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="gojaec7avEjBhFBTUsYV-34" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;Updates&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="gojaec7avEjBhFBTUsYV-11" vertex="1" connectable="0">
@@ -110,8 +107,8 @@
         <mxCell id="gojaec7avEjBhFBTUsYV-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="gojaec7avEjBhFBTUsYV-2" target="gojaec7avEjBhFBTUsYV-3" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="80" y="690" />
-              <mxPoint x="210" y="690" />
+              <mxPoint x="180" y="690" />
+              <mxPoint x="310" y="690" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -123,8 +120,8 @@
         <mxCell id="gojaec7avEjBhFBTUsYV-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="gojaec7avEjBhFBTUsYV-2" target="gojaec7avEjBhFBTUsYV-30" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="80" y="710" />
-              <mxPoint x="210" y="710" />
+              <mxPoint x="180" y="710" />
+              <mxPoint x="310" y="710" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -134,12 +131,12 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="gojaec7avEjBhFBTUsYV-2" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;EditorWindow&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="20" y="610" width="120" height="60" as="geometry" />
+          <mxGeometry x="120" y="610" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="gojaec7avEjBhFBTUsYV-3" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;ImGui&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="150" y="610" width="120" height="60" as="geometry" />
+          <mxGeometry x="250" y="610" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="TZSPYtpd1QVZa2vFHFh5-4" value="&lt;font color=&quot;#707070&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;Vulkan&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;" parent="1" vertex="1">
+        <mxCell id="TZSPYtpd1QVZa2vFHFh5-4" value="&lt;font color=&quot;#707070&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;Vulkan&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="540" y="690" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="gojaec7avEjBhFBTUsYV-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="gojaec7avEjBhFBTUsYV-16" target="gojaec7avEjBhFBTUsYV-18" edge="1">
@@ -173,10 +170,10 @@
           <mxGeometry x="620" y="1070" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="gojaec7avEjBhFBTUsYV-30" value="&lt;font face=&quot;Lexend&quot;&gt;Mouse &amp;amp; Keyboard&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="150" y="730" width="120" height="60" as="geometry" />
+          <mxGeometry x="250" y="730" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="gojaec7avEjBhFBTUsYV-32" value="&lt;font face=&quot;Lexend&quot;&gt;Console&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="20" y="730" width="120" height="60" as="geometry" />
+          <mxGeometry x="120" y="730" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="gojaec7avEjBhFBTUsYV-43" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="gojaec7avEjBhFBTUsYV-40" target="gojaec7avEjBhFBTUsYV-42" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -219,8 +216,20 @@
         <mxCell id="gojaec7avEjBhFBTUsYV-49" value="&lt;font color=&quot;#707070&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;Delegates&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="840" y="1340" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="gojaec7avEjBhFBTUsYV-55" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;Daten mit Keys in Zwischenkasse pushen, aus der ich dann im Editor die Infos auslesen kann?&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="-190" y="440" width="166" height="70" as="geometry" />
+        <mxCell id="QcBBbig-Q7w8GGF33m9e-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="QcBBbig-Q7w8GGF33m9e-1" target="QcBBbig-Q7w8GGF33m9e-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="QcBBbig-Q7w8GGF33m9e-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="QcBBbig-Q7w8GGF33m9e-1" target="QcBBbig-Q7w8GGF33m9e-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="QcBBbig-Q7w8GGF33m9e-1" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;InputManager&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="670" y="1440" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="QcBBbig-Q7w8GGF33m9e-2" value="&lt;font color=&quot;#707070&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;DualSense&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="770" y="1540" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="QcBBbig-Q7w8GGF33m9e-3" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;XInput&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="630" y="1540" width="120" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

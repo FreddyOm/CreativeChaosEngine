@@ -22,7 +22,6 @@ namespace CCE::Graphics
 		// TODO: Load from config file
 		pipelineConfig.activateVSync = false;
 
-
 		// Create swap chain description
 		CreateSwapChainDesc(hWnd);
 

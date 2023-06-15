@@ -37,3 +37,9 @@
 #include "CCE/Utilities/Color/Color.h"
 
 // --------------------------
+
+// --------- Editor ----------
+
+#include "CCE/Editor/CCEditor.h"
+
+// --------------------------
