@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
     {
 #ifdef DEBUG
         // Conduct unit tests by opening the application with '-test'
-        bool unittesting = false;
+        bool unittesting = true;
         for(int i = 0; i < argc; i++)
         {
             std::string arg = std::string(argv[i]);

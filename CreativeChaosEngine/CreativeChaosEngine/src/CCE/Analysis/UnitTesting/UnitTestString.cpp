@@ -1,5 +1,7 @@
 #include "UnitTestString.h"
 #include "../Logger.h"
+#include "../../Analysis/Time.h"
+#include <random>
 
 namespace CCE_Testing
 {
@@ -16,6 +18,9 @@ namespace CCE_Testing
 
 		if (TestString4()) { LOGC_TEST("Testing UnitTestString::TestString4: successful", COLOR_GREEN); }
 		else { LOGC_TEST("Testing UnitTestString::TestString4: failed", COLOR_RED); }
+	
+		if(TestStringRandomized()) { LOGC_TEST("Testing UnitTestString::TestStringRandomized: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestString::TestStringRandomized: failed", COLOR_RED); }
 	}
 
 	void UnitTestString::Cleanup()
@@ -80,6 +85,52 @@ namespace CCE_Testing
 			&& s1 == s2 && s2.sId == s1.sId
 			&& s3.Length() == 10 && s3.sId != s1.sId
 			&& s3 != s1 && s3 != s2 && s0 == "Default Test Text"
-			&& s0.Length() == 17;
+			&& s0.Length() == 17 && s2.sId == 14840547598754946856;
+	}
+
+	bool UnitTestString::TestStringRandomized() noexcept
+	{
+		CCE::String s1 = GetRandomString();
+		CCE::String s2 = GetRandomString();
+
+		CCE::String s3 = s1;
+		CCE::String s4 = s3;
+
+		bool test1 = s1 == s3;
+		bool test2 = s1 == s4;
+		bool test3 = s1.sId == s3.sId;
+		bool test4 = s4.sId != s2.sId;
+		bool test5 = s2 != s3;
+		bool test6 = s3.sId == s4.sId;
+		bool test7 = strcmp(s3.Value(), s1.Value()) == 0;
+
+		return test1 && test2 && test3 && test4 && test5 && test6 && test7;
+	}
+
+	CCE::String UnitTestString::GetRandomString() noexcept
+	{
+		DWORD64 _seed;
+		
+		_seed = __rdtsc();
+		std::srand(_seed);
+
+		int randomChar = std::rand() % 128;
+		int randomStrLen = std::rand() % 256;
+		char buf[256];
+
+		for (int i = 0; i < randomStrLen; i++)
+		{
+			_seed = __rdtsc();
+			std::srand((unsigned int)_seed);
+			randomChar = std::rand() % 128;
+
+			buf[i] = randomChar;
+		}
+
+		buf[randomStrLen] = 0;
+
+		auto str = CCE::String(&buf[0]);
+
+		return str;
 	}
 }

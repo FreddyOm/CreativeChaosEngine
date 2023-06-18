@@ -3,7 +3,7 @@
 #include "../String/String.h"
 #include <unordered_map>
 
-#define PUSH_EDITOR_BOOL(key, value) CCE::CCEditor::PushEditorBoolValue(key, value)
+#define PUSH_EDITOR_BOOL(key, value) CCE::CCEditor::PushEditorBoolValue(key, value)ff
 #define PUSH_EDITOR_LONG(key, value) CCE::CCEditor::PushEditorLongValue(key, value)
 #define PUSH_EDITOR_INT(key, value) CCE::CCEditor::PushEditorIntValue(key, value)
 #define PUSH_EDITOR_FLOAT(key, value) CCE::CCEditor::PushEditorFloatValue(key, value)

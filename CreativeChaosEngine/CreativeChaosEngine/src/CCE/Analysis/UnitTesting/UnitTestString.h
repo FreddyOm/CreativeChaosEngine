@@ -16,6 +16,10 @@ namespace CCE_Testing
 		bool TestString2() noexcept;
 		bool TestString3() noexcept;
 		bool TestString4() noexcept;
+
+		bool TestStringRandomized() noexcept;
+	
+		CCE::String GetRandomString() noexcept;
 	};
 }
 
