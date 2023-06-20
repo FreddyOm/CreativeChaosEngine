@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "../EditorWindow/EditorWindow.h"
+#include "../ClientWindow/ClientWindow.h"
 #include "imgui.h"
 
 IMGUI_IMPL_API bool     ImGui_ImplWin32_Init(HWND hwnd);

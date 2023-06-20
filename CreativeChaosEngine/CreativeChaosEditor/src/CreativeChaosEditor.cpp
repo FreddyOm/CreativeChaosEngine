@@ -1,5 +1,5 @@
 #include "CreativeChaosEditor.h"
-#include "EditorWindow/EditorWindow.h"
+#include "ClientWindow/ClientWindow.h"
 #include "CCE/Manager/JobManager.h"
 #include <functional>
 
@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
     CCE::Color backgroundColor = CCE::Color("#BCC5CE");
 
     {
-        EditorWindow window = EditorWindow(&mInputManager, window.GetRenderPipeline());
+        ClientWindow window = ClientWindow(&mInputManager, window.GetRenderPipeline());
         window.OpenWindow(GetModuleHandle(NULL));
 
         using namespace CCE;

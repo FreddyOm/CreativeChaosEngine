@@ -1,4 +1,4 @@
-#include "EditorWindow.h"
+#include "ClientWindow.h"
 #include "CCE/Manager/InputManager.h"
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_impl_dx11.h"
@@ -22,7 +22,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 /// <param name="hInstance"></param>
 /// <param name="winName"></param>
 /// <returns>A return code that indicates whether or not the window opened correctly.</returns>
-bool EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
+bool ClientWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 {
 	// Set window name	
 	windowName = winName;
@@ -69,7 +69,7 @@ bool EditorWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 /// <summary>
 /// Initializing ImGui with D3D11 and ImGui
 /// </summary>
-void EditorWindow::InitializeGUI()
+void ClientWindow::InitializeGUI()
 {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -95,7 +95,7 @@ void EditorWindow::InitializeGUI()
 /// The window's message pump.
 /// </summary>
 /// <returns>The return code whenever the window is closed.</returns>
-void EditorWindow::UpdateEditorWindow(int& _returnVal)
+void ClientWindow::UpdateEditorWindow(int& _returnVal)
 {
 	_returnVal = 0;
 	MSG msg;
@@ -114,7 +114,7 @@ void EditorWindow::UpdateEditorWindow(int& _returnVal)
 /// <summary>
 /// Do GUI setup here.
 /// </summary>
-void EditorWindow::UpdateGUI()
+void ClientWindow::UpdateGUI()
 {
 	if (ImGui::Begin("Rendering Debugging"))
 	{
@@ -132,7 +132,7 @@ void EditorWindow::UpdateGUI()
 /// <summary>
 /// Render the GUI.
 /// </summary>
-void EditorWindow::PostGUIUpdate()
+void ClientWindow::PostGUIUpdate()
 {
 	if (imguiEnabled)
 	{
@@ -145,7 +145,7 @@ void EditorWindow::PostGUIUpdate()
 /// <summary>
 /// Set new GUI frame.
 /// </summary>
-void EditorWindow::PreGUIUpdate()
+void ClientWindow::PreGUIUpdate()
 {
 	if (imguiEnabled)
 	{
@@ -159,7 +159,7 @@ void EditorWindow::PreGUIUpdate()
 /// Closes the editor window.
 /// </summary>
 /// <returns>Return code for more detailed info.</returns>
-int EditorWindow::CloseEditorWindow()
+int ClientWindow::CloseEditorWindow()
 {
 	windowRunning = false;
 	ImGui_ImplDX11_Shutdown();
@@ -173,7 +173,7 @@ int EditorWindow::CloseEditorWindow()
 /// Get the windows width.
 /// </summary>
 /// <returns></returns>
-int EditorWindow::GetEditorWindowWidth() const
+int ClientWindow::GetEditorWindowWidth() const
 {
 	RECT rect = {};
 	GetWindowRect(hWnd,&rect);
@@ -185,7 +185,7 @@ int EditorWindow::GetEditorWindowWidth() const
 /// Get the windows height.
 /// </summary>
 /// <returns></returns>
-int EditorWindow::GetEditorWindowHeight() const
+int ClientWindow::GetEditorWindowHeight() const
 {
 	RECT rect = {};
 	GetWindowRect(hWnd, &rect);
@@ -197,7 +197,7 @@ int EditorWindow::GetEditorWindowHeight() const
 /// Get the current editor window's handle.
 /// </summary>
 /// <returns>Window handle.</returns>
-HWND EditorWindow::GetEditorWindowHandle() const
+HWND ClientWindow::GetEditorWindowHandle() const
 {
 	return hWnd;
 }
@@ -206,7 +206,7 @@ HWND EditorWindow::GetEditorWindowHandle() const
 /// Get the current editor window's class.
 /// </summary>
 /// <returns>Window class.</returns>
-WNDCLASS EditorWindow::GetEditorWindowClass() const
+WNDCLASS ClientWindow::GetEditorWindowClass() const
 {
 	return wndClass;
 }
@@ -215,7 +215,7 @@ WNDCLASS EditorWindow::GetEditorWindowClass() const
 /// Get the render pipeline.
 /// </summary>
 /// <returns></returns>
-CCE::Graphics::RenderPipeline* EditorWindow::GetRenderPipeline()
+CCE::Graphics::RenderPipeline* ClientWindow::GetRenderPipeline()
 {
 	return &renderPipeline;
 }
@@ -224,7 +224,7 @@ CCE::Graphics::RenderPipeline* EditorWindow::GetRenderPipeline()
 /// Get the current editor window's name.
 /// </summary>
 /// <returns>Window name.</returns>
-CCE::String EditorWindow::GetEditorWindowName() const
+CCE::String ClientWindow::GetEditorWindowName() const
 {
 	return windowName;
 }
@@ -233,7 +233,7 @@ CCE::String EditorWindow::GetEditorWindowName() const
 /// Set the current editor window's name.
 /// </summary>
 /// <param name="">Window name.</param>
-void EditorWindow::SetEditorWindowName(CCE::String name)
+void ClientWindow::SetEditorWindowName(CCE::String name)
 {
 	windowName = name;
 	SetWindowTextA(GetEditorWindowHandle(), windowName.Value());
@@ -247,7 +247,7 @@ void EditorWindow::SetEditorWindowName(CCE::String name)
 /// <param name="wParam"></param>
 /// <param name="lParam"></param>
 /// <returns>Result code.</returns>
-LRESULT CALLBACK EditorWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK ClientWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	// TODO: Handle input in one place & make explicit code platform independent
 	// TODO: Create possibility to set values to 0 again
@@ -284,19 +284,19 @@ LRESULT CALLBACK EditorWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 /// <summary>
 /// Pointer to this instance.
 /// </summary>
-EditorWindow* EditorWindow::Instance = nullptr;
+ClientWindow* ClientWindow::Instance = nullptr;
 
 /// <summary>
 /// Pointer to input manager.
 /// </summary>
-CCE::InputManager* EditorWindow::p_inputManager = nullptr;
+CCE::InputManager* ClientWindow::p_inputManager = nullptr;
 
 /// <summary>
 /// Pointer to render pipeline.
 /// </summary>
-CCE::Graphics::RenderPipeline* EditorWindow::p_renderPipeline = nullptr;
+CCE::Graphics::RenderPipeline* ClientWindow::p_renderPipeline = nullptr;
 
 /// <summary>
 /// Pointer to job manager.
 /// </summary>
-CCE::JobManager* EditorWindow::p_jobManager = nullptr;
+CCE::JobManager* ClientWindow::p_jobManager = nullptr;

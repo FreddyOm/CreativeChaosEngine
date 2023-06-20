@@ -2,19 +2,18 @@
 #include <CCEngine.h>
 #include <string>
 #include <optional>
-#include "../CreativeChaosEditor.h"
 
-struct EditorWindow
+struct ClientWindow
 { 
-	EditorWindow() = default;
-	EditorWindow(CCE::InputManager* pIM, 
+	ClientWindow() = default;
+	ClientWindow(CCE::InputManager* pIM, 
 		CCE::Graphics::RenderPipeline* pRP)
 	{
 		p_renderPipeline = pRP;
 		p_inputManager = pIM;
 	}
 
-	~EditorWindow()
+	~ClientWindow()
 	{
 		p_inputManager = nullptr;
 		p_renderPipeline = nullptr;
@@ -44,7 +43,7 @@ struct EditorWindow
 	bool fullScreen = false;
 
 private:
-	static EditorWindow* Instance;
+	static ClientWindow* Instance;
 	bool imguiEnabled = true;
 	CCE::String windowName = "";
 

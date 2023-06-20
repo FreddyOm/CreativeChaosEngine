@@ -18,7 +18,7 @@
     <ClCompile Include="src\CreativeChaosEditor.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\EditorWindow\EditorWindow.cpp">
+    <ClCompile Include="src\ClientWindow\ClientWindow.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\imgui\imgui.cpp">
@@ -44,7 +44,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\EditorWindow\EditorWindow.h">
+    <ClInclude Include="src\ClientWindow\ClientWindow.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\CreativeChaosEditor.h">
