@@ -1,7 +1,11 @@
 #include "CreativeChaosEditor.h"
-#include "ClientWindow/ClientWindow.h"
+#include "CCE/ClientWindow/ClientWindow.h"
 #include "CCE/Manager/JobManager.h"
+#include "EditorWindow/Base/EditorWindow.h"
 #include <functional>
+
+#include "EditorWindow/RenderingDebugger.h"
+#include "EditorWindow/MemoryWindow.h"
 
 // -------- Testing ---------
 
@@ -14,6 +18,7 @@
 #include "CCE/Analysis/UnitTesting/UnitTestString.h"
 
 #endif
+#include <CCE/CCEditor/CCEditor.h>
 
 // -------------------------
 
@@ -82,11 +87,15 @@ int main(int argc, char* argv[])
 
     // ------ OPEN ENGINE WINDOW ------
 
-    CCE::Color backgroundColor = CCE::Color("#BCC5CE");
 
     {
-        ClientWindow window = ClientWindow(&mInputManager, window.GetRenderPipeline());
+        ClientWindow window = ClientWindow();
         window.OpenWindow(GetModuleHandle(NULL));
+
+        // EditorWindows
+        RenderingDebugger renderDebugger = RenderingDebugger("Rendering Debugger");
+        MemoryWindow memDebugger = MemoryWindow("Memory Debugger");
+
 
         using namespace CCE;
 
@@ -141,17 +150,20 @@ int main(int argc, char* argv[])
             mJobManager.WaitForCounter(&cnt, 0);
 
 #else
-            window.UpdateEditorWindow(rValue);
+            window.UpdateClientWindow(rValue);
 
             window.GetRenderPipeline()->BeginFrame(window.GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
-            window.PreGUIUpdate();
+            EditorWindow::PreGUIUpdate();
 
             //mInputManager.HandleDirectInput();
             mInputManager.HandleXInput();
 
-            window.UpdateGUI();
+            for (int i = 0; i < EditorWindow::GetEditorWindowPtrs().size(); i++)
+            {
+                EditorWindow::GetEditorWindowPtrs().at(i)->UpdateWindow();
+            }
 
-            window.PostGUIUpdate();
+            EditorWindow::PostGUIUpdate();
             window.GetRenderPipeline()->EndFrame();
 #endif
             auto end = Time::Now();

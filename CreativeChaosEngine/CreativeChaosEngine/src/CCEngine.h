@@ -40,6 +40,6 @@
 
 // --------- Editor ----------
 
-#include "CCE/Editor/CCEditor.h"
+#include "CCE/CCEditor/CCEditor.h"
 
 // --------------------------

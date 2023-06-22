@@ -133,7 +133,9 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\ClientWindow\ClientWindow.cpp" />
+    <ClCompile Include="src\EditorWindow\MemoryWindow.cpp" />
+    <ClCompile Include="src\EditorWindow\RenderingDebugger.cpp" />
+    <ClCompile Include="src\EditorWindow\Base\EditorWindow.cpp" />
     <ClCompile Include="src\CreativeChaosEditor.cpp" />
     <ClCompile Include="src\imgui\imgui.cpp" />
     <ClCompile Include="src\imgui\imgui_demo.cpp" />
@@ -149,8 +151,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\EditorWindow\MemoryWindow.h" />
+    <ClInclude Include="src\EditorWindow\RenderingDebugger.h" />
+    <ClInclude Include="src\EditorWindow\Base\EditorWindow.h" />
     <ClInclude Include="src\CreativeChaosEditor.h" />
-    <ClInclude Include="src\ClientWindow\ClientWindow.h" />
     <ClInclude Include="src\imgui\imconfig.h" />
     <ClInclude Include="src\imgui\imgui.h" />
     <ClInclude Include="src\imgui\imgui_impl_dx11.h" />

@@ -15,7 +15,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\CCE\Editor\CCEditor.cpp" />
+    <ClCompile Include="src\CCE\ClientWindow\ClientWindow.cpp" />
+    <ClCompile Include="src\CCE\CCEditor\CCEditor.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Mesh.cpp" />
     <ClCompile Include="src\CCE\Utilities\Events\Delegate.cpp" />
     <ClCompile Include="src\CCE\Utilities\Color\Color.cpp" />
@@ -42,7 +43,8 @@
     <ClCompile Include="src\CCE\Analysis\UnitTesting\UnitTestString.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\CCE\Editor\CCEditor.h" />
+    <ClInclude Include="src\CCE\ClientWindow\ClientWindow.h" />
+    <ClInclude Include="src\CCE\CCEditor\CCEditor.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Mesh.h" />
     <ClInclude Include="src\CCE\Utilities\Events\Delegate.h" />
     <ClInclude Include="src\CCE\Input\ds5w.h" />

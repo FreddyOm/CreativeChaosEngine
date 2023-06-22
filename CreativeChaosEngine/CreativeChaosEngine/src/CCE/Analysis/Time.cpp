@@ -1,6 +1,6 @@
 #include "Time.h"
 #include "time.h"
-#include "../Editor/CCEditor.h"
+#include "../CCEditor/CCEditor.h"
 
 namespace CCE
 {

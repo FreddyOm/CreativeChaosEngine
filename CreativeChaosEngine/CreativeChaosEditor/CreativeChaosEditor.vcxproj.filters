@@ -18,9 +18,6 @@
     <ClCompile Include="src\CreativeChaosEditor.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\ClientWindow\ClientWindow.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="src\imgui\imgui.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -42,11 +39,17 @@
     <ClCompile Include="src\imgui\imgui_widgets.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\EditorWindow\Base\EditorWindow.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EditorWindow\RenderingDebugger.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EditorWindow\MemoryWindow.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\ClientWindow\ClientWindow.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="src\CreativeChaosEditor.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -72,6 +75,15 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\imgui\imstb_truetype.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EditorWindow\Base\EditorWindow.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EditorWindow\RenderingDebugger.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EditorWindow\MemoryWindow.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
