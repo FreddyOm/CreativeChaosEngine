@@ -237,6 +237,8 @@ namespace CCE
 		auto now = Time::Now();
 		while ((*pJobCounter) > desiredCnt)
 		{
+			// TODO: Put *this* job on the wait list until the counter == desiredCnt
+
 			continue;
 		}
 		auto after = Time::Now();
