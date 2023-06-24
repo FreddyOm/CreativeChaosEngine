@@ -93,6 +93,9 @@
     <ClCompile Include="src\CCE\ClientWindow\ClientWindow.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\CCE\Manager\MemoryManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\Core.h">
@@ -183,6 +186,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\CCE\ClientWindow\ClientWindow.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Manager\MemoryManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

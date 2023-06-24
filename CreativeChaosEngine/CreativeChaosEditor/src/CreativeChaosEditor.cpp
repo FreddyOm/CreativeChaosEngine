@@ -1,9 +1,8 @@
 #include "CreativeChaosEditor.h"
 #include "CCE/ClientWindow/ClientWindow.h"
-#include "CCE/Manager/JobManager.h"
-#include "EditorWindow/Base/EditorWindow.h"
 #include <functional>
 
+#include "EditorWindow/Base/EditorWindow.h"
 #include "EditorWindow/RenderingDebugger.h"
 #include "EditorWindow/MemoryWindow.h"
 
@@ -36,8 +35,9 @@ int main(int argc, char* argv[])
 
     JobManager mJobManager = CCE::JobManager();
     ProfilingManager mProfilingManager = CCE::ProfilingManager();
-    PhysicsManager mPhysicsManager = CCE::PhysicsManager();
-    InputManager mInputManager = CCE::InputManager();
+    PhysicsManager mPhysicsManager = PhysicsManager();
+    InputManager mInputManager = InputManager();
+    MemoryManager mMemoryManager = MemoryManager();
     CCE::CCEditor editor = CCE::CCEditor();
 
     {
@@ -84,6 +84,7 @@ int main(int argc, char* argv[])
     mProfilingManager.StartUp();
     mPhysicsManager.StartUp();
     mInputManager.StartUp();
+
 
     // ------ OPEN ENGINE WINDOW ------
 

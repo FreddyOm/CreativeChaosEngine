@@ -34,7 +34,7 @@ public:
 	/// </summary>
 	~EditorWindow()
 	{
-		UnInitializeGUI();
+		UnInitializeGUI ();
 	}
 
 	/// <summary>
