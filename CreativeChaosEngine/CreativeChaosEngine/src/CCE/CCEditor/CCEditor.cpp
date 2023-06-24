@@ -2,6 +2,7 @@
 
 namespace CCE
 {
+
 	void CCEditor::PushEditorIntValue(const String key, const int value) noexcept
 	{
 		if (!editorIntValues.empty() && 

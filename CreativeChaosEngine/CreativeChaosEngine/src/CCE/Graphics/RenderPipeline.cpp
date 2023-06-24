@@ -13,6 +13,8 @@ namespace CCE::Graphics
 {
 	// TODO: Jobify the initialization
 
+	RenderPipeline* RenderPipeline::Instance = nullptr;
+
 	/// <summary>
 	/// Initializes the D3D11 
 	/// </summary>

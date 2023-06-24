@@ -14,8 +14,6 @@ namespace CCE::Graphics
 
 	class CCE_API RenderPipeline
 	{
-		friend class EditorWindow;
-
 	public:
 
 		struct RenderPipelineConfig
@@ -24,7 +22,12 @@ namespace CCE::Graphics
 			CCE::Color backgroundColor = CCE::Color("#BCC5CE");
 		};
 		
-		RenderPipeline() = default;
+		RenderPipeline()
+		{
+			DASSERT(Instance == nullptr, "The Renderpipeline can only be initialized once!");
+			Instance = this;
+		}
+		
 		~RenderPipeline()
 		{
 			p_Context->OMSetRenderTargets(0, NULL, NULL);
@@ -43,6 +46,9 @@ namespace CCE::Graphics
 			p_DSV.~ComPtr();
 			p_backBuffer.~ComPtr();
 		}
+
+	public:
+		static RenderPipeline* Instance;
 
 	public:
 		void InitializeD3D11(const HWND hWnd, const int width, const int height);

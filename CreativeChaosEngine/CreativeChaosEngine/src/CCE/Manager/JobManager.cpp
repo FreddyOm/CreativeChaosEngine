@@ -3,6 +3,7 @@
 #include "../Analysis/Debug.h"
 #include "../Analysis/Time.h"
 #include "../Utilities/Concurrency/ScopedLock.h"
+#include "MemoryManager.h"
 
 // TODO: Currently the threads fight for the next job. Fix that to make it more efficient.
 
@@ -103,15 +104,21 @@ namespace CCE
 		{
 			case JobManager::Priority::HIGH:
 			{
-				jobQueue_High.push(std::move(decl)); break;
+				auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
+				*p_decl = std::move(decl);
+				jobQueue_High.push(p_decl); break;
 			}
 			case JobManager::Priority::LOW:
 			{
-				jobQueue_Low.push(std::move(decl)); break;
+				auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
+				*p_decl = std::move(decl);
+				jobQueue_Low.push(p_decl); break;
 			}
 			default:
 			{
-				jobQueue_Normal.push(std::move(decl)); break;
+				auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
+				*p_decl = std::move(decl);
+				jobQueue_Normal.push(p_decl); break;
 			}
 		}
 
@@ -135,15 +142,24 @@ namespace CCE
 		{
 		case JobManager::Priority::HIGH:
 		{
-			jobQueue_High.push(*decl); break;
+			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
+			*p_decl = std::move(*decl);
+			delete decl;
+			jobQueue_High.push(p_decl); break;
 		}
 		case JobManager::Priority::LOW:
 		{
-			jobQueue_Low.push(*decl); break;
+			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
+			*p_decl = std::move(*decl);
+			delete decl;
+			jobQueue_Low.push(p_decl); break;
 		}
 		default:
 		{
-			jobQueue_Normal.push(*decl); break;
+			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
+			*p_decl = std::move(*decl);
+			delete decl;
+			jobQueue_Normal.push(p_decl); break;
 		}
 		}
 
@@ -167,15 +183,21 @@ namespace CCE
 		{
 		case JobManager::Priority::HIGH:
 		{
-			jobQueue_High.push(std::move(decl)); break;
+			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
+			*p_decl = std::move(decl);
+			jobQueue_High.push(p_decl); break;
 		}
 		case JobManager::Priority::LOW:
 		{
-			jobQueue_Low.push(std::move(decl)); break;
+			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
+			*p_decl = std::move(decl);
+			jobQueue_Low.push(p_decl); break;
 		}
 		default:
 		{
-			jobQueue_Normal.push(std::move(decl)); break;
+			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
+			*p_decl = std::move(decl);
+			jobQueue_Normal.push(p_decl); break;
 		}
 		}
 		DASSERT(waitForCnt != nullptr, "Conter may not be null!");
@@ -401,7 +423,8 @@ namespace CCE
 
 		if (!jobQueue_High.empty())
 		{
-			decl = jobQueue_High.front();
+			decl = *jobQueue_High.front();
+			MemoryManager::Instance->jobMemory.FreeAligned((intptr_t)jobQueue_Normal.front(), sizeof(JobDeclaration));
 			jobQueue_High.pop();
 
 			return decl;
@@ -409,7 +432,8 @@ namespace CCE
 
 		if (!jobQueue_Normal.empty())
 		{
-			decl = jobQueue_Normal.front();
+			decl = *jobQueue_Normal.front();
+			MemoryManager::Instance->jobMemory.FreeAligned((intptr_t)jobQueue_Normal.front(), sizeof(JobDeclaration));
 			jobQueue_Normal.pop();
 
 			return decl;
@@ -417,7 +441,8 @@ namespace CCE
 
 		if (!jobQueue_Low.empty())
 		{
-			decl = jobQueue_Low.front();
+			decl = *jobQueue_Low.front();
+			MemoryManager::Instance->jobMemory.FreeAligned((intptr_t)jobQueue_Normal.front(), sizeof(JobDeclaration));
 			jobQueue_Low.pop();
 
 			return decl;
@@ -503,17 +528,17 @@ namespace CCE
 	/// <summary>
 	/// The high priority queue for jobs.
 	/// </summary>
-	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_High;
+	alignas(128) std::queue<JobManager::JobDeclaration*> JobManager::jobQueue_High;
 
 	/// <summary>
 	/// The normal priority queue for jobs.
 	/// </summary>
-	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Normal;
+	alignas(128) std::queue<JobManager::JobDeclaration*> JobManager::jobQueue_Normal;
 
 	/// <summary>
 	/// The low priority queue for jobs.
 	/// </summary>
-	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Low;
+	alignas(128) std::queue<JobManager::JobDeclaration*> JobManager::jobQueue_Low;
 
 	/// <summary>
 	/// A list for th threads to store their fiber handles.

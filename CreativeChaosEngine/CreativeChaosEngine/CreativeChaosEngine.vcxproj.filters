@@ -87,7 +87,13 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Mesh.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\CCE\Editor\CCEditor.cpp">
+    <ClCompile Include="src\CCE\CCEditor\CCEditor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCE\ClientWindow\ClientWindow.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCE\Manager\MemoryManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -176,7 +182,13 @@
     <ClInclude Include="src\CCE\Graphics\Rendering\Mesh.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\CCE\Editor\CCEditor.h">
+    <ClInclude Include="src\CCE\CCEditor\CCEditor.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\ClientWindow\ClientWindow.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Manager\MemoryManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
