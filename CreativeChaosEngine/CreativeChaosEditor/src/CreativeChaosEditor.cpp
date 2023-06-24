@@ -80,6 +80,8 @@ int main(int argc, char* argv[])
     
     // ------ STARTUP MANAGER ------
 
+    // TODO: Memory not stable!! Check where leak is!
+    mMemoryManager.StartUp();
     mJobManager.StartUp();
     mProfilingManager.StartUp();
     mPhysicsManager.StartUp();
@@ -93,8 +95,8 @@ int main(int argc, char* argv[])
         window.OpenWindow(GetModuleHandle(NULL));
 
         // EditorWindows
-        RenderingDebugger renderDebugger = RenderingDebugger("Rendering Debugger");
-        MemoryWindow memDebugger = MemoryWindow("Memory Debugger");
+        RenderingDebugger rendEditorWin = RenderingDebugger("Rendering");
+        MemoryWindow memEditorWin = MemoryWindow("Memory");
 
 
         using namespace CCE;
@@ -166,6 +168,7 @@ int main(int argc, char* argv[])
             EditorWindow::PostGUIUpdate();
             window.GetRenderPipeline()->EndFrame();
 #endif
+            mMemoryManager.UpdateMemoryUsage();
             auto end = Time::Now();
             Time::SetDeltaTime(Time::GetDurationInMilliSec(start, end));
         }
@@ -179,6 +182,7 @@ int main(int argc, char* argv[])
     mPhysicsManager.ShutDown();
     mProfilingManager.ShutDown();
     mJobManager.ShutDown();
+    mMemoryManager.ShutDown();
 
     // ------ BYE ------
 
