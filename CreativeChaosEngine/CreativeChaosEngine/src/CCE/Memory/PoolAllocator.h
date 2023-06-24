@@ -150,6 +150,32 @@ namespace CCMemory
 
 			return ptr;
 		}
+		
+		template<typename T>
+		void FreeAligned(const T* adr)
+		{
+			// check
+			DASSERT((intptr_t)adr < allocatableMemBottom + totalSpace,
+				"Trying to free a memory adress which is not part of the allocated memory!");
+
+			// calc actual start adress
+			AllocOffset* pOffset = reinterpret_cast<AllocOffset*> ((intptr_t)adr - 1);
+			intptr_t poolStartAdress = (intptr_t)adr - *pOffset;
+
+			// free
+			intptr_t poolIndex = (poolStartAdress - allocatableMemBottom) / poolSize;
+
+			if (pool[poolIndex])
+			{
+				pool[poolIndex] = false;
+
+				// update
+				freePoolElements++;
+				numFrees++;
+				usedSpace -= sizeof(T);
+				freeSpace += sizeof(T);
+			}
+		}
 
 		void Free(const intptr_t adr, const unsigned int size);
 		void FreeAligned(const intptr_t adr, const unsigned int size);

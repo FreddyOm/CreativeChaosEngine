@@ -80,7 +80,6 @@ int main(int argc, char* argv[])
     
     // ------ STARTUP MANAGER ------
 
-    // TODO: Memory not stable!! Check where leak is!
     mMemoryManager.StartUp();
     mJobManager.StartUp();
     mProfilingManager.StartUp();
@@ -108,7 +107,8 @@ int main(int argc, char* argv[])
         JobManager::EntryPoint handleXInput = BIND(mInputManager.HandleXInput);
         JOBDECL declHandleXInput = JOBDECL(handleXInput,JobManager::Priority::NORMAL);
 
-        JobManager::EntryPoint beginFrame = BIND(window.GetRenderPipeline()->BeginFrame,backgroundColor);
+        JobManager::EntryPoint beginFrame = BIND(window.GetRenderPipeline()->BeginFrame,
+            window.GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
         JOBDECL declBeginFrame;
         declBeginFrame += beginFrame;
 
@@ -116,9 +116,9 @@ int main(int argc, char* argv[])
         JOBDECL declEndFrame;
         declEndFrame += endFrame;
 
-        JobManager::EntryPoint updateEditorWin = BIND(window.UpdateEditorWindow, rValue);
+        JobManager::EntryPoint updateClientWin = BIND(window.UpdateClientWindow, rValue);
         JOBDECL declUpdateEditorWin;
-        declUpdateEditorWin += updateEditorWin;
+        declUpdateEditorWin += updateClientWin;
 
         bool initialized = false;
         // Update loop
@@ -132,22 +132,27 @@ int main(int argc, char* argv[])
         {
             auto start = Time::Now();
 #if MULTITHREADED
-            cnt = 2;
+            cnt = 3;
 
-            // Update Editor Window
-            window.UpdateEditorWindow(rValue);
+            // Update Client Window
+            mJobManager.KickJob(&declUpdateEditorWin, &cnt);
+            mJobManager.WaitForCounter(&cnt, 2);
+            // Update GFX
+            mJobManager.KickJob(&declBeginFrame, &cnt);
+            mJobManager.WaitForCounter(&cnt, 1);
+
+            EditorWindow::PreGUIUpdate();
 
             // Update Inputs
             mInputManager.HandleXInput();
 
-            // Update GFX
-            window.PreGUIUpdate();
-            mJobManager.KickJob(&declBeginFrame, &cnt);
-            mJobManager.WaitForCounter(&cnt, 1);
+            // TODO: Kick multiple jobs
+            for (int i = 0; i < EditorWindow::GetEditorWindowPtrs().size(); i++)
+            {
+                EditorWindow::GetEditorWindowPtrs().at(i)->UpdateWindow();
+            }
 
-            window.UpdateGUI();
-
-            window.PostGUIUpdate();
+            EditorWindow::PostGUIUpdate();
             mJobManager.KickJob(&declEndFrame, &cnt);
             mJobManager.WaitForCounter(&cnt, 0);
 

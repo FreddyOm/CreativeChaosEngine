@@ -104,21 +104,15 @@ namespace CCE
 		{
 			case JobManager::Priority::HIGH:
 			{
-				auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-				*p_decl = std::move(decl);
-				jobQueue_High.push(p_decl); break;
+				jobQueue_High.push(decl); break;
 			}
 			case JobManager::Priority::LOW:
 			{
-				auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-				*p_decl = std::move(decl);
-				jobQueue_Low.push(p_decl); break;
+				jobQueue_Low.push(decl); break;
 			}
 			default:
 			{
-				auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-				*p_decl = std::move(decl);
-				jobQueue_Normal.push(p_decl); break;
+				jobQueue_Normal.push(decl); break;
 			}
 		}
 
@@ -142,24 +136,15 @@ namespace CCE
 		{
 		case JobManager::Priority::HIGH:
 		{
-			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-			*p_decl = std::move(*decl);
-			delete decl;
-			jobQueue_High.push(p_decl); break;
+			jobQueue_High.push(*decl); break;
 		}
 		case JobManager::Priority::LOW:
 		{
-			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-			*p_decl = std::move(*decl);
-			delete decl;
-			jobQueue_Low.push(p_decl); break;
+			jobQueue_Low.push(*decl); break;
 		}
 		default:
 		{
-			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-			*p_decl = std::move(*decl);
-			delete decl;
-			jobQueue_Normal.push(p_decl); break;
+			jobQueue_Normal.push(*decl); break;
 		}
 		}
 
@@ -183,21 +168,15 @@ namespace CCE
 		{
 		case JobManager::Priority::HIGH:
 		{
-			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-			*p_decl = std::move(decl);
-			jobQueue_High.push(p_decl); break;
+			jobQueue_High.push(decl); break;
 		}
 		case JobManager::Priority::LOW:
 		{
-			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-			*p_decl = std::move(decl);
-			jobQueue_Low.push(p_decl); break;
+			jobQueue_Low.push(decl); break;
 		}
 		default:
 		{
-			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-			*p_decl = std::move(decl);
-			jobQueue_Normal.push(p_decl); break;
+			jobQueue_Normal.push(decl); break;
 		}
 		}
 		DASSERT(waitForCnt != nullptr, "Conter may not be null!");
@@ -423,8 +402,7 @@ namespace CCE
 
 		if (!jobQueue_High.empty())
 		{
-			decl = *jobQueue_High.front();
-			MemoryManager::Instance->jobMemory.FreeAligned((intptr_t)jobQueue_Normal.front(), sizeof(JobDeclaration));
+			decl = jobQueue_High.front();
 			jobQueue_High.pop();
 
 			return decl;
@@ -432,8 +410,7 @@ namespace CCE
 
 		if (!jobQueue_Normal.empty())
 		{
-			decl = *jobQueue_Normal.front();
-			MemoryManager::Instance->jobMemory.FreeAligned((intptr_t)jobQueue_Normal.front(), sizeof(JobDeclaration));
+			decl = jobQueue_Normal.front();
 			jobQueue_Normal.pop();
 
 			return decl;
@@ -441,8 +418,7 @@ namespace CCE
 
 		if (!jobQueue_Low.empty())
 		{
-			decl = *jobQueue_Low.front();
-			MemoryManager::Instance->jobMemory.FreeAligned((intptr_t)jobQueue_Normal.front(), sizeof(JobDeclaration));
+			decl = jobQueue_Low.front();
 			jobQueue_Low.pop();
 
 			return decl;
@@ -528,17 +504,17 @@ namespace CCE
 	/// <summary>
 	/// The high priority queue for jobs.
 	/// </summary>
-	alignas(128) std::queue<JobManager::JobDeclaration*> JobManager::jobQueue_High;
+	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_High;
 
 	/// <summary>
 	/// The normal priority queue for jobs.
 	/// </summary>
-	alignas(128) std::queue<JobManager::JobDeclaration*> JobManager::jobQueue_Normal;
+	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Normal;
 
 	/// <summary>
 	/// The low priority queue for jobs.
 	/// </summary>
-	alignas(128) std::queue<JobManager::JobDeclaration*> JobManager::jobQueue_Low;
+	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Low;
 
 	/// <summary>
 	/// A list for th threads to store their fiber handles.
