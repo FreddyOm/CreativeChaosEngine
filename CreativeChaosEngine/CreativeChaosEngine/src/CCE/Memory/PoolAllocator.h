@@ -86,7 +86,7 @@ namespace CCMemory
 		}
 
 		template<typename T>
-		T* AllocAligned(unsigned short _alignas = -1)
+		T* AllocAligned(unsigned short defaultAlignSize = 8, ...)
 		{
 			// check
 			if (freePoolElements <= 0)
@@ -97,9 +97,9 @@ namespace CCMemory
 
 			const unsigned long typesize = sizeof(T);
 
-			if (_alignas == -1)
+			if (typesize > defaultAlignSize)
 			{
-				_alignas = typesize;
+				defaultAlignSize = typesize;
 			}
 
 			unsigned long aligned_size = typesize * 2;
@@ -128,8 +128,11 @@ namespace CCMemory
 
 					AllocOffset* pOffset = (AllocOffset*)(adress -1);
 					*pOffset = offset;
-					ptr = new (reinterpret_cast<T*> (adress)) T();
+					va_list args;
+					va_start(args, defaultAlignSize);
+					ptr = reinterpret_cast<T*> (adress);
 					*(bool*)elementStatus = true;
+					va_end(args);
 					break;
 				}
 				elementIndex++;

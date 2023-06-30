@@ -78,7 +78,6 @@ void EditorWindow::PostGUIUpdate()
 	if (initialized)
 	{
 		ImGui::Render();
-		// TODO: allocate dynamically
 		p_drawData = ImGui::GetDrawData();
 		ImGui_ImplDX11_RenderDrawData(p_drawData);
 	}

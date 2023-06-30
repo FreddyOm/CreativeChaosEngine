@@ -30,8 +30,8 @@ namespace CCE::Graphics
 		
 		~RenderPipeline()
 		{
-			p_Context->OMSetRenderTargets(0, NULL, NULL);
-			p_Context->Flush();
+			UninitializeD3D11();
+
 			p_renderTarget.Reset();
 			p_DSV.Reset();
 			p_backBuffer.Reset();
@@ -60,6 +60,7 @@ namespace CCE::Graphics
 		void BeginFrame(const Color col) const;
 		void EndFrame();
 		void OnResize(const HWND hWnd, const UINT wParam, const int width, const int height);
+		void UninitializeD3D11();
 
 	public:
 		ID3D11Device* GetDevicePtr() const
@@ -95,9 +96,9 @@ namespace CCE::Graphics
 		RECT clientRect;
 
 		// TODO: Load from config
-		DXGI_SWAP_CHAIN_DESC swapChainDesc = { 0 };
-		D3D11_DEPTH_STENCIL_DESC dsDesc = { 0 };
-		D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = { };
+		DXGI_SWAP_CHAIN_DESC* swapChainDesc = { 0 };
+		D3D11_DEPTH_STENCIL_DESC* dsDesc = { 0 };
+		D3D11_DEPTH_STENCIL_VIEW_DESC* descDSV = { };
 		ComPtr<ID3D11Texture2D> pDepthStencil = nullptr;
 		ComPtr<ID3D11DepthStencilState> pDSState = nullptr;
 	};

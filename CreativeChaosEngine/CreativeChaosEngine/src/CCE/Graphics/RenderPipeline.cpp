@@ -1,5 +1,6 @@
 #include "RenderPipeline.h"
 #include "../Analysis/Logger.h"
+#include "../Manager/MemoryManager.h"
 #include <dxgi.h>
 #include <d3dcompiler.h>
 #include <functional>
@@ -21,6 +22,8 @@ namespace CCE::Graphics
 	/// <param name="hWnd"></param>
 	void RenderPipeline::InitializeD3D11(const HWND hWnd, const int width, const int height)
 	{
+
+
 		// TODO: Load from config file
 		pipelineConfig.activateVSync = false;
 
@@ -61,12 +64,14 @@ namespace CCE::Graphics
 	/// </summary>
 	void RenderPipeline::CreateDepthStencil()
 	{
-		dsDesc.DepthEnable = TRUE;
-		dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
+		dsDesc =
+			MemoryManager::Instance->rendMemory.AllocAligned<D3D11_DEPTH_STENCIL_DESC>();
+		dsDesc->DepthEnable = TRUE;
+		dsDesc->DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		dsDesc->DepthFunc = D3D11_COMPARISON_LESS;
 
 		// creating depth stencil state
-		DASSERT(SUCCEEDED(p_device->CreateDepthStencilState(&dsDesc, pDSState.GetAddressOf())),
+		DASSERT(SUCCEEDED(p_device->CreateDepthStencilState(dsDesc, pDSState.GetAddressOf())),
 			"Failed creating a depth stencil state!");
 
 		// bind depth state
@@ -88,11 +93,13 @@ namespace CCE::Graphics
 			"Failed creating depth stencil texture!");
 
 		// create view of depth stencil tex
-		descDSV.Format = DXGI_FORMAT_D32_FLOAT;
-		descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-		descDSV.Texture2D.MipSlice = 0u;
+		descDSV = MemoryManager::Instance->rendMemory.AllocAligned<D3D11_DEPTH_STENCIL_VIEW_DESC>();
 
-		DASSERT(p_device->CreateDepthStencilView(pDepthStencil.Get(), &descDSV, p_DSV.GetAddressOf()) == S_OK,
+		descDSV->Format = DXGI_FORMAT_D32_FLOAT;
+		descDSV->ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		descDSV->Texture2D.MipSlice = 0u;
+
+		DASSERT(p_device->CreateDepthStencilView(pDepthStencil.Get(), descDSV, p_DSV.GetAddressOf()) == S_OK,
 			"Failed creating depth stencil view");
 
 		// bind depth stensil view to OM
@@ -128,7 +135,7 @@ namespace CCE::Graphics
 			nullptr,								// featureLvl
 			0,										// length of feature Lvl
 			D3D11_SDK_VERSION,						// SDK-Version
-			&swapChainDesc,							// swap chain description pointer
+			swapChainDesc,							// swap chain description pointer
 			pSwapChain.GetAddressOf(),				// swap chain pointer
 			p_device.GetAddressOf(),				// device pointer
 			NULL,									// feautre lvl pointer
@@ -153,25 +160,23 @@ namespace CCE::Graphics
 		GetClientRect(hWnd, &clientRect);
 
 		// swap chain
-		DXGI_SWAP_CHAIN_DESC _swapChainDesc = { 0 };
+		swapChainDesc = MemoryManager::Instance->rendMemory.AllocAligned<DXGI_SWAP_CHAIN_DESC>();
 
-		_swapChainDesc.BufferDesc.Width = clientRect.right;					// backbuffer settings
-		_swapChainDesc.BufferDesc.Height = clientRect.bottom;				// backbuffer settings
-		_swapChainDesc.BufferDesc.RefreshRate = DXGI_RATIONAL{ 0,1 };		// backbuffer settings
-		_swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;		// backbuffer settings
-		_swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_CENTERED;		// backbuffer settings
-		_swapChainDesc.BufferDesc.ScanlineOrdering =
+		swapChainDesc->BufferDesc.Width = clientRect.right;					// backbuffer settings
+		swapChainDesc->BufferDesc.Height = clientRect.bottom;				// backbuffer settings
+		swapChainDesc->BufferDesc.RefreshRate = DXGI_RATIONAL{ 0,1 };		// backbuffer settings
+		swapChainDesc->BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;		// backbuffer settings
+		swapChainDesc->BufferDesc.Scaling = DXGI_MODE_SCALING_CENTERED;		// backbuffer settings
+		swapChainDesc->BufferDesc.ScanlineOrdering =
 			DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;							// backbuffer settings
-		_swapChainDesc.SampleDesc.Count = 1;								// sample description
-		_swapChainDesc.SampleDesc.Quality = 0;								// sample description
-		_swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;		// swap chain is used as back buffer
-		_swapChainDesc.BufferCount = 1;										// amount of swap chain buffers
-		_swapChainDesc.OutputWindow = hWnd;									// handle to window
-		_swapChainDesc.Windowed = TRUE;										// windowed or fullscreen (?)
-		_swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;				// swap fx
-		_swapChainDesc.Flags = 0;											// flags
-
-		swapChainDesc = _swapChainDesc;
+		swapChainDesc->SampleDesc.Count = 1;								// sample description
+		swapChainDesc->SampleDesc.Quality = 0;								// sample description
+		swapChainDesc->BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;		// swap chain is used as back buffer
+		swapChainDesc->BufferCount = 1;										// amount of swap chain buffers
+		swapChainDesc->OutputWindow = hWnd;									// handle to window
+		swapChainDesc->Windowed = TRUE;										// windowed or fullscreen (?)
+		swapChainDesc->SwapEffect = DXGI_SWAP_EFFECT_DISCARD;				// swap fx
+		swapChainDesc->Flags = 0;											// flags
 	}
 
 	/// <summary>
@@ -276,7 +281,7 @@ namespace CCE::Graphics
 		DASSERT(p_device->CreateTexture2D(&decDepth, nullptr, pDepthStencil.GetAddressOf()) == S_OK,
 			"Failed creating depth stencil texture!");
 
-		DASSERT(p_device->CreateDepthStencilView(pDepthStencil.Get(), &descDSV, p_DSV.GetAddressOf()) == S_OK,
+		DASSERT(p_device->CreateDepthStencilView(pDepthStencil.Get(), descDSV, p_DSV.GetAddressOf()) == S_OK,
 			"Failed creating depth stencil view");
 
 		// bind depth stensil view to OM
@@ -288,6 +293,18 @@ namespace CCE::Graphics
 		{
 			pDebug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL);
 		}
+	}
+
+	void RenderPipeline::UninitializeD3D11()
+	{
+		p_Context->OMSetRenderTargets(0, NULL, NULL);
+		p_Context->Flush();
+
+		// TODO: Check alloc and free order!!
+		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
+		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(D3D11_DEPTH_STENCIL_DESC));
+		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(DXGI_SWAP_CHAIN_DESC));
+		
 	}
 
 	/// <summary>

@@ -5,6 +5,7 @@
 #include "EditorWindow/Base/EditorWindow.h"
 #include "EditorWindow/RenderingDebugger.h"
 #include "EditorWindow/MemoryWindow.h"
+#include "EditorWindow/JobWindow.h"
 
 // -------- Testing ---------
 
@@ -96,6 +97,7 @@ int main(int argc, char* argv[])
         // EditorWindows
         RenderingDebugger rendEditorWin = RenderingDebugger("Rendering");
         MemoryWindow memEditorWin = MemoryWindow("Memory");
+        JobWindow jobWin = JobWindow("Jobs");
 
 
         using namespace CCE;

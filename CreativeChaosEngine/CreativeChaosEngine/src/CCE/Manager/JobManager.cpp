@@ -4,6 +4,7 @@
 #include "../Analysis/Time.h"
 #include "../Utilities/Concurrency/ScopedLock.h"
 #include "MemoryManager.h"
+#include "../CCEditor/CCEditor.h"
 
 // TODO: Currently the threads fight for the next job. Fix that to make it more efficient.
 
@@ -49,7 +50,7 @@ namespace CCE
 			if(worker_threads.at(i)->joinable())
 				worker_threads.at(i)->join();
 			worker_threads.at(i)->~thread();
-			delete(worker_threads.at(i));
+			MemoryManager::Instance->jobMemory.FreeAligned<std::thread>(worker_threads.at(i));
 		}
 		
 		worker_threads.clear();
@@ -264,8 +265,11 @@ namespace CCE
 		// Spawn worker threads and set affinity
 		for (unsigned short t_index = 0; t_index < numOfThreads; t_index++)
 		{
-			// Spawn threads		TODO: allocate in custom allocator
-			std::thread* workerThread = new std::thread(JobManager::RunThread);
+			// Spawn threads
+			std::thread* workerThread = 
+				MemoryManager::Instance->jobMemory.AllocAligned<std::thread>();
+			// TODO: Change this so it works without new!!
+			new (workerThread)std::thread(JobManager::RunThread);
 			auto hndl = workerThread->native_handle();
 
 			// Set affinity and hanle error
@@ -276,6 +280,8 @@ namespace CCE
 			// Add to list
 			worker_threads.push_back(std::move(workerThread));
 		}
+
+		PUSH_EDITOR_INT("threadPoolSize", numOfThreads);
 	}
 
 	/// <summary>
@@ -286,7 +292,7 @@ namespace CCE
 	void JobManager::PopulateFiberPoolWin(const short numOfFibers)
 	{
 		LOG_JOBS("Creating %i fibers...", numOfFibers);
-
+		PUSH_EDITOR_INT("fiberPoolSize", numOfFibers);
 		// convert main thread to fiber
 		mainFiber = ConvertThreadToFiber(NULL);
 		DASSERT(mainFiber != nullptr, "Conversion main thread -> fiber not succesful!");
