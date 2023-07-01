@@ -1,11 +1,9 @@
 #pragma once
-#include <d3d11.h>
-#include <wrl.h>
-#include <wrl/client.h>
+
 #include "../Memory/StackAllocator.h"
 #include "../Utilities/Color/Color.h"
 #include "../Manager/JobManager.h"
-#include <dxgidebug.h>
+#include "Rendering/D3D11.h"
 
 namespace CCE::Graphics
 {
@@ -93,7 +91,7 @@ namespace CCE::Graphics
 		ComPtr<ID3D11RenderTargetView> p_renderTarget = nullptr;
 		ComPtr<ID3D11DepthStencilView> p_DSV = nullptr;
 		ComPtr<ID3D11Resource> p_backBuffer = nullptr;
-		RECT clientRect;
+		RECT* clientRect;
 
 		// TODO: Load from config
 		DXGI_SWAP_CHAIN_DESC* swapChainDesc = { 0 };

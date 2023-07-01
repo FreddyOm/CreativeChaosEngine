@@ -1,14 +1,7 @@
 #include "RenderPipeline.h"
 #include "../Analysis/Logger.h"
 #include "../Manager/MemoryManager.h"
-#include <dxgi.h>
-#include <d3dcompiler.h>
 #include <functional>
-
-#pragma comment(lib, "d3d11.lib")
-#pragma comment(lib, "dxgi.lib")
-#pragma comment(lib, "dxguid.lib")
-#pragma comment(lib, "D3DCompiler.lib")
 
 namespace CCE::Graphics
 {
@@ -22,8 +15,6 @@ namespace CCE::Graphics
 	/// <param name="hWnd"></param>
 	void RenderPipeline::InitializeD3D11(const HWND hWnd, const int width, const int height)
 	{
-
-
 		// TODO: Load from config file
 		pipelineConfig.activateVSync = false;
 
@@ -49,9 +40,10 @@ namespace CCE::Graphics
 	void RenderPipeline::CreateViewport()
 	{
 		// configure viewport
+
 		D3D11_VIEWPORT vp = { 0 };
-		vp.Width = (float)clientRect.right;
-		vp.Height = (float)clientRect.bottom;
+		vp.Width = (float)clientRect->right;
+		vp.Height = (float)clientRect->bottom;
 		vp.MinDepth = 0.0f;
 		vp.MaxDepth = 1.0f;
 		vp.TopLeftX = 0.0f;
@@ -79,8 +71,8 @@ namespace CCE::Graphics
 
 		// create depth stencil texture
 		D3D11_TEXTURE2D_DESC decDepth = {0};
-		decDepth.Width = clientRect.right;
-		decDepth.Height = clientRect.bottom;
+		decDepth.Width = clientRect->right;
+		decDepth.Height = clientRect->bottom;
 		decDepth.MipLevels = 1u;
 		decDepth.ArraySize = 1u;
 		decDepth.Format = DXGI_FORMAT_D32_FLOAT;
@@ -156,14 +148,14 @@ namespace CCE::Graphics
 	/// <param name="hWnd">The host windows handle.</param>
 	void RenderPipeline::CreateSwapChainDesc(const HWND& hWnd)
 	{
-		clientRect = {};
-		GetClientRect(hWnd, &clientRect);
+		clientRect = MemoryManager::Instance->rendMemory.AllocAligned<RECT>();
+		GetClientRect(hWnd, clientRect);
 
 		// swap chain
 		swapChainDesc = MemoryManager::Instance->rendMemory.AllocAligned<DXGI_SWAP_CHAIN_DESC>();
 
-		swapChainDesc->BufferDesc.Width = clientRect.right;					// backbuffer settings
-		swapChainDesc->BufferDesc.Height = clientRect.bottom;				// backbuffer settings
+		swapChainDesc->BufferDesc.Width = clientRect->right;					// backbuffer settings
+		swapChainDesc->BufferDesc.Height = clientRect->bottom;				// backbuffer settings
 		swapChainDesc->BufferDesc.RefreshRate = DXGI_RATIONAL{ 0,1 };		// backbuffer settings
 		swapChainDesc->BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;		// backbuffer settings
 		swapChainDesc->BufferDesc.Scaling = DXGI_MODE_SCALING_CENTERED;		// backbuffer settings
@@ -211,6 +203,8 @@ namespace CCE::Graphics
 
 		// TODO: Render triangles
 
+
+
 	}
 
 	/// <summary>
@@ -238,7 +232,7 @@ namespace CCE::Graphics
 	{
 		//if (p_Context == NULL) { return; }
 
-		GetClientRect(hWnd, &clientRect);
+		GetClientRect(hWnd, clientRect);
 
 		// Unbind render target and reset resources
 		ID3D11RenderTargetView* nullViews[] = { nullptr };
@@ -251,7 +245,7 @@ namespace CCE::Graphics
 		p_Context->Flush();
 		
 		// resize buffers
-		HRESULT hr = pSwapChain->ResizeBuffers((UINT)1, (UINT)clientRect.right, (UINT)clientRect.bottom, DXGI_FORMAT_UNKNOWN, NULL);
+		HRESULT hr = pSwapChain->ResizeBuffers((UINT)1, (UINT)clientRect->right, (UINT)clientRect->bottom, DXGI_FORMAT_UNKNOWN, NULL);
 		if (hr == DXGI_ERROR_DEVICE_REMOVED)
 		{
 			DASSERT(false, "Resizing buffers failed because device was removed!");
@@ -268,8 +262,8 @@ namespace CCE::Graphics
 		CreateRenderTargetView();
 
 		D3D11_TEXTURE2D_DESC decDepth = { 0 };
-		decDepth.Width = clientRect.right;
-		decDepth.Height = clientRect.bottom;
+		decDepth.Width = clientRect->right;
+		decDepth.Height = clientRect->bottom;
 		decDepth.MipLevels = 1u;
 		decDepth.ArraySize = 1u;
 		decDepth.Format = DXGI_FORMAT_D32_FLOAT;
@@ -295,6 +289,9 @@ namespace CCE::Graphics
 		}
 	}
 
+	/// <summary>
+	/// Releases all preallocated memory for the rendering.
+	/// </summary>
 	void RenderPipeline::UninitializeD3D11()
 	{
 		p_Context->OMSetRenderTargets(0, NULL, NULL);
@@ -304,7 +301,7 @@ namespace CCE::Graphics
 		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
 		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(D3D11_DEPTH_STENCIL_DESC));
 		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(DXGI_SWAP_CHAIN_DESC));
-		
+		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(RECT));
 	}
 
 	/// <summary>

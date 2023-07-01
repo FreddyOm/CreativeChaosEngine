@@ -15,8 +15,8 @@ struct CCE_API ClientWindow
 
 	~ClientWindow()
 	{
-		Instance = nullptr;
         windowRunning = false;
+		Instance = nullptr;
 	}
 
 	bool OpenWindow(HINSTANCE hInstance, CCE::String winName = "Creative Chaos Engine - v0.1");

@@ -96,6 +96,12 @@
     <ClCompile Include="src\CCE\Manager\MemoryManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\CCE\Graphics\Rendering\Drawable.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCE\Graphics\Rendering\Vertex.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\Core.h">
@@ -189,6 +195,15 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\CCE\Manager\MemoryManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Graphics\Rendering\Drawable.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Graphics\Rendering\D3D11.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Graphics\Rendering\Vertex.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
