@@ -76,13 +76,28 @@ using namespace Events;
 				va_end(args);
 
 				m_param = args;
-			}
+			}			
 
 			void operator += (const EntryPoint& ep)
 			{
 				m_pEntryPoint = ep;
 				m_priority = Priority::NORMAL;
 			}
+		};
+
+		struct WaitData
+		{
+			LPVOID fiber;
+			Counter* pCounter;
+			unsigned int desiredCount;
+
+			WaitData(const LPVOID _fiber, Counter* _pCounter, const unsigned int _desiredCount)
+			{
+				fiber = _fiber;
+				pCounter = _pCounter;
+				desiredCount = _desiredCount;
+			}
+
 		};
 
 		void operator += (JobDeclaration& jobDecl)
@@ -99,7 +114,7 @@ using namespace Events;
 		bool KickJob(JobDeclaration* decl, Counter* cnt = nullptr);
 		bool KickJobAndWait(JobDeclaration& decl, const Counter* waitForCnt);
 		bool KickJobs(int count, JobDeclaration decls[], Counter* pJobCounter = nullptr);
-		void WaitForCounter(const Counter* pJobCounter, const int desiredCnt);
+		void WaitForCounter(Counter* pJobCounter, const int desiredCnt);
 		void WaitForCounterAndFree(Counter* pJobCounter, const int desiredCnt);
 		void SpawnWorkerThreads(const short numOfThreads = -1);
 
@@ -125,7 +140,7 @@ using namespace Events;
 	private:
 
 		// Wait list for Fibers and their jobs
-		alignas(128) static std::vector<JobDeclaration> wait_list;
+		alignas(128) static std::vector<WaitData> wait_list;
 		
 		// TODO: Implement custom queue class
 		alignas(128) static std::queue<JobDeclaration*> jobQueue_High;

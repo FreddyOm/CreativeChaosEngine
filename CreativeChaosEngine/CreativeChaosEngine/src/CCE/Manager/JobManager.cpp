@@ -232,9 +232,19 @@ namespace CCE
 	/// </summary>
 	/// <param name="pJobCounter">A pointer to the counter.</param>
 	/// <param name="desiredCnt">The desired count for contination.</param>
-	void JobManager::WaitForCounter(const Counter* pJobCounter, const int desiredCnt = 0)
+	void JobManager::WaitForCounter(Counter* pJobCounter, const int desiredCnt = 0)
 	{
 		auto now = Time::Now();
+	
+		// TODO: As soon as this works, make waiting timeout 
+		// so the current job doesn't go to the wait list directly
+		if ((*pJobCounter) > desiredCnt)
+		{
+			wait_list.push_back(WaitData(GetCurrentFiber(),
+				pJobCounter, desiredCnt));
+			SwitchToFiber(GetThreadFiber());
+		}
+
 		while ((*pJobCounter) > desiredCnt)
 		{
 			// TODO: Put *this* job on the wait list until the counter == desiredCnt
@@ -525,7 +535,7 @@ namespace CCE
 	/// <summary>
 	/// A wait list for jobs to wait on.
 	/// </summary>
-	alignas(128) std::vector<JobManager::JobDeclaration> JobManager::wait_list;
+	alignas(128) std::vector<JobManager::WaitData> JobManager::wait_list;
 
 	/// <summary>
 	/// The high priority queue for jobs.
