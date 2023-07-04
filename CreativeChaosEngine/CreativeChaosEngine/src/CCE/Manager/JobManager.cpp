@@ -397,7 +397,7 @@ namespace CCE
 	/// <summary>
 	/// Fetches the next job from the job queue.
 	/// </summary>
-	/// <returns>The next jobs declearation.</returns>
+	/// <returns>The next jobs declearation or null if there is none left.</returns>
 	JobManager::JobDeclaration JobManager::GetNextJob()
 	{
 		// TODO: Change this to intelligent spin lock (GEA: p. 555)
