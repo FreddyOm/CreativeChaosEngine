@@ -1,5 +1,6 @@
 #include "RenderingDebugger.h"
 #include "CCE/Graphics/RenderPipeline.h"
+#include "CCE/Analysis/Time.h"
 
 using CCE::Graphics::RenderPipeline;
 

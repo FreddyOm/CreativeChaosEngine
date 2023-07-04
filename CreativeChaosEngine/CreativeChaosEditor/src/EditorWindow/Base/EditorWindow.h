@@ -34,7 +34,7 @@ public:
 	/// </summary>
 	~EditorWindow()
 	{
-		UnInitializeGUI ();
+		UnInitializeGUI();
 	}
 
 	/// <summary>
@@ -60,4 +60,5 @@ private:
 	static std::vector<EditorWindow*> editorWindows;
 	static std::atomic<bool> initialized;
 	bool isOpen = true;
+	static ImDrawData* p_drawData;
 };

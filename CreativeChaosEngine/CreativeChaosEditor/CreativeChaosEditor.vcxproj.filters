@@ -48,6 +48,9 @@
     <ClCompile Include="src\EditorWindow\MemoryWindow.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\EditorWindow\JobWindow.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CreativeChaosEditor.h">
@@ -84,6 +87,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\EditorWindow\MemoryWindow.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EditorWindow\JobWindow.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

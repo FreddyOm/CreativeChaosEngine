@@ -28,7 +28,7 @@ void EditorWindow::InitializeGUI() const
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
 	io.Fonts->AddFontFromFileTTF("resources/fonts/Inter-Light.ttf", 14);
-	//io.Fonts->AddFontFromFileTTF("resources/fonts/Lexend-Light.ttf", 14);
+	io.Fonts->AddFontFromFileTTF("resources/fonts/Lexend-Light.ttf", 14);
 
 	ImGui::StyleColorsCCE();
 
@@ -78,9 +78,8 @@ void EditorWindow::PostGUIUpdate()
 	if (initialized)
 	{
 		ImGui::Render();
-		// TODO: allocate dynamically
-		ImDrawData* drawData = ImGui::GetDrawData();
-		ImGui_ImplDX11_RenderDrawData(drawData);
+		p_drawData = ImGui::GetDrawData();
+		ImGui_ImplDX11_RenderDrawData(p_drawData);
 	}
 }
 
@@ -99,3 +98,5 @@ std::vector<EditorWindow*> EditorWindow::GetEditorWindowPtrs()
 std::atomic<bool> EditorWindow::initialized = false;
 
 std::vector<EditorWindow*> EditorWindow::editorWindows;
+
+ImDrawData* EditorWindow::p_drawData = nullptr;

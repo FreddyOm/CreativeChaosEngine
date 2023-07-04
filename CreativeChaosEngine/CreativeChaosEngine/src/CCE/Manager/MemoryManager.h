@@ -4,11 +4,11 @@
 #include "../Memory/StackAllocator.h"
 #include "../CCEditor/CCEditor.h"
 
-#define JOB_POOL_SIZE 256
-#define JOB_POOL_ELMNT_CNT 32
+#define JOB_POOL_SIZE 32
+#define JOB_POOL_ELMNT_CNT 10
 
-#define DEBUG_POOL_SIZE 32
-#define DEBUG_POOL_ELMNT_CNT 512
+#define DEBUG_POOL_SIZE 128
+#define DEBUG_POOL_ELMNT_CNT 256
 
 #define REND_STACK_SIZE 12040
 

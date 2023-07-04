@@ -4,6 +4,7 @@
 #include "../Analysis/Time.h"
 #include "../Utilities/Concurrency/ScopedLock.h"
 #include "MemoryManager.h"
+#include "../CCEditor/CCEditor.h"
 
 // TODO: Currently the threads fight for the next job. Fix that to make it more efficient.
 
@@ -49,7 +50,7 @@ namespace CCE
 			if(worker_threads.at(i)->joinable())
 				worker_threads.at(i)->join();
 			worker_threads.at(i)->~thread();
-			delete(worker_threads.at(i));
+			MemoryManager::Instance->jobMemory.FreeAligned<std::thread>(worker_threads.at(i));
 		}
 		
 		worker_threads.clear();
@@ -104,21 +105,15 @@ namespace CCE
 		{
 			case JobManager::Priority::HIGH:
 			{
-				auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-				*p_decl = std::move(decl);
-				jobQueue_High.push(p_decl); break;
+				jobQueue_High.push(decl); break;
 			}
 			case JobManager::Priority::LOW:
 			{
-				auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-				*p_decl = std::move(decl);
-				jobQueue_Low.push(p_decl); break;
+				jobQueue_Low.push(decl); break;
 			}
 			default:
 			{
-				auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-				*p_decl = std::move(decl);
-				jobQueue_Normal.push(p_decl); break;
+				jobQueue_Normal.push(decl); break;
 			}
 		}
 
@@ -142,24 +137,15 @@ namespace CCE
 		{
 		case JobManager::Priority::HIGH:
 		{
-			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-			*p_decl = std::move(*decl);
-			delete decl;
-			jobQueue_High.push(p_decl); break;
+			jobQueue_High.push(*decl); break;
 		}
 		case JobManager::Priority::LOW:
 		{
-			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-			*p_decl = std::move(*decl);
-			delete decl;
-			jobQueue_Low.push(p_decl); break;
+			jobQueue_Low.push(*decl); break;
 		}
 		default:
 		{
-			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-			*p_decl = std::move(*decl);
-			delete decl;
-			jobQueue_Normal.push(p_decl); break;
+			jobQueue_Normal.push(*decl); break;
 		}
 		}
 
@@ -183,21 +169,15 @@ namespace CCE
 		{
 		case JobManager::Priority::HIGH:
 		{
-			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-			*p_decl = std::move(decl);
-			jobQueue_High.push(p_decl); break;
+			jobQueue_High.push(decl); break;
 		}
 		case JobManager::Priority::LOW:
 		{
-			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-			*p_decl = std::move(decl);
-			jobQueue_Low.push(p_decl); break;
+			jobQueue_Low.push(decl); break;
 		}
 		default:
 		{
-			auto* p_decl = MemoryManager::Instance->jobMemory.AllocAligned<JobDeclaration>();
-			*p_decl = std::move(decl);
-			jobQueue_Normal.push(p_decl); break;
+			jobQueue_Normal.push(decl); break;
 		}
 		}
 		DASSERT(waitForCnt != nullptr, "Conter may not be null!");
@@ -297,8 +277,11 @@ namespace CCE
 		// Spawn worker threads and set affinity
 		for (unsigned short t_index = 0; t_index < numOfThreads; t_index++)
 		{
-			// Spawn threads		TODO: allocate in custom allocator
-			std::thread* workerThread = new std::thread(JobManager::RunThread);
+			// Spawn threads
+			std::thread* workerThread = 
+				MemoryManager::Instance->jobMemory.AllocAligned<std::thread>();
+			// TODO: Change this so it works without new!!
+			new (workerThread)std::thread(JobManager::RunThread);
 			auto hndl = workerThread->native_handle();
 
 			// Set affinity and hanle error
@@ -309,6 +292,8 @@ namespace CCE
 			// Add to list
 			worker_threads.push_back(std::move(workerThread));
 		}
+
+		PUSH_EDITOR_INT("threadPoolSize", numOfThreads);
 	}
 
 	/// <summary>
@@ -319,7 +304,7 @@ namespace CCE
 	void JobManager::PopulateFiberPoolWin(const short numOfFibers)
 	{
 		LOG_JOBS("Creating %i fibers...", numOfFibers);
-
+		PUSH_EDITOR_INT("fiberPoolSize", numOfFibers);
 		// convert main thread to fiber
 		mainFiber = ConvertThreadToFiber(NULL);
 		DASSERT(mainFiber != nullptr, "Conversion main thread -> fiber not succesful!");
@@ -424,7 +409,7 @@ namespace CCE
 	/// <summary>
 	/// Fetches the next job from the job queue.
 	/// </summary>
-	/// <returns>The next jobs declearation.</returns>
+	/// <returns>The next jobs declearation or null if there is none left.</returns>
 	JobManager::JobDeclaration JobManager::GetNextJob()
 	{
 		// TODO: Change this to intelligent spin lock (GEA: p. 555)
@@ -435,8 +420,7 @@ namespace CCE
 
 		if (!jobQueue_High.empty())
 		{
-			decl = *jobQueue_High.front();
-			MemoryManager::Instance->jobMemory.FreeAligned((intptr_t)jobQueue_Normal.front(), sizeof(JobDeclaration));
+			decl = jobQueue_High.front();
 			jobQueue_High.pop();
 
 			return decl;
@@ -444,8 +428,7 @@ namespace CCE
 
 		if (!jobQueue_Normal.empty())
 		{
-			decl = *jobQueue_Normal.front();
-			MemoryManager::Instance->jobMemory.FreeAligned((intptr_t)jobQueue_Normal.front(), sizeof(JobDeclaration));
+			decl = jobQueue_Normal.front();
 			jobQueue_Normal.pop();
 
 			return decl;
@@ -453,8 +436,7 @@ namespace CCE
 
 		if (!jobQueue_Low.empty())
 		{
-			decl = *jobQueue_Low.front();
-			MemoryManager::Instance->jobMemory.FreeAligned((intptr_t)jobQueue_Normal.front(), sizeof(JobDeclaration));
+			decl = jobQueue_Low.front();
 			jobQueue_Low.pop();
 
 			return decl;
@@ -540,17 +522,17 @@ namespace CCE
 	/// <summary>
 	/// The high priority queue for jobs.
 	/// </summary>
-	alignas(128) std::queue<JobManager::JobDeclaration*> JobManager::jobQueue_High;
+	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_High;
 
 	/// <summary>
 	/// The normal priority queue for jobs.
 	/// </summary>
-	alignas(128) std::queue<JobManager::JobDeclaration*> JobManager::jobQueue_Normal;
+	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Normal;
 
 	/// <summary>
 	/// The low priority queue for jobs.
 	/// </summary>
-	alignas(128) std::queue<JobManager::JobDeclaration*> JobManager::jobQueue_Low;
+	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Low;
 
 	/// <summary>
 	/// A list for th threads to store their fiber handles.

@@ -1,12 +1,11 @@
 #pragma once
 #include "../../Core.h"
-#include "Drawable.h"
 #include "D3D11.h"
 
 namespace CCE::Graphics
 {
-	struct CCE_API Mesh : private Drawable
+	struct CCE_API Drawable
 	{
-		
+
 	};
 }

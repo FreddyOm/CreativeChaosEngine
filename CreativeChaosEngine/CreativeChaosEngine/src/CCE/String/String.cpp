@@ -1,5 +1,6 @@
 #include "String.h"
 #include "../Utilities/Math/CRCHash.h"
+#include "../Manager/MemoryManager.h"
 
 namespace CCE
 {
@@ -10,17 +11,34 @@ namespace CCE
 		sId = GetStringID(str);
 
 #ifdef DEBUG
-		bool collision = gStringTable.find(sId) != gStringTable.end()
-			&& strcmp(gStringTable[sId], str) != 0;
-		if (collision)
+
+		auto keyVal = gStringTable.find(sId);
+		bool idInStringTable = keyVal != gStringTable.end(); // incoming string id is in string table
+		
+		if (idInStringTable) 
 		{
-			printf("Hash-Collision on strings \"%s\" and \"%s\".", str, gStringTable[sId]);
+			bool sEqual = keyVal->second == NULL ? false : (strcmp(keyVal->second, str) == 0); // strings are equal
+
+			bool diff = sEqual && !idInStringTable;
+			bool collision = !sEqual && idInStringTable;
+
+			if (diff)
+			{
+				printf("Different hash values on strings \"%s\" and \"%s\".", str, gStringTable[sId]);
+			}
+
+			if (collision)
+			{
+				printf("Hash-Collision on strings \"%s\" and \"%s\".", str, gStringTable[sId]);
+			}
+			DASSERT(!collision, "There has been a hash function collision!");
+			DASSERT(!diff, "There has been different hashes for the same string!");
 		}
-		DASSERT(!collision, "There has been a hash function collision!");
+		
 #endif // DEBUG
 
-		// Add String if it doesn't exist already (copy str)
-		gStringTable.try_emplace(sId, _strdup(str));
+		// Add String if it doesn't exist already (move str)
+		gStringTable.try_emplace(sId, std::move(str));
 	}
 
 	String::~String()

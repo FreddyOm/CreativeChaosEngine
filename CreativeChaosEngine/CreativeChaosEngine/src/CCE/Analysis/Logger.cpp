@@ -130,7 +130,7 @@ namespace CCE
     /// <summary>
     /// The bitmask to set the logging verbosity.
     /// </summary>
-    DWORD Logger::logLvLFilterMask = 0b000000101;
+    DWORD Logger::logLvLFilterMask = 0b000010101;
 
     /*
     enum LogLevel

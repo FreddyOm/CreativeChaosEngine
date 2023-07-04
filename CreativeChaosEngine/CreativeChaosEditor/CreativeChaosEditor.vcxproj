@@ -133,6 +133,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\EditorWindow\JobWindow.cpp" />
     <ClCompile Include="src\EditorWindow\MemoryWindow.cpp" />
     <ClCompile Include="src\EditorWindow\RenderingDebugger.cpp" />
     <ClCompile Include="src\EditorWindow\Base\EditorWindow.cpp" />
@@ -151,6 +152,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\EditorWindow\JobWindow.h" />
     <ClInclude Include="src\EditorWindow\MemoryWindow.h" />
     <ClInclude Include="src\EditorWindow\RenderingDebugger.h" />
     <ClInclude Include="src\EditorWindow\Base\EditorWindow.h" />

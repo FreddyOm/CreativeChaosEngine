@@ -143,9 +143,10 @@ using namespace Events;
 		alignas(128) static std::vector<WaitData> wait_list;
 		
 		// TODO: Implement custom queue class
-		alignas(128) static std::queue<JobDeclaration*> jobQueue_High;
-		alignas(128) static std::queue<JobDeclaration*> jobQueue_Normal;
-		alignas(128) static std::queue<JobDeclaration*> jobQueue_Low;
+		// TODO allocate in customly in pool alloc
+		alignas(128) static std::queue<JobDeclaration> jobQueue_High;
+		alignas(128) static std::queue<JobDeclaration> jobQueue_Normal;
+		alignas(128) static std::queue<JobDeclaration> jobQueue_Low;
 
 		static LPVOID mainFiber;	// 8 bytes
 		alignas(8) static std::queue<LPVOID> fiber_pool;
