@@ -5,8 +5,15 @@ The custom game engine editor of 'CreativeChaos UG'
 
 ## Documentation
 
+#### Editor Window
+
+**EditorWindows** are windows created by ImGui inside the **ClientWindow**.
+They can be created by initializing a new EditorWindow before the editor loop starts.
+This will register the window and will call it's ***OnGui()*** method.
+
 ## TODOs
-- Integrate and finalize ImGui
+- [x] Implement ImGui
+- [ ] Create new EditorWindows
 
 # CreativeChaosEngine
 The custom game engine of 'CreativeChaos UG'
@@ -14,9 +21,16 @@ The custom game engine of 'CreativeChaos UG'
 ***THIS DOCUMENT IS NOT MEANT FOR PUBLIC DISPLAY!***
 
 ## TODOs
-- Implement Counters so they move the current job to the wait list.
-- Refactor JobDeclaration and EntryPoint to be more easily used.
-- Use custom MemAlloc and custom Container everywhere.
+- [ ] Implement a central engine loop that runs all the engine calls (as jobs)
+- [ ] Implement Counters so they move the current job to the wait list.
+- [ ] Refactor JobDeclaration and EntryPoint to be more easily used.
+- [ ] Add an interface to be able to inject resources into the engine loop (e.g. query assets to renderpipeline) 
+- [ ] Refactor custom MemAllocs so they are compatible with stl containers and custom containers
+- [ ] Use custom MemAlloc and custom Container everywhere.
+- [ ] Differentiate between "Engine Memory" and "Game Memory" (which memory does only the engine need and which will be used in the game)
+- [ ] Implement some basic SSE
+- [ ] Implement File System
+- [ ] Implement Rendering System
 
 ## Documentation
 
@@ -48,9 +62,14 @@ is significantly improved in terms of performance.
 The goal is to create a string system that uses IDs ***everywhere***. In the best case, all strings can be loaded
 or written during compiletime and don't need to be created at all after release.
 
-### Window
-Create a window by calling the **EditorWindow::OpenWindow(hInstance, "MyWindowName")** function.
-After that make sure to call **EditorWindow::UpdateWindow()** to initialize the message handling.
-When closing a window use **EditorWindow:CloseEditorWindow()**.
+### Windows
 
-Multiple windows are currently not supported.
+#### Client Window
+
+Create a window by calling the **ClientWindow::OpenWindow(hInstance, "MyWindowName")** function.
+After that make sure to call **ClientWindow::UpdateWindow()** to initialize the message handling.
+When closing a window use **ClientWindow:CloseEditorWindow()**.
+
+>Multiple windows are currently not supported.
+
+
