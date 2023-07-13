@@ -29,6 +29,7 @@ The custom game engine of 'CreativeChaos UG'
 - [ ] Use custom MemAlloc and custom Container everywhere.
 - [ ] Differentiate between "Engine Memory" and "Game Memory" (which memory does only the engine need and which will be used in the game)
 - [ ] Implement some basic SSE
+- [ ] Move testing to individual solution and use it as a dll (?) inside the engine (?)
 - [ ] Implement File System
 - [ ] Implement Rendering System
 
