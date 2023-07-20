@@ -294,6 +294,8 @@ namespace CCE::Graphics
 	/// </summary>
 	void RenderPipeline::UninitializeD3D11()
 	{
+		// TODO: Prevent this from being called twice (explicit destructor from runtime manager and automatic destructor)
+		if (MemoryManager::Instance == nullptr) { return; }
 		p_Context->OMSetRenderTargets(0, NULL, NULL);
 		p_Context->Flush();
 

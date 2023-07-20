@@ -34,12 +34,7 @@ int main(int argc, char* argv[])
     LOGC("Starting %s", COLOR_BLUE, EDITOR_VERSION);
     //TODO: Load config file
 
-    JobManager mJobManager = CCE::JobManager();
-    ProfilingManager mProfilingManager = CCE::ProfilingManager();
-    PhysicsManager mPhysicsManager = PhysicsManager();
-    InputManager mInputManager = InputManager();
-    MemoryManager mMemoryManager = MemoryManager();
-    CCE::CCEditor editor = CCE::CCEditor();
+    RuntimeManager mRuntimeManager = CCE::RuntimeManager();
 
     {
 #ifdef DEBUG
@@ -81,19 +76,12 @@ int main(int argc, char* argv[])
     
     // ------ STARTUP MANAGER ------
 
-    mMemoryManager.StartUp();
-    mJobManager.StartUp();
-    mProfilingManager.StartUp();
-    mPhysicsManager.StartUp();
-    mInputManager.StartUp();
+    mRuntimeManager.StartUp();
 
 
     // ------ OPEN ENGINE WINDOW ------
 
     {
-        ClientWindow window = ClientWindow();
-        window.OpenWindow(GetModuleHandle(NULL));
-
         // EditorWindows
         RenderingDebugger rendEditorWin = RenderingDebugger("Rendering");
         MemoryWindow memEditorWin = MemoryWindow("Memory");
@@ -132,7 +120,6 @@ int main(int argc, char* argv[])
 
         while (rValue != (int)WM_QUIT)
         {
-            auto start = Time::Now();
 #if MULTITHREADED
             cnt = 3;
 
@@ -159,13 +146,10 @@ int main(int argc, char* argv[])
             mJobManager.WaitForCounter(&cnt, 0);
 
 #else
-            window.UpdateClientWindow(rValue);
+            
+            mRuntimeManager.PreEditorUpdate(rValue);
 
-            window.GetRenderPipeline()->BeginFrame(window.GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
             EditorWindow::PreGUIUpdate();
-
-            //mInputManager.HandleDirectInput();
-            mInputManager.HandleXInput();
 
             for (int i = 0; i < EditorWindow::GetEditorWindowPtrs().size(); i++)
             {
@@ -173,11 +157,9 @@ int main(int argc, char* argv[])
             }
 
             EditorWindow::PostGUIUpdate();
-            window.GetRenderPipeline()->EndFrame();
+           
+            mRuntimeManager.PostEditorUpdate();
 #endif
-            mMemoryManager.UpdateMemoryUsage();
-            auto end = Time::Now();
-            Time::SetDeltaTime(Time::GetDurationInMilliSec(start, end));
         }
     }
 
@@ -185,11 +167,7 @@ int main(int argc, char* argv[])
 
     // ------ SHUTDOWN MANAGER ------
 
-    mInputManager.ShutDown();
-    mPhysicsManager.ShutDown();
-    mProfilingManager.ShutDown();
-    mJobManager.ShutDown();
-    mMemoryManager.ShutDown();
+    mRuntimeManager.ShutDown();
 
     // ------ BYE ------
 

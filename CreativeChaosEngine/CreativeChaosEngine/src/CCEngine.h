@@ -16,6 +16,7 @@
 
 // -------- Manager ---------
 
+#include "CCE/Manager/RuntimeManager.h"
 #include "CCE/Manager/ProfilingManager.h"
 #include "CCE/Manager/PhysicsManager.h"
 #include "CCE/Manager/JobManager.h"

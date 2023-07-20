@@ -15,7 +15,7 @@ struct CCE_API ClientWindow
 
 	~ClientWindow()
 	{
-        windowRunning = false;
+		windowRunning = false;
 		Instance = nullptr;
 	}
 
