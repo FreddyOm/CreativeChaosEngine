@@ -44,24 +44,23 @@ namespace CCE
 	void RuntimeManager::PreEditorUpdate(int& rValue)
 	{
 		frameBegin = Time::Now();
-#if MULTITHREDED
-		cnt = 5;
-
-		JobManager::EntryPoint epCWUW = BIND(window.UpdateClientWindow, rValue);
-		JOBDECL declUpdateWin = JOBDECL(epCWUW, JobManager::Priority::HIGH, cnt);
+#if 1
+		cnt = 4;
 
 		JobManager::EntryPoint epRPBF = BIND(window.GetRenderPipeline()->BeginFrame, 
 				window.GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
-		JOBDECL declBeginFrame = JOBDECL(epRPBF, JobManager::Priority::HIGH, cnt);
+		JOBDECL declBeginFrame = JOBDECL(epRPBF, JobManager::Priority::LOW);
 
 		JobManager::EntryPoint epHXI = BIND(mInputManager.HandleXInput);
-		JOBDECL declHandleInput = JOBDECL(epHXI, JobManager::Priority::HIGH, cnt);
+		JOBDECL declHandleInput = JOBDECL(epHXI, JobManager::Priority::LOW);
 
-		mJobManager.KickJobAndFreeDecl(declUpdateWin, &cnt);
+
 		mJobManager.KickJobAndFreeDecl(declBeginFrame, &cnt);
 		mJobManager.KickJobAndFreeDecl(declHandleInput, &cnt);
 
-		mJobManager.WaitForCounter(&cnt, 2);
+		window.UpdateClientWindow(rValue);
+
+		mJobManager.BusyWaitForCounter(cnt, 2);
 
 #else
 		window.UpdateClientWindow(rValue);
@@ -74,18 +73,19 @@ namespace CCE
 
 	void RuntimeManager::PostEditorUpdate()
 	{
-#if MULTITHREADED
+#if 1
 		JobManager::EntryPoint epRPEF = BIND(window.GetRenderPipeline()->EndFrame);
-		JOBDECL declEndFrame = JOBDECL(epRPEF, JobManager::Priority::HIGH, cnt);
+		JOBDECL declEndFrame = JOBDECL(epRPEF, JobManager::Priority::LOW);
 
 		JobManager::EntryPoint epUMU = BIND(mMemoryManager.UpdateMemoryUsage);
-		JOBDECL declUpdateMemUsage = JOBDECL(epUMU, JobManager::Priority::NORMAL, cnt);
+		JOBDECL declUpdateMemUsage = JOBDECL(epUMU, JobManager::Priority::LOW);
 
 
 		mJobManager.KickJobAndFreeDecl(declEndFrame, &cnt);
 		mJobManager.KickJobAndFreeDecl(declUpdateMemUsage, &cnt);
 
-		mJobManager.WaitForCounter(&cnt, 0);
+		mJobManager.BusyWaitForCounter(cnt, 0);
+
 #else
 		window.GetRenderPipeline()->EndFrame();
 		mMemoryManager.UpdateMemoryUsage();
@@ -107,7 +107,6 @@ namespace CCE
 		mInputManager.StartUp();
 
 		window.OpenWindow(GetModuleHandle(NULL));
-
 	}
 
 	/// <summary>

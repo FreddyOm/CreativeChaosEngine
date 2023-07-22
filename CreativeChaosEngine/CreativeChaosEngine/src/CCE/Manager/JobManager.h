@@ -1,5 +1,9 @@
 #pragma once
 #include "BaseManager.h"
+#include "../String/String.h"
+#include "../Memory/PoolAllocator.h"
+#include "../Analysis/Logger.h"
+#include "../Utilities/Events/Delegate.h"
 #include <thread>
 #include <vector>
 #include <queue>
@@ -8,14 +12,10 @@
 #include <mutex>
 #include <atomic>
 #include <unordered_map>
-#include "../String/String.h"
-#include "../Memory/PoolAllocator.h"
-#include "../Analysis/Logger.h"
-#include "../Utilities/Events/Delegate.h"
 
 namespace CCE
 {
-#define NUM_FIBERS 10
+#define NUM_FIBERS 100
 #define MAX_JOBS 500
 #define WAIT_CNTR_LOOPS 200
 #define JOBDECL CCE::JobManager::JobDeclaration
@@ -76,12 +76,26 @@ using namespace Events;
 				va_end(args);
 
 				m_param = args;
-			}
+			}			
 
 			void operator += (const EntryPoint& ep)
 			{
 				m_pEntryPoint = ep;
 				m_priority = Priority::NORMAL;
+			}
+		};
+
+		struct WaitData
+		{
+			LPVOID fiber;
+			Counter* pCounter;
+			unsigned int desiredCount;
+
+			WaitData(const LPVOID _fiber, Counter* _counter, const unsigned int _desiredCount)
+			{
+				fiber = _fiber;
+				pCounter = _counter;
+				desiredCount = _desiredCount;
 			}
 		};
 
@@ -99,8 +113,10 @@ using namespace Events;
 		bool KickJob(JobDeclaration* decl, Counter* cnt = nullptr);
 		bool KickJobAndWait(JobDeclaration& decl, const Counter* waitForCnt);
 		bool KickJobs(int count, JobDeclaration decls[], Counter* pJobCounter = nullptr);
-		void WaitForCounter(const Counter* pJobCounter, const int desiredCnt);
-		void WaitForCounterAndFree(Counter* pJobCounter, const int desiredCnt);
+		void WaitForCounter(Counter& pJobCounter, const int desiredCnt) const;
+		void WaitForCounterAndFree(Counter& pJobCounter, const int desiredCnt) const;
+		void BusyWaitForCounter(Counter& pJobCounter, const int desiredCnt) const;
+		void BusyWaitForCounterAndFree(Counter& pJobCounter, const int desiredCnt) const;
 		void SpawnWorkerThreads(const short numOfThreads = -1);
 
 	private:
@@ -125,7 +141,7 @@ using namespace Events;
 	private:
 
 		// Wait list for Fibers and their jobs
-		alignas(128) static std::vector<JobDeclaration> wait_list;
+		alignas(128) static std::vector<WaitData> wait_list;
 		
 		// TODO: Implement custom queue class
 		// TODO allocate in customly in pool alloc

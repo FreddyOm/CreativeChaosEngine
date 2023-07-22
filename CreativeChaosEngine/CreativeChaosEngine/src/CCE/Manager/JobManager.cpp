@@ -212,12 +212,23 @@ namespace CCE
 	/// </summary>
 	/// <param name="pJobCounter">A pointer to the counter.</param>
 	/// <param name="desiredCnt">The desired count for contination.</param>
-	void JobManager::WaitForCounter(const Counter* pJobCounter, const int desiredCnt = 0)
+	void JobManager::WaitForCounter(Counter& pJobCounter, const int desiredCnt = 0) const
 	{
 		auto now = Time::Now();
-		while ((*pJobCounter) > desiredCnt)
+		unsigned short timeout = 127;
+
+		while (pJobCounter > desiredCnt)
 		{
-			continue;
+			if (--timeout == 0)
+			{
+				timeout = 127;
+				if (pJobCounter > desiredCnt)
+				{
+					wait_list.push_back(std::move(WaitData(GetCurrentFiber(),
+						&pJobCounter, desiredCnt)));
+					SwitchToFiber(GetThreadFiber());
+				}
+			}
 		}
 		auto after = Time::Now();
 		//LOG_JOBS("IDLED %i microseconds.", Time::GetDurationInMicroSec(now, after));
@@ -229,16 +240,55 @@ namespace CCE
 	/// </summary>
 	/// <param name="pJobCounter">A pointer to the counter.</param>
 	/// <param name="desiredCnt">The desired count for contination.</param>
-	void JobManager::WaitForCounterAndFree(Counter* pJobCounter, const int desiredCnt = 0)
+	void JobManager::WaitForCounterAndFree(Counter& pJobCounter, const int desiredCnt = 0) const
 	{
 		auto now = Time::CurrentTick();
-		while ((*pJobCounter) > desiredCnt)
+		unsigned short timeout = 127;
+
+		while (pJobCounter > desiredCnt)
+		{
+			if (--timeout == 0)
+			{
+				timeout = 127;
+				if (pJobCounter > desiredCnt)
+				{
+					wait_list.push_back(WaitData(GetCurrentFiber(),
+						&pJobCounter, desiredCnt));
+					SwitchToFiber(GetThreadFiber());
+				}
+			}
+		}
+
+		auto after = Time::CurrentTick();
+		delete &pJobCounter;
+		//LOG_JOBS("IDLED %i ticks.", after - now);
+	}
+
+	/// <summary>
+	/// Busy waiting and not yielding another job to the thread. Only use this on the highest level of job management (main engine loop).
+	/// </summary>
+	/// <param name="pJobCounter"></param>
+	/// <param name="desiredCnt"></param>
+	void JobManager::BusyWaitForCounter(Counter& pJobCounter, const int desiredCnt) const
+	{
+		while (pJobCounter > desiredCnt)
 		{
 			continue;
 		}
-		auto after = Time::CurrentTick();
-		LOG_JOBS("IDLED %i ticks.", after - now);
-		delete pJobCounter;
+	}
+
+	/// <summary>
+	/// Busy waiting and not yielding another job to the thread. Only use this on the highest level of job management (main engine loop).
+	/// </summary>
+	/// <param name="pJobCounter"></param>
+	/// <param name="desiredCnt"></param>
+	void JobManager::BusyWaitForCounterAndFree(Counter& pJobCounter, const int desiredCnt) const
+	{
+		while (pJobCounter > desiredCnt)
+		{
+			continue;
+		}
+		delete &pJobCounter;
 	}
 
 	/// <summary>
@@ -505,7 +555,7 @@ namespace CCE
 	/// <summary>
 	/// A wait list for jobs to wait on.
 	/// </summary>
-	alignas(128) std::vector<JobManager::JobDeclaration> JobManager::wait_list;
+	alignas(128) std::vector<JobManager::WaitData> JobManager::wait_list;
 
 	/// <summary>
 	/// The high priority queue for jobs.

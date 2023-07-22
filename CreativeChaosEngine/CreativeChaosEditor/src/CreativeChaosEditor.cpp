@@ -24,7 +24,7 @@
 
 #define EDITOR_VERSION "Creative Chaos Engine - v0.1"
 
-#define MULTITHREADED 0
+#define MULTITHREADED 1
 
 using namespace CCE;
 
@@ -85,8 +85,9 @@ int main(int argc, char* argv[])
         // EditorWindows
         RenderingDebugger rendEditorWin = RenderingDebugger("Rendering");
         MemoryWindow memEditorWin = MemoryWindow("Memory");
+#if MULTITHREADED
         JobWindow jobWin = JobWindow("Jobs");
-
+#endif
 
         using namespace CCE;
 
