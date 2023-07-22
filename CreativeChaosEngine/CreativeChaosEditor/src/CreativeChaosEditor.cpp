@@ -93,60 +93,12 @@ int main(int argc, char* argv[])
         // update window input
         int rValue = 0;
 
-#if MULTITHREADED    
-        JobManager::EntryPoint handleXInput = BIND(mInputManager.HandleXInput);
-        JOBDECL declHandleXInput = JOBDECL(handleXInput,JobManager::Priority::NORMAL);
-
-        JobManager::EntryPoint beginFrame = BIND(window.GetRenderPipeline()->BeginFrame,
-            window.GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
-        JOBDECL declBeginFrame;
-        declBeginFrame += beginFrame;
-
-        JobManager::EntryPoint endFrame = BIND(window.GetRenderPipeline()->EndFrame);
-        JOBDECL declEndFrame;
-        declEndFrame += endFrame;
-
-        JobManager::EntryPoint updateClientWin = BIND(window.UpdateClientWindow, rValue);
-        JOBDECL declUpdateEditorWin;
-        declUpdateEditorWin += updateClientWin;
-
-        bool initialized = false;
-        // Update loop
-        JobManager::Counter cnt = JobManager::Counter(2);
-        
-#endif
-
         // ----------------------------------------
+
+        // TODO: Miltithread the editor loop as well
 
         while (rValue != (int)WM_QUIT)
         {
-#if MULTITHREADED
-            cnt = 3;
-
-            // Update Client Window
-            mJobManager.KickJob(&declUpdateEditorWin, &cnt);
-            mJobManager.WaitForCounter(&cnt, 2);
-            // Update GFX
-            mJobManager.KickJob(&declBeginFrame, &cnt);
-            mJobManager.WaitForCounter(&cnt, 1);
-
-            EditorWindow::PreGUIUpdate();
-
-            // Update Inputs
-            mInputManager.HandleXInput();
-
-            // TODO: Kick multiple jobs
-            for (int i = 0; i < EditorWindow::GetEditorWindowPtrs().size(); i++)
-            {
-                EditorWindow::GetEditorWindowPtrs().at(i)->UpdateWindow();
-            }
-
-            EditorWindow::PostGUIUpdate();
-            mJobManager.KickJob(&declEndFrame, &cnt);
-            mJobManager.WaitForCounter(&cnt, 0);
-
-#else
-            
             mRuntimeManager.PreEditorUpdate(rValue);
 
             EditorWindow::PreGUIUpdate();
@@ -159,7 +111,6 @@ int main(int argc, char* argv[])
             EditorWindow::PostGUIUpdate();
            
             mRuntimeManager.PostEditorUpdate();
-#endif
         }
     }
 

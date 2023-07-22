@@ -12,6 +12,7 @@ namespace CCE
 {
 	struct CCE_API RuntimeManager : public BaseManager
 	{
+
 		RuntimeManager() = default;
 		~RuntimeManager() = default;
 
@@ -39,8 +40,9 @@ namespace CCE
 
 		ClientWindow window = ClientWindow();
 
-		std::chrono::steady_clock::time_point start;
-		std::chrono::steady_clock::time_point end;
-
+		std::chrono::steady_clock::time_point frameBegin;
+		std::chrono::steady_clock::time_point frameEnd;
+	
+		JobManager::Counter cnt;
 	};
 }

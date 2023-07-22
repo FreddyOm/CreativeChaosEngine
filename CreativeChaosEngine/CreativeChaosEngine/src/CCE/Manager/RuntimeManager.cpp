@@ -13,12 +13,8 @@ namespace CCE
 	{
 		DASSERT(Instance == nullptr, "RuntimeManager was instantiated more than once!");
 
-		auto startTime = Time::CurrentTick();
-
 		Initialize();
 
-		auto endTime = Time::CurrentTick();
-		double initDuration = Time::GetDurationInMicroSec(startTime, endTime);
 		initialized = true;
 		LOGC("RuntimeManager initialized!", COLOR_BLUE);
 	}
@@ -47,22 +43,56 @@ namespace CCE
 	/// </summary>
 	void RuntimeManager::PreEditorUpdate(int& rValue)
 	{
-		start = Time::Now();
+		frameBegin = Time::Now();
+#if MULTITHREDED
+		cnt = 5;
 
+		JobManager::EntryPoint epCWUW = BIND(window.UpdateClientWindow, rValue);
+		JOBDECL declUpdateWin = JOBDECL(epCWUW, JobManager::Priority::HIGH, cnt);
+
+		JobManager::EntryPoint epRPBF = BIND(window.GetRenderPipeline()->BeginFrame, 
+				window.GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
+		JOBDECL declBeginFrame = JOBDECL(epRPBF, JobManager::Priority::HIGH, cnt);
+
+		JobManager::EntryPoint epHXI = BIND(mInputManager.HandleXInput);
+		JOBDECL declHandleInput = JOBDECL(epHXI, JobManager::Priority::HIGH, cnt);
+
+		mJobManager.KickJobAndFreeDecl(declUpdateWin, &cnt);
+		mJobManager.KickJobAndFreeDecl(declBeginFrame, &cnt);
+		mJobManager.KickJobAndFreeDecl(declHandleInput, &cnt);
+
+		mJobManager.WaitForCounter(&cnt, 2);
+
+#else
 		window.UpdateClientWindow(rValue);
 		window.GetRenderPipeline()->BeginFrame(window.GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
 
 		//mInputManager.HandleDirectInput();
-		mInputManager.HandleXInput();				
+		mInputManager.HandleXInput();
+#endif
 	}
 
 	void RuntimeManager::PostEditorUpdate()
 	{
+#if MULTITHREADED
+		JobManager::EntryPoint epRPEF = BIND(window.GetRenderPipeline()->EndFrame);
+		JOBDECL declEndFrame = JOBDECL(epRPEF, JobManager::Priority::HIGH, cnt);
+
+		JobManager::EntryPoint epUMU = BIND(mMemoryManager.UpdateMemoryUsage);
+		JOBDECL declUpdateMemUsage = JOBDECL(epUMU, JobManager::Priority::NORMAL, cnt);
+
+
+		mJobManager.KickJobAndFreeDecl(declEndFrame, &cnt);
+		mJobManager.KickJobAndFreeDecl(declUpdateMemUsage, &cnt);
+
+		mJobManager.WaitForCounter(&cnt, 0);
+#else
 		window.GetRenderPipeline()->EndFrame();
 		mMemoryManager.UpdateMemoryUsage();
 
-		end = Time::Now();
-		Time::SetDeltaTime(Time::GetDurationInMilliSec(start, end));
+#endif
+		frameEnd = Time::Now();
+		Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));
 	}
 
 	/// <summary>
@@ -93,5 +123,4 @@ namespace CCE
 		mJobManager.ShutDown();
 		mMemoryManager.ShutDown();
 	}
-
 }
