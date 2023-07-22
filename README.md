@@ -14,6 +14,7 @@ This will register the window and will call it's ***OnGui()*** method.
 ## TODOs
 - [x] Implement ImGui
 - [ ] Create new EditorWindows
+- [ ] Create Input Debugging Window
 
 # CreativeChaosEngine
 The custom game engine of 'CreativeChaos UG'
@@ -21,7 +22,7 @@ The custom game engine of 'CreativeChaos UG'
 ***THIS DOCUMENT IS NOT MEANT FOR PUBLIC DISPLAY!***
 
 ## TODOs
-- [ ] Implement a central engine loop that runs all the engine calls (as jobs)
+- [x] Implement a central engine loop that runs all the engine calls (as jobs)
 - [ ] Implement Counters so they move the current job to the wait list.
 - [ ] Refactor JobDeclaration and EntryPoint to be more easily used.
 - [ ] Add an interface to be able to inject resources into the engine loop (e.g. query assets to renderpipeline) 
