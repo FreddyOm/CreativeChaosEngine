@@ -34,8 +34,8 @@ int main(int argc, char* argv[])
     LOGC("Starting %s", COLOR_BLUE, EDITOR_VERSION);
     //TODO: Load config file
 
-    JobManager mJobManager = CCE::JobManager();
     ProfilingManager mProfilingManager = CCE::ProfilingManager();
+    JobManager mJobManager = CCE::JobManager();
     PhysicsManager mPhysicsManager = PhysicsManager();
     InputManager mInputManager = InputManager();
     MemoryManager mMemoryManager = MemoryManager();
@@ -83,7 +83,6 @@ int main(int argc, char* argv[])
 
     mMemoryManager.StartUp();
     mJobManager.StartUp();
-    mProfilingManager.StartUp();
     mPhysicsManager.StartUp();
     mInputManager.StartUp();
 
@@ -98,7 +97,6 @@ int main(int argc, char* argv[])
         RenderingDebugger rendEditorWin = RenderingDebugger("Rendering");
         MemoryWindow memEditorWin = MemoryWindow("Memory");
         JobWindow jobWin = JobWindow("Jobs");
-
 
         using namespace CCE;
 
@@ -189,7 +187,6 @@ int main(int argc, char* argv[])
 
     mInputManager.ShutDown();
     mPhysicsManager.ShutDown();
-    mProfilingManager.ShutDown();
     mJobManager.ShutDown();
     mMemoryManager.ShutDown();
 

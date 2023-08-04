@@ -1,6 +1,7 @@
 #include "String.h"
 #include "../Utilities/Math/CRCHash.h"
 #include "../Manager/MemoryManager.h"
+#include "../Manager/ProfilingManager.h"
 
 namespace CCE
 {
@@ -42,9 +43,7 @@ namespace CCE
 	}
 
 	String::~String()
-	{
-
-	}
+	{ }
 
 	/// <summary>
 	/// Clears the global string table.

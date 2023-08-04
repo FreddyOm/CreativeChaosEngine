@@ -19,8 +19,14 @@ namespace CCE
 	struct CCE_API ProfilingManager : public BaseManager
 	{
 	public:
-		ProfilingManager() = default;
-		~ProfilingManager() = default;
+		ProfilingManager()
+		{
+			StartUp();
+		}
+		~ProfilingManager()
+		{
+			ShutDown();
+		}
 
 		void StartUp() override;
 		void ShutDown() override;

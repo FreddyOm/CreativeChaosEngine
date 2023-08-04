@@ -33,6 +33,7 @@ namespace CCE
 	/// <param name="name">Use the nameof(*this) in order to always unregister the correct instance.</param>
 	void ProfilingManager::RegisterInstance(String name) noexcept
 	{
+		if (name.sId == NULL) { name = "EXCEPT_DEFAULT_NAME"; }
 		if (memLeakTable->find(name.sId) == memLeakTable->end())
 		{
 			// No such instance in here yet
