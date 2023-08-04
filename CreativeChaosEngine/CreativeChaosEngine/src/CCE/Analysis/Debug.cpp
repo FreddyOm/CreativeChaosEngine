@@ -5,17 +5,17 @@ namespace CCE
 {
 	void Debug::DebugInfo(const char* msg, const char* file, const int line) noexcept
 	{
-		CCE::Logger::Log("[INFO] %s\n%s\n%i", COLOR_WHITE, CCE::NONE, msg, file, line);
+		CCE::Logger::Log("[INFO] %s\n%s\n%i", COLOR_WHITE, LogLevel::NONE, msg, file, line);
 	}
 
 	void Debug::DebugWarning(const char* msg, const char* file, const int line) noexcept
 	{
-		CCE::Logger::Log("[WARNING] %s\n%s\n%i", COLOR_YELLOW, CCE::NONE, msg, file, line);
+		CCE::Logger::Log("[WARNING] %s\n%s\n%i", COLOR_YELLOW, LogLevel::NONE, msg, file, line);
 	}
 
 	void Debug::DebugError(const char* msg, const char* file, const int line) noexcept
 	{
-		CCE::Logger::Log("[ERROR] %s\n%s\n%i", COLOR_RED, CCE::NONE, msg, file, line);
+		CCE::Logger::Log("[ERROR] %s\n%s\n%i", COLOR_RED, LogLevel::NONE, msg, file, line);
 	}
 
 	void Debug::DebugError(const DWORD error, const char* file, const int line) noexcept

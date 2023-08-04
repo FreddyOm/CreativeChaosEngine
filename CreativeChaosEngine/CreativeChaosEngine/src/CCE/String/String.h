@@ -55,6 +55,7 @@ namespace CCE
 
 		size_t Length() const;
 		const char* Value() const;
+		static const char* ValueBySID(unsigned long long sId);
 
 	public:
 		unsigned long long sId = 0;			// 8 bytes

@@ -11,7 +11,7 @@ namespace CCE
     /// <param name="color">The color code for the message.</param>
     /// <param name="level">The log level.</param>
     /// <param name="">additional arguments</param>
-    void Logger::Log(const char* msg, const COLOR color = COLOR_WHITE, const LogLevel level = NONE, ...)
+    void Logger::Log(const char* msg, const COLOR color = COLOR_WHITE, const LogLevel level = LogLevel::NONE, ...)
     {
         auto lock = ScopedLock(&logMutex);
         if (!LogLvlActive(level)) { return; }
@@ -54,6 +54,11 @@ namespace CCE
             printf("[%s] [JOBS] ", DateTime::GetTime());
             break;
         }
+        case LogLevel::PROFILING:
+        {
+            printf("[%s] [PROFILING] ", DateTime::GetTime());
+            break;
+        }
         }
 
         va_list argList;
@@ -72,7 +77,7 @@ namespace CCE
     /// <param name="color">The color code for the message.</param>
     /// <param name="level">The log level.</param>
     /// <param name="">additional arguments</param>
-    void Logger::Log(const String msg, const COLOR color = COLOR_WHITE, const LogLevel level = NONE, ...)
+    void Logger::Log(const String msg, const COLOR color = COLOR_WHITE, const LogLevel level = LogLevel::NONE, ...)
     {
         auto lock = ScopedLock(&logMutex);
         if (!LogLvlActive(level)) { return; }
@@ -130,7 +135,7 @@ namespace CCE
     /// <summary>
     /// The bitmask to set the logging verbosity.
     /// </summary>
-    DWORD Logger::logLvLFilterMask = 0b000010101;
+    DWORD Logger::logLvLFilterMask = 0b000110101;
 
     /*
     enum LogLevel
@@ -140,6 +145,7 @@ namespace CCE
         RENDERING = 2,
         TEST = 3,
         JOBS = 4,
+        PROFILING = 5,
     };
     */
 }

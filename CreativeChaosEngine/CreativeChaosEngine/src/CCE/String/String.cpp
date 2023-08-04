@@ -46,6 +46,9 @@ namespace CCE
 
 	}
 
+	/// <summary>
+	/// Clears the global string table.
+	/// </summary>
 	void String::ClearGlobalStringTable()
 	{
 		std::unordered_map<unsigned long long, const char*>::iterator it;
@@ -58,6 +61,10 @@ namespace CCE
 		gStringTable.clear();
 	}
 
+	/// <summary>
+	/// Returns the length of the string.
+	/// </summary>
+	/// <returns></returns>
 	size_t String::Length() const
 	{
 		if (gStringTable[sId] == NULL)
@@ -68,7 +75,21 @@ namespace CCE
 		return strlen(gStringTable[sId]);
 	}
 
+	/// <summary>
+	/// Returns the actual string value of a given string id.
+	/// </summary>
+	/// <returns></returns>
 	const char* String::Value() const
+	{
+		return gStringTable[sId] == NULL ? "" : gStringTable[sId];
+	}
+
+	/// <summary>
+	/// Returns the string that matches a given sId;
+	/// </summary>
+	/// <param name="sId">The ID to the string to be found.</param>
+	/// <returns>The string that matches the ID. NULL if no string is found.</returns>
+	const char* String::ValueBySID(unsigned long long sId)
 	{
 		return gStringTable[sId] == NULL ? "" : gStringTable[sId];
 	}

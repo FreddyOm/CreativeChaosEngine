@@ -185,6 +185,8 @@ int main(int argc, char* argv[])
 
     // ------ SHUTDOWN MANAGER ------
 
+    PRINT_LEAK_INFO;
+
     mInputManager.ShutDown();
     mPhysicsManager.ShutDown();
     mProfilingManager.ShutDown();

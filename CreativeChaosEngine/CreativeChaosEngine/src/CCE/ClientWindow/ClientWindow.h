@@ -6,17 +6,22 @@
 #include "../Manager/InputManager.h"
 #include "../Manager/JobManager.h"
 #include "../Graphics/RenderPipeline.h"
+#include "../Manager/ProfilingManager.h"
 
 // TODO: Refactor static manager pointers to work in a defined way
 
 struct CCE_API ClientWindow
 { 
-	ClientWindow() = default;
+	ClientWindow()
+	{
+		REGISTER_LEAK_DETECT;
+	}
 
 	~ClientWindow()
 	{
         windowRunning = false;
 		Instance = nullptr;
+		UNREGISTER_LEAK_DETECT;
 	}
 
 	bool OpenWindow(HINSTANCE hInstance, CCE::String winName = "Creative Chaos Engine - v0.1");
