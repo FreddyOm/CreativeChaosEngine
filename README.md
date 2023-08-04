@@ -25,15 +25,17 @@ Some custom game engine subsystems
 
 ## TODOs
 - [x] Implement a central engine loop that runs all the engine calls (as jobs)
-- [x] Implement Counters so they move the current job to the wait list.
-- [ ] Refactor JobDeclaration and EntryPoint to be more easily used.
+- [x] Implement Counters so they move the current job to the wait list
+- [ ] Implement file system
+- [ ] Save an load engine config
+- [ ] Make sure the job system only loads and initializes if multithreading is explicitly requested
+- [ ] Refactor JobDeclaration and EntryPoint to be more easily used
 - [ ] Add an interface to be able to inject resources into the engine loop (e.g. query assets to renderpipeline) 
 - [ ] Refactor custom MemAllocs so they are compatible with stl containers and custom containers
-- [ ] Use custom MemAlloc and custom Container everywhere.
+- [ ] Use custom MemAlloc and custom Container everywhere
 - [ ] Differentiate between "Engine Memory" and "Game Memory" (which memory does only the engine need and which will be used in the game)
 - [ ] Implement some basic SSE
 - [ ] Move testing to individual solution and use it as a dll (?) inside the engine (?)
-- [ ] Implement File System
 - [ ] Implement Rendering System
 
 ## Documentation
