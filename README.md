@@ -84,7 +84,10 @@ To be created.
 
 #### ProfilingManager
 
-To be created.
+The **ProfilingManager** is a debug facility that allows to inspect detailed information about the engine. 
+Currently the engine can be opened up and run for a while. When it is closed there is an automatic leak detection.
+It shows which classes are created more often than they are destroyed. Use the ***REGISTER_LEAK_DETECT*** and 
+***UNREGISTER_LEAK_DETECT*** in the constructor and destructor to include them in the leak detection. 
 
 #### Runtime Manager
 The **RuntimeManager** is the bootstrapping unit on the engine side. It initializes all subsystems in the correct order and provides an interface to 
