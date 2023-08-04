@@ -33,7 +33,7 @@ Some custom game engine subsystems
 - [ ] Add an interface to be able to inject resources into the engine loop (e.g. query assets to renderpipeline) 
 - [ ] Refactor custom MemAllocs so they are compatible with stl containers and custom containers
 - [ ] Use custom MemAlloc and custom Container everywhere
-- [ ] Differentiate between "Engine Memory" and "Game Memory" (which memory does only the engine need and which will be used in the game)
+- [ ] Differentiate between "Editor Memory" and "Game Memory" (which memory does only the editor need and which will be used in the game)
 - [ ] Implement some basic SSE
 - [ ] Move testing to individual solution and use it as a dll (?) inside the engine (?)
 - [ ] Implement Rendering System
