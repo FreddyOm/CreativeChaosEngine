@@ -24,7 +24,7 @@
 
 #define EDITOR_VERSION "Creative Chaos Engine - v0.1"
 
-#define MULTITHREADED 1
+#define MULTITHREADED 0
 
 using namespace CCE;
 
