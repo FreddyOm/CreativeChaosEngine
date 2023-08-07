@@ -28,6 +28,11 @@ namespace CCE
 		LOGC("Shutting down RuntimeManager...", COLOR_BLUE);
 		initialized = false;
 		
+		window.~ClientWindow();
+		
+		// Show leak info
+		PRINT_LEAK_INFO;
+
 		Deinitialize();
 		
 		Instance = nullptr;
@@ -107,7 +112,6 @@ namespace CCE
 #if 0
 		mJobManager.StartUp();
 #endif
-		mProfilingManager.StartUp();
 		mPhysicsManager.StartUp();
 		mInputManager.StartUp();
 
@@ -123,7 +127,6 @@ namespace CCE
 
 		mInputManager.ShutDown();
 		mPhysicsManager.ShutDown();
-		mProfilingManager.ShutDown();
 #if 0
 		mJobManager.ShutDown();
 #endif

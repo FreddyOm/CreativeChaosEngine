@@ -3,6 +3,7 @@
 #include "../Memory/StackAllocator.h"
 #include "../Utilities/Color/Color.h"
 #include "../Manager/JobManager.h"
+#include "../Manager/ProfilingManager.h"
 #include "Rendering/D3D11.h"
 
 namespace CCE::Graphics
@@ -24,6 +25,7 @@ namespace CCE::Graphics
 		{
 			DASSERT(Instance == nullptr, "The Renderpipeline can only be initialized once!");
 			Instance = this;
+			REGISTER_LEAK_DETECT;
 		}
 		
 		~RenderPipeline()
@@ -47,6 +49,8 @@ namespace CCE::Graphics
 			//TODO: Check this bug when deleting cnt
 			//if (cnt != nullptr)
 				//delete cnt;
+
+			UNREGISTER_LEAK_DETECT;
 		}
 
 	public:
