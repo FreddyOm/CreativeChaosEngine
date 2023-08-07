@@ -22,6 +22,9 @@
 #define LOG_JOBS(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::JOBS, ##__VA_ARGS__)
 #define LOGC_JOBS(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::JOBS, ##__VA_ARGS__)
 
+#define LOG_PROFILING(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
+#define LOG_PROFILING(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
+
 #endif // DEBUG
 
 #ifdef DEBUG_PROFILE
@@ -39,6 +42,9 @@
 
 #define LOG_JOBS(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::JOBS, ##__VA_ARGS__)
 #define LOGC_JOBS(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::JOBS, ##__VA_ARGS__)
+
+#define LOG_PROFILING(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
+#define LOG_PROFILING(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
 
 #endif // PROFILE
 
@@ -58,6 +64,9 @@
 #define LOG_JOBS(msg, ...)
 #define LOGC_JOBS(msg, c, ...)
 
+#define LOG_PROFILING(msg, ...)
+#define LOG_PROFILING(msg, c, ...)
+
 #endif // RELEASE
 
 namespace CCE
@@ -70,13 +79,14 @@ namespace CCE
 #define COLOR_YELLOW 14
 #define COLOR_WHITE 15
 
-	enum LogLevel
+	enum class LogLevel
 	{
 		NONE = 0,
 		INPUT = 1,
 		RENDERING = 2,
 		TEST = 3,
 		JOBS = 4,
+		PROFILING = 5
 	};
 
 	struct CCE_API Logger
