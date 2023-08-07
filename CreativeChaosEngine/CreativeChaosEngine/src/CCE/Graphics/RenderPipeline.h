@@ -15,11 +15,18 @@ namespace CCE::Graphics
 	{
 	public:
 
+		CCE_API enum class WindowMode
+		{
+			WINDOW = 0,
+			BORDERLESS_WINDOW = 1,
+			FULLSCREEN = 2,
+		};
+
 		struct RenderPipelineConfig
 		{
 			bool activateVSync = true;
 			CCE::Color backgroundColor = CCE::Color("#BCC5CE");
-			//WindowMode windowMode = WindowMode::WINDOW;
+			WindowMode windowMode = WindowMode::WINDOW;
 		};
 		
 		RenderPipeline()
@@ -119,12 +126,5 @@ namespace CCE::Graphics
 		D3D11_DEPTH_STENCIL_VIEW_DESC* descDSV = { };
 		ComPtr<ID3D11Texture2D> pDepthStencil = nullptr;
 		ComPtr<ID3D11DepthStencilState> pDSState = nullptr;
-	};
-
-	CCE_API enum class WindowMode
-	{
-		WINDOW = 0,
-		BORDERLESS_WINDOW = 1,
-		FULLSCREEN = 2,
 	};
 }
