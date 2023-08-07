@@ -16,6 +16,7 @@ namespace CCE
 	void Debug::DebugError(const char* msg, const char* file, const int line) noexcept
 	{
 		CCE::Logger::Log("[ERROR] %s\n%s\n%i", COLOR_RED, LogLevel::NONE, msg, file, line);
+		DebugBreak();
 	}
 
 	void Debug::DebugError(const DWORD error, const char* file, const int line) noexcept
@@ -33,6 +34,8 @@ namespace CCE
 		DebugError(messageBuffer, file, line);
 
 		LocalFree(messageBuffer);
+
+		DebugBreak();
 	}
 
 	void Debug::DebugAssert(const bool condition, const char* msg, const char* file, const int line) noexcept
@@ -53,7 +56,8 @@ namespace CCE
 		strcat_s(buf, line_buf);
 
 		MessageBoxA(NULL, buf, "Assertion", MB_OK | MB_ICONERROR);
-		exit(-1);
+		DebugBreak();
+		//exit(-1);
 
 		//TODO: Write all asserts to an assert file on disk so one can
 		// easily track where the assertion ocurred even after the program

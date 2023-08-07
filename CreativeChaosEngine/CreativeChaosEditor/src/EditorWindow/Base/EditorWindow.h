@@ -18,7 +18,8 @@ public:
 	/// Constructor of the editor window.
 	/// </summary>
 	/// <param name="windowName">The name of the window.</param>
-	EditorWindow(String winName) : windowName(winName)
+	EditorWindow(String winName) : 
+		windowName(winName)
 	{
 		if (!initialized)
 		{

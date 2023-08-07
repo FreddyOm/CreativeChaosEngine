@@ -61,7 +61,6 @@ bool ClientWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 /// <summary>
 /// The window's message pump.
 /// </summary>
-/// <returns>The return code whenever the window is closed.</returns>
 void ClientWindow::UpdateClientWindow(int& _returnVal)
 {
 	_returnVal = 0;

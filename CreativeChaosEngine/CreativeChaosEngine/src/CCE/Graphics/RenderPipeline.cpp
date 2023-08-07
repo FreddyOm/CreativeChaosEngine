@@ -180,21 +180,22 @@ namespace CCE::Graphics
 		// Clear render view and draw background color
 		p_Context->OMSetRenderTargets(1u, p_renderTarget.GetAddressOf(), p_DSV.Get());
 
-#if FALSE
-		JobManager::Counter cnt = JobManager::Counter(2);
-		//JobManager::EntryPoint cdsvEp = [&JOB_ENTRY_POINT](...) (RenderPipeline::ClearDepthStencilView, this);
-		//JobManager::EntryPoint cdsvEp = [&](...){return ClearDepthStencilView(); };
-		JobManager::EntryPoint cdsvEp = BIND(ClearDepthStencilView);
+#if 0
+		*cnt = 2;
 
-		JOBDECL cdsv = JOBDECL(cdsvEp, JobManager::Priority::NORMAL);
+		JobManager::EntryPoint cdsvEp = BIND(RenderPipeline::Instance->ClearDepthStencilView);
+		JOBDECL cdsv = JOBDECL(cdsvEp, JobManager::Priority::HIGH);
 
-		JobManager::EntryPoint crtvEp = BIND(ClearRenderTargetView, col);
+		JobManager::EntryPoint crtvEp = BIND(RenderPipeline::Instance->ClearRenderTargetView, col);
 		JOBDECL crtv = JOBDECL(crtvEp, JobManager::Priority::NORMAL);
 
-		JobManager::Instance->KickJobAndFreeDecl(cdsv, &cnt);
-		JobManager::Instance->KickJobAndFreeDecl(crtv, &cnt);
+		JobManager::Instance->KickJobAndFreeDecl(crtv, cnt);
 
-		JobManager::Instance->WaitForCounter(&cnt, 0);
+		JobManager::Instance->WaitForCounter(*cnt, 1);
+
+		JobManager::Instance->KickJobAndFreeDecl(cdsv, cnt);
+
+		JobManager::Instance->WaitForCounter(*cnt, 0);
 
 #else
 		p_Context->ClearRenderTargetView(p_renderTarget.Get(), col.RGBA());
@@ -202,7 +203,6 @@ namespace CCE::Graphics
 #endif	
 
 		// TODO: Render triangles
-
 
 
 	}
@@ -294,6 +294,8 @@ namespace CCE::Graphics
 	/// </summary>
 	void RenderPipeline::UninitializeD3D11()
 	{
+		// TODO: Prevent this from being called twice (explicit destructor from runtime manager and automatic destructor)
+		if (MemoryManager::Instance == nullptr || p_Context == 0) { return; }
 		p_Context->OMSetRenderTargets(0, NULL, NULL);
 		p_Context->Flush();
 
@@ -304,12 +306,12 @@ namespace CCE::Graphics
 		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(RECT));
 	}
 
+	
 	/// <summary>
 	/// The job entry point for creating the reder target view.
 	/// </summary>
 	/// <param name="col">The background color.</param>
-	/// <returns></returns>
-	JOB_ENTRY_POINT RenderPipeline::ClearRenderTargetView(const Color col) const
+	JOB_ENTRY_POINT RenderPipeline::ClearRenderTargetView(Color col) const
 	{
 		p_Context->ClearRenderTargetView(p_renderTarget.Get(), col.RGBA());
 	}
@@ -317,7 +319,6 @@ namespace CCE::Graphics
 	/// <summary>
 	/// The job entry point for clearing the depth stencil view.
 	/// </summary>
-	/// <returns></returns>
 	JOB_ENTRY_POINT RenderPipeline::ClearDepthStencilView() const
 	{
 		p_Context->ClearDepthStencilView(p_DSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);

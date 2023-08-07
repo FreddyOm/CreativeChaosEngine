@@ -5,7 +5,8 @@ class JobWindow : public EditorWindow
 {
 public:
 
-    JobWindow(String winName) : EditorWindow(winName)
+    JobWindow(String winName) 
+        : EditorWindow(winName)
     { }
 
     void OnGui();

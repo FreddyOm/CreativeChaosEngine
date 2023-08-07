@@ -19,7 +19,7 @@ struct CCE_API ClientWindow
 
 	~ClientWindow()
 	{
-        windowRunning = false;
+		windowRunning = false;
 		Instance = nullptr;
 		UNREGISTER_LEAK_DETECT;
 	}

@@ -3,6 +3,7 @@
 #include "../Memory/StackAllocator.h"
 #include "../Utilities/Color/Color.h"
 #include "../Manager/JobManager.h"
+#include "../Manager/ProfilingManager.h"
 #include "Rendering/D3D11.h"
 
 namespace CCE::Graphics
@@ -24,6 +25,7 @@ namespace CCE::Graphics
 		{
 			DASSERT(Instance == nullptr, "The Renderpipeline can only be initialized once!");
 			Instance = this;
+			REGISTER_LEAK_DETECT;
 		}
 		
 		~RenderPipeline()
@@ -43,6 +45,12 @@ namespace CCE::Graphics
 			p_renderTarget.~ComPtr();
 			p_DSV.~ComPtr();
 			p_backBuffer.~ComPtr();
+
+			//TODO: Check this bug when deleting cnt
+			//if (cnt != nullptr)
+				//delete cnt;
+
+			UNREGISTER_LEAK_DETECT;
 		}
 
 	public:
@@ -75,10 +83,21 @@ namespace CCE::Graphics
 		{
 			return &pipelineConfig;
 		}
+
+		ID3D11RenderTargetView* GetRenderTargetPtr() const
+		{
+			return p_renderTarget.Get();
+		}
 		
-	private:
-		JOB_ENTRY_POINT ClearRenderTargetView(const Color col) const;
+		ID3D11DepthStencilView* GetDepthStencilViewPtr() const
+		{
+			return p_DSV.Get();
+		}
+
+	public:
+		JOB_ENTRY_POINT ClearRenderTargetView(Color col) const;
 		JOB_ENTRY_POINT ClearDepthStencilView() const;
+		JobManager::Counter* cnt = new JobManager::Counter(2);
 
 	private:
 		ComPtr<ID3D11Debug> pDebug;
@@ -91,7 +110,7 @@ namespace CCE::Graphics
 		ComPtr<ID3D11RenderTargetView> p_renderTarget = nullptr;
 		ComPtr<ID3D11DepthStencilView> p_DSV = nullptr;
 		ComPtr<ID3D11Resource> p_backBuffer = nullptr;
-		RECT* clientRect;
+		RECT* clientRect = { 0 };
 
 		// TODO: Load from config
 		DXGI_SWAP_CHAIN_DESC* swapChainDesc = { 0 };

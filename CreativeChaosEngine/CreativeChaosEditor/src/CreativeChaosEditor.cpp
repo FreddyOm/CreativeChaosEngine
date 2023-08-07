@@ -24,7 +24,7 @@
 
 #define EDITOR_VERSION "Creative Chaos Engine - v0.1"
 
-#define MULTITHREADED 0
+#define MULTITHREADED 1
 
 using namespace CCE;
 
@@ -34,12 +34,7 @@ int main(int argc, char* argv[])
     LOGC("Starting %s", COLOR_BLUE, EDITOR_VERSION);
     //TODO: Load config file
 
-    ProfilingManager mProfilingManager = CCE::ProfilingManager();
-    JobManager mJobManager = CCE::JobManager();
-    PhysicsManager mPhysicsManager = PhysicsManager();
-    InputManager mInputManager = InputManager();
-    MemoryManager mMemoryManager = MemoryManager();
-    CCE::CCEditor editor = CCE::CCEditor();
+    RuntimeManager mRuntimeManager = CCE::RuntimeManager();
 
     {
 #ifdef DEBUG
@@ -81,89 +76,33 @@ int main(int argc, char* argv[])
     
     // ------ STARTUP MANAGER ------
 
-    mMemoryManager.StartUp();
-    mJobManager.StartUp();
-    mPhysicsManager.StartUp();
-    mInputManager.StartUp();
+    mRuntimeManager.StartUp();
 
 
     // ------ OPEN ENGINE WINDOW ------
 
     {
-        ClientWindow window = ClientWindow();
-        window.OpenWindow(GetModuleHandle(NULL));
-
         // EditorWindows
         RenderingDebugger rendEditorWin = RenderingDebugger("Rendering");
         MemoryWindow memEditorWin = MemoryWindow("Memory");
+#if MULTITHREADED
         JobWindow jobWin = JobWindow("Jobs");
+#endif
 
         using namespace CCE;
 
         // update window input
         int rValue = 0;
 
-#if MULTITHREADED    
-        JobManager::EntryPoint handleXInput = BIND(mInputManager.HandleXInput);
-        JOBDECL declHandleXInput = JOBDECL(handleXInput,JobManager::Priority::NORMAL);
-
-        JobManager::EntryPoint beginFrame = BIND(window.GetRenderPipeline()->BeginFrame,
-            window.GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
-        JOBDECL declBeginFrame;
-        declBeginFrame += beginFrame;
-
-        JobManager::EntryPoint endFrame = BIND(window.GetRenderPipeline()->EndFrame);
-        JOBDECL declEndFrame;
-        declEndFrame += endFrame;
-
-        JobManager::EntryPoint updateClientWin = BIND(window.UpdateClientWindow, rValue);
-        JOBDECL declUpdateEditorWin;
-        declUpdateEditorWin += updateClientWin;
-
-        bool initialized = false;
-        // Update loop
-        JobManager::Counter cnt = JobManager::Counter(2);
-        
-#endif
-
         // ----------------------------------------
+
+        // TODO: Miltithread the editor loop as well
 
         while (rValue != (int)WM_QUIT)
         {
-            auto start = Time::Now();
-#if MULTITHREADED
-            cnt = 3;
-
-            // Update Client Window
-            mJobManager.KickJob(&declUpdateEditorWin, &cnt);
-            mJobManager.WaitForCounter(&cnt, 2);
-            // Update GFX
-            mJobManager.KickJob(&declBeginFrame, &cnt);
-            mJobManager.WaitForCounter(&cnt, 1);
+            mRuntimeManager.PreEditorUpdate(rValue);
 
             EditorWindow::PreGUIUpdate();
-
-            // Update Inputs
-            mInputManager.HandleXInput();
-
-            // TODO: Kick multiple jobs
-            for (int i = 0; i < EditorWindow::GetEditorWindowPtrs().size(); i++)
-            {
-                EditorWindow::GetEditorWindowPtrs().at(i)->UpdateWindow();
-            }
-
-            EditorWindow::PostGUIUpdate();
-            mJobManager.KickJob(&declEndFrame, &cnt);
-            mJobManager.WaitForCounter(&cnt, 0);
-
-#else
-            window.UpdateClientWindow(rValue);
-
-            window.GetRenderPipeline()->BeginFrame(window.GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
-            EditorWindow::PreGUIUpdate();
-
-            //mInputManager.HandleDirectInput();
-            mInputManager.HandleXInput();
 
             for (int i = 0; i < EditorWindow::GetEditorWindowPtrs().size(); i++)
             {
@@ -171,11 +110,8 @@ int main(int argc, char* argv[])
             }
 
             EditorWindow::PostGUIUpdate();
-            window.GetRenderPipeline()->EndFrame();
-#endif
-            mMemoryManager.UpdateMemoryUsage();
-            auto end = Time::Now();
-            Time::SetDeltaTime(Time::GetDurationInMilliSec(start, end));
+           
+            mRuntimeManager.PostEditorUpdate();
         }
     }
 
@@ -183,12 +119,7 @@ int main(int argc, char* argv[])
 
     // ------ SHUTDOWN MANAGER ------
 
-    PRINT_LEAK_INFO;
-
-    mInputManager.ShutDown();
-    mPhysicsManager.ShutDown();
-    mJobManager.ShutDown();
-    mMemoryManager.ShutDown();
+    mRuntimeManager.ShutDown();
 
     // ------ BYE ------
 

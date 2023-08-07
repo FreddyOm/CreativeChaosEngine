@@ -65,7 +65,8 @@ namespace CCE
 	/// </summary>
 	void ProfilingManager::PrintLeakInfo() const noexcept
 	{
-		LOG_PROFILING("## ------------ MEMORY LAEKAGE INFO ------------ ##", COLOR_RED);
+		
+		LOG_PROFILING("## ------------- MEMORY LEAK INFO ------------- ##", COLOR_WHITE);
 
 		std::unordered_map<unsigned long long, int>::iterator it;
 		for (it = memLeakTable->begin(); it != memLeakTable->end(); it++)
@@ -78,7 +79,7 @@ namespace CCE
 			}
 		}
 
-		LOG_PROFILING("## --------------------------------------------- ##", COLOR_RED);
+		LOG_PROFILING("## -------------------------------------------- ##", COLOR_WHITE);
 	}
 
 	ProfilingManager* ProfilingManager::Instance = nullptr;

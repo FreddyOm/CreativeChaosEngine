@@ -3,6 +3,7 @@
 #include "../Memory/PoolAllocator.h"
 #include "../Memory/StackAllocator.h"
 #include "../CCEditor/CCEditor.h"
+#include "../Analysis/Logger.h"
 
 #define JOB_POOL_SIZE 32
 #define JOB_POOL_ELMNT_CNT 10
@@ -19,10 +20,7 @@ namespace CCE
 	struct CCE_API MemoryManager :
 		public BaseManager
 	{
-		MemoryManager()
-		{
-
-		}
+		MemoryManager() = default;
 
 		~MemoryManager() = default;
 

@@ -2,7 +2,6 @@
 #include <winternl.h>
 #include "../Analysis/Debug.h"
 #include "../Analysis/Time.h"
-#include "../Utilities/Concurrency/ScopedLock.h"
 #include "MemoryManager.h"
 #include "../CCEditor/CCEditor.h"
 
@@ -97,7 +96,7 @@ namespace CCE
 	{
 		if (decl.m_pEntryPoint == nullptr) { return false; }
 
-		auto lock = ScopedLock(&jobQueueMutex);
+		auto lock = ScopedSpinLock(jobQueueSpinLock);
 		decl.m_pCounter = cnt;
 		
 		// Add job to queue depending on its priority
@@ -117,6 +116,10 @@ namespace CCE
 			}
 		}
 
+		PUSH_EDITOR_INT("jobWaitListHigh", jobQueue_High.size());
+		PUSH_EDITOR_INT("jobWaitListNormal", jobQueue_Normal.size());
+		PUSH_EDITOR_INT("jobWaitListLow", jobQueue_Low.size());
+
 		return true;
 	}
 
@@ -129,7 +132,7 @@ namespace CCE
 	{
 		if (decl->m_pEntryPoint == nullptr) { return false; }
 
-		auto lock = ScopedLock(&jobQueueMutex);
+		auto lock = ScopedSpinLock(jobQueueSpinLock);
 		decl->m_pCounter = cnt;
 
 		// Add job to queue depending on its priority
@@ -149,6 +152,10 @@ namespace CCE
 		}
 		}
 
+		PUSH_EDITOR_INT("jobWaitListHigh", jobQueue_High.size());
+		PUSH_EDITOR_INT("jobWaitListNormal", jobQueue_Normal.size());
+		PUSH_EDITOR_INT("jobWaitListLow", jobQueue_Low.size());
+
 		return true;
 	}
 
@@ -163,7 +170,7 @@ namespace CCE
 	bool JobManager::KickJobAndWait(JobManager::JobDeclaration& decl, const JobManager::Counter* waitForCnt)
 	{
 		throw E_NOTIMPL;
-		auto lock = ScopedLock(&jobQueueMutex);
+		auto lock = ScopedSpinLock(jobQueueSpinLock);
 		// Add job to queue depending on its priority
 		switch (decl.m_priority)
 		{
@@ -212,24 +219,23 @@ namespace CCE
 	/// </summary>
 	/// <param name="pJobCounter">A pointer to the counter.</param>
 	/// <param name="desiredCnt">The desired count for contination.</param>
-	void JobManager::WaitForCounter(Counter* pJobCounter, const int desiredCnt = 0)
+	void JobManager::WaitForCounter(Counter& pJobCounter, const int desiredCnt = 0) const
 	{
 		auto now = Time::Now();
-	
-		// TODO: As soon as this works, make waiting timeout 
-		// so the current job doesn't go to the wait list directly
-		if ((*pJobCounter) > desiredCnt)
-		{
-			wait_list.push_back(WaitData(GetCurrentFiber(),
-				pJobCounter, desiredCnt));
-			SwitchToFiber(GetThreadFiber());
-		}
+		unsigned short timeout = 127;
 
-		while ((*pJobCounter) > desiredCnt)
+		auto lock = ScopedSpinLock(waitListSpinLock);
+		while (pJobCounter > desiredCnt)
 		{
-			// TODO: Put *this* job on the wait list until the counter == desiredCnt
-
-			continue;
+			if (--timeout == 0)
+			{
+				timeout = 127;
+				if (pJobCounter > desiredCnt)
+				{
+					wait_list.push_back(std::move(WaitData(GetCurrentFiber(), &pJobCounter, desiredCnt)));
+					SwitchToFiber(GetThreadFiber());
+				}
+			}
 		}
 		auto after = Time::Now();
 		//LOG_JOBS("IDLED %i microseconds.", Time::GetDurationInMicroSec(now, after));
@@ -241,16 +247,56 @@ namespace CCE
 	/// </summary>
 	/// <param name="pJobCounter">A pointer to the counter.</param>
 	/// <param name="desiredCnt">The desired count for contination.</param>
-	void JobManager::WaitForCounterAndFree(Counter* pJobCounter, const int desiredCnt = 0)
+	void JobManager::WaitForCounterAndFree(Counter& pJobCounter, const int desiredCnt = 0) const
 	{
 		auto now = Time::CurrentTick();
-		while ((*pJobCounter) > desiredCnt)
+		unsigned short timeout = 127;
+
+		auto lock = ScopedSpinLock(waitListSpinLock);
+		while (pJobCounter > desiredCnt)
+		{
+			if (--timeout == 0)
+			{
+				timeout = 127;
+				if (pJobCounter > desiredCnt)
+				{
+					wait_list.push_back(WaitData(GetCurrentFiber(),
+						&pJobCounter, desiredCnt));
+					SwitchToFiber(GetThreadFiber());
+				}
+			}
+		}
+
+		auto after = Time::CurrentTick();
+		delete &pJobCounter;
+		//LOG_JOBS("IDLED %i ticks.", after - now);
+	}
+
+	/// <summary>
+	/// Busy waiting and not yielding another job to the thread. Only use this on the highest level of job management (main engine loop).
+	/// </summary>
+	/// <param name="pJobCounter"></param>
+	/// <param name="desiredCnt"></param>
+	void JobManager::BusyWaitForCounter(Counter& pJobCounter, const int desiredCnt) const
+	{
+		while (pJobCounter > desiredCnt)
 		{
 			continue;
 		}
-		auto after = Time::CurrentTick();
-		LOG_JOBS("IDLED %i ticks.", after - now);
-		delete pJobCounter;
+	}
+
+	/// <summary>
+	/// Busy waiting and not yielding another job to the thread. Only use this on the highest level of job management (main engine loop).
+	/// </summary>
+	/// <param name="pJobCounter"></param>
+	/// <param name="desiredCnt"></param>
+	void JobManager::BusyWaitForCounterAndFree(Counter& pJobCounter, const int desiredCnt) const
+	{
+		while (pJobCounter > desiredCnt)
+		{
+			continue;
+		}
+		delete &pJobCounter;
 	}
 
 	/// <summary>
@@ -331,7 +377,7 @@ namespace CCE
 		LPVOID _fiber = ConvertThreadToFiber(NULL);
 
 		{
-			auto lock = ScopedLock(&threadIdMutex);
+			auto lock = ScopedSpinLock(threadIdSpinLock);
 			thread_fibers.insert({ GetThreadId(GetCurrentThread()), _fiber });
 		}		
 
@@ -399,7 +445,7 @@ namespace CCE
 	{
 		DWORD threadId = GetThreadId(GetCurrentThread());
 
-		auto lock = ScopedLock(&threadIdMutex);
+		auto lock = ScopedSpinLock(threadIdSpinLock);
 		return thread_fibers.at(threadId);
 
 		DASSERT(false, "The thread was not found!");
@@ -414,9 +460,10 @@ namespace CCE
 	{
 		// TODO: Change this to intelligent spin lock (GEA: p. 555)
 		// mutex lock for thread safety
-		auto lock = CCE::ScopedLock(&jobQueueMutex);
 
 		JobDeclaration decl = {nullptr, Priority::NORMAL};
+		
+		auto lock = CCE::ScopedSpinLock(jobQueueSpinLock);
 
 		if (!jobQueue_High.empty())
 		{
@@ -452,7 +499,7 @@ namespace CCE
 	/// <returns>True if there are any jobs left. False if all job queues are empty.</returns>
 	bool JobManager::HasNextJob()
 	{
-		auto lock = CCE::ScopedLock(&jobQueueMutex);
+		auto lock = CCE::ScopedSpinLock(jobQueueSpinLock);
 
 		return !jobQueue_High.empty() ||
 			!jobQueue_Normal.empty() ||
@@ -465,9 +512,29 @@ namespace CCE
 	/// <returns>A fiber from the pool. NULL if empty.</returns>
 	LPVOID JobManager::GetFiber()
 	{
+		{
+			 auto lock=  ScopedSpinLock(getFiberSpinLock);
+
+			if (!wait_list.empty())
+			{
+				LPVOID fiber;
+
+				for (int i = 0; i < wait_list.size(); i++)
+				{
+					if (wait_list.at(i).desiredCount <= (*wait_list.at(i).pCounter))
+					{
+						fiber = wait_list.at(i).fiber;
+						wait_list.erase(wait_list.begin() + i);
+						return fiber;
+					}
+				}
+			}
+		}
+		
+
+		auto fiberLock = CCE::ScopedSpinLock(fiberSpinLock);
 		if (fiber_pool.empty()) { return NULL; }
 
-		auto lock = CCE::ScopedLock(&fiberMutex);
 		LPVOID fiber = fiber_pool.front();
 		fiber_pool.pop();
 
@@ -480,7 +547,7 @@ namespace CCE
 	/// <param name="fiber">The fiber to return.</param>
 	void JobManager::ReturnFiber(LPVOID fiber)
 	{
-		auto lock = ScopedLock(&fiberMutex);
+		auto lock = ScopedSpinLock(fiberSpinLock);
 		fiber_pool.push(fiber);
 	}
 
@@ -492,17 +559,27 @@ namespace CCE
 	/// <summary>
 	/// A mutex lock for getting jobInformation;
 	/// </summary>
-	std::mutex JobManager::jobQueueMutex = std::mutex();
+	SpinLock JobManager::jobQueueSpinLock = SpinLock();
 
 	/// <summary>
 	/// A mutex lock for getting jobInformation;
 	/// </summary>
-	std::mutex JobManager::fiberMutex = std::mutex();
+	SpinLock JobManager::fiberSpinLock = SpinLock();
 
 	/// <summary>
 	/// A mutex lock for pushing the thread id and the fiber;
 	/// </summary>
-	std::mutex JobManager::threadIdMutex = std::mutex();
+	SpinLock JobManager::threadIdSpinLock = SpinLock();
+
+	/// <summary>
+	/// A mutex lock for pushing and pulling from/to the waitList;
+	/// </summary>
+	SpinLock JobManager::waitListSpinLock = SpinLock();
+
+	/// <summary>
+	/// A spin lock for getting the next free fiber from the waitlist or the fiber pool;
+	/// </summary>
+	SpinLock JobManager::getFiberSpinLock = SpinLock();
 
 	/// <summary>
 	/// A pointer to the main fiber.
