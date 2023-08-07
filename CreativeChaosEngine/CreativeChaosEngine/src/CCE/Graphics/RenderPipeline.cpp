@@ -1,6 +1,7 @@
 #include "RenderPipeline.h"
 #include "../Analysis/Logger.h"
 #include "../Manager/MemoryManager.h"
+#include "../ClientWindow/ClientWindow.h"
 #include <functional>
 
 namespace CCE::Graphics
@@ -177,6 +178,8 @@ namespace CCE::Graphics
 	/// <param name="col">The color of the background.</param>
 	void RenderPipeline::BeginFrame(const Color col) const
 	{
+		if ( ClientWindow::Instance->minimized) { return; }
+
 		// Clear render view and draw background color
 		p_Context->OMSetRenderTargets(1u, p_renderTarget.GetAddressOf(), p_DSV.Get());
 
@@ -212,6 +215,8 @@ namespace CCE::Graphics
 	/// </summary>
 	void RenderPipeline::EndFrame()
 	{
+		if (ClientWindow::Instance->minimized) { return; }
+	
 		// Render buffer
 		HRESULT pres = pSwapChain->Present(pipelineConfig.activateVSync ? 1 : 0, 0);
 		if (pres == DXGI_ERROR_DEVICE_REMOVED)
@@ -244,6 +249,11 @@ namespace CCE::Graphics
 		p_Context->ClearState();
 		p_Context->Flush();
 		
+		if (wParam == SIZE_MINIMIZED)
+		{
+			return;
+		}
+
 		// resize buffers
 		HRESULT hr = pSwapChain->ResizeBuffers((UINT)1, (UINT)clientRect->right, (UINT)clientRect->bottom, DXGI_FORMAT_UNKNOWN, NULL);
 		if (hr == DXGI_ERROR_DEVICE_REMOVED)

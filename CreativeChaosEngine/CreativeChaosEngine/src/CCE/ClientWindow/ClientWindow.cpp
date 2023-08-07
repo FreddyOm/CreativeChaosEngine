@@ -1,5 +1,6 @@
 #include "ClientWindow.h"
 #include "../CCEditor/CCEditor.h"
+#include "../Manager/RuntimeManager.h"
 #include <functional>
 
 /// <summary>
@@ -18,7 +19,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 /// <param name="hInstance"></param>
 /// <param name="winName"></param>
 /// <returns>A return code that indicates whether or not the window opened correctly.</returns>
-bool ClientWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
+bool CCE::ClientWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 {
 	// Set window name	
 	windowName = winName;
@@ -61,7 +62,7 @@ bool ClientWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 /// <summary>
 /// The window's message pump.
 /// </summary>
-void ClientWindow::UpdateClientWindow(int& _returnVal)
+void CCE::ClientWindow::UpdateClientWindow(int& _returnVal)
 {
 	_returnVal = 0;
 	MSG msg;
@@ -81,7 +82,7 @@ void ClientWindow::UpdateClientWindow(int& _returnVal)
 /// Closes the editor window.
 /// </summary>
 /// <returns>Return code for more detailed info.</returns>
-int ClientWindow::CloseClientWindow()
+int CCE::ClientWindow::CloseClientWindow()
 {
 	windowRunning = false;
 	DASSERT(DestroyWindow(hWnd) != 0, "Failed destroying the editor window!");
@@ -94,7 +95,7 @@ int ClientWindow::CloseClientWindow()
 /// Get the windows width.
 /// </summary>
 /// <returns></returns>
-int ClientWindow::GetClientWindowWidth() const
+int CCE::ClientWindow::GetClientWindowWidth() const
 {
 	RECT rect = {};
 	GetWindowRect(hWnd,&rect);
@@ -106,7 +107,7 @@ int ClientWindow::GetClientWindowWidth() const
 /// Get the windows height.
 /// </summary>
 /// <returns></returns>
-int ClientWindow::GetClientWindowHeight() const
+int CCE::ClientWindow::GetClientWindowHeight() const
 {
 	RECT rect = {};
 	GetWindowRect(hWnd, &rect);
@@ -118,12 +119,12 @@ int ClientWindow::GetClientWindowHeight() const
 /// Get the current editor window's handle.
 /// </summary>
 /// <returns>Window handle.</returns>
-HWND ClientWindow::GetClientWindowHandle() const
+HWND CCE::ClientWindow::GetClientWindowHandle() const
 {
 	return hWnd;
 }
 
-CCE::Graphics::RenderPipeline* ClientWindow::GetRenderPipeline()
+CCE::Graphics::RenderPipeline* CCE::ClientWindow::GetRenderPipeline()
 {
 	return &renderPipeline;
 }
@@ -132,7 +133,7 @@ CCE::Graphics::RenderPipeline* ClientWindow::GetRenderPipeline()
 /// Get the current editor window's class.
 /// </summary>
 /// <returns>Window class.</returns>
-WNDCLASS ClientWindow::GetClientWindowClass() const
+WNDCLASS CCE::ClientWindow::GetClientWindowClass() const
 {
 	return wndClass;
 }
@@ -141,7 +142,7 @@ WNDCLASS ClientWindow::GetClientWindowClass() const
 /// Get the current editor window's name.
 /// </summary>
 /// <returns>Window name.</returns>
-CCE::String ClientWindow::GetClientWindowName() const
+CCE::String CCE::ClientWindow::GetClientWindowName() const
 {
 	return windowName;
 }
@@ -150,7 +151,7 @@ CCE::String ClientWindow::GetClientWindowName() const
 /// Set the current editor window's name.
 /// </summary>
 /// <param name="">Window name.</param>
-void ClientWindow::SetClientWindowName(CCE::String name)
+void CCE::ClientWindow::SetClientWindowName(CCE::String name)
 {
 	windowName = name;
 	SetWindowTextA(GetClientWindowHandle(), windowName.Value());
@@ -166,22 +167,31 @@ using namespace CCE;
 /// <param name="wParam"></param>
 /// <param name="lParam"></param>
 /// <returns>Result code.</returns>
-LRESULT CALLBACK ClientWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK CCE::ClientWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	// TODO: Handle input in one place & make explicit code platform independent
 	// TODO: Create possibility to set values to 0 again
-	InputManager::Instance->HandleWinInput(hwnd, uMsg, wParam, lParam);
+	CCE::InputManager::Instance->HandleWinInput(hwnd, uMsg, wParam, lParam);
 
 	switch (uMsg)
 	{
 	case WM_SIZE:
 	{
+		if (wParam == SIZE_MINIMIZED)
+		{
+			CCE::ClientWindow::Instance->minimized = true;
+		}
+		else if (CCE::ClientWindow::Instance->minimized)
+		{
+			CCE::ClientWindow::Instance->minimized = false;
+		}
+
 		int width = LOWORD(lParam);  // Macro to get the low-order word.
 		int height = HIWORD(lParam); // Macro to get the high-order word.
 
 		// Update D3D11 and GUI
-		if (Graphics::RenderPipeline::Instance->GetDeviceContextPtr() == NULL) { break; }
-		Graphics::RenderPipeline::Instance->OnResize(hwnd, wParam, width, height);
+		if (CCE::Graphics::RenderPipeline::Instance->GetDeviceContextPtr() == NULL) { break; }
+		CCE::Graphics::RenderPipeline::Instance->OnResize(hwnd, wParam, width, height);
 		break;
 	}
 	case WM_CLOSE:
@@ -203,4 +213,4 @@ LRESULT CALLBACK ClientWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 /// <summary>
 /// Pointer to this instance.
 /// </summary>
-ClientWindow* ClientWindow::Instance = nullptr;
+CCE::ClientWindow* CCE::ClientWindow::Instance = nullptr;

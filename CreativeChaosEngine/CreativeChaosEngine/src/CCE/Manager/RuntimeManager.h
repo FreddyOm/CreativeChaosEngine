@@ -12,7 +12,7 @@ namespace CCE
 {
 	struct CCE_API RuntimeManager : public BaseManager
 	{
-
+	public:
 		RuntimeManager() = default;
 		~RuntimeManager() = default;
 
