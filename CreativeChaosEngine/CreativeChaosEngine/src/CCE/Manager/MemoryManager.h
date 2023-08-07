@@ -20,10 +20,7 @@ namespace CCE
 	struct CCE_API MemoryManager :
 		public BaseManager
 	{
-		MemoryManager()
-		{
-
-		}
+		MemoryManager() = default;
 
 		~MemoryManager() = default;
 

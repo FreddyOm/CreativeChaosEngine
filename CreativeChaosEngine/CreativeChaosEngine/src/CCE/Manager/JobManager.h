@@ -4,6 +4,8 @@
 #include "../Memory/PoolAllocator.h"
 #include "../Analysis/Logger.h"
 #include "../Utilities/Events/Delegate.h"
+#include "../Utilities/Concurrency/SpinLock.h"
+#include "../Utilities/Concurrency/ScopedSpinLock.h"
 #include <thread>
 #include <vector>
 #include <queue>
@@ -36,7 +38,7 @@ using namespace Events;
 		void ShutDown() override;
 
 		typedef std::function<JOB_ENTRY_POINT(va_list)> EntryPoint;
-		typedef std::atomic<unsigned int> Counter;
+		typedef std::atomic_int Counter;
 
 		static JobManager* Instance;
 
@@ -51,15 +53,14 @@ using namespace Events;
 		{
 			EntryPoint m_pEntryPoint;				// 64 bytes
 
-			CCE::String m_Description = "Job";		// 8 bytes
 			LPVOID m_pFiber = NULL;					// 8 bytes
-
 			Counter* m_pCounter = NULL;				// 8 bytes
+
 			Priority m_priority = Priority::NORMAL;	// 4 bytes
 			unsigned int mDesiredCount = 0;			// 4 bytes
-
 			va_list m_param = NULL;					// 8 bytes
-			byte padding[20];						// 20 bytes
+
+			byte padding[32];						// 32 bytes
 
 			JobDeclaration()
 			{
@@ -119,6 +120,17 @@ using namespace Events;
 		void BusyWaitForCounterAndFree(Counter& pJobCounter, const int desiredCnt) const;
 		void SpawnWorkerThreads(const short numOfThreads = -1);
 
+	public:
+		int GetFiberPoolSize() const
+		{
+			return fiber_pool.size();
+		}
+
+		int GetUsedFibers() const
+		{
+			return NUM_FIBERS - GetFiberPoolSize();
+		}
+
 	private:
 
 		void SpawnWorkerThreadsWin(const short numOfThreads = -1);
@@ -134,9 +146,11 @@ using namespace Events;
 		static bool HasNextJob();
 		static LPVOID GetThreadFiber();
 
-		static std::mutex jobQueueMutex;
-		static std::mutex fiberMutex;
-		static std::mutex threadIdMutex;
+		static SpinLock jobQueueSpinLock;
+		static SpinLock fiberSpinLock;
+		static SpinLock threadIdSpinLock;
+		static SpinLock waitListSpinLock;
+		static SpinLock getFiberSpinLock;
 
 	private:
 

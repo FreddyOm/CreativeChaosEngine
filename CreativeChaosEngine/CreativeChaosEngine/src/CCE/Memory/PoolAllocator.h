@@ -9,16 +9,13 @@ namespace CCMemory
 	{
 		typedef unsigned char AllocOffset;
 		PoolAllocator(const unsigned int elements, const unsigned long _poolSize)
+			: poolSize(_poolSize), freePoolElements(elements), numPoolElements(elements)
 		{
 			DASSERT(elements >= 0, "The element length must be at least 1!");
 			DASSERT(_poolSize >= 0, "The pool must be at least 1!");
 
 			totalSpace = (intptr_t)(_poolSize * elements);
-			this->poolSize = _poolSize;
 			freeSpace = totalSpace;
-			numPoolElements = elements;
-
-			freePoolElements = elements;
 			
 			// malloc [ poolIndices | pe0 |  pe1 | pe2 | ... | pen ]
 			bottom = (intptr_t) malloc((sizeof(bool) * elements) + totalSpace);

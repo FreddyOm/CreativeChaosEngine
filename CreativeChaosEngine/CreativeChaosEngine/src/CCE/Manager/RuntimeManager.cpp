@@ -44,7 +44,7 @@ namespace CCE
 	void RuntimeManager::PreEditorUpdate(int& rValue)
 	{
 		frameBegin = Time::Now();
-#if 1
+#if 0
 		cnt = 4;
 
 		JobManager::EntryPoint epRPBF = BIND(window.GetRenderPipeline()->BeginFrame, 
@@ -73,7 +73,7 @@ namespace CCE
 
 	void RuntimeManager::PostEditorUpdate()
 	{
-#if 1
+#if 0
 		JobManager::EntryPoint epRPEF = BIND(window.GetRenderPipeline()->EndFrame);
 		JOBDECL declEndFrame = JOBDECL(epRPEF, JobManager::Priority::LOW);
 
@@ -91,6 +91,9 @@ namespace CCE
 		mMemoryManager.UpdateMemoryUsage();
 
 #endif
+		maxUsedFibersPerFrame = mJobManager.GetUsedFibers() > maxUsedFibersPerFrame ?
+			mJobManager.GetUsedFibers() : maxUsedFibersPerFrame;
+		PUSH_EDITOR_INT("fibersPerFrame", maxUsedFibersPerFrame);
 		frameEnd = Time::Now();
 		Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));
 	}
@@ -101,7 +104,9 @@ namespace CCE
 	void RuntimeManager::Initialize() 
 	{
 		mMemoryManager.StartUp();
+#if 0
 		mJobManager.StartUp();
+#endif
 		mProfilingManager.StartUp();
 		mPhysicsManager.StartUp();
 		mInputManager.StartUp();
@@ -119,7 +124,9 @@ namespace CCE
 		mInputManager.ShutDown();
 		mPhysicsManager.ShutDown();
 		mProfilingManager.ShutDown();
+#if 0
 		mJobManager.ShutDown();
+#endif
 		mMemoryManager.ShutDown();
 	}
 }

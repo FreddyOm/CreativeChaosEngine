@@ -2,6 +2,8 @@
 #include <mutex>
 #include "../Core.h"
 #include "../String/String.h"
+#include "../Utilities/Concurrency/ScopedSpinLock.h"
+#include "../Utilities/Concurrency/SpinLock.h"
 
 #ifdef DEBUG
 
@@ -96,7 +98,7 @@ namespace CCE
 		}
 
 	private:
-		static std::mutex logMutex;
+		static SpinLock logSpinLock;
 		static HANDLE hConsole;								// 8 bytes
 		static DWORD logLvLFilterMask; // 0b00000001		// 8 bytes
 	};

@@ -54,13 +54,14 @@
     <ClInclude Include="src\CCE\CCEditor\CCEditor.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Mesh.h" />
     <ClInclude Include="src\CCE\Manager\RuntimeManager.h" />
+    <ClInclude Include="src\CCE\Utilities\Concurrency\ScopedSpinLock.h" />
+    <ClInclude Include="src\CCE\Utilities\Concurrency\SpinLock.h" />
     <ClInclude Include="src\CCE\Utilities\Events\Delegate.h" />
     <ClInclude Include="src\CCE\Input\ds5w.h" />
     <ClInclude Include="src\CCE\Utilities\Color\Color.h" />
     <ClInclude Include="src\CCE\Graphics\RenderPipeline.h" />
     <ClInclude Include="src\CCE\Input\InputDevice.h" />
     <ClInclude Include="src\CCE\Manager\InputManager.h" />
-    <ClInclude Include="src\CCE\Utilities\Concurrency\ScopedLock.h" />
     <ClInclude Include="src\CCE\Utilities\Math\CRCHash.h" />
     <ClInclude Include="src\CCE\Memory\PoolAllocator.h" />
     <ClInclude Include="src\CCE\Memory\Allocator.h" />

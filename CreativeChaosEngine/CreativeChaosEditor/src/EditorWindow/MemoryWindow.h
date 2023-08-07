@@ -7,7 +7,8 @@ class MemoryWindow :
 {
 public:
 
-    MemoryWindow(String winName) : EditorWindow(winName)
+    MemoryWindow(String winName) 
+        : EditorWindow(winName)
     { }
 
     void OnGui();

@@ -29,7 +29,6 @@ namespace CCE
 		void Initialize();
 		void Deinitialize();
 
-
 	private:
 
 		JobManager mJobManager = CCE::JobManager();
@@ -44,5 +43,7 @@ namespace CCE
 		std::chrono::steady_clock::time_point frameEnd;
 	
 		JobManager::Counter cnt;
+
+		unsigned short maxUsedFibersPerFrame = 0;
 	};
 }

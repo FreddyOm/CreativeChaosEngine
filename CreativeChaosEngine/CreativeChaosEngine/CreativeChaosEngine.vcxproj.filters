@@ -182,9 +182,6 @@
     <ClInclude Include="src\CCE\Input\ds5w.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\CCE\Utilities\Concurrency\ScopedLock.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="src\CCE\Utilities\Events\Delegate.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -210,6 +207,12 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\CCE\Manager\RuntimeManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Utilities\Concurrency\SpinLock.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Utilities\Concurrency\ScopedSpinLock.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
