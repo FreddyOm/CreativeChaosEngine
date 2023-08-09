@@ -2,10 +2,43 @@
 
 namespace CCE
 {
-	String IO::ReadText(String filePath, FileMode fileMode)
+
+	/// <summary>
+	/// Checks if a specific file exists or not.
+	/// </summary>
+	/// <param name="filePath">The path to the file.</param>
+	/// <returns></returns>
+	bool File::Exists(String& filePath)
+	{
+		if (FILE* file = fopen(filePath.Value(), "r")) {
+			fclose(file);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	/// <summary>
+	/// Checks if a specific file exists or not.
+	/// </summary>
+	/// <param name="filePath">The file.</param>
+	/// <returns></returns>
+	bool File::Exists(File& file)
+	{
+		if (FILE* _file = fopen(file.GetPath().Value(), "r")) {
+			fclose(_file);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	String IO::ReadText(const String& filePath, const FileMode fileMode)
 	{
 		// TODO: Append the flags according to the fileMode input(s)
-		DASSERT(!String::IsEmpty(filePath), "The filepath must not be empty!");
+		//DASSERT(!String::IsEmpty(filePath), "The filepath must not be empty!");
 		
 		std::string line;
 		char buf[4096];
@@ -34,8 +67,13 @@ namespace CCE
 		return CCE::String(&buf[0]);
 	}
 
+	CCE::String IO::ReadText(const File& file, const FileMode fileMode)
+	{
+		return ReadText(file.GetPath(), fileMode);
+	}
+
 	/*
-	std::shared_ptr<char> IO::ReadBytes(String filePath, FileMode fileMode)
+	std::shared_ptr<char> IO::ReadBytes(String& filePath, FileMode fileMode)
 	{
 		DASSERT(!String::IsEmpty(filePath), "The filepath must not be empty!");
 		std::shared_ptr<char> output = nullptr;
@@ -60,10 +98,9 @@ namespace CCE
 	}
 	*/
 	
-
-	bool IO::WriteText(String filePath, String input, FileMode fileMode)
+	bool IO::WriteText(const String& filePath, const String input, bool createFileIfNonExistent, FileMode fileMode)
 	{
-		DASSERT(!String::IsEmpty(filePath), "The filepath must not be empty!");
+		//DASSERT(!String::IsEmpty(filePath), "The filepath must not be empty!");
 
 		std::ofstream openFileStream(filePath.Value());
 		if (openFileStream.is_open())
@@ -78,9 +115,15 @@ namespace CCE
 		return false;
 	}
 
-	bool IO::WriteBytes(String filePath, char* input, size_t size, FileMode fileMod)
+	bool IO::WriteText(const File& file, const String input, bool createFileIfNonExistent, FileMode fileMode)
 	{
-		DASSERT(!String::IsEmpty(filePath), "The filepath must not be empty!");
+		return WriteText(file.GetPath(), input, createFileIfNonExistent, fileMode);
+	}
+
+	bool IO::WriteBytes(const String& filePath, const char* input, size_t size, bool createFileIfNonExistent, FileMode fileMod)
+	{
+		//DASSERT(!String::IsEmpty(filePath), "The filepath must not be empty!");
 		return false;
 	}
+
 }

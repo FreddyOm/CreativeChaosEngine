@@ -8,8 +8,37 @@
 
 namespace CCE
 {
+#pragma warning(disable : 4996)
+
+	class CCE_API File
+	{
+	public:
+
+		File(String& filePath)
+			: filePath(filePath)
+		{ }
+
+		File()
+			: filePath("")
+		{ }
+
+		static bool Exists(String& filePath);
+		static bool Exists(File& file);
+
+		String GetPath() const
+		{
+			return filePath;
+		}
+
+	private:
+
+		String filePath;
+	};
+
 	class CCE_API IO
 	{
+	public:
+
 		enum class FileMode
 		{
 			DEFAULT = 0x00, // default
@@ -19,12 +48,12 @@ namespace CCE
 			OVERRIDE = 0x10, //std::ios::trunc
 		};
 
-	public:
+		static CCE::String ReadText(const String& filePath, const FileMode fileMode = FileMode::DEFAULT);
+		static CCE::String ReadText(const File& file, const FileMode fileMode = FileMode::DEFAULT);
+		//static std::shared_ptr<char> ReadBytes(String filePath, FileMode fileMode = FileMode::DEFAULT);
 
-		static CCE::String ReadText(CCE::String filePath, FileMode fileMode = FileMode::DEFAULT);
-		//static std::shared_ptr<char> ReadBytes(CCE::String filePath, FileMode fileMode = FileMode::DEFAULT);
-
-		static bool WriteText(CCE::String filePath, CCE::String input, FileMode fileMode = FileMode::DEFAULT);
-		static bool WriteBytes(CCE::String filePath, char* input, size_t size, FileMode fileMod = FileMode::DEFAULT);
+		static bool WriteText(const String& filePath, const String input, bool createFileIfNonExistent = false, FileMode fileMode = FileMode::DEFAULT);
+		static bool WriteText(const File& file, const String input, bool createFileIfNonExistent = false, FileMode fileMode = FileMode::DEFAULT);
+		static bool WriteBytes(const String& filePath, const char* input, size_t size, bool createFileIfNonExistent = false, FileMode fileMod = FileMode::DEFAULT);
 	};
 }
