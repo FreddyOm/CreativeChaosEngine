@@ -8,7 +8,7 @@ namespace CCE
 	/// </summary>
 	/// <param name="filePath">The path to the file.</param>
 	/// <returns></returns>
-	bool File::Exists(String& filePath)
+	bool File::Exists(String filePath)
 	{
 		if (FILE* file = fopen(filePath.Value(), "r")) {
 			fclose(file);
@@ -24,7 +24,7 @@ namespace CCE
 	/// </summary>
 	/// <param name="filePath">The file.</param>
 	/// <returns></returns>
-	bool File::Exists(File& file)
+	bool File::Exists(File file)
 	{
 		if (FILE* _file = fopen(file.GetPath().Value(), "r")) {
 			fclose(_file);
@@ -35,11 +35,23 @@ namespace CCE
 		}
 	}
 
+	File File::Create(String filePath)
+	{
+		if (!File::Exists(filePath))
+		{
+			fopen(filePath.Value(), "w+");
+		}
+
+		return File(filePath);
+	}
+
 	String IO::ReadText(const String& filePath, const FileMode fileMode)
 	{
 		// TODO: Append the flags according to the fileMode input(s)
 		//DASSERT(!String::IsEmpty(filePath), "The filepath must not be empty!");
 		
+		if (!File::Exists(filePath)) { return CCE::String(""); }
+
 		std::string line;
 		char buf[4096];
 		std::ifstream openFileStream(filePath.Value());
@@ -100,7 +112,13 @@ namespace CCE
 	
 	bool IO::WriteText(const String& filePath, const String input, bool createFileIfNonExistent, FileMode fileMode)
 	{
-		//DASSERT(!String::IsEmpty(filePath), "The filepath must not be empty!");
+		if (!File::Exists(filePath))
+		{
+			if (createFileIfNonExistent)
+				File::Create(filePath);
+			else
+				return false;
+		}
 
 		std::ofstream openFileStream(filePath.Value());
 		if (openFileStream.is_open())

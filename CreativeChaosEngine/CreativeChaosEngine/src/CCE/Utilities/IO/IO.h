@@ -14,7 +14,7 @@ namespace CCE
 	{
 	public:
 
-		File(String& filePath)
+		File(String filePath)
 			: filePath(filePath)
 		{ }
 
@@ -22,8 +22,10 @@ namespace CCE
 			: filePath("")
 		{ }
 
-		static bool Exists(String& filePath);
-		static bool Exists(File& file);
+		static bool Exists(String filePath);
+		static bool Exists(File file);
+
+		static File Create(String filePath);
 
 		String GetPath() const
 		{
