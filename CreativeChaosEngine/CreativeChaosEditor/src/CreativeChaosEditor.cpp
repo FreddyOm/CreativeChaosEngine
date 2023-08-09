@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
     LOGC("Starting %s", COLOR_BLUE, EDITOR_VERSION);
     //TODO: Load config file
 
-    RuntimeManager mRuntimeManager = CCE::RuntimeManager();
+    Application mRuntimeManager = CCE::Application();
 
     {
 #ifdef DEBUG
@@ -74,6 +74,11 @@ int main(int argc, char* argv[])
 #endif // Only test when in debug mode
     }
     
+    LOGC(IO::ReadText("D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/Test.txt"), COLOR_GREEN);
+
+    IO::WriteText("D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/Test.txt",
+        "Das ist der Write Test Text!\n Jetzt neu!!");
+
     // ------ STARTUP MANAGER ------
 
     mRuntimeManager.StartUp();

@@ -10,16 +10,16 @@
 
 namespace CCE
 {
-	struct CCE_API RuntimeManager : public BaseManager
+	struct CCE_API Application
 	{
 	public:
-		RuntimeManager() = default;
-		~RuntimeManager() = default;
+		Application() = default;
+		~Application() = default;
 
-		void StartUp() override;
-		void ShutDown() override;
+		void StartUp();
+		void ShutDown();
 
-		static RuntimeManager* Instance;
+		static Application* Instance;
 
 		void PreEditorUpdate(int& rValue);
 		void PostEditorUpdate();
@@ -45,5 +45,6 @@ namespace CCE
 		JobManager::Counter cnt;
 
 		unsigned short maxUsedFibersPerFrame = 0;
+		bool initialized = false;
 	};
 }

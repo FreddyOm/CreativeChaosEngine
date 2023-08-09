@@ -64,14 +64,24 @@ namespace CCE
 	/// Returns the length of the string.
 	/// </summary>
 	/// <returns></returns>
-	size_t String::Length() const
+	size_t String::Length()
 	{
 		if (gStringTable[sId] == NULL)
 		{
 			DERROR(GetLastError());
-			return -1;
+			return 0;
 		}
+
 		return strlen(gStringTable[sId]);
+	}
+
+	/// <summary>
+	/// Checks wheather the string is empty.
+	/// </summary>
+	/// <returns></returns>
+	bool String::IsEmpty(String& str)
+	{
+		return str.Length() == 0;
 	}
 
 	/// <summary>

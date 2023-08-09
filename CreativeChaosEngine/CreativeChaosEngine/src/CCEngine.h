@@ -14,9 +14,14 @@
 
 // -------------------------
 
+// ------ Application -------
+
+#include "CCE/Manager/Application.h"
+
+// -------------------------
+
 // -------- Manager ---------
 
-#include "CCE/Manager/RuntimeManager.h"
 #include "CCE/Manager/ProfilingManager.h"
 #include "CCE/Manager/PhysicsManager.h"
 #include "CCE/Manager/JobManager.h"
@@ -37,6 +42,7 @@
 #include "CCE/Utilities/Math/CCMath.h"
 #include "CCE/Utilities/Math/CRCHash.h"
 #include "CCE/Utilities/Color/Color.h"
+#include "CCE/Utilities/IO/IO.h"
 
 // --------------------------
 

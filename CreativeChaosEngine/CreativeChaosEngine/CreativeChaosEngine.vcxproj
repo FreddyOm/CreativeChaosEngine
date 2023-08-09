@@ -16,11 +16,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CCE\Graphics\Rendering\Drawable.cpp" />
+    <ClCompile Include="src\CCE\Utilities\IO\IO.cpp" />
     <ClCompile Include="src\CCE\Manager\MemoryManager.cpp" />
     <ClCompile Include="src\CCE\ClientWindow\ClientWindow.cpp" />
     <ClCompile Include="src\CCE\CCEditor\CCEditor.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Mesh.cpp" />
-    <ClCompile Include="src\CCE\Manager\RuntimeManager.cpp" />
+    <ClCompile Include="src\CCE\Manager\Application.cpp" />
     <ClCompile Include="src\CCE\Utilities\Events\Delegate.cpp" />
     <ClCompile Include="src\CCE\Utilities\Color\Color.cpp" />
     <ClCompile Include="src\CCE\Graphics\RenderPipeline.cpp" />
@@ -49,11 +50,12 @@
   <ItemGroup>
     <ClInclude Include="src\CCE\Graphics\Rendering\D3D11.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Drawable.h" />
+    <ClInclude Include="src\CCE\Utilities\IO\IO.h" />
     <ClInclude Include="src\CCE\Manager\MemoryManager.h" />
     <ClInclude Include="src\CCE\ClientWindow\ClientWindow.h" />
     <ClInclude Include="src\CCE\CCEditor\CCEditor.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Mesh.h" />
-    <ClInclude Include="src\CCE\Manager\RuntimeManager.h" />
+    <ClInclude Include="src\CCE\Manager\Application.h" />
     <ClInclude Include="src\CCE\Utilities\Concurrency\ScopedSpinLock.h" />
     <ClInclude Include="src\CCE\Utilities\Concurrency\SpinLock.h" />
     <ClInclude Include="src\CCE\Utilities\Events\Delegate.h" />

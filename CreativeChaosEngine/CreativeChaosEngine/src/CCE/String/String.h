@@ -53,8 +53,9 @@ namespace CCE
 			return this->sId != GetStringID(other);
 		}
 
-		size_t Length() const;
+		size_t Length();
 		const char* Value() const;
+		static bool IsEmpty(String& str);
 		static const char* ValueBySID(unsigned long long sId);
 
 	public:

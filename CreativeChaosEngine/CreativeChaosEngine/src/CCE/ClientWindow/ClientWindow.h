@@ -15,6 +15,7 @@ namespace CCE
 	{
 	public:
 		ClientWindow()
+			: windowName("Creative Chaos Engine - v0.1")
 		{
 			REGISTER_LEAK_DETECT;
 			Instance = this;

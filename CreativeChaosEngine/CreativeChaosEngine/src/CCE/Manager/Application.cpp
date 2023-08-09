@@ -1,4 +1,4 @@
-#include "RuntimeManager.h"
+#include "Application.h"
 #include "../Analysis/Debug.h"
 #include "../Analysis/Logger.h"
 #include "../Analysis/Time.h"
@@ -7,11 +7,11 @@
 namespace CCE
 {
 	/// <summary>
-	/// Starts up the runtime manager.
+	/// Starts up the application.
 	/// </summary>
-	void RuntimeManager::StartUp()
+	void Application::StartUp()
 	{
-		DASSERT(Instance == nullptr, "RuntimeManager was instantiated more than once!");
+		DASSERT(Instance == nullptr, "Application was instantiated more than once!");
 
 		Initialize();
 
@@ -20,12 +20,12 @@ namespace CCE
 	}
 
 	/// <summary>
-	/// Shuts down the runtime manager.
+	/// Shuts down the aplication.
 	/// </summary>
-	void RuntimeManager::ShutDown()
+	void Application::ShutDown()
 	{
 		if (!initialized) { return; }
-		LOGC("Shutting down RuntimeManager...", COLOR_BLUE);
+		LOGC("Shutting down Application...", COLOR_BLUE);
 		initialized = false;
 		
 		window.~ClientWindow();
@@ -41,12 +41,12 @@ namespace CCE
 	/// <summary>
 	/// A static reference to this subsystem.
 	/// </summary>
-	RuntimeManager* RuntimeManager::Instance = nullptr;
+	Application* Application::Instance = nullptr;
 
 	/// <summary>
 	/// Run one frame
 	/// </summary>
-	void RuntimeManager::PreEditorUpdate(int& rValue)
+	void Application::PreEditorUpdate(int& rValue)
 	{
 		frameBegin = Time::Now();
 #if 0
@@ -76,7 +76,7 @@ namespace CCE
 #endif
 	}
 
-	void RuntimeManager::PostEditorUpdate()
+	void Application::PostEditorUpdate()
 	{
 #if 0
 		JobManager::EntryPoint epRPEF = BIND(window.GetRenderPipeline()->EndFrame);
@@ -106,7 +106,7 @@ namespace CCE
 	/// <summary>
 	/// Initialize all engine subsystems.
 	/// </summary>
-	void RuntimeManager::Initialize() 
+	void Application::Initialize() 
 	{
 		mMemoryManager.StartUp();
 #if 0
@@ -121,7 +121,7 @@ namespace CCE
 	/// <summary>
 	/// Deinitialize all engine subsystems.
 	/// </summary>
-	void RuntimeManager::Deinitialize()
+	void Application::Deinitialize()
 	{
 		window.~ClientWindow();
 

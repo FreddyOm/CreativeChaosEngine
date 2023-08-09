@@ -1,6 +1,6 @@
 #include "ClientWindow.h"
 #include "../CCEditor/CCEditor.h"
-#include "../Manager/RuntimeManager.h"
+#include "../Manager/Application.h"
 #include <functional>
 
 /// <summary>
