@@ -221,11 +221,22 @@
     <ClInclude Include="src\CCE\Utilities\IO\IO.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Utilities\Serialization\ISerializable.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\sdk\ds5w_x64.dll" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="resources\sdk\ds5w_x64.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CreativeChaosEngineCore.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

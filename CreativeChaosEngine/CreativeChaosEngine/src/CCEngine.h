@@ -43,6 +43,7 @@
 #include "CCE/Utilities/Math/CRCHash.h"
 #include "CCE/Utilities/Color/Color.h"
 #include "CCE/Utilities/IO/IO.h"
+#include "CCE/Utilities/Serialization/ISerializable.h"
 
 // --------------------------
 

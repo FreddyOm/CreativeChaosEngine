@@ -48,6 +48,7 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\D3D11.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Drawable.h" />
     <ClInclude Include="src\CCE\Utilities\IO\IO.h" />
@@ -85,12 +86,16 @@
     <ClInclude Include="src\CCE\String\String.h" />
     <ClInclude Include="src\CCE\Analysis\UnitTesting\UnitTestString.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Vertex.h" />
+    <ClInclude Include="src\CCE\Utilities\Serialization\ISerializable.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\sdk\ds5w_x64.dll" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="resources\sdk\ds5w_x64.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CreativeChaosEngineCore.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -142,6 +147,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Profile|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <ExternalIncludePath>D:\Repositories\json\single_include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
