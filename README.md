@@ -120,3 +120,10 @@ Utilities currently include:
 - [x] Spin locks for use by the job system
 - [x] Custom math functions (e.g. 64 bit CRC-Hash)
 - [ ] Custom event wrapper
+- [x] Basic I/O
+
+# Third Party Software
+
+- [ImGui] (https://github.com/ocornut/imgui)
+- [DS5W SDK] (https://github.com/Ohjurot/DualSense-Windows)
+- [JSON Parser] (https://github.com/nlohmann/json) | Part of JSON Parser is [Google Abseil] (https://opensource.org/license/apache-2-0/)
