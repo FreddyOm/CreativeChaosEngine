@@ -74,10 +74,6 @@ int main(int argc, char* argv[])
 #endif // Only test when in debug mode
     }
     
-    LOGC(IO::ReadText("D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/Test.txt"), COLOR_GREEN);
-
-    IO::WriteText("D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/Log.txt",
-        "Das ist der Write Test Text!\n Jetzt neu!!", true);
 
     // ------ STARTUP MANAGER ------
 

@@ -5,6 +5,7 @@
 #include "../Manager/JobManager.h"
 #include "../Manager/ProfilingManager.h"
 #include "Rendering/D3D11.h"
+#include "../Utilities/Serialization/ISerializable.h"
 
 namespace CCE::Graphics
 {
@@ -22,11 +23,85 @@ namespace CCE::Graphics
 			FULLSCREEN = 2,
 		};
 
-		struct RenderPipelineConfig
+		struct RenderPipelineConfig : ISerializable<RenderPipelineConfig>
 		{
 			bool activateVSync = true;
-			CCE::Color backgroundColor = CCE::Color("#BCC5CE");
+			Color backgroundColor = Color("#BCC5CE");
 			WindowMode windowMode = WindowMode::WINDOW;
+
+			/// <summary>
+			/// Serialize an object to a serialize string.
+			/// </summary>
+			/// <param name="prettyPrint"></param>
+			/// <returns></returns>
+			std::string SerializeToString(bool prettyPrint = false) override
+			{
+				JSON data;
+
+				data["activateVSync"] = activateVSync;
+				data["backgroundColor"] = { 
+					backgroundColor.rgba[0], 
+					backgroundColor.rgba[1], 
+					backgroundColor.rgba[2], 
+					backgroundColor.rgba[3] };
+				data["windowMode"] = (unsigned int)windowMode;
+
+				std::string out = prettyPrint ? data.dump(4).c_str() : data.dump().c_str();
+
+				return out.c_str();
+			}
+
+			std::vector<uint8_t>SerializeToBinary() override
+			{
+				JSON data;
+
+				data["activateVSync"] = activateVSync;
+				data["backgroundColor"] = {
+					backgroundColor.rgba[0],
+					backgroundColor.rgba[1],
+					backgroundColor.rgba[2],
+					backgroundColor.rgba[3] };
+				data["windowMode"] = (unsigned int)windowMode;
+
+				return JSON::to_bson(data);
+			}
+
+			/// <summary>
+			/// Deserialize and set the values from a serialized string.
+			/// </summary>
+			/// <param name="serializeString"></param>
+			void DeserializeFromString(std::string serializeString) override
+			{
+				JSON data = JSON::parse(serializeString);
+				//DERROR(data != NULL, "An error occurred while deserializing the object \"%s\".", typeid(*this).name());
+
+				activateVSync = data["activateVSync"];
+				backgroundColor = Color(
+					(float)data["backgroundColor"][0], 
+					(float)data["backgroundColor"][1],
+					(float)data["backgroundColor"][2],
+					(float)data["backgroundColor"][3]);
+				windowMode = data["windowMode"];
+			}
+
+			/// <summary>
+			/// Deserialize and set the values from a serialized binary.
+			/// </summary>
+			/// <param name="serializeData"></param>
+			void DeserializeFromBinary(std::vector<uint8_t> serializeData) override
+			{
+				JSON data = JSON::from_bson(serializeData);
+
+				DERROR(data != NULL, "An error occurred while deserializing the object \"%s\".", typeid(*this).name());
+
+				activateVSync = data["activateVSync"];
+				backgroundColor = Color(
+					(float)data["backgroundColor"][0],
+					(float)data["backgroundColor"][1],
+					(float)data["backgroundColor"][2],
+					(float)data["backgroundColor"][3]);
+				windowMode = data["windowMode"];
+			}
 		};
 		
 		RenderPipeline()

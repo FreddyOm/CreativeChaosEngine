@@ -7,6 +7,7 @@
 #include "ProfilingManager.h"
 #include "JobManager.h"
 #include "../ClientWindow/ClientWindow.h"
+#include "../Utilities/IO/IO.h"
 
 namespace CCE
 {
@@ -43,6 +44,8 @@ namespace CCE
 		std::chrono::steady_clock::time_point frameEnd;
 	
 		JobManager::Counter cnt;
+
+		File engineConfig = File("C:/users/fredd/Desktop/cce.conf");
 
 		unsigned short maxUsedFibersPerFrame = 0;
 		bool initialized = false;

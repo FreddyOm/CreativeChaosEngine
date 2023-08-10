@@ -3,7 +3,6 @@
 #include "../Analysis/Logger.h"
 #include "../Analysis/Time.h"
 
-
 namespace CCE
 {
 	/// <summary>
@@ -15,6 +14,13 @@ namespace CCE
 
 		Initialize();
 
+		// Load engine config
+		if (File::Exists(engineConfig))
+		{
+			std::string config = IO::ReadText(engineConfig).Value();
+			window.GetRenderPipeline()->GetRenderPipelineConfig()->DeserializeFromString(config);
+		}
+
 		initialized = true;
 		LOGC("RuntimeManager initialized!", COLOR_BLUE);
 	}
@@ -24,17 +30,19 @@ namespace CCE
 	/// </summary>
 	void Application::ShutDown()
 	{
-		if (!initialized) { return; }
 		LOGC("Shutting down Application...", COLOR_BLUE);
+		if (!initialized) { return; }
 		initialized = false;
-		
+
+		// Save engine config
+		IO::WriteText(engineConfig,
+			window.GetRenderPipeline()->GetRenderPipelineConfig()->SerializeToString(true).c_str(), true);
+
 		window.~ClientWindow();
 		
 		// Show leak info
 		PRINT_LEAK_INFO;
-
 		Deinitialize();
-		
 		Instance = nullptr;
 	}
 

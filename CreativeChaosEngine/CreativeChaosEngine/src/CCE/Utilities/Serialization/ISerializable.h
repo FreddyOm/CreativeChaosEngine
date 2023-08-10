@@ -2,6 +2,8 @@
 #include "../../Core.h"
 #include "../../String/String.h"
 #include "D:\Repositories\json\single_include\nlohmann\json.hpp"
+#include <vector>
+#include <string>
 
 namespace CCE
 {
@@ -14,23 +16,33 @@ namespace CCE
 	{
 	public:
 
+#define JSON nlohmann::json
+
+		//TODO: Change std::string to CCE::String -> Fix problem with parsed string to CCE::String
+
 		/// <summary>
 		/// Serializes the object into a string format.
 		/// </summary>
 		/// <param name="prettyPrint">Wether or not to indent the strings with newlines.</param>
 		/// <returns>The serialized string</returns>
-		virtual String SerializeString(bool prettyPrint = false) = 0;
+		virtual std::string SerializeToString(bool prettyPrint = false) = 0;
 
 		/// <summary>
 		/// Serializes the object into a binary format.
 		/// </summary>
-		virtual char* SerializeBinary() = 0;
+		virtual std::vector<uint8_t> SerializeToBinary() = 0;
 
 		/// <summary>
-		/// Deserializes a binary or string object into the respective object.
+		/// Deserializes a string object into the respective object.
 		/// </summary>
 		/// <param name="serializeString">The string that should be deserialized into the object.</param>
-		/// <returns>The deserialized object</returns>
-		virtual T Deserialize(String serializeString) = 0;
+		virtual void DeserializeFromString(std::string serializeString) = 0;
+
+		/// <summary>
+		/// Deserializes a binary object into the respective object.
+		/// </summary>
+		/// <param name="serializeData">The binary that should be deserialized into the object.</param>
+		virtual void DeserializeFromBinary(std::vector<uint8_t> serializeData) = 0;
+
 	};
 }
