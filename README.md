@@ -124,6 +124,6 @@ Utilities currently include:
 
 # Third Party Software
 
-- (ImGui) [https://github.com/ocornut/imgui]
-- (DS5W SDK) [https://github.com/Ohjurot/DualSense-Windows]
-- (JSON Parser) [https://github.com/nlohmann/json] | Part of JSON Parser is (Google Abseil) [https://opensource.org/license/apache-2-0/]
+- [ImGui](https://github.com/ocornut/imgui)
+- [DS5W SDK](https://github.com/Ohjurot/DualSense-Windows)
+- [JSON Parser](https://github.com/nlohmann/json) | Part of JSON Parser is [Google Abseil](https://opensource.org/license/apache-2-0/)
