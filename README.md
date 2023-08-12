@@ -26,8 +26,8 @@ Some custom game engine subsystems
 ## TODOs
 - [x] Implement a central engine loop that runs all the engine calls (as jobs)
 - [x] Implement Counters so they move the current job to the wait list
-- [ ] Implement file system
-- [ ] Save an load engine config
+- [x] Implement file system
+- [x] Save an load engine config
 - [ ] Make sure the job system only loads and initializes if multithreading is explicitly requested
 - [ ] Refactor JobDeclaration and EntryPoint to be more easily used
 - [ ] Add an interface to be able to inject resources into the engine loop (e.g. query assets to renderpipeline) 
@@ -121,6 +121,7 @@ Utilities currently include:
 - [x] Custom math functions (e.g. 64 bit CRC-Hash)
 - [ ] Custom event wrapper
 - [x] Basic I/O
+- [x] Basic JSON serialization interface (binary WIP)
 
 # Third Party Software
 
