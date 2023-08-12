@@ -17,7 +17,7 @@ namespace CCE::Graphics
 	void RenderPipeline::InitializeD3D11(const HWND hWnd, const int width, const int height)
 	{
 		// TODO: Load from config file
-		pipelineConfig.activateVSync = false;
+		pipelineConfig.VSync = false;
 
 		// Create swap chain description
 		CreateSwapChainDesc(hWnd);
@@ -218,7 +218,7 @@ namespace CCE::Graphics
 		if (ClientWindow::Instance->minimized) { return; }
 	
 		// Render buffer
-		HRESULT pres = pSwapChain->Present(pipelineConfig.activateVSync ? 1 : 0, 0);
+		HRESULT pres = pSwapChain->Present(pipelineConfig.VSync ? 1 : 0, 0);
 		if (pres == DXGI_ERROR_DEVICE_REMOVED)
 		{
 			DERROR(p_device->GetDeviceRemovedReason());

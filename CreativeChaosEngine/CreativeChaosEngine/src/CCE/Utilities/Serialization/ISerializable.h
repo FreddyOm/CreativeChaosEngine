@@ -7,6 +7,9 @@
 
 namespace CCE
 {
+#define SERIALIZE_CLASS_MEMBER(varName) data[typeid(*this).name()][#varName] = varName
+#define DESERIALIZE_CLASS_MEMBER(varName) varName = data[typeid(*this).name()][#varName]
+
 	/// <summary>
 	/// An interface class for (de-) serializing class data.
 	/// </summary>

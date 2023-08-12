@@ -25,7 +25,7 @@ namespace CCE::Graphics
 
 		struct RenderPipelineConfig : ISerializable<RenderPipelineConfig>
 		{
-			bool activateVSync = true;
+			bool VSync = true;
 			Color backgroundColor = Color("#BCC5CE");
 			WindowMode windowMode = WindowMode::WINDOW;
 
@@ -38,13 +38,13 @@ namespace CCE::Graphics
 			{
 				JSON data;
 
-				data["activateVSync"] = activateVSync;
-				data["backgroundColor"] = { 
+				SERIALIZE_CLASS_MEMBER(VSync);
+				data[typeid(*this).name()]["backgroundColor"] = {
 					backgroundColor.rgba[0], 
 					backgroundColor.rgba[1], 
 					backgroundColor.rgba[2], 
 					backgroundColor.rgba[3] };
-				data["windowMode"] = (unsigned int)windowMode;
+				SERIALIZE_CLASS_MEMBER(windowMode);
 
 				std::string out = prettyPrint ? data.dump(4).c_str() : data.dump().c_str();
 				//String out2 = String(_strdup(data.dump(4).c_str()));	// Does this introduce an new invalid string to the string table?
@@ -55,13 +55,13 @@ namespace CCE::Graphics
 			{
 				JSON data;
 
-				data["activateVSync"] = activateVSync;
-				data["backgroundColor"] = {
+				SERIALIZE_CLASS_MEMBER(VSync);
+				data[typeid(*this).name()]["backgroundColor"] = {
 					backgroundColor.rgba[0],
 					backgroundColor.rgba[1],
 					backgroundColor.rgba[2],
 					backgroundColor.rgba[3] };
-				data["windowMode"] = (unsigned int)windowMode;
+				SERIALIZE_CLASS_MEMBER(windowMode);
 
 				return JSON::to_bson(data);
 			}
@@ -75,13 +75,13 @@ namespace CCE::Graphics
 				JSON data = JSON::parse(serializeString);
 				//DERROR(data != NULL, "An error occurred while deserializing the object \"%s\".", typeid(*this).name());
 
-				activateVSync = data["activateVSync"];
+				DESERIALIZE_CLASS_MEMBER(VSync);
 				backgroundColor = Color(
-					(float)data["backgroundColor"][0], 
-					(float)data["backgroundColor"][1],
-					(float)data["backgroundColor"][2],
-					(float)data["backgroundColor"][3]);
-				windowMode = data["windowMode"];
+					(float)data[typeid(*this).name()]["backgroundColor"][0],
+					(float)data[typeid(*this).name()]["backgroundColor"][1],
+					(float)data[typeid(*this).name()]["backgroundColor"][2],
+					(float)data[typeid(*this).name()]["backgroundColor"][3]);
+				DESERIALIZE_CLASS_MEMBER(windowMode);
 			}
 
 			/// <summary>
@@ -94,13 +94,13 @@ namespace CCE::Graphics
 
 				DERROR(data != NULL, "An error occurred while deserializing the object \"%s\".", typeid(*this).name());
 
-				activateVSync = data["activateVSync"];
+				DESERIALIZE_CLASS_MEMBER(VSync);
 				backgroundColor = Color(
-					(float)data["backgroundColor"][0],
-					(float)data["backgroundColor"][1],
-					(float)data["backgroundColor"][2],
-					(float)data["backgroundColor"][3]);
-				windowMode = data["windowMode"];
+					(float)data[typeid(*this).name()]["backgroundColor"][0],
+					(float)data[typeid(*this).name()]["backgroundColor"][1],
+					(float)data[typeid(*this).name()]["backgroundColor"][2],
+					(float)data[typeid(*this).name()]["backgroundColor"][3]);
+				DESERIALIZE_CLASS_MEMBER(windowMode);
 			}
 		};
 		

@@ -11,5 +11,5 @@ void RenderingDebugger::OnGui()
 	ImGui::Text("Avg. Frametime (ms): %f", GET_EDITOR_FLOAT("avgFrameTime"));
 
 	ImGui::Spacing();
-	ImGui::Checkbox("VSync", &RenderPipeline::Instance->GetRenderPipelineConfig()->activateVSync);
+	ImGui::Checkbox("VSync", &RenderPipeline::Instance->GetRenderPipelineConfig()->VSync);
 }

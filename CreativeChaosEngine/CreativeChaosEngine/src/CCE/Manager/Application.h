@@ -58,4 +58,40 @@ namespace CCE
 		unsigned short maxUsedFibersPerFrame = 0;
 		bool initialized = false;
 	};
+
+	struct CCE_API EngineConfig : private ISerializable<EngineConfig>
+	{
+	public:
+		bool multithreaded = false;
+
+
+		std::string SerializeToString(bool prettyPrint = false) override
+		{
+			JSON data;
+
+			SERIALIZE_CLASS_MEMBER(multithreaded);
+			std::string out = prettyPrint ? data.dump(4).c_str() : data.dump().c_str();
+			return out.c_str();
+		}
+
+		std::vector<uint8_t> SerializeToBinary() override
+		{
+			JSON data;
+
+			SERIALIZE_CLASS_MEMBER(multithreaded);
+			return JSON::to_bson(data);
+		}
+
+		void DeserializeFromString(std::string serializeString) override
+		{
+			JSON data = JSON::parse(serializeString);
+			DESERIALIZE_CLASS_MEMBER(multithreaded);
+		}
+
+		void DeserializeFromBinary(std::vector<uint8_t> serializeData) override
+		{
+			JSON data = JSON::from_bson(serializeData);			
+			DESERIALIZE_CLASS_MEMBER(multithreaded);
+		}
+	};
 }
