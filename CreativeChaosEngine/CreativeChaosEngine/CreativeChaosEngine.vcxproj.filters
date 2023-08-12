@@ -227,6 +227,9 @@
     <ClInclude Include="src\CCE\Utilities\Serialization\ISerializable.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="src\CCE\Utilities\Serialization\json.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\sdk\ds5w_x64.dll" />

@@ -22,6 +22,8 @@ namespace CCE
 			: filePath("")
 		{ }
 
+		~File() = default;
+
 		static bool Exists(String filePath);
 		static bool Exists(File file);
 
@@ -35,6 +37,37 @@ namespace CCE
 	private:
 
 		String filePath;
+	};
+
+	class CCE_API Directory
+	{
+	public:
+
+		Directory(String dirPath)
+			: dirPath(dirPath)
+		{ }
+
+		Directory()
+			: dirPath("")
+		{ }
+
+		~Directory() = default;
+
+		static bool Exists(String dirPath);
+		static bool Exists(Directory directory);
+		static bool IsEmpty(String dirPath);
+		static bool IsEmpty(Directory directory);
+
+		static Directory Create(String dirPath);
+
+		String GetPath() const
+		{
+			return dirPath;
+		}
+
+	private:
+
+		String dirPath;
 	};
 
 	class CCE_API IO

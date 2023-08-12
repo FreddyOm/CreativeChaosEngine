@@ -87,6 +87,7 @@
     <ClInclude Include="src\CCE\Analysis\UnitTesting\UnitTestString.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Vertex.h" />
     <ClInclude Include="src\CCE\Utilities\Serialization\ISerializable.h" />
+    <ClInclude Include="src\CCE\Utilities\Serialization\json.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\sdk\ds5w_x64.dll" />

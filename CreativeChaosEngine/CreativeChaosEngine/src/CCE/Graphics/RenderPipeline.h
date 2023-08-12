@@ -47,7 +47,7 @@ namespace CCE::Graphics
 				data["windowMode"] = (unsigned int)windowMode;
 
 				std::string out = prettyPrint ? data.dump(4).c_str() : data.dump().c_str();
-
+				//String out2 = String(_strdup(data.dump(4).c_str()));	// Does this introduce an new invalid string to the string table?
 				return out.c_str();
 			}
 

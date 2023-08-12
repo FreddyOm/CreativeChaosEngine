@@ -1,7 +1,7 @@
 #pragma once
 #include "../../Core.h"
 #include "../../String/String.h"
-#include "D:\Repositories\json\single_include\nlohmann\json.hpp"
+#include "json.hpp"
 #include <vector>
 #include <string>
 

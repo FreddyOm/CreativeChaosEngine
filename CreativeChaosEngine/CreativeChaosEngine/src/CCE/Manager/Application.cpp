@@ -35,8 +35,9 @@ namespace CCE
 		initialized = false;
 
 		// Save engine config
-		IO::WriteText(engineConfig,
-			window.GetRenderPipeline()->GetRenderPipelineConfig()->SerializeToString(true).c_str(), true);
+		DASSERT(IO::WriteText(engineConfig,
+			window.GetRenderPipeline()->GetRenderPipelineConfig()->SerializeToString(true).c_str(), true),
+			"Failed writing engine config to path \"%s\".", engineConfig.GetPath().Value());
 
 		window.~ClientWindow();
 		
@@ -116,6 +117,17 @@ namespace CCE
 	/// </summary>
 	void Application::Initialize() 
 	{
+#ifdef CCE_PLATFORM_WINDOWS
+
+		persistentDataPath = GetPersistentDataPath();
+
+		// Set engine config file location to persistenDataPath + engine config name and suffix
+		std::string configFilePath = persistentDataPath.GetPath().Value(); 
+		configFilePath += "/config.cce";
+		engineConfig = File(strdup(configFilePath.c_str()));
+#elif 
+#error CCE is currently only supported for Windows
+#endif
 		mMemoryManager.StartUp();
 #if 0
 		mJobManager.StartUp();
@@ -139,5 +151,34 @@ namespace CCE
 		mJobManager.ShutDown();
 #endif
 		mMemoryManager.ShutDown();
+	}
+
+	Directory Application::GetPersistentDataPath() const
+	{
+		std::string persDataPath;
+		Directory persDir;
+#ifdef CCE_PLATFORM_WINDOWS
+
+		CHAR szPath[MAX_PATH];
+		if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_COMMON_APPDATA, NULL, 0, szPath)))
+		{
+			persDataPath =
+				std::string(szPath).append("/").append(companyName.Value()).c_str();
+		}
+		else
+		{
+			DERROR("Couldn't read the persistent data path!");
+		}
+#elif 
+#error CCE is currently only supported for Windows
+#endif
+
+		persDir = Directory(strdup(persDataPath.c_str()));
+		if (!Directory::Exists(persDir))
+		{
+			Directory::Create(persDir.GetPath());
+		}
+
+		return persDir;
 	}
 }

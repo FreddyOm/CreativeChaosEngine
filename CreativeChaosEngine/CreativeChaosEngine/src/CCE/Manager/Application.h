@@ -25,10 +25,18 @@ namespace CCE
 		void PreEditorUpdate(int& rValue);
 		void PostEditorUpdate();
 
+	public:
+
+		String companyName = "CreativeChaosEngine";
+		Directory persistentDataPath;
+		//File applicationDataPath;
+		//...
+
 	private:
 
 		void Initialize();
 		void Deinitialize();
+		Directory GetPersistentDataPath() const;
 
 	private:
 
@@ -45,7 +53,7 @@ namespace CCE
 	
 		JobManager::Counter cnt;
 
-		File engineConfig = File("C:/users/fredd/Desktop/cce.conf");
+		File engineConfig;
 
 		unsigned short maxUsedFibersPerFrame = 0;
 		bool initialized = false;
