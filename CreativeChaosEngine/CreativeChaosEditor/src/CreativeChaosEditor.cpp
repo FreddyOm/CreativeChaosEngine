@@ -2,10 +2,12 @@
 #include "CCE/ClientWindow/ClientWindow.h"
 #include <functional>
 
-#include "EditorWindow/Base/EditorWindow.h"
-#include "EditorWindow/RenderingDebugger.h"
-#include "EditorWindow/MemoryWindow.h"
-#include "EditorWindow/JobWindow.h"
+#include "GUIDrawables/Base/IGUIDrawable.h"
+#include "GUIDrawables/Base/EditorWindow.h"
+#include "GUIDrawables/MenuBar.h"
+#include "GUIDrawables/RenderingDebugger.h"
+#include "GUIDrawables/MemoryWindow.h"
+#include "GUIDrawables/JobWindow.h"
 
 // -------- Testing ---------
 
@@ -84,6 +86,7 @@ int main(int argc, char* argv[])
 
     {
         // EditorWindows
+        MenuBar menuBar = MenuBar();
         RenderingDebugger rendEditorWin = RenderingDebugger("Rendering");
         MemoryWindow memEditorWin = MemoryWindow("Memory");
 #if MULTITHREADED
@@ -98,25 +101,22 @@ int main(int argc, char* argv[])
         // ----------------------------------------
 
         // TODO: Miltithread the editor loop as well
-
         while (rValue != (int)WM_QUIT)
         {
             mRuntimeManager.PreEditorUpdate(rValue);
 
-            EditorWindow::PreGUIUpdate();
+            IGUIDrawable::PreGUIUpdate();
 
-            for (int i = 0; i < EditorWindow::GetEditorWindowPtrs().size(); i++)
+            for (int i = 0; i < IGUIDrawable::GetGUIDrawablePtrs().size(); i++)
             {
-                EditorWindow::GetEditorWindowPtrs().at(i)->UpdateWindow();
+                IGUIDrawable::GetGUIDrawablePtrs().at(i)->UpdateDrawable();
             }
 
-            EditorWindow::PostGUIUpdate();
+            IGUIDrawable::PostGUIUpdate();
            
             mRuntimeManager.PostEditorUpdate();
         }
     }
-
-    // HOW TO HANDLE DIFFERENT RETURN TYPES? 
 
     // ------ SHUTDOWN MANAGER ------
 

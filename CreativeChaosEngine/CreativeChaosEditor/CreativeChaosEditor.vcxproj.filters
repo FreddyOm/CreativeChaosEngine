@@ -39,16 +39,22 @@
     <ClCompile Include="src\imgui\imgui_widgets.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\EditorWindow\Base\EditorWindow.cpp">
+    <ClCompile Include="src\GUIDrawables\Base\EditorWindow.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\EditorWindow\RenderingDebugger.cpp">
+    <ClCompile Include="src\GUIDrawables\RenderingDebugger.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\EditorWindow\MemoryWindow.cpp">
+    <ClCompile Include="src\GUIDrawables\MemoryWindow.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\EditorWindow\JobWindow.cpp">
+    <ClCompile Include="src\GUIDrawables\JobWindow.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUIDrawables\MenuBar.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUIDrawables\Base\IGUIDrawable.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -80,16 +86,22 @@
     <ClInclude Include="src\imgui\imstb_truetype.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\EditorWindow\Base\EditorWindow.h">
+    <ClInclude Include="src\GUIDrawables\Base\EditorWindow.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\EditorWindow\RenderingDebugger.h">
+    <ClInclude Include="src\GUIDrawables\RenderingDebugger.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\EditorWindow\MemoryWindow.h">
+    <ClInclude Include="src\GUIDrawables\MemoryWindow.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\EditorWindow\JobWindow.h">
+    <ClInclude Include="src\GUIDrawables\JobWindow.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUIDrawables\MenuBar.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUIDrawables\Base\IGUIDrawable.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

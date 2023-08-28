@@ -14,12 +14,18 @@ namespace CCE
 
 		Initialize();
 
+
+#ifdef CCE_PLATFORM_WINDOWS
 		// Load engine config
 		if (File::Exists(engineConfig))
 		{
 			std::string config = IO::ReadText(engineConfig).Value();
 			window.GetRenderPipeline()->GetRenderPipelineConfig()->DeserializeFromString(config);
 		}
+#else
+#error CCE is currently only supported for Windows
+#endif
+
 
 		initialized = true;
 		LOGC("RuntimeManager initialized!", COLOR_BLUE);
@@ -58,7 +64,7 @@ namespace CCE
 	void Application::PreEditorUpdate(int& rValue)
 	{
 		frameBegin = Time::Now();
-#if 0
+#if MULTITHREADED
 		cnt = 4;
 
 		JobManager::EntryPoint epRPBF = BIND(window.GetRenderPipeline()->BeginFrame, 
@@ -87,7 +93,7 @@ namespace CCE
 
 	void Application::PostEditorUpdate()
 	{
-#if 0
+#if MULTITHREADED
 		JobManager::EntryPoint epRPEF = BIND(window.GetRenderPipeline()->EndFrame);
 		JOBDECL declEndFrame = JOBDECL(epRPEF, JobManager::Priority::LOW);
 
@@ -125,11 +131,11 @@ namespace CCE
 		std::string configFilePath = persistentDataPath.GetPath().Value(); 
 		configFilePath += "/config.cce";
 		engineConfig = File(strdup(configFilePath.c_str()));
-#elif 
+#else
 #error CCE is currently only supported for Windows
 #endif
 		mMemoryManager.StartUp();
-#if 0
+#if MULTITHREADED
 		mJobManager.StartUp();
 #endif
 		mPhysicsManager.StartUp();
@@ -147,7 +153,7 @@ namespace CCE
 
 		mInputManager.ShutDown();
 		mPhysicsManager.ShutDown();
-#if 0
+#if MULTITHREADED
 		mJobManager.ShutDown();
 #endif
 		mMemoryManager.ShutDown();
@@ -169,7 +175,7 @@ namespace CCE
 		{
 			DERROR("Couldn't read the persistent data path!");
 		}
-#elif 
+#else
 #error CCE is currently only supported for Windows
 #endif
 

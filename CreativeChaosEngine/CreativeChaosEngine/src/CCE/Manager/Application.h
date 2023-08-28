@@ -14,6 +14,7 @@ namespace CCE
 	struct CCE_API Application
 	{
 	public:
+
 		Application() = default;
 		~Application() = default;
 

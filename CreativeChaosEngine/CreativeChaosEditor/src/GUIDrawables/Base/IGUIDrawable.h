@@ -2,7 +2,6 @@
 #include <vector>
 #include "CCE/Core.h"
 #include "CCE/String/String.h"
-#include "CCE/CCEditor/CCEditor.h"
 #include "../../imgui/imgui.h"
 #include "../../imgui/imgui_impl_dx11.h"
 #include "../../imgui/imgui_impl_win32.h"
@@ -10,30 +9,21 @@
 
 using namespace CCE;
 
-class EditorWindow
+struct IGUIDrawable
 {
 public:
-
-	/// <summary>
-	/// Constructor of the editor window.
-	/// </summary>
-	/// <param name="windowName">The name of the window.</param>
-	EditorWindow(String winName) : 
-		windowName(winName)
+	IGUIDrawable()
 	{
 		if (!initialized)
 		{
 			initialized = true;
 			InitializeGUI();
 		}
-		
-		editorWindows.push_back(this);
+
+		guiDrawables.push_back(this);
 	}
 
-	/// <summary>
-	/// The destructor of the editor window.
-	/// </summary>
-	~EditorWindow()
+	~IGUIDrawable()
 	{
 		UnInitializeGUI();
 	}
@@ -43,23 +33,24 @@ public:
 	/// </summary>
 	virtual void OnGui() = 0;
 
+	/// <summary>
+	/// Method that specifies how the OnGui is called.
+	/// </summary>
+	virtual void UpdateDrawable() = 0;
 
 	static void PreGUIUpdate();
 	static void PostGUIUpdate();
-	static std::vector<EditorWindow*> GetEditorWindowPtrs();
+	static std::vector<IGUIDrawable*> GetGUIDrawablePtrs();
 
-	void UpdateWindow();
-	void UnInitializeGUI() const;
 
 private:
+	void UnInitializeGUI() const;
 	void InitializeGUI() const;
 
 protected:
-	String windowName;
+	static std::atomic<bool> initialized;
 
 private:
-	static std::vector<EditorWindow*> editorWindows;
-	static std::atomic<bool> initialized;
-	bool isOpen = true;
+	static std::vector<IGUIDrawable*> guiDrawables;
 	static ImDrawData* p_drawData;
 };

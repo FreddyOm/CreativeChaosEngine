@@ -12,4 +12,8 @@ void RenderingDebugger::OnGui()
 
 	ImGui::Spacing();
 	ImGui::Checkbox("VSync", &RenderPipeline::Instance->GetRenderPipelineConfig()->VSync);
+	ImGui::Spacing();
+
+	ImGui::ColorPicker4("Background Color", RenderPipeline::Instance->GetRenderPipelineConfig()->backgroundColor.rgba);
+
 }

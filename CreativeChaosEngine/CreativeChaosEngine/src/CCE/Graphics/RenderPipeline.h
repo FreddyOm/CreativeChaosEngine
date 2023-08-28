@@ -26,7 +26,7 @@ namespace CCE::Graphics
 		struct RenderPipelineConfig : ISerializable<RenderPipelineConfig>
 		{
 			bool VSync = true;
-			Color backgroundColor = Color("#BCC5CE");
+			Color backgroundColor = Color("#DEEFE7"); //#BCC5CE
 			WindowMode windowMode = WindowMode::WINDOW;
 
 			/// <summary>
