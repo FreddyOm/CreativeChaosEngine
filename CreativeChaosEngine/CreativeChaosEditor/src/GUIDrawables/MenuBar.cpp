@@ -15,6 +15,8 @@ void MenuBar::OnGui()
             if (ImGui::MenuItem("Open...", "CTRL+O")) {}
             ImGui::Separator();
             if (ImGui::MenuItem("Save", "CTRL+S")) {}
+            ImGui::Separator();
+            if (ImGui::MenuItem("Quit", "ALT+F4")) {}
 
             ImGui::EndMenu();
         }

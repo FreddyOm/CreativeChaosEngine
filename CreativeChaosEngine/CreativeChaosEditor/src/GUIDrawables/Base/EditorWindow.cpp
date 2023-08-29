@@ -7,8 +7,8 @@ void EditorWindow::UpdateDrawable()
 {
 	if (initialized)
 	{
-		isOpen = ImGui::BeginChild(windowName.Value());
+		isOpen = ImGui::Begin(windowName.Value());
 		OnGui();
-		ImGui::EndChild();
+		ImGui::End();
 	}
 }

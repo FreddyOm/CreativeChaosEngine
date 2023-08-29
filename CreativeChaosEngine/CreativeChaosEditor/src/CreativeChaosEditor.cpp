@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
     // ------ OPEN ENGINE WINDOW ------
 
     {
-        // EditorWindows
+        // EditorGUI
         MenuBar menuBar = MenuBar();
         RenderingDebugger rendEditorWin = RenderingDebugger("Rendering");
         MemoryWindow memEditorWin = MemoryWindow("Memory");

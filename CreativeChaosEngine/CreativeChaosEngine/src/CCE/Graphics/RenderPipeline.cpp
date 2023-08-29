@@ -3,6 +3,9 @@
 #include "../Manager/MemoryManager.h"
 #include "../ClientWindow/ClientWindow.h"
 #include <functional>
+#include "Rendering/Mesh.h"
+#include "Rendering/PixelShader.h"
+#include "Rendering/VertexShader.h"
 
 namespace CCE::Graphics
 {
@@ -18,6 +21,8 @@ namespace CCE::Graphics
 	{
 		// TODO: Load from config file
 		pipelineConfig.VSync = false;
+
+		//CompileAllShaders();
 
 		// Create swap chain description
 		CreateSwapChainDesc(hWnd);
@@ -181,9 +186,10 @@ namespace CCE::Graphics
 		if ( ClientWindow::Instance->minimized) { return; }
 
 		// Clear render view and draw background color
-		p_Context->OMSetRenderTargets(1u, p_renderTarget.GetAddressOf(), p_DSV.Get());
-
-#if 0
+		p_Context->ClearRenderTargetView(p_renderTarget.Get(), col.RGBA());
+		p_Context->ClearDepthStencilView(p_DSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+		
+#if MULTITHREADED
 		*cnt = 2;
 
 		JobManager::EntryPoint cdsvEp = BIND(RenderPipeline::Instance->ClearDepthStencilView);
@@ -201,13 +207,14 @@ namespace CCE::Graphics
 		JobManager::Instance->WaitForCounter(*cnt, 0);
 
 #else
-		p_Context->ClearRenderTargetView(p_renderTarget.Get(), col.RGBA());
-		p_Context->ClearDepthStencilView(p_DSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+		p_Context->OMSetRenderTargets(1u, p_renderTarget.GetAddressOf(), p_DSV.Get());
 #endif	
 
 		// TODO: Render triangles
 
-
+		// Test Triangle
+		Mesh m = Mesh();
+		m.DrawIndexed(3);
 	}
 
 	/// <summary>
@@ -314,6 +321,61 @@ namespace CCE::Graphics
 		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(D3D11_DEPTH_STENCIL_DESC));
 		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(DXGI_SWAP_CHAIN_DESC));
 		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(RECT));
+	}
+
+	/// <summary>
+	/// Compile all shaders.
+	/// </summary>
+	/// <returns>True if successful.</returns>
+	bool RenderPipeline::CompileAllShaders() noexcept
+	{
+#define D3D_COMPILE_STANDARD_FILE_INCLUDE ((ID3DInclude*)(UINT_PTR)1)
+
+		UINT flags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined( DEBUG ) || defined( _DEBUG )
+		flags |= D3DCOMPILE_DEBUG; // add more debug output
+#endif
+		ComPtr<ID3DBlob> vs_blob_ptr = NULL,  ps_blob_ptr = NULL, err_blob_ptr = NULL;
+
+		// COMPILE VERTEX SHADER
+		HRESULT hr = D3DCompileFromFile(
+			L"resources/shader/DefaultVertexShader.hlsl",
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			"main",
+			"vs_5_0",
+			flags,
+			0,
+			&vs_blob_ptr,
+			&err_blob_ptr);
+
+		if (FAILED(hr)) {
+			if (err_blob_ptr) { DERROR((char*)err_blob_ptr->GetBufferPointer()); }
+			DERROR(hr);
+			if (vs_blob_ptr) { vs_blob_ptr->Release(); }
+			//assert(false);
+		}
+
+		// COMPILE PIXEL SHADER
+		hr = D3DCompileFromFile(
+			L"resources/shader/DefaultPixelShader.hlsl",
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			"main",
+			"ps_5_0",
+			flags,
+			0,
+			&ps_blob_ptr,
+			&err_blob_ptr);
+
+		if (FAILED(hr)) {
+			if (err_blob_ptr) { DERROR((char*)err_blob_ptr->GetBufferPointer()); }
+			DERROR(hr);
+			if (ps_blob_ptr) { ps_blob_ptr->Release(); }
+			//assert(false);
+		}
+
+		return false;
 	}
 
 	

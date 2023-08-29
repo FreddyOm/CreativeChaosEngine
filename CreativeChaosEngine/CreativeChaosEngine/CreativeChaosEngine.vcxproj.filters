@@ -96,16 +96,22 @@
     <ClCompile Include="src\CCE\Manager\MemoryManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\CCE\Graphics\Rendering\Drawable.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CCE\Graphics\Rendering\Vertex.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\CCE\Manager\Application.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\CCE\Utilities\IO\IO.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCE\Graphics\Rendering\IndexBuffer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCE\Graphics\Rendering\VertexBuffer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCE\Graphics\Rendering\VertexShader.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCE\Graphics\Rendering\PixelShader.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -200,7 +206,7 @@
     <ClInclude Include="src\CCE\Manager\MemoryManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\CCE\Graphics\Rendering\Drawable.h">
+    <ClInclude Include="src\CCE\Graphics\Rendering\IDrawable.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\CCE\Graphics\Rendering\D3D11.h">
@@ -230,6 +236,21 @@
     <ClInclude Include="src\CCE\Utilities\Serialization\json.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="src\CCE\Graphics\Rendering\IBindable.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Graphics\Rendering\IndexBuffer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Graphics\Rendering\VertexBuffer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Graphics\Rendering\VertexShader.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Graphics\Rendering\PixelShader.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\sdk\ds5w_x64.dll" />
@@ -241,5 +262,9 @@
     <ResourceCompile Include="CreativeChaosEngineCore.rc">
       <Filter>Resources</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="src\CCE\Graphics\Shader\DefaultPixelShader.hlsl" />
+    <FxCompile Include="src\CCE\Graphics\Shader\DefaultVertexShader.hlsl" />
   </ItemGroup>
 </Project>

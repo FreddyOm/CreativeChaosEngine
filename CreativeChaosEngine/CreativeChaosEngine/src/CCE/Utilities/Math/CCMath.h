@@ -1,5 +1,6 @@
 #pragma once
 #include "../../Core.h"
+#include <cmath>
 
 namespace CCE::Math
 {

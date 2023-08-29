@@ -151,6 +151,8 @@ namespace CCE::Graphics
 		void OnResize(const HWND hWnd, const UINT wParam, const int width, const int height);
 		void UninitializeD3D11();
 
+		bool CompileAllShaders() noexcept;
+
 	public:
 		ID3D11Device* GetDevicePtr() const
 		{

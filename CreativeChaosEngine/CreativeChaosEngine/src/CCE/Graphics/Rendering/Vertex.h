@@ -5,9 +5,11 @@
 
 namespace CCE::Graphics 
 {
+	using namespace DirectX;
 	// TODO: Setup as proposed in RTR
-	struct CCE_API alignas(8) Vertex
+	struct CCE_API Vertex
 	{
-		
+		XMFLOAT3 Position;
+		//XMFLOAT3 Color;
 	};
 }
