@@ -9,7 +9,6 @@
 
 namespace CCE::Graphics
 {
-	using Microsoft::WRL::ComPtr;
 	using CCE::Color;
 
 	class CCE_API RenderPipeline

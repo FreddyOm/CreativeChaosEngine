@@ -1,9 +1,9 @@
 #pragma once
 #include "IBindable.h"
 #include "../../Core.h"
-#include "D3D11.h"
-#include <vector>
 #include "../RenderPipeline.h"
+#include <vector>
+#include "D3D11.h"
 
 namespace CCE::Graphics
 {

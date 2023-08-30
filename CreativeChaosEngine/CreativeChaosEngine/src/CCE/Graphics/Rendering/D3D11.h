@@ -14,3 +14,5 @@
 // WRL
 #include <wrl.h>
 #include <wrl/client.h>
+
+using Microsoft::WRL::ComPtr;

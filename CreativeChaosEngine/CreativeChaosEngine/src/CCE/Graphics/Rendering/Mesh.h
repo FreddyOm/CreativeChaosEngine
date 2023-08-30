@@ -1,7 +1,7 @@
 #pragma once
+#include "IDrawable.h"
 #include "../../Core.h"
 #include "D3D11.h"
-#include "IDrawable.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "PixelShader.h"

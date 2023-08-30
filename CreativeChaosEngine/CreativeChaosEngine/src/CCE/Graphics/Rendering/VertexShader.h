@@ -1,9 +1,8 @@
 #pragma once
 #include "IBindable.h"
 #include "../../Core.h"
-#include "D3D11.h"
-#include "../../String/String.h"
 #include "../RenderPipeline.h"
+#include "D3D11.h"
 #include <string>
 
 namespace CCE::Graphics
