@@ -43,7 +43,7 @@ namespace CCE
 		// Save engine config
 		DASSERT(IO::WriteText(engineConfig,
 			window.GetRenderPipeline()->GetRenderPipelineConfig()->SerializeToString(true).c_str(), true),
-			"Failed writing engine config to path \"%s\".", engineConfig.GetPath().Value());
+			"Failed writing engine config to file.");
 
 		window.~ClientWindow();
 		

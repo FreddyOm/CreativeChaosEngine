@@ -56,7 +56,7 @@ namespace CCE
 
 		File engineConfig;
 
-		unsigned short maxUsedFibersPerFrame = 0;
+		UINT64 maxUsedFibersPerFrame = 0;
 		bool initialized = false;
 	};
 

@@ -23,7 +23,7 @@
 #define LOGC_JOBS(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::JOBS, ##__VA_ARGS__)
 
 #define LOG_PROFILING(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
-#define LOG_PROFILING(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
+#define LOGC_PROFILING(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
 
 #endif // DEBUG
 
@@ -44,7 +44,7 @@
 #define LOGC_JOBS(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::JOBS, ##__VA_ARGS__)
 
 #define LOG_PROFILING(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
-#define LOG_PROFILING(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
+#define LOGC_PROFILING(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
 
 #endif // PROFILE
 
@@ -65,7 +65,7 @@
 #define LOGC_JOBS(msg, c, ...)
 
 #define LOG_PROFILING(msg, ...)
-#define LOG_PROFILING(msg, c, ...)
+#define LOGC_PROFILING(msg, c, ...)
 
 #endif // RELEASE
 

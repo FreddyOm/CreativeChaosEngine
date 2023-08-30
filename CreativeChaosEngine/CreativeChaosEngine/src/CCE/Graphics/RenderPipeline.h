@@ -6,6 +6,7 @@
 #include "../Manager/ProfilingManager.h"
 #include "Rendering/D3D11.h"
 #include "../Utilities/Serialization/ISerializable.h"
+//#include "Rendering/Mesh.h"
 
 namespace CCE::Graphics
 {
@@ -15,7 +16,7 @@ namespace CCE::Graphics
 	{
 	public:
 
-		CCE_API enum class WindowMode
+		enum class WindowMode
 		{
 			WINDOW = 0,
 			BORDERLESS_WINDOW = 1,
@@ -72,7 +73,6 @@ namespace CCE::Graphics
 			void DeserializeFromString(std::string serializeString) override
 			{
 				JSON data = JSON::parse(serializeString);
-				//DERROR(data != NULL, "An error occurred while deserializing the object \"%s\".", typeid(*this).name());
 
 				DESERIALIZE_CLASS_MEMBER(VSync);
 				backgroundColor = Color(
@@ -90,8 +90,6 @@ namespace CCE::Graphics
 			void DeserializeFromBinary(std::vector<uint8_t> serializeData) override
 			{
 				JSON data = JSON::from_bson(serializeData);
-
-				DERROR(data != NULL, "An error occurred while deserializing the object \"%s\".", typeid(*this).name());
 
 				DESERIALIZE_CLASS_MEMBER(VSync);
 				backgroundColor = Color(
@@ -202,5 +200,7 @@ namespace CCE::Graphics
 		D3D11_DEPTH_STENCIL_VIEW_DESC* descDSV = { };
 		ComPtr<ID3D11Texture2D> pDepthStencil = nullptr;
 		ComPtr<ID3D11DepthStencilState> pDSState = nullptr;
+		
+		//ComPtr<Mesh> testMesh;
 	};
 }

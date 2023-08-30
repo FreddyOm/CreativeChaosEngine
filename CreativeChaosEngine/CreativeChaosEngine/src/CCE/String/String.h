@@ -53,18 +53,18 @@ namespace CCE
 			return this->sId != GetStringID(other);
 		}
 
-		size_t Length();
+		UINT64 Length();
 		const char* Value() const;
 		static bool IsEmpty(String& str);
-		static const char* ValueBySID(unsigned long long sId);
+		static const char* ValueBySID(UINT64 sId);
 
 	public:
-		unsigned long long sId = 0;			// 8 bytes
+		UINT64 sId = 0;			// 8 bytes
 		
 	private:
-		static std::unordered_map<unsigned long long, const char*> gStringTable;
+		static std::unordered_map<UINT64, const char*> gStringTable;
 
 	private:
-		const unsigned long long GetStringID(const char* str);
+		const UINT64 GetStringID(const char* str);
 	};
 }

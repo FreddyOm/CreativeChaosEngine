@@ -50,7 +50,7 @@ namespace CCE
 	/// </summary>
 	void String::ClearGlobalStringTable()
 	{
-		std::unordered_map<unsigned long long, const char*>::iterator it;
+		std::unordered_map<UINT64, const char*>::iterator it;
 
 		// Free all the memory allocated by _strdup
 		for (it = gStringTable.begin(); it != gStringTable.end(); it++)
@@ -64,7 +64,7 @@ namespace CCE
 	/// Returns the length of the string.
 	/// </summary>
 	/// <returns></returns>
-	size_t String::Length()
+	UINT64 String::Length()
 	{
 		if (gStringTable[sId] == NULL)
 		{
@@ -98,15 +98,15 @@ namespace CCE
 	/// </summary>
 	/// <param name="sId">The ID to the string to be found.</param>
 	/// <returns>The string that matches the ID. NULL if no string is found.</returns>
-	const char* String::ValueBySID(unsigned long long sId)
+	const char* String::ValueBySID(UINT64 sId)
 	{
 		return gStringTable[sId] == NULL ? "" : gStringTable[sId];
 	}
 
-	const unsigned long long String::GetStringID(const char* str)
+	const UINT64 String::GetStringID(const char* str)
 	{		
 		return CCE::Math::CRCHash::HashValue(str, strlen(str));
 	}
 
-	std::unordered_map<unsigned long long, const char*> String::gStringTable;
+	std::unordered_map<UINT64, const char*> String::gStringTable;
 }

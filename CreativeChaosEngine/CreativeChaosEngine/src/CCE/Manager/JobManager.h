@@ -17,7 +17,7 @@
 
 namespace CCE
 {
-#define NUM_FIBERS 100
+#define NUM_FIBERS (unsigned int)100
 #define MAX_JOBS 500
 #define WAIT_CNTR_LOOPS 200
 #define JOBDECL CCE::JobManager::JobDeclaration
@@ -121,12 +121,12 @@ using namespace Events;
 		void SpawnWorkerThreads(const short numOfThreads = -1);
 
 	public:
-		int GetFiberPoolSize() const
+		UINT64 GetFiberPoolSize() const
 		{
 			return fiber_pool.size();
 		}
 
-		int GetUsedFibers() const
+		UINT64 GetUsedFibers() const
 		{
 			return NUM_FIBERS - GetFiberPoolSize();
 		}

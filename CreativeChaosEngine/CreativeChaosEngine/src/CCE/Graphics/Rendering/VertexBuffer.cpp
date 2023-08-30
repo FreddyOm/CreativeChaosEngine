@@ -9,7 +9,7 @@ namespace CCE::Graphics
 
 		D3D11_BUFFER_DESC bufferDesc;
 		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		bufferDesc.ByteWidth = sizeof(Vertex) * 3;
+		bufferDesc.ByteWidth = UINT64(sizeof(Vertex) * 3);
 		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		bufferDesc.CPUAccessFlags = 0;
 		bufferDesc.MiscFlags = 0;

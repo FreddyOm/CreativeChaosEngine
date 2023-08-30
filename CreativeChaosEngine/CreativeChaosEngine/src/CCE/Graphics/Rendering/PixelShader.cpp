@@ -1,4 +1,5 @@
 #include "PixelShader.h"
+#include "../../Analysis/Debug.h"
 
 namespace CCE::Graphics
 {

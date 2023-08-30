@@ -55,7 +55,7 @@ namespace CCE
 			ButtonState extraButton1 = {};		// 4 bytes
 			
 			ButtonState extraButton2 = {};		// 4 bytes
-			byte padding[12] = {};				// 12 bytes
+			byte padding[12] = { 0 };			// 12 bytes
 		};
 
 		struct Keyboard : private Input::InputDevice // 256
@@ -89,7 +89,7 @@ namespace CCE
 
 			ButtonState RJoypadButton = {};	// 4 bytes
 			ButtonState LJoypadButton = {};	// 4 bytes
-			byte padding[24];				// 24 bytes
+			byte padding[24] = { 0 };		// 24 bytes
 		};
 
 		alignas (64)	Mouse mouse = {};
@@ -112,6 +112,6 @@ namespace CCE
 	private:
 
 		void UpdateXInputControllerCount();
-		void GetXInput(const unsigned char controller_Index);
+		void GetXInput(const DWORD controller_Index);
 	};	
 }

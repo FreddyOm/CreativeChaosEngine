@@ -12,7 +12,7 @@ namespace CCE::Graphics
 		ibd.Usage = D3D11_USAGE_DEFAULT;
 		ibd.CPUAccessFlags = 0u;
 		ibd.MiscFlags = 0u;
-		ibd.ByteWidth = UINT(count * sizeof(unsigned int));
+		ibd.ByteWidth = UINT64(count * sizeof(unsigned int));
 		ibd.StructureByteStride = sizeof(unsigned int);
 
 		D3D11_SUBRESOURCE_DATA isd = {};

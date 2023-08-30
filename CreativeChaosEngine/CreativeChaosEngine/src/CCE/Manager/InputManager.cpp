@@ -437,10 +437,13 @@ namespace CCE
 		unsigned int dualSenseCount = 0;
 
 		//TODO: Maybe do this during update to get (re)connected devices
-		switch (DS5W::enumDevices(infos, XUSER_MAX_COUNT,
+		switch (DS5W::enumDevices(infos, (unsigned int)XUSER_MAX_COUNT,
 			&dualSenseCount))
 		{
-
+		default:
+		{
+			LOG_INPUT("NO DUAL SENSE SUPPORT YET!");
+		}
 		}
 
 		for (int i = 0; i < dualSenseCount; i++)
@@ -492,7 +495,7 @@ namespace CCE
 	/// Collects the actual input data.
 	/// </summary>
 	/// <param name="controller_Index"></param>
-	void InputManager::GetXInput(const unsigned char controller_Index)
+	void InputManager::GetXInput(const DWORD controller_Index)
 	{
 		_currentController = &controller[controller_Index];
 

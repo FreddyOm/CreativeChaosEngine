@@ -3,9 +3,9 @@
 #include "../Manager/MemoryManager.h"
 #include "../ClientWindow/ClientWindow.h"
 #include <functional>
-#include "Rendering/Mesh.h"
-#include "Rendering/PixelShader.h"
-#include "Rendering/VertexShader.h"
+
+//#include "Rendering/PixelShader.h"
+//#include "Rendering/VertexShader.h"
 
 namespace CCE::Graphics
 {
@@ -38,6 +38,8 @@ namespace CCE::Graphics
 
 		// Create viewport
 		CreateViewport();
+
+		//testMesh = Mesh();
 	}
 
 	/// <summary>
@@ -213,8 +215,8 @@ namespace CCE::Graphics
 		// TODO: Render triangles
 
 		// Test Triangle
-		Mesh m = Mesh();
-		m.DrawIndexed(3);
+		
+		//testMesh.DrawIndexed(3);
 	}
 
 	/// <summary>
@@ -379,6 +381,8 @@ namespace CCE::Graphics
 	}
 
 	
+#pragma region Job System Entry Points
+
 	/// <summary>
 	/// The job entry point for creating the reder target view.
 	/// </summary>
@@ -387,7 +391,7 @@ namespace CCE::Graphics
 	{
 		p_Context->ClearRenderTargetView(p_renderTarget.Get(), col.RGBA());
 	}
-	
+
 	/// <summary>
 	/// The job entry point for clearing the depth stencil view.
 	/// </summary>
@@ -395,4 +399,7 @@ namespace CCE::Graphics
 	{
 		p_Context->ClearDepthStencilView(p_DSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 	}
+
+#pragma endregion
+
 }
