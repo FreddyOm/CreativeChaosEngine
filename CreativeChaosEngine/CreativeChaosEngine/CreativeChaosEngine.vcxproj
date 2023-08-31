@@ -50,6 +50,7 @@
     <ClCompile Include="src\CCE\Analysis\UnitTesting\UnitTestString.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\VertexBuffer.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\VertexShader.cpp" />
+    <ClCompile Include="src\CCE\Graphics\Rendering\Topology.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\Graphics\Rendering\BindableCommon.h" />
@@ -99,6 +100,7 @@
     <ClInclude Include="src\CCE\Utilities\Serialization\json.hpp" />
     <ClInclude Include="src\CCE\Graphics\Rendering\VertexBuffer.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\VertexShader.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Topology.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\sdk\ds5w_x64.dll" />

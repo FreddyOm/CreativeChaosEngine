@@ -7,15 +7,14 @@ namespace CCE::Graphics
 	{
 		std::vector<Vertex> vertices =
 		{
-			{ XMFLOAT3(-0.25f, 0.5f, 0.0f) },
-			{ XMFLOAT3(0.25f, 0.5f, 0.0f) },
-			{ XMFLOAT3(0.25f, -0.5f, 0.0f) },
-			{ XMFLOAT3(-0.25f, -0.5f, 0.0f) },
+			{ XMFLOAT3(0.f, 0.25f, 0.0f) },
+			{ XMFLOAT3(0.25f, -0.25f, 0.0f) },
+			{ XMFLOAT3(-0.25f, -0.25f, 0.0f) },
 		};
 
 		std::vector<DWORD> indices =
 		{
-			0,1,2, 2,3,0,
+			0,1,2,
 		};
 
 		std::vector<std::shared_ptr<IBindable>> bindPtrs;
@@ -25,15 +24,14 @@ namespace CCE::Graphics
 		auto ib = std::make_shared<IndexBuffer>(indices);
 		auto vb = std::make_shared<VertexBuffer>(vertices);
 		auto il = std::make_shared<InputLayout>(vs->GetBytecode());
+		auto to = std::make_shared<Topology>();
 
+		bindPtrs.push_back(std::move(to));
 		bindPtrs.push_back(std::move(ib));
 		bindPtrs.push_back(std::move(vb));
 		bindPtrs.push_back(std::move(ps));
 		bindPtrs.push_back(std::move(vs));
 		bindPtrs.push_back(std::move(il));
-
-
-		RenderPipeline::Instance->GetDeviceContextPtr()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		for (auto& bind : bindPtrs)
 		{
