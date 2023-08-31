@@ -28,7 +28,7 @@ Some custom game engine subsystems
 - [x] Implement Counters so they move the current job to the wait list
 - [x] Implement file system
 - [x] Save an load engine config
-- [ ] Make sure the job system only loads and initializes if multithreading is explicitly requested
+- [x] Make sure the job system only loads and initializes if multithreading is explicitly requested
 - [ ] Refactor JobDeclaration and EntryPoint to be more easily used
 - [ ] Add an interface to be able to inject resources into the engine loop (e.g. query assets to renderpipeline) 
 - [ ] Refactor custom MemAllocs so they are compatible with stl containers and custom containers
@@ -37,6 +37,18 @@ Some custom game engine subsystems
 - [ ] Implement some basic SSE
 - [ ] Move testing to individual solution and use it as a dll (?) inside the engine (?)
 - [ ] Implement Rendering System
+   - [x] IBindable
+   - [x] IDrawable
+   - [x] Pixel Shader
+   - [x] Vertex Shader
+   - [x] Input Layout
+   - [x] Vertex Buffer
+   - [x] Index Buffer
+   - [x] Basic Mesh
+   - [ ] General Mesh
+   - [ ] General Renderer Component (?)
+   - [ ] Basic Lighting
+   - [ ] 
 
 ## Documentation
 
@@ -128,3 +140,10 @@ Utilities currently include:
 - [ImGui](https://github.com/ocornut/imgui)
 - [DS5W SDK](https://github.com/Ohjurot/DualSense-Windows)
 - [JSON Parser](https://github.com/nlohmann/json) | Part of JSON Parser is [Google Abseil](https://opensource.org/license/apache-2-0/)
+
+# Inspiration and Learning
+
+- [Jason Gregory - Game Engine Architecture](https://gameenginebook.com/)
+- [Tomas Akenine-Möller, Eric Haines, Naty Hoffman, Angelo Pesce, Michał Iwanicki, Sébastien Hillaire - Real Time Rendering](https://www.realtimerendering.com/)
+- [ChiliTomatoNoodle](https://www.youtube.com/@ChiliTomatoNoodle)
+- [TheCherno](https://www.youtube.com/@TheCherno)
