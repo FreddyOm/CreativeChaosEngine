@@ -117,6 +117,9 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\InputLayout.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\CCE\Graphics\Rendering\IDrawable.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\Core.h">
@@ -255,6 +258,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\CCE\Graphics\Rendering\InputLayout.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Graphics\Rendering\BindableCommon.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

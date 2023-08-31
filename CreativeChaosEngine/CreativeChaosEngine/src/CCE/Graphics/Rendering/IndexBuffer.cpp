@@ -3,7 +3,7 @@
 
 namespace CCE::Graphics
 {
-	IndexBuffer::IndexBuffer(std::vector<unsigned int>& indices) 
+	IndexBuffer::IndexBuffer(std::vector<unsigned int>& indices)
 		: count(indices.size())
 	{
 		// Create buffer description
@@ -18,7 +18,7 @@ namespace CCE::Graphics
 		D3D11_SUBRESOURCE_DATA isd = {};
 		isd.pSysMem = indices.data();
 		
-		DASSERT(RenderPipeline::Instance->GetDevicePtr()->CreateBuffer(&ibd, &isd, &pIndexBuffer) == S_OK, 
+		DASSERT(GetDevice(RenderPipeline::Instance)->CreateBuffer(&ibd, &isd, &pIndexBuffer) == S_OK,
 			"Failed creating the index buffer!");
 	}
 
@@ -27,10 +27,17 @@ namespace CCE::Graphics
 		pIndexBuffer.Reset();
 	}
 
+	UINT IndexBuffer::GetCount() const noexcept
+	{
+		return count;
+	}
+
 	void IndexBuffer::Bind()
 	{
 		// Bind to pipeline
-		RenderPipeline::Instance->GetDeviceContextPtr()->IASetIndexBuffer(
-			pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
+		GetContext(RenderPipeline::Instance)->IASetIndexBuffer(
+			pIndexBuffer.Get(), 
+			DXGI_FORMAT_R16_UINT, 
+			0u);
 	}
 }

@@ -10,7 +10,7 @@ namespace CCE::Graphics
 		HRESULT hr = D3DReadFileToBlob(resourcePath.c_str(), &pBlob);
 		DASSERT(hr == S_OK,
 			"Failed reading the pixel shader.");
-		DASSERT(RenderPipeline::Instance->GetDevicePtr()->CreatePixelShader(
+		DASSERT(GetDevice(RenderPipeline::Instance)->CreatePixelShader(
 			pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pPixelShader) == S_OK,
 			"Failed creating the pixel shader resource.");
 	}
@@ -22,6 +22,6 @@ namespace CCE::Graphics
 
 	void PixelShader::Bind()
 	{
-		RenderPipeline::Instance->GetDeviceContextPtr()->PSSetShader(pPixelShader.Get(), nullptr, 0u);
+		GetContext(RenderPipeline::Instance)->PSSetShader(pPixelShader.Get(), nullptr, 0u);
 	}
 }

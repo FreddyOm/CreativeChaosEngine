@@ -11,6 +11,7 @@ namespace CCE::Graphics
 	public:
 		IndexBuffer(std::vector<unsigned int>& indices);
 		~IndexBuffer();
+		UINT GetCount() const noexcept;
 
 		// Geerbt über IBindable
 		void Bind() override;

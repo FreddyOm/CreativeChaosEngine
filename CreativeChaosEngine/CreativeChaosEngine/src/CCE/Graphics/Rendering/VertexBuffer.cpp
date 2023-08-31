@@ -19,7 +19,7 @@ namespace CCE::Graphics
 		initData.SysMemPitch = 0;
 		initData.SysMemSlicePitch = 0;
 
-		DASSERT(RenderPipeline::Instance->GetDevicePtr()->CreateBuffer(
+		DASSERT(GetDevice(RenderPipeline::Instance)->CreateBuffer(
 		&bufferDesc, &initData, &pVertexBuffer) == S_OK, "Failed creating the vertex buffer!");
 	}
 
@@ -32,7 +32,7 @@ namespace CCE::Graphics
 	{
 		const UINT offset = 0u;
 		const UINT stride = sizeof(XMFLOAT3);
-		RenderPipeline::Instance->GetDeviceContextPtr()->IASetVertexBuffers(
+		GetContext(RenderPipeline::Instance)->IASetVertexBuffers(
 			0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
 	}
 }

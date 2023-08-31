@@ -9,7 +9,7 @@ namespace CCE::Graphics
 		hr = D3DReadFileToBlob(resourcePath.c_str(), &pBytecodeBlob);
 		DASSERT(hr == S_OK, "Failed reading vertex shader.");
 
-		hr = RenderPipeline::Instance->GetDevicePtr()->CreateVertexShader(pBytecodeBlob->GetBufferPointer(),
+		hr = GetDevice(RenderPipeline::Instance)->CreateVertexShader(pBytecodeBlob->GetBufferPointer(),
 			pBytecodeBlob->GetBufferSize(), nullptr, &pVertexShader);
 		DASSERT(hr == S_OK, "Failed creating the vertex shader resource.");
 	}
@@ -22,7 +22,7 @@ namespace CCE::Graphics
 
 	void VertexShader::Bind()
 	{
-		RenderPipeline::Instance->GetDeviceContextPtr()->VSSetShader(
+		GetContext(RenderPipeline::Instance)->VSSetShader(
 			pVertexShader.Get(), nullptr, 0u);
 	}
 	ID3DBlob* VertexShader::GetBytecode() const

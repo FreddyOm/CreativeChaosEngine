@@ -3,6 +3,7 @@
 #include "../Manager/MemoryManager.h"
 #include "../ClientWindow/ClientWindow.h"
 #include <functional>
+#include "Rendering/Mesh.h"
 
 //#include "Rendering/PixelShader.h"
 //#include "Rendering/VertexShader.h"
@@ -39,7 +40,7 @@ namespace CCE::Graphics
 		// Create viewport
 		CreateViewport();
 
-		//testMesh = Mesh();
+		testMesh = new Mesh();
 	}
 
 	/// <summary>
@@ -216,7 +217,27 @@ namespace CCE::Graphics
 
 		// Test Triangle
 		
-		//testMesh.DrawIndexed(3);
+		/*
+		
+		std::vector<Vertex> vertices =
+		{
+			{ XMFLOAT3(0.0f, 0.3f, 0.0f) },
+			{ XMFLOAT3(0.2f, -0.2f, 0.0f) },
+			{ XMFLOAT3(-0.2f, -0.2f, 0.0f) },
+		};
+
+		std::vector<unsigned int> indices =
+		{
+			0,1,2
+		};
+
+		//ps = PixelShader(L"D:/Repos/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultPixelShader.cso");
+		//vs = VertexShader(L"D:/Repos/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultVertexShader.cso");
+
+
+		*/
+
+		testMesh->Draw();
 	}
 
 	/// <summary>

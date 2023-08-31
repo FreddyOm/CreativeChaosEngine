@@ -11,14 +11,11 @@ namespace CCE::Graphics
 	{
 	public:
 		Mesh();
-		~Mesh();
+		~Mesh() = default;
 
 		// From IDrawable
-		void DrawIndexed(UINT count) override;
-		void AddBind(std::shared_ptr<IBindable> bindable) noexcept;
+		void Draw();
 
-	private:
-		std::vector<std::shared_ptr<IBindable>> binds;
 		// TODO: Somehow implement a GUID for identification
 	};
 }

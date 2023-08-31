@@ -15,6 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CCE\Graphics\Rendering\IDrawable.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\InputLayout.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\PixelShader.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\IndexBuffer.cpp" />
@@ -51,6 +52,7 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\VertexShader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CCE\Graphics\Rendering\BindableCommon.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\InputLayout.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\PixelShader.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\IndexBuffer.h" />

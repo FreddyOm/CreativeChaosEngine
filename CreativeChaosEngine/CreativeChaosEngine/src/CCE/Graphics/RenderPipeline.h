@@ -6,11 +6,12 @@
 #include "../Manager/ProfilingManager.h"
 #include "Rendering/D3D11.h"
 #include "../Utilities/Serialization/ISerializable.h"
-//#include "Rendering/Mesh.h"
 
 namespace CCE::Graphics
 {
 	using CCE::Color;
+
+	class Mesh;
 
 	class CCE_API RenderPipeline
 	{
@@ -201,6 +202,6 @@ namespace CCE::Graphics
 		ComPtr<ID3D11Texture2D> pDepthStencil = nullptr;
 		ComPtr<ID3D11DepthStencilState> pDSState = nullptr;
 		
-		//ComPtr<Mesh> testMesh;
+		Mesh* testMesh = nullptr;
 	};
 }
