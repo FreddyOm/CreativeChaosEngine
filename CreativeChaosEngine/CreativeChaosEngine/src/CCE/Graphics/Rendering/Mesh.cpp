@@ -25,11 +25,11 @@ namespace CCE::Graphics
 		auto vb = std::make_shared<VertexBuffer>(vertices);
 		auto il = std::make_shared<InputLayout>(vs->GetBytecode());
 
-		bindPtrs.push_back(ps);
-		bindPtrs.push_back(vs);
-		bindPtrs.push_back(ib);
-		bindPtrs.push_back(vb);
-		bindPtrs.push_back(il);
+		bindPtrs.push_back(std::move(ib));
+		bindPtrs.push_back(std::move(vb));
+		bindPtrs.push_back(std::move(ps));
+		bindPtrs.push_back(std::move(vs));
+		bindPtrs.push_back(std::move(il));
 
 
 		RenderPipeline::Instance->GetDeviceContextPtr()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

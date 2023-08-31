@@ -37,7 +37,7 @@ namespace CCE::Graphics
 		// Bind to pipeline
 		GetContext(RenderPipeline::Instance)->IASetIndexBuffer(
 			pIndexBuffer.Get(), 
-			DXGI_FORMAT_R16_UINT, 
+			DXGI_FORMAT_R32_UINT, 
 			0u);
 	}
 }
