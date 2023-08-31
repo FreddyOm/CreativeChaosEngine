@@ -1,8 +1,8 @@
 #pragma once
 #include "IDrawable.h"
-#include "IBindable.h"
-#include "../../Core.h"
-#include "Vertex.h"
+#include "../Bindable/IBindable.h"
+#include "../../../Core.h"
+#include "../Vertex.h"
 #include <memory>
 
 namespace CCE::Graphics

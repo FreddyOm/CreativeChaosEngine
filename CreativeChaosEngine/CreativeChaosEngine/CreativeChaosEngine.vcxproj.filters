@@ -84,7 +84,7 @@
     <ClCompile Include="src\CCE\Utilities\Events\Delegate.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\CCE\Graphics\Rendering\Mesh.cpp">
+    <ClCompile Include="src\CCE\Graphics\Rendering\Drawable\Mesh.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\CCE\CCEditor\CCEditor.cpp">
@@ -102,25 +102,25 @@
     <ClCompile Include="src\CCE\Utilities\IO\IO.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\CCE\Graphics\Rendering\IndexBuffer.cpp">
+    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IndexBuffer.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\CCE\Graphics\Rendering\VertexBuffer.cpp">
+    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\VertexBuffer.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\CCE\Graphics\Rendering\VertexShader.cpp">
+    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\VertexShader.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\CCE\Graphics\Rendering\PixelShader.cpp">
+    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\PixelShader.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\CCE\Graphics\Rendering\InputLayout.cpp">
+    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\InputLayout.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\CCE\Graphics\Rendering\IDrawable.cpp">
+    <ClCompile Include="src\CCE\Graphics\Rendering\Drawable\IDrawable.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\CCE\Graphics\Rendering\Topology.cpp">
+    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Topology.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -203,7 +203,7 @@
     <ClInclude Include="src\CCE\Utilities\Events\Delegate.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\CCE\Graphics\Rendering\Mesh.h">
+    <ClInclude Include="src\CCE\Graphics\Rendering\Drawable\Mesh.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\CCE\CCEditor\CCEditor.h">
@@ -215,7 +215,7 @@
     <ClInclude Include="src\CCE\Manager\MemoryManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\CCE\Graphics\Rendering\IDrawable.h">
+    <ClInclude Include="src\CCE\Graphics\Rendering\Drawable\IDrawable.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\CCE\Graphics\Rendering\D3D11.h">
@@ -245,28 +245,28 @@
     <ClInclude Include="src\CCE\Utilities\Serialization\json.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\CCE\Graphics\Rendering\IBindable.h">
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\IBindable.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\CCE\Graphics\Rendering\IndexBuffer.h">
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\IndexBuffer.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\CCE\Graphics\Rendering\VertexBuffer.h">
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\VertexBuffer.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\CCE\Graphics\Rendering\VertexShader.h">
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\VertexShader.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\CCE\Graphics\Rendering\PixelShader.h">
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\PixelShader.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\CCE\Graphics\Rendering\InputLayout.h">
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\InputLayout.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\CCE\Graphics\Rendering\BindableCommon.h">
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\BindableCommon.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\CCE\Graphics\Rendering\Topology.h">
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Topology.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

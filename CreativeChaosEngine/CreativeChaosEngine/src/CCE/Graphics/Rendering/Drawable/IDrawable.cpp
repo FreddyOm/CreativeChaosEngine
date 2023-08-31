@@ -1,5 +1,5 @@
 #include "IDrawable.h"
-#include "IndexBuffer.h"
+#include "../Bindable/IndexBuffer.h"
 
 namespace CCE::Graphics
 {

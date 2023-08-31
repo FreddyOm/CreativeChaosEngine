@@ -1,5 +1,5 @@
 #include "IndexBuffer.h"
-#include "../../Analysis/Debug.h"
+#include "../../../Analysis/Debug.h"
 
 namespace CCE::Graphics
 {

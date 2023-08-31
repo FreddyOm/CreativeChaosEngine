@@ -3,10 +3,7 @@
 #include "../Manager/MemoryManager.h"
 #include "../ClientWindow/ClientWindow.h"
 #include <functional>
-#include "Rendering/Mesh.h"
-
-//#include "Rendering/PixelShader.h"
-//#include "Rendering/VertexShader.h"
+#include "Rendering/Drawable/Mesh.h"
 
 namespace CCE::Graphics
 {

@@ -1,6 +1,6 @@
 #pragma once
-#include "../../Core.h"
-#include "../RenderPipeline.h"
+#include "../../../Core.h"
+#include "../../RenderPipeline.h"
 
 namespace CCE::Graphics
 {

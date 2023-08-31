@@ -15,15 +15,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\CCE\Graphics\Rendering\IDrawable.cpp" />
-    <ClCompile Include="src\CCE\Graphics\Rendering\InputLayout.cpp" />
-    <ClCompile Include="src\CCE\Graphics\Rendering\PixelShader.cpp" />
-    <ClCompile Include="src\CCE\Graphics\Rendering\IndexBuffer.cpp" />
+    <ClCompile Include="src\CCE\Graphics\Rendering\Drawable\IDrawable.cpp" />
+    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\InputLayout.cpp" />
+    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\PixelShader.cpp" />
+    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IndexBuffer.cpp" />
     <ClCompile Include="src\CCE\Utilities\IO\IO.cpp" />
     <ClCompile Include="src\CCE\Manager\MemoryManager.cpp" />
     <ClCompile Include="src\CCE\ClientWindow\ClientWindow.cpp" />
     <ClCompile Include="src\CCE\CCEditor\CCEditor.cpp" />
-    <ClCompile Include="src\CCE\Graphics\Rendering\Mesh.cpp" />
+    <ClCompile Include="src\CCE\Graphics\Rendering\Drawable\Mesh.cpp" />
     <ClCompile Include="src\CCE\Manager\Application.cpp" />
     <ClCompile Include="src\CCE\Utilities\Events\Delegate.cpp" />
     <ClCompile Include="src\CCE\Utilities\Color\Color.cpp" />
@@ -48,24 +48,24 @@
     <ClCompile Include="src\CCE\Analysis\UnitTesting\UnitTestPoolAlloc.cpp" />
     <ClCompile Include="src\CCE\String\String.cpp" />
     <ClCompile Include="src\CCE\Analysis\UnitTesting\UnitTestString.cpp" />
-    <ClCompile Include="src\CCE\Graphics\Rendering\VertexBuffer.cpp" />
-    <ClCompile Include="src\CCE\Graphics\Rendering\VertexShader.cpp" />
-    <ClCompile Include="src\CCE\Graphics\Rendering\Topology.cpp" />
+    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\VertexBuffer.cpp" />
+    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\VertexShader.cpp" />
+    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Topology.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\CCE\Graphics\Rendering\BindableCommon.h" />
-    <ClInclude Include="src\CCE\Graphics\Rendering\InputLayout.h" />
-    <ClInclude Include="src\CCE\Graphics\Rendering\PixelShader.h" />
-    <ClInclude Include="src\CCE\Graphics\Rendering\IndexBuffer.h" />
-    <ClInclude Include="src\CCE\Graphics\Rendering\IBindable.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\BindableCommon.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\InputLayout.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\PixelShader.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\IndexBuffer.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\IBindable.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\D3D11.h" />
-    <ClInclude Include="src\CCE\Graphics\Rendering\IDrawable.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Drawable\IDrawable.h" />
     <ClInclude Include="src\CCE\Utilities\IO\IO.h" />
     <ClInclude Include="src\CCE\Manager\MemoryManager.h" />
     <ClInclude Include="src\CCE\ClientWindow\ClientWindow.h" />
     <ClInclude Include="src\CCE\CCEditor\CCEditor.h" />
-    <ClInclude Include="src\CCE\Graphics\Rendering\Mesh.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Drawable\Mesh.h" />
     <ClInclude Include="src\CCE\Manager\Application.h" />
     <ClInclude Include="src\CCE\Utilities\Concurrency\ScopedSpinLock.h" />
     <ClInclude Include="src\CCE\Utilities\Concurrency\SpinLock.h" />
@@ -98,9 +98,9 @@
     <ClInclude Include="src\CCE\Graphics\Rendering\Vertex.h" />
     <ClInclude Include="src\CCE\Utilities\Serialization\ISerializable.h" />
     <ClInclude Include="src\CCE\Utilities\Serialization\json.hpp" />
-    <ClInclude Include="src\CCE\Graphics\Rendering\VertexBuffer.h" />
-    <ClInclude Include="src\CCE\Graphics\Rendering\VertexShader.h" />
-    <ClInclude Include="src\CCE\Graphics\Rendering\Topology.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\VertexBuffer.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\VertexShader.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Topology.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\sdk\ds5w_x64.dll" />

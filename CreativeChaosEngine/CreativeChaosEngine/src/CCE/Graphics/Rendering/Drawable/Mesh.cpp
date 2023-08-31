@@ -1,5 +1,5 @@
 #include "Mesh.h"
-#include "BindableCommon.h"
+#include "../Bindable/BindableCommon.h"
 
 namespace CCE::Graphics
 {
