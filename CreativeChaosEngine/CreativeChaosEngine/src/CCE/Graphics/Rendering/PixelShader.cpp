@@ -8,11 +8,11 @@ namespace CCE::Graphics
 		// Create PS resource from file
 		ComPtr<ID3DBlob> pBlob;
 		HRESULT hr = D3DReadFileToBlob(resourcePath.c_str(), &pBlob);
-		DASSERT(hr == S_OK,
-			"Failed reading the pixel shader.");
-		DASSERT(GetDevice(RenderPipeline::Instance)->CreatePixelShader(
-			pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pPixelShader) == S_OK,
-			"Failed creating the pixel shader resource.");
+		DASSERT(hr == S_OK, "Failed reading the pixel shader.");
+		// Check shader version for older cpus / gpus (my laptop!! :O)
+		hr = GetDevice(RenderPipeline::Instance)->CreatePixelShader(
+			pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pPixelShader);
+		DASSERT( hr == S_OK, "Failed creating the pixel shader resource.");
 	}
 
 	PixelShader::~PixelShader()
