@@ -7,14 +7,15 @@ namespace CCE::Graphics
 	{
 		std::vector<Vertex> vertices =
 		{
-			{ XMFLOAT3(0.0f, 0.3f, 0.0f) },
-			{ XMFLOAT3(0.2f, -0.2f, 0.0f) },
-			{ XMFLOAT3(-0.2f, -0.2f, 0.0f) },
+			{ XMFLOAT3(-0.25f, 0.5f, 0.0f) },
+			{ XMFLOAT3(0.25f, 0.5f, 0.0f) },
+			{ XMFLOAT3(0.25f, -0.5f, 0.0f) },
+			{ XMFLOAT3(-0.25f, -0.5f, 0.0f) },
 		};
 
-		std::vector<unsigned int> indices =
+		std::vector<DWORD> indices =
 		{
-			0,1,2
+			0,1,2, 2,3,0,
 		};
 
 		std::vector<std::shared_ptr<IBindable>> bindPtrs;

@@ -9,7 +9,7 @@ namespace CCE::Graphics
 	struct CCE_API IndexBuffer : public IBindable
 	{
 	public:
-		IndexBuffer(std::vector<unsigned int>& indices);
+		IndexBuffer(std::vector<DWORD>& indices);
 		~IndexBuffer();
 		UINT GetCount() const noexcept;
 

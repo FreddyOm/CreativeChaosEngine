@@ -3,7 +3,7 @@
 
 namespace CCE::Graphics
 {
-	IndexBuffer::IndexBuffer(std::vector<unsigned int>& indices)
+	IndexBuffer::IndexBuffer(std::vector<DWORD>& indices)
 		: count(indices.size())
 	{
 		// Create buffer description
@@ -12,8 +12,8 @@ namespace CCE::Graphics
 		ibd.Usage = D3D11_USAGE_DEFAULT;
 		ibd.CPUAccessFlags = 0u;
 		ibd.MiscFlags = 0u;
-		ibd.ByteWidth = UINT64(count * sizeof(unsigned int));
-		ibd.StructureByteStride = sizeof(unsigned int);
+		ibd.ByteWidth = UINT64(count * sizeof(DWORD));
+		ibd.StructureByteStride = sizeof(DWORD);
 
 		D3D11_SUBRESOURCE_DATA isd = {};
 		isd.pSysMem = indices.data();
