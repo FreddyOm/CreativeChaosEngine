@@ -15,6 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CCE\Graphics\Rendering\Camera.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Drawable\IDrawable.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\InputLayout.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\PixelShader.cpp" />
@@ -53,6 +54,8 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Topology.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\ConstantBuffer.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Camera.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\BindableCommon.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\InputLayout.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\PixelShader.h" />
