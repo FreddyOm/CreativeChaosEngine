@@ -64,6 +64,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\D3D11.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Drawable\IDrawable.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Transform.h" />
     <ClInclude Include="src\CCE\Utilities\IO\IO.h" />
     <ClInclude Include="src\CCE\Manager\MemoryManager.h" />
     <ClInclude Include="src\CCE\ClientWindow\ClientWindow.h" />

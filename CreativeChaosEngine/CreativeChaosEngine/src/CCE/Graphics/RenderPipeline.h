@@ -4,8 +4,8 @@
 #include "../Utilities/Color/Color.h"
 #include "../Manager/JobManager.h"
 #include "../Manager/ProfilingManager.h"
-#include "Rendering/D3D11.h"
 #include "../Utilities/Serialization/ISerializable.h"
+#include "Rendering/Camera.h"
 
 namespace CCE::Graphics
 {
@@ -131,11 +131,15 @@ namespace CCE::Graphics
 			//if (cnt != nullptr)
 				//delete cnt;
 
+			delete mainCamera;
+			delete testMesh;
+
 			UNREGISTER_LEAK_DETECT;
 		}
 
 	public:
 		static RenderPipeline* Instance;
+		Camera* mainCamera;
 
 	public:
 		void InitializeD3D11(const HWND hWnd, const int width, const int height);
@@ -144,7 +148,7 @@ namespace CCE::Graphics
 		void CreateRenderTargetView();
 		void CreateDeviceAndSwapChain();
 		void CreateSwapChainDesc(const HWND& hWnd);
-		void BeginFrame(const Color col) const;
+		void BeginFrame(const Color col);
 		void EndFrame();
 		void OnResize(const HWND hWnd, const UINT wParam, const int width, const int height);
 		void UninitializeD3D11();

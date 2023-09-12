@@ -20,7 +20,7 @@ namespace CCE
 		if (File::Exists(engineConfig))
 		{
 			std::string config = IO::ReadText(engineConfig).Value();
-			window.GetRenderPipeline()->GetRenderPipelineConfig()->DeserializeFromString(config);
+			window->GetRenderPipeline()->GetRenderPipelineConfig()->DeserializeFromString(config);
 		}
 #else
 #error CCE is currently only supported for Windows
@@ -42,11 +42,10 @@ namespace CCE
 
 		// Save engine config
 		DASSERT(IO::WriteText(engineConfig,
-			window.GetRenderPipeline()->GetRenderPipelineConfig()->SerializeToString(true).c_str(), true),
+			window->GetRenderPipeline()->GetRenderPipelineConfig()->SerializeToString(true).c_str(), true),
 			"Failed writing engine config to file.");
-
-		window.~ClientWindow();
 		
+		delete window;
 		// Show leak info
 		PRINT_LEAK_INFO;
 		Deinitialize();
@@ -83,8 +82,8 @@ namespace CCE
 		mJobManager.BusyWaitForCounter(cnt, 2);
 
 #else
-		window.UpdateClientWindow(rValue);
-		window.GetRenderPipeline()->BeginFrame(window.GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
+		window->UpdateClientWindow(rValue);
+		window->GetRenderPipeline()->BeginFrame(window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
 
 		//mInputManager.HandleDirectInput();
 		mInputManager.HandleXInput();
@@ -107,7 +106,7 @@ namespace CCE
 		mJobManager.BusyWaitForCounter(cnt, 0);
 
 #else
-		window.GetRenderPipeline()->EndFrame();
+		window->GetRenderPipeline()->EndFrame();
 		mMemoryManager.UpdateMemoryUsage();
 
 #endif
@@ -141,7 +140,8 @@ namespace CCE
 		mPhysicsManager.StartUp();
 		mInputManager.StartUp();
 
-		window.OpenWindow(GetModuleHandle(NULL));
+		window = new ClientWindow();
+		window->OpenWindow(GetModuleHandle(NULL));
 	}
 
 	/// <summary>
@@ -149,8 +149,6 @@ namespace CCE
 	/// </summary>
 	void Application::Deinitialize()
 	{
-		window.~ClientWindow();
-
 		mInputManager.ShutDown();
 		mPhysicsManager.ShutDown();
 #if MULTITHREADED

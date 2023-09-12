@@ -37,6 +37,11 @@ namespace CCE::Graphics
 		using ConstantBuffer<C>::slot;
 		using ConstantBuffer<C>::pConstantBuffer;
 	public:
+		template<typename C>
+		PSConstantBuffer(const C& consts, UINT slot)
+			: ConstantBuffer(consts, slot)
+		{ }
+
 		// Inherited by IBindable
 		void Bind() override
 		{
@@ -50,6 +55,11 @@ namespace CCE::Graphics
 		using ConstantBuffer<C>::slot;
 		using ConstantBuffer<C>::pConstantBuffer;
 	public:
+		template<typename C>
+		VSConstantBuffer(const C& consts, UINT slot)
+			: ConstantBuffer(consts, slot)
+		{ }
+
 		// Inherited by IBindable
 		void Bind() override
 		{

@@ -47,7 +47,7 @@ namespace CCE
 		InputManager mInputManager = InputManager();
 		MemoryManager mMemoryManager = MemoryManager();
 
-		ClientWindow window = ClientWindow();
+		ClientWindow* window = nullptr;
 
 		std::chrono::steady_clock::time_point frameBegin;
 		std::chrono::steady_clock::time_point frameEnd;

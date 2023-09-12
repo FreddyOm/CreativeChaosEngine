@@ -4,6 +4,7 @@
 #include "../ClientWindow/ClientWindow.h"
 #include <functional>
 #include "Rendering/Drawable/Mesh.h"
+#include "Rendering/Camera.h"
 
 namespace CCE::Graphics
 {
@@ -37,6 +38,7 @@ namespace CCE::Graphics
 		// Create viewport
 		CreateViewport();
 
+		mainCamera = new Camera();
 		testMesh = new Mesh();
 	}
 
@@ -181,7 +183,7 @@ namespace CCE::Graphics
 	/// Starts the frame by clearing the depth and the stencil buffer.
 	/// </summary>
 	/// <param name="col">The color of the background.</param>
-	void RenderPipeline::BeginFrame(const Color col) const
+	void RenderPipeline::BeginFrame(const Color col)
 	{
 		if ( ClientWindow::Instance->minimized) { return; }
 
@@ -213,26 +215,8 @@ namespace CCE::Graphics
 		// TODO: Render triangles
 
 		// Test Triangle
-		
-		/*
-		
-		std::vector<Vertex> vertices =
-		{
-			{ XMFLOAT3(0.0f, 0.3f, 0.0f) },
-			{ XMFLOAT3(0.2f, -0.2f, 0.0f) },
-			{ XMFLOAT3(-0.2f, -0.2f, 0.0f) },
-		};
 
-		std::vector<unsigned int> indices =
-		{
-			0,1,2
-		};
-
-		//ps = PixelShader(L"D:/Repos/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultPixelShader.cso");
-		//vs = VertexShader(L"D:/Repos/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultVertexShader.cso");
-
-
-		*/
+		mainCamera->Update();
 
 		testMesh->Draw();
 	}
@@ -398,7 +382,6 @@ namespace CCE::Graphics
 		return false;
 	}
 
-	
 #pragma region Job System Entry Points
 
 	/// <summary>
