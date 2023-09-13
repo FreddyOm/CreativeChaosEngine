@@ -6,6 +6,7 @@
 #include "../Manager/ProfilingManager.h"
 #include "../Utilities/Serialization/ISerializable.h"
 #include "Rendering/Camera.h"
+#include "Rendering\Drawable\Mesh.h"
 
 namespace CCE::Graphics
 {
@@ -109,37 +110,13 @@ namespace CCE::Graphics
 			REGISTER_LEAK_DETECT;
 		}
 		
-		~RenderPipeline()
-		{
-			UninitializeD3D11();
-
-			p_renderTarget.Reset();
-			p_DSV.Reset();
-			p_backBuffer.Reset();
-			pSwapChain.Reset();
-			p_Context.Reset();
-			p_device.Reset();
-
-			p_device.~ComPtr();
-			pSwapChain.~ComPtr();
-			p_Context.~ComPtr();
-			p_renderTarget.~ComPtr();
-			p_DSV.~ComPtr();
-			p_backBuffer.~ComPtr();
-
-			//TODO: Check this bug when deleting cnt
-			//if (cnt != nullptr)
-				//delete cnt;
-
-			delete mainCamera;
-			delete testMesh;
-
-			UNREGISTER_LEAK_DETECT;
-		}
+		~RenderPipeline();
+		
 
 	public:
 		static RenderPipeline* Instance;
 		Camera* mainCamera;
+		Mesh* testMesh = nullptr;
 
 	public:
 		void InitializeD3D11(const HWND hWnd, const int width, const int height);
@@ -181,6 +158,16 @@ namespace CCE::Graphics
 			return p_DSV.Get();
 		}
 
+		int GetRenderTargetWidth()
+		{
+			return clientRect->right - clientRect->left;
+		}
+
+		int GetRenderTargetHeight()
+		{
+			return clientRect->bottom - clientRect->top;
+		}
+
 	public:
 		JOB_ENTRY_POINT ClearRenderTargetView(Color col) const;
 		JOB_ENTRY_POINT ClearDepthStencilView() const;
@@ -206,6 +193,5 @@ namespace CCE::Graphics
 		ComPtr<ID3D11Texture2D> pDepthStencil = nullptr;
 		ComPtr<ID3D11DepthStencilState> pDSState = nullptr;
 		
-		Mesh* testMesh = nullptr;
 	};
 }

@@ -8,6 +8,7 @@
 #include "GUIDrawables/RenderingDebugger.h"
 #include "GUIDrawables/MemoryWindow.h"
 #include "GUIDrawables/JobWindow.h"
+#include "GUIDrawables/Inspector.h"
 
 // -------- Testing ---------
 
@@ -89,6 +90,7 @@ int main(int argc, char* argv[])
         MenuBar menuBar = MenuBar();
         RenderingDebugger rendEditorWin = RenderingDebugger("Rendering");
         MemoryWindow memEditorWin = MemoryWindow("Memory");
+        Inspector inspector = Inspector("Inspector");
 #if MULTITHREADED
         JobWindow jobWin = JobWindow("Jobs");
 #endif

@@ -1,11 +1,11 @@
 #pragma once
 #include "../../../Core.h"
-#include  "../../RenderPipeline.h"
-
+#include <vector>
 #include <memory>
 
 namespace CCE::Graphics
 {
+	class RenderPipeline;
 	class IBindable;
 	class IndexBuffer;
 
@@ -13,7 +13,7 @@ namespace CCE::Graphics
 	{
 	public:
 		IDrawable() = default;
-		virtual ~IDrawable() = default;
+		~IDrawable() = default;
 		void Draw() const noexcept;
 
 	protected:

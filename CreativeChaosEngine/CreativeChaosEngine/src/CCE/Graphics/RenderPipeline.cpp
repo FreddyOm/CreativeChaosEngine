@@ -12,6 +12,34 @@ namespace CCE::Graphics
 
 	RenderPipeline* RenderPipeline::Instance = nullptr;
 
+	RenderPipeline::~RenderPipeline()
+	{
+		UninitializeD3D11();
+
+		p_renderTarget.Reset();
+		p_DSV.Reset();
+		p_backBuffer.Reset();
+		pSwapChain.Reset();
+		p_Context.Reset();
+		p_device.Reset();
+
+		p_device.~ComPtr();
+		pSwapChain.~ComPtr();
+		p_Context.~ComPtr();
+		p_renderTarget.~ComPtr();
+		p_DSV.~ComPtr();
+		p_backBuffer.~ComPtr();
+
+		//TODO: Check this bug when deleting cnt
+		//if (cnt != nullptr)
+			//delete cnt;
+
+		delete mainCamera;
+		delete testMesh;
+
+		UNREGISTER_LEAK_DETECT;
+	}
+
 	/// <summary>
 	/// Initializes the D3D11 
 	/// </summary>

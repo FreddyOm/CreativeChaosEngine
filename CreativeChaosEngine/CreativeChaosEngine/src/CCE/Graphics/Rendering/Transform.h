@@ -5,6 +5,13 @@
 struct CCE_API Transform
 {
 public:
+	Transform()
+	{
+		SetPosition(position);
+		SetRotation(rotation);
+		SetScale(scale);
+	}
+
 	DirectX::XMMATRIX GetTransformationMatrix() const
 	{
 		return DirectX::XMMatrixMultiply(positionMatrix, DirectX::XMMatrixMultiply(scaleMatrix, rotationMatrix));;
@@ -44,12 +51,12 @@ public:
 	}
 
 protected:
-	DirectX::XMFLOAT3 position;
-	DirectX::XMFLOAT3 rotation;
-	DirectX::XMFLOAT3 scale;
+	DirectX::XMFLOAT3 position = {0,0,0};
+	DirectX::XMFLOAT3 rotation = { 0,0,0 };
+	DirectX::XMFLOAT3 scale = { 1,1,1 };
 
 private:
-	DirectX::XMMATRIX rotationMatrix;
-	DirectX::XMMATRIX scaleMatrix;
-	DirectX::XMMATRIX positionMatrix;
+	DirectX::XMMATRIX rotationMatrix = {};
+	DirectX::XMMATRIX scaleMatrix = {};
+	DirectX::XMMATRIX positionMatrix = {};
 };

@@ -4,8 +4,7 @@
 #include "Transform.h"
 
 namespace CCE::Graphics
-{
-
+{	
 	struct CCE_API Camera
 	{
 	public:
@@ -16,14 +15,16 @@ namespace CCE::Graphics
 
 		void SetProjection(float _near, float _far, float _fovV, float _fovH) noexcept;
 
-		const DirectX::XMMATRIX GetViewProjectionMatrix() const noexcept
-		{ return DirectX::XMMatrixMultiply(viewMatrix, projectionMatrix); }
+		//const DirectX::XMMATRIX GetViewProjectionMatrix() const noexcept
+		//{ return DirectX::XMMatrixMultiply(modelMatrix, viewProjectionMatrix); }
 		
 		const float GetNearPlane() const noexcept;
 		const float GetFarPlane() const noexcept;
 		const float GetVerticalFOV() const noexcept;
 		const float GetHorizontalFOV() const noexcept;
 
+		void CreateConstBufs();
+		void SetFovAndLookDir() noexcept;
 		void Update();
 
 	private:
@@ -32,9 +33,9 @@ namespace CCE::Graphics
 		float fovVertical = 120.0f;
 		float fovHorizontal = 160.0f;
 
-		DirectX::XMMATRIX projectionMatrix;
-		DirectX::XMMATRIX viewMatrix;
+		DirectX::XMMATRIX viewProjectionMatrix;
 
+		ComPtr<ID3D11Buffer> pPerFrameConstBuf = nullptr;
 		//ComPtr<ConstantBuffer<DirectX::XMMATRIX>> pPerFrameConstBuf = nullptr;
 		//ComPtr<ConstantBuffer<DirectX::XMMATRIX>> pPerObjectConstBuf = nullptr;
 	};

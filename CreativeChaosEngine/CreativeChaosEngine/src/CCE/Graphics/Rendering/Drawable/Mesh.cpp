@@ -1,5 +1,7 @@
 #include "Mesh.h"
 #include "../Bindable/BindableCommon.h"
+#include <memory>
+#include "../../RenderPipeline.h"
 
 namespace CCE::Graphics
 {
@@ -37,6 +39,12 @@ namespace CCE::Graphics
 		{
 			AddBind(std::move(bind));
 		}
+
+		transform.SetPosition({0.0, 0.3, 0.1});
+
+		CreateConstBufs();
+
+		REGISTER_LEAK_DETECT;
 	}
 
 	/// <summary>
@@ -46,5 +54,36 @@ namespace CCE::Graphics
 	void Mesh::Draw()
 	{
 		IDrawable::Draw();
-	}	
+
+		// TODO: Only do this when necessary
+		modelMatrix = transform.GetTransformationMatrix();
+
+		D3D11_MAPPED_SUBRESOURCE mappedResource;
+		RenderPipeline::Instance->GetDeviceContextPtr()->Map(pPerObjectConstBuf.Get(), 0, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+		memcpy(mappedResource.pData, &modelMatrix, sizeof(XMMATRIX));
+		RenderPipeline::Instance->GetDeviceContextPtr()->Unmap(pPerObjectConstBuf.Get(), 0);
+
+		RenderPipeline::Instance->GetDeviceContextPtr()->VSSetConstantBuffers(1, 1, pPerObjectConstBuf.GetAddressOf());
+	}
+
+	void Mesh::CreateConstBufs()
+	{
+		modelMatrix = transform.GetTransformationMatrix();
+
+		D3D11_BUFFER_DESC desc{};
+		desc.Usage = D3D11_USAGE::D3D11_USAGE_DYNAMIC;
+		desc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_CONSTANT_BUFFER;
+		desc.ByteWidth = sizeof(XMMATRIX);
+		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+		RenderPipeline::Instance->GetDevicePtr()->CreateBuffer(
+			&desc, nullptr, &pPerObjectConstBuf);
+	
+		D3D11_MAPPED_SUBRESOURCE mappedResource;
+		RenderPipeline::Instance->GetDeviceContextPtr()->Map(pPerObjectConstBuf.Get(), 0, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+		memcpy(mappedResource.pData, &modelMatrix, sizeof(XMMATRIX));
+		RenderPipeline::Instance->GetDeviceContextPtr()->Unmap(pPerObjectConstBuf.Get(), 0);
+		
+		RenderPipeline::Instance->GetDeviceContextPtr()->VSSetConstantBuffers(1, 1, pPerObjectConstBuf.GetAddressOf());
+	}
 }
