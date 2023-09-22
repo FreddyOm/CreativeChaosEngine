@@ -7,7 +7,7 @@ namespace CCE::Graphics
 		// Create VS resource from file
 		HRESULT hr;
 		hr = D3DReadFileToBlob(resourcePath.c_str(), &pBytecodeBlob);
-		DASSERT(hr == S_OK, "Failed reading vertex shader.");
+		DASSERT(hr == S_OK, "Failed reading vertex shader file.");
 
 		hr = GetDevice(RenderPipeline::Instance)->CreateVertexShader(pBytecodeBlob->GetBufferPointer(),
 			pBytecodeBlob->GetBufferSize(), nullptr, &pVertexShader);

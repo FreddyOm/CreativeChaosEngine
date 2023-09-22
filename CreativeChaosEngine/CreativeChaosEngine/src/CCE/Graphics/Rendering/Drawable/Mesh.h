@@ -1,13 +1,18 @@
 #pragma once
 #include "IDrawable.h"
-//#include "../Bindable/IBindable.h"
 #include "../../../Manager/ProfilingManager.h"
 #include "../../../Core.h"
 #include "../Vertex.h"
 #include "../Transform.h"
+#include <memory>
 
 namespace CCE::Graphics
 {
+	template<typename C>
+	class ConstantBuffer;
+	template<typename C>
+	class VSConstantBuffer;
+
 	struct CCE_API Mesh : public IDrawable
 	{
 	public:
@@ -30,6 +35,6 @@ namespace CCE::Graphics
 
 	private:
 		DirectX::XMMATRIX modelMatrix;
-		ComPtr<ID3D11Buffer> pPerObjectConstBuf = nullptr;
+		std::shared_ptr<VSConstantBuffer<DirectX::XMMATRIX>> pMeshConstBuf = nullptr;
 	};
 }

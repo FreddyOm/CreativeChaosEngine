@@ -26,8 +26,19 @@ namespace CCE::Graphics
 				&constBufDescription, &subresourceData, &pConstantBuffer);
 		}
 
+		virtual void UpdateConstantBuffer(const C& _constant)
+		{
+			D3D11_MAPPED_SUBRESOURCE mappedResource;
+			RenderPipeline::Instance->GetDeviceContextPtr()->Map(
+				pConstantBuffer.Get(), 0, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+			memcpy(mappedResource.pData, &_constant, sizeof(C));
+			RenderPipeline::Instance->GetDeviceContextPtr()->Unmap(
+				pConstantBuffer.Get(), 0);
+		}
+
 	protected:
 		UINT slot;
+		UINT resourceCount;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> pConstantBuffer;
 	};
 	
@@ -38,14 +49,14 @@ namespace CCE::Graphics
 		using ConstantBuffer<C>::pConstantBuffer;
 	public:
 		template<typename C>
-		PSConstantBuffer(const C& consts, UINT slot)
-			: ConstantBuffer(consts, slot)
+		PSConstantBuffer(const C& consts, UINT slot, UINT _resourceCount = 1u)
+			: ConstantBuffer<C>(consts, slot)
 		{ }
 
 		// Inherited by IBindable
 		void Bind() override
 		{
-			RenderPipeline::Instance->GetDeviceContextPtr()->PSSetConstantBuffers(slot, pConstantBuffer.GetAddressOf());
+			RenderPipeline::Instance->GetDeviceContextPtr()->PSSetConstantBuffers(slot, 1u, pConstantBuffer.GetAddressOf());
 		}
 	};
 	
@@ -57,7 +68,7 @@ namespace CCE::Graphics
 	public:
 		template<typename C>
 		VSConstantBuffer(const C& consts, UINT slot)
-			: ConstantBuffer(consts, slot)
+			: ConstantBuffer<C>(consts, slot)
 		{ }
 
 		// Inherited by IBindable

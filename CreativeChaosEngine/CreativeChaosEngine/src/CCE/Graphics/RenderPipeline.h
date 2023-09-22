@@ -107,15 +107,21 @@ namespace CCE::Graphics
 		{
 			DASSERT(Instance == nullptr, "The Renderpipeline can only be initialized once!");
 			Instance = this;
+			DASSERT((sizeof(ConstantBufferStruct) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
 			REGISTER_LEAK_DETECT;
 		}
 		
 		~RenderPipeline();
 		
+		typedef struct _constantBufferStruct {
+			DirectX::XMFLOAT4X4 world;
+			DirectX::XMFLOAT4X4 view;
+			DirectX::XMFLOAT4X4 projection;
+		} ConstantBufferStruct;
 
 	public:
 		static RenderPipeline* Instance;
-		Camera* mainCamera;
+		Camera* mainCamera = nullptr;
 		Mesh* testMesh = nullptr;
 
 	public:

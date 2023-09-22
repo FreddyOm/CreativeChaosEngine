@@ -2,9 +2,15 @@
 #include "../../Core.h"
 #include "D3D11.h"
 #include "Transform.h"
+#include <memory>
 
 namespace CCE::Graphics
 {	
+	template<typename C>
+	class ConstantBuffer;
+	template<typename C>
+	class VSConstantBuffer;
+
 	struct CCE_API Camera
 	{
 	public:
@@ -33,10 +39,13 @@ namespace CCE::Graphics
 		float fovVertical = 120.0f;
 		float fovHorizontal = 160.0f;
 
-		DirectX::XMMATRIX viewProjectionMatrix;
+		struct CameraConstantBufs 
+		{
+			DirectX::XMMATRIX viewMatrix = { };
+			DirectX::XMMATRIX projectionMatrix = { };
 
-		ComPtr<ID3D11Buffer> pPerFrameConstBuf = nullptr;
-		//ComPtr<ConstantBuffer<DirectX::XMMATRIX>> pPerFrameConstBuf = nullptr;
-		//ComPtr<ConstantBuffer<DirectX::XMMATRIX>> pPerObjectConstBuf = nullptr;
+		} cameraConstBufs = { };
+
+		std::shared_ptr<VSConstantBuffer<CameraConstantBufs>> pCameraConstBuf = nullptr;
 	};
 }

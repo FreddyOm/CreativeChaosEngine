@@ -1,13 +1,13 @@
 #include "Camera.h"
 #include "../Rendering/../../Manager/ProfilingManager.h"
 #include "../RenderPipeline.h"
+#include "Bindable\ConstantBuffer.h"
 
 namespace CCE::Graphics
 {
 	Camera::Camera()
 	{
-
-		transform.SetPosition({0.0f, 0.0f, -2.0f});
+		transform.SetTranslation({0.0f, 0.0f, -2.0f});
 		SetFovAndLookDir();
 		CreateConstBufs();
 
@@ -57,17 +57,8 @@ namespace CCE::Graphics
 
 	void Camera::CreateConstBufs()
 	{
-		HRESULT hr;
-		// Const bufs
-		D3D11_BUFFER_DESC desc{};
-		desc.Usage = D3D11_USAGE::D3D11_USAGE_DYNAMIC;
-		desc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_CONSTANT_BUFFER;
-		desc.ByteWidth = sizeof(DirectX::XMMATRIX);
-		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-		hr = RenderPipeline::Instance->GetDevicePtr()->CreateBuffer(&desc, nullptr, &pPerFrameConstBuf);
-
-		if (FAILED(hr)) { DERROR(hr); }
+		SetFovAndLookDir();
+		pCameraConstBuf = std::make_shared<VSConstantBuffer<CameraConstantBufs>>(cameraConstBufs, 1);
 	}
 
 	// TODO: Only do this when necessary!
@@ -75,22 +66,21 @@ namespace CCE::Graphics
 	{
 		using namespace DirectX;
 
-		ZeroMemory(&viewProjectionMatrix, sizeof(viewProjectionMatrix));
+		ZeroMemory(&cameraConstBufs.viewMatrix, sizeof(DirectX::XMMATRIX));
+		ZeroMemory(&cameraConstBufs.projectionMatrix, sizeof(DirectX::XMMATRIX));
 
 		float fovRadians = (fovVertical / 360.0f) * XM_2PI;
 
-		XMMATRIX projMatrix = XMMatrixPerspectiveFovLH(fovRadians,
+		cameraConstBufs.projectionMatrix = XMMatrixPerspectiveFovLH(fovRadians,
 			static_cast<float>(RenderPipeline::Instance->GetRenderTargetWidth()) /
 			static_cast<float>(RenderPipeline::Instance->GetRenderTargetHeight()),
 			0.1f,
 			100.0f);
 		
-		 XMMATRIX view = XMMatrixLookAtLH(
+		 cameraConstBufs.viewMatrix = XMMatrixLookAtLH(
 			{ transform.Position().x, transform.Position().y, transform.Position().z },
 			 { transform.Position().x, transform.Position().y, transform.Position().z + 1 }, 
 			 {0,1,0,0});
-		
-		viewProjectionMatrix = view * projMatrix;
 	}
 
 	void Camera::Update()
@@ -99,14 +89,7 @@ namespace CCE::Graphics
 
 		HRESULT hr;
 
-		D3D11_MAPPED_SUBRESOURCE mappedResource;
-		hr = RenderPipeline::Instance->GetDeviceContextPtr()->Map(pPerFrameConstBuf.Get(), 0, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-		
-		if (FAILED(hr)) { DERROR(hr); }
-		
-		memcpy(mappedResource.pData, &viewProjectionMatrix, sizeof(DirectX::XMMATRIX));
-		RenderPipeline::Instance->GetDeviceContextPtr()->Unmap(pPerFrameConstBuf.Get(), 0);
-
-		RenderPipeline::Instance->GetDeviceContextPtr()->VSSetConstantBuffers(0, 1, pPerFrameConstBuf.GetAddressOf());
+		pCameraConstBuf->UpdateConstantBuffer(cameraConstBufs);
+		pCameraConstBuf->Bind();
 	}
 }

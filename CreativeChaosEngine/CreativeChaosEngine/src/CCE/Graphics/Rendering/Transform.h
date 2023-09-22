@@ -7,20 +7,21 @@ struct CCE_API Transform
 public:
 	Transform()
 	{
-		SetPosition(position);
+		SetTranslation(position);
 		SetRotation(rotation);
 		SetScale(scale);
 	}
 
 	DirectX::XMMATRIX GetTransformationMatrix() const
 	{
-		return DirectX::XMMatrixMultiply(positionMatrix, DirectX::XMMatrixMultiply(scaleMatrix, rotationMatrix));;
+		//return translationMatrix;
+		return translationMatrix * rotationZMatrix * rotationYMatrix * rotationXMatrix * scaleMatrix;
 	}
 
-	void SetPosition(DirectX::XMFLOAT3 _position)
+	void SetTranslation(DirectX::XMFLOAT3 _position)
 	{
 		position = _position;
-		positionMatrix = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
+		translationMatrix = DirectX::XMMatrixTranslation(_position.x, _position.y, _position.z);
 	}
 
 	void SetScale(DirectX::XMFLOAT3 _scale)
@@ -32,7 +33,9 @@ public:
 	void SetRotation(DirectX::XMFLOAT3 _rotation)
 	{
 		rotation = _rotation;
-		rotationMatrix = DirectX::XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
+		rotationXMatrix = DirectX::XMMatrixRotationX(rotation.x);
+		rotationYMatrix = DirectX::XMMatrixRotationY(rotation.y);
+		rotationZMatrix = DirectX::XMMatrixRotationZ(rotation.z);
 	}
 
 	DirectX::XMFLOAT3 Position()
@@ -56,7 +59,9 @@ protected:
 	DirectX::XMFLOAT3 scale = { 1,1,1 };
 
 private:
-	DirectX::XMMATRIX rotationMatrix = {};
+	DirectX::XMMATRIX rotationXMatrix = {};
+	DirectX::XMMATRIX rotationYMatrix = {};
+	DirectX::XMMATRIX rotationZMatrix = {};
 	DirectX::XMMATRIX scaleMatrix = {};
-	DirectX::XMMATRIX positionMatrix = {};
+	DirectX::XMMATRIX translationMatrix = {};
 };

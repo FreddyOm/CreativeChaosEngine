@@ -23,7 +23,7 @@ void Inspector::OnGui()
 	ImGui::InputFloat3("Scale", scaleVals, "%.2f");
 	ImGui::Spacing();
 
-	RenderPipeline::Instance->testMesh->transform.SetPosition({ posVals[0], posVals[1], posVals[2] });
+	RenderPipeline::Instance->testMesh->transform.SetTranslation({ posVals[0], posVals[1], posVals[2] });
 	RenderPipeline::Instance->testMesh->transform.SetRotation({ rotVals[0], rotVals[1], rotVals[2] });
 	RenderPipeline::Instance->testMesh->transform.SetScale({ scaleVals[0], scaleVals[1], scaleVals[2]});
 }

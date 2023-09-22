@@ -1,11 +1,12 @@
-cbuffer PerFrame : register(b0)
+cbuffer ModelConstantBuffer : register(b0)
 {
-    row_major matrix viewprojection;
+    row_major matrix modelMatrix; // world matrix for object
 };
 
-cbuffer PerObject : register(b1)
+cbuffer ViewProjectionBuffer : register(b1)
 {
-    row_major matrix modelmatrix;
+    row_major matrix viewMatrix;
+    row_major matrix projMatrix;
 };
 
 struct vs_in
@@ -20,10 +21,16 @@ struct vs_out
 
 vs_out main(vs_in input)
 {
-    matrix world = mul(modelmatrix, viewprojection);
+    vs_out output;
     
-    vs_out output = (vs_out) 0; // zero the memory first
-    output.position_clip = mul(world, float4(input.position_local, 1.0));
+    
+    float4 pos = float4(input.position_local, 1.0f);
+
+    // Transform the position from object space to homogeneous projection space
+    pos = mul(pos, modelMatrix);
+    pos = mul(pos, viewMatrix);
+    pos = mul(pos, projMatrix);
+    output.position_clip = pos;
 
     return output;
 }

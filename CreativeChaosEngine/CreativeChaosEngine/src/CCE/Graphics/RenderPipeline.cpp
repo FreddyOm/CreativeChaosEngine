@@ -207,6 +207,7 @@ namespace CCE::Graphics
 		swapChainDesc->Flags = 0;											// flags
 	}
 
+
 	/// <summary>
 	/// Starts the frame by clearing the depth and the stencil buffer.
 	/// </summary>
