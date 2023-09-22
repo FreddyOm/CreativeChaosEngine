@@ -6,37 +6,37 @@ namespace CCE::Input
 	struct CCE_API InputDevice
 	{
 		// TODO: Evaluate whether or not it makes sense to use union here
-		enum AxisState // 4 bytes
+		enum class AxisState // 2 bytes
 		{
 			AXIS_RELEASED,
-			AXIS_JUST_RELEASED,
 			AXIS_MOVED,
-			AXIS_JUST_MOVED
+			AXIS_JUST_RELEASED,
+			AXIS_JUST_MOVED,
 		};
 
-		enum ButtonState // 4 bytes
+		enum class ButtonState // 2 bytes
 		{
 			RELEASED = 0,
-			JUST_RELEASED = 1,
-			PRESSED = 2,
-			JUST_PRESSED = 3
+			PRESSED = 1,
+			JUST_PRESSED = 2,
+			JUST_RELEASED = 3,
 		};
 
 		//TODO: Check alignment again
-		union Axis // 8 bytes
+		struct Axis // 8 bytes
 		{
 			alignas (8) float value;
 			alignas (8) AxisState state;
 		};
 
 		// TODO: Check alignment again
-		union Axis2D // 16 bytes
+		struct Axis2D // 16 bytes
 		{
 			alignas (16) Axis x;
 			alignas (16) Axis y;
 		};
 
-		enum Keycode // 131 bytes -> 136 bytes
+		enum class Keycode // 131 bytes -> 136 bytes
 		{
 			BACKSPACE = 0x08,
 			TAB = 0x09,

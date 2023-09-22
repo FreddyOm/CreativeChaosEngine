@@ -14,7 +14,7 @@ namespace CCE
 	/// <summary>
 	/// The startup call for the manager. Initializes the manager.
 	/// </summary>
-	void CCE::InputManager::StartUp()
+	void InputManager::StartUp()
 	{
 		DASSERT(Instance == nullptr, "InputManager was instantiated more than once!");
 		Instance = this;
@@ -34,7 +34,7 @@ namespace CCE
 	/// <summary>
 	/// The shutdown call of the manager. Deinitializes all contents of the manager.
 	/// </summary>
-	void CCE::InputManager::ShutDown()
+	void InputManager::ShutDown()
 	{
 		CoUninitialize();
 		for(int i = 0; i < XUSER_MAX_COUNT; i++)
@@ -63,7 +63,7 @@ namespace CCE
 		// Also check with calling over dll and stuff
 		if (inputCallback != NULL && inputCallback(hWnd, msg, wParam, lParam))
 			return;
-		
+
 		switch (msg)
 		{
 		// -------------------- CONFIG --------------------
@@ -78,14 +78,8 @@ namespace CCE
 			// handle normal key down events
 			if (keyboard.keys[(int)wParam] != BUTTON_STATE::PRESSED)
 			{
-				keyboard.keys[(int)wParam] =
-					keyboard.keys[(int)wParam] == BUTTON_STATE::JUST_PRESSED ?
-					BUTTON_STATE::PRESSED : BUTTON_STATE::JUST_PRESSED;
-
-				if (keyboard.keys[(int)wParam] == BUTTON_STATE::JUST_PRESSED)
-				{
-					LOG_INPUT("Key down: %x", wParam);
-				}
+				keyboard.keys[(int)wParam] = BUTTON_STATE::PRESSED;
+				LOG_INPUT("Key down: %x", wParam);
 			}			
 			break;
 		}
@@ -94,14 +88,8 @@ namespace CCE
 			// handle system key down events
 			if (keyboard.keys[(int)wParam] != BUTTON_STATE::PRESSED)
 			{
-				keyboard.keys[(int)wParam] =
-					keyboard.keys[(int)wParam] == BUTTON_STATE::JUST_PRESSED ?
-					BUTTON_STATE::PRESSED : BUTTON_STATE::JUST_PRESSED;
-
-				if (keyboard.keys[(int)wParam] == BUTTON_STATE::JUST_PRESSED)
-				{
-					LOG_INPUT("SysKey down: %x", wParam);
-				}
+				keyboard.keys[(int)wParam] = BUTTON_STATE::PRESSED;
+				LOG_INPUT("SysKey down: %x", wParam);
 			}
 			break;
 		}
@@ -110,14 +98,8 @@ namespace CCE
 			// handle normal key up events
 			if (keyboard.keys[(int)wParam] != BUTTON_STATE::RELEASED)
 			{
-				keyboard.keys[(int)wParam] =
-					keyboard.keys[(int)wParam] == BUTTON_STATE::JUST_RELEASED ?
-					BUTTON_STATE::RELEASED : BUTTON_STATE::JUST_RELEASED;
-
-				if (keyboard.keys[(int)wParam] == BUTTON_STATE::JUST_RELEASED)
-				{
-					LOG_INPUT("Key up: %x", wParam);
-				}
+				keyboard.keys[(int)wParam] = BUTTON_STATE::RELEASED;
+				LOG_INPUT("Key up: %x", wParam);
 			}
 			break;
 		}
@@ -126,14 +108,8 @@ namespace CCE
 			// handle system key up events
 			if (keyboard.keys[(int)wParam] != BUTTON_STATE::RELEASED)
 			{
-				keyboard.keys[(int)wParam] =
-					keyboard.keys[(int)wParam] == BUTTON_STATE::JUST_RELEASED ?
-					BUTTON_STATE::RELEASED : BUTTON_STATE::JUST_RELEASED;
-
-				if (keyboard.keys[(int)wParam] == BUTTON_STATE::JUST_RELEASED)
-				{
-					LOG_INPUT("SysKey up: %x", wParam);
-				}
+				keyboard.keys[(int)wParam] = BUTTON_STATE::RELEASED;
+				LOG_INPUT("SysKey up: %x", wParam);
 			}
 			break;
 		}
@@ -141,16 +117,17 @@ namespace CCE
 		
 		// --------------------- MOUSE --------------------
 		case WM_MOUSEMOVE:
-		{			
+		{
 			// handle mouse movement
 			mouse.lastXPos = mouse.xPos;
 			mouse.lastYPos = mouse.yPos;
 
-			mouse.deltaX = mouse.lastXPos - mouse.xPos;
-			mouse.deltaY = mouse.lastYPos - mouse.yPos;
-
 			mouse.xPos = GET_X_LPARAM(lParam);
 			mouse.yPos = GET_Y_LPARAM(lParam);
+		
+			// TDOD: check how to get actual delta
+			mouse.deltaX = mouse.lastXPos - mouse.xPos;
+			mouse.deltaY = mouse.lastYPos - mouse.yPos;
 
 			LOG_INPUT("Mouse position [x: %i y: %i]", mouse.xPos, mouse.yPos);
 			break;
@@ -185,108 +162,60 @@ namespace CCE
 		case WM_LBUTTONDOWN:
 		{
 			// handle mouse button down
-			if (mouse.leftMouseButton != BUTTON_STATE::PRESSED &&
-				mouse.leftMouseButton != BUTTON_STATE::JUST_PRESSED)
+			if (mouse.leftMouseButton != BUTTON_STATE::PRESSED)
 			{
-				mouse.leftMouseButton =
-					mouse.leftMouseButton == BUTTON_STATE::JUST_PRESSED ?
-					BUTTON_STATE::PRESSED :
-					BUTTON_STATE::JUST_PRESSED;
-
-				if (mouse.leftMouseButton == BUTTON_STATE::JUST_PRESSED)
-				{
-					LOG_INPUT("Left Mouse button down");
-				}
+				mouse.leftMouseButton = BUTTON_STATE::PRESSED;
+				LOG_INPUT("Left Mouse button down");
 			}
 			break;
 		}
 		case WM_LBUTTONUP:
 		{
 			// handle mouse button up
-			if (mouse.leftMouseButton != BUTTON_STATE::RELEASED &&
-				mouse.leftMouseButton != BUTTON_STATE::JUST_RELEASED)
+			if (mouse.leftMouseButton != BUTTON_STATE::RELEASED)
 			{
-				mouse.leftMouseButton =
-					mouse.leftMouseButton == BUTTON_STATE::JUST_RELEASED ?
-					BUTTON_STATE::RELEASED :
-					BUTTON_STATE::JUST_RELEASED;
-
-				if (mouse.leftMouseButton == BUTTON_STATE::JUST_RELEASED)
-				{
-					LOG_INPUT("Left Mouse button up");
-				}
+				mouse.leftMouseButton = BUTTON_STATE::RELEASED;
+				LOG_INPUT("Left Mouse button up");
 			}
 			break;
 		}
 		case WM_RBUTTONDOWN:
 		{
 			// handle mouse button down
-			if (mouse.rightMouseButton != BUTTON_STATE::PRESSED &&
-				mouse.rightMouseButton != BUTTON_STATE::JUST_PRESSED)
+			if (mouse.rightMouseButton != BUTTON_STATE::PRESSED)
 			{
-				mouse.rightMouseButton =
-					mouse.rightMouseButton == BUTTON_STATE::JUST_PRESSED ?
-					BUTTON_STATE::PRESSED :
-					BUTTON_STATE::JUST_PRESSED;
-
-				if (mouse.rightMouseButton == BUTTON_STATE::JUST_PRESSED)
-				{
-					LOG_INPUT("Right Mouse button down");
-				}
+				mouse.rightMouseButton = BUTTON_STATE::PRESSED;
+				LOG_INPUT("Right Mouse button down");
 			}			
 			break;
 		}
 		case WM_RBUTTONUP:
 		{
 			// handle mouse button up
-			if (mouse.rightMouseButton != BUTTON_STATE::RELEASED &&
-				mouse.rightMouseButton != BUTTON_STATE::JUST_RELEASED)
+			if (mouse.rightMouseButton != BUTTON_STATE::RELEASED)
 			{
-				mouse.rightMouseButton =
-					mouse.rightMouseButton == BUTTON_STATE::JUST_RELEASED ?
-					BUTTON_STATE::RELEASED :
-					BUTTON_STATE::JUST_RELEASED;
-
-				if (mouse.rightMouseButton == BUTTON_STATE::JUST_RELEASED)
-				{
-					LOG_INPUT("Right Mouse button up");
-				}
+				mouse.rightMouseButton = BUTTON_STATE::RELEASED;
+				LOG_INPUT("Right Mouse button up");
 			}
 			break;
 		}
 		case WM_MBUTTONDOWN:
 		{
 			// handle mouse button down
-			if (mouse.middleMouseButton != BUTTON_STATE::PRESSED &&
-				mouse.middleMouseButton != BUTTON_STATE::JUST_PRESSED)
+			if (mouse.middleMouseButton != BUTTON_STATE::PRESSED)
 			{
-				mouse.middleMouseButton =
-					mouse.middleMouseButton == BUTTON_STATE::JUST_PRESSED ?
-					BUTTON_STATE::PRESSED :
-					BUTTON_STATE::JUST_PRESSED;
-
-				if (mouse.middleMouseButton == BUTTON_STATE::JUST_PRESSED)
-				{
-					LOG_INPUT("Middle Mouse button down");
-				}
+				mouse.middleMouseButton = BUTTON_STATE::PRESSED;
+				LOG_INPUT("Middle Mouse button down");
 			}
 			break;
 		}
 		case WM_MBUTTONUP:
 		{
 			// handle mouse button up
-			if (mouse.middleMouseButton != BUTTON_STATE::RELEASED &&
-				mouse.middleMouseButton != BUTTON_STATE::JUST_RELEASED)
+			if (mouse.middleMouseButton != BUTTON_STATE::RELEASED)
 			{
-				mouse.middleMouseButton =
-					mouse.middleMouseButton == BUTTON_STATE::JUST_RELEASED ?
-					BUTTON_STATE::RELEASED :
-					BUTTON_STATE::JUST_RELEASED;
-
-				if (mouse.middleMouseButton == BUTTON_STATE::JUST_RELEASED)
-				{
-					LOG_INPUT("Middle Mouse button up");
-				}
+				mouse.middleMouseButton = BUTTON_STATE::RELEASED;
+				LOG_INPUT("Middle Mouse button up");
 			}
 			break;
 		}
@@ -299,35 +228,19 @@ namespace CCE
 			if (button == XBUTTON1)
 			{
 				// XBUTTON1 was clicked.
-				if (mouse.extraButton1 != BUTTON_STATE::PRESSED &&
-					mouse.extraButton1 != BUTTON_STATE::JUST_PRESSED)
+				if (mouse.extraButton1 != BUTTON_STATE::PRESSED)
 				{
-					mouse.extraButton1 =
-						mouse.extraButton1 == BUTTON_STATE::JUST_PRESSED ?
-						BUTTON_STATE::PRESSED :
-						BUTTON_STATE::JUST_PRESSED;
-
-					if (mouse.extraButton1 == BUTTON_STATE::JUST_PRESSED)
-					{
-						LOG_INPUT("Extra mouse button down");
-					}
+					mouse.extraButton1 = BUTTON_STATE::PRESSED;
+					LOG_INPUT("Extra mouse button down");
 				}
 			}
 			else if (button == XBUTTON2)
 			{
 				// XBUTTON2 was clicked.
-				if (mouse.extraButton2 != BUTTON_STATE::PRESSED &&
-					mouse.extraButton2 != BUTTON_STATE::JUST_PRESSED)
+				if (mouse.extraButton2 != BUTTON_STATE::PRESSED)
 				{
-					mouse.extraButton2 =
-						mouse.extraButton2 == BUTTON_STATE::JUST_PRESSED ?
-						BUTTON_STATE::PRESSED :
-						BUTTON_STATE::JUST_PRESSED;
-
-					if (mouse.extraButton2 == BUTTON_STATE::JUST_PRESSED)
-					{
-						LOG_INPUT("Extra mouse button 2 down");
-					}
+					mouse.extraButton2 = BUTTON_STATE::PRESSED;
+					LOG_INPUT("Extra mouse button 2 down");
 				}				
 			}
 
@@ -342,35 +255,21 @@ namespace CCE
 			if (button == XBUTTON1)
 			{
 				// XBUTTON1 was released.
-				if (mouse.extraButton1 != BUTTON_STATE::RELEASED &&
-					mouse.extraButton1 != BUTTON_STATE::JUST_RELEASED)
+				if (mouse.extraButton1 != BUTTON_STATE::RELEASED)
 				{
-					mouse.extraButton1 =
-						mouse.extraButton1 == BUTTON_STATE::JUST_RELEASED ? 
-						BUTTON_STATE::RELEASED :
-						BUTTON_STATE::JUST_RELEASED;
-				}
-				if (mouse.extraButton1 == BUTTON_STATE::JUST_RELEASED)
-				{
+					mouse.extraButton1 = BUTTON_STATE::RELEASED;
 					LOG_INPUT("Extra mouse button up");
 				}
+				
 			}
 			else if (button == XBUTTON2)
 			{
 				// XBUTTON2 was released.
-				if (mouse.extraButton2 != BUTTON_STATE::RELEASED &&
-					mouse.extraButton2 != BUTTON_STATE::JUST_RELEASED)
+				if (mouse.extraButton2 != BUTTON_STATE::RELEASED)
 				{
-					mouse.extraButton2 =
-						mouse.extraButton2 == BUTTON_STATE::JUST_RELEASED ?
-						BUTTON_STATE::RELEASED :
-						BUTTON_STATE::JUST_RELEASED;
-				}
-				if (mouse.extraButton2 == BUTTON_STATE::JUST_RELEASED)
-				{
+					mouse.extraButton2 = BUTTON_STATE::RELEASED;
 					LOG_INPUT("Extra mouse button 2 up");
-				}
-				
+				}				
 			}
 
 			break;

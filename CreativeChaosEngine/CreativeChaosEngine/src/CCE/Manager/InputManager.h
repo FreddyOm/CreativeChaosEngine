@@ -3,7 +3,6 @@
 #include "../Input/InputDevice.h"
 #include "../String/String.h"
 #include <vector>
-#include "../Utilities/Events/Delegate.h"
 
 #include <Xinput.h>
 #pragma comment(lib, "XInput.lib")
@@ -15,7 +14,8 @@ namespace CCE
 	struct CCE_API InputManager : public BaseManager
 	{
 		typedef LRESULT (*GuiInputCallback)(HWND, UINT, WPARAM, LPARAM);
-
+		friend class Application;
+		friend class ClientWindow;
 	public:
 		InputManager() = default;
 		~InputManager() = default;
@@ -24,16 +24,14 @@ namespace CCE
 		void ShutDown() override;
 
 		static InputManager* Instance;
+		GuiInputCallback inputCallback = NULL;
 
+	private:
 		void HandleWinInput(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 		void HandleXInput();
 		void HandleDirectInput();
 		void InitializeDualSense();
 		void HandleDualSenseInput();
-
-		GuiInputCallback inputCallback = NULL;
-
-	private:
 		
 		// TODO: Keep left handed mouse layout in mind
 		// TODO: Store input values per bit in DWORD (or similar)
@@ -92,9 +90,12 @@ namespace CCE
 			byte padding[24] = { 0 };		// 24 bytes
 		};
 
+	public:
 		alignas (64)	Mouse mouse = {};
 		alignas (256)	Keyboard keyboard = {};
 		alignas (128)	Controller controller[4] = {};
+	
+	private:
 		Controller* _currentController = nullptr;					// 8 bytes ?
 		unsigned char connectedDeviceCount = 0;						// 1 byte
 		unsigned char lastConnectedDeviceCount = 0;					// 1 byte

@@ -9,6 +9,7 @@
 #include "GUIDrawables/MemoryWindow.h"
 #include "GUIDrawables/JobWindow.h"
 #include "GUIDrawables/Inspector.h"
+#include "GUIDrawables/InputWindow.h"
 
 // -------- Testing ---------
 
@@ -89,8 +90,13 @@ int main(int argc, char* argv[])
         // EditorGUI
         MenuBar menuBar = MenuBar();
         RenderingDebugger rendEditorWin = RenderingDebugger("Rendering");
-        MemoryWindow memEditorWin = MemoryWindow("Memory");
+        //MemoryWindow memEditorWin = MemoryWindow("Memory");
         Inspector inspector = Inspector("Inspector");
+        InputWindow inpput = InputWindow("Input");
+
+        // Editor viewport camera
+        CCE::Graphics::Camera viewportCamera = CCE::Graphics::Camera();
+
 #if MULTITHREADED
         JobWindow jobWin = JobWindow("Jobs");
 #endif
@@ -106,6 +112,8 @@ int main(int argc, char* argv[])
         while (rValue != (int)WM_QUIT)
         {
             mRuntimeManager.PreEditorUpdate(rValue);
+            
+            viewportCamera.Update();
 
             IGUIDrawable::PreGUIUpdate();
 

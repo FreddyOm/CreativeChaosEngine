@@ -34,10 +34,16 @@ namespace CCE::Graphics
 		void Update();
 
 	private:
+		void PollInput();
+
+	private:
 		float nearPlane = 0.1f;
 		float farPlane = 20.0f;
 		float fovVertical = 120.0f;
 		float fovHorizontal = 160.0f;
+
+		DirectX::XMVECTOR lookDir = {0, 0, 1};
+		float camMovementDelta = 0.005f;
 
 		struct CameraConstantBufs 
 		{

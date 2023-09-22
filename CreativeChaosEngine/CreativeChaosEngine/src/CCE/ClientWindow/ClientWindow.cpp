@@ -167,11 +167,11 @@ using namespace CCE;
 /// <param name="wParam"></param>
 /// <param name="lParam"></param>
 /// <returns>Result code.</returns>
-LRESULT CALLBACK CCE::ClientWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK ClientWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	// TODO: Handle input in one place & make explicit code platform independent
 	// TODO: Create possibility to set values to 0 again
-	CCE::InputManager::Instance->HandleWinInput(hwnd, uMsg, wParam, lParam);
+	InputManager::Instance->HandleWinInput(hwnd, uMsg, wParam, lParam);
 
 	switch (uMsg)
 	{
@@ -179,11 +179,11 @@ LRESULT CALLBACK CCE::ClientWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wPar
 	{
 		if (wParam == SIZE_MINIMIZED)
 		{
-			CCE::ClientWindow::Instance->minimized = true;
+			ClientWindow::Instance->minimized = true;
 		}
-		else if (CCE::ClientWindow::Instance->minimized)
+		else if (ClientWindow::Instance->minimized)
 		{
-			CCE::ClientWindow::Instance->minimized = false;
+			ClientWindow::Instance->minimized = false;
 		}
 
 		int width = LOWORD(lParam);  // Macro to get the low-order word.

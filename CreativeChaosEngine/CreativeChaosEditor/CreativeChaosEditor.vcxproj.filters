@@ -60,6 +60,9 @@
     <ClCompile Include="src\GUIDrawables\Inspector.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\GUIDrawables\InputWindow.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CreativeChaosEditor.h">
@@ -108,6 +111,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\GUIDrawables\Inspector.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUIDrawables\InputWindow.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

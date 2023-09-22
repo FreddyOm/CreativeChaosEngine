@@ -121,7 +121,7 @@ namespace CCE::Graphics
 
 	public:
 		static RenderPipeline* Instance;
-		Camera* mainCamera = nullptr;
+		//Camera* viewportCamera = nullptr;
 		Mesh* testMesh = nullptr;
 
 	public:

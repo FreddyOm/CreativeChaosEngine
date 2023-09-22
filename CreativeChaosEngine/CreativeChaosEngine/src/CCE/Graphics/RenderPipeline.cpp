@@ -34,7 +34,7 @@ namespace CCE::Graphics
 		//if (cnt != nullptr)
 			//delete cnt;
 
-		delete mainCamera;
+		//delete viewportCamera;
 		delete testMesh;
 
 		UNREGISTER_LEAK_DETECT;
@@ -66,7 +66,7 @@ namespace CCE::Graphics
 		// Create viewport
 		CreateViewport();
 
-		mainCamera = new Camera();
+		//viewportCamera = new Camera();
 		testMesh = new Mesh();
 	}
 
@@ -243,9 +243,9 @@ namespace CCE::Graphics
 
 		// TODO: Render triangles
 
-		// Test Triangle
+		// Test Cube
 
-		mainCamera->Update();
+		//viewportCamera->Update();
 
 		testMesh->Draw();
 	}
