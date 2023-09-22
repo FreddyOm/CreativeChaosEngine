@@ -9,14 +9,24 @@ namespace CCE::Graphics
 	{
 		std::vector<Vertex> vertices =
 		{
-			{ XMFLOAT3(0.f, 0.25f, 0.0f) },
-			{ XMFLOAT3(0.25f, -0.25f, 0.0f) },
-			{ XMFLOAT3(-0.25f, -0.25f, 0.0f) },
+			{ XMFLOAT3(-0.5f, 0.5f, -0.5f) },
+			{ XMFLOAT3(-0.5f, 0.5f, 0.5f) },
+			{ XMFLOAT3(0.5f, 0.5f, 0.5f) },
+			{ XMFLOAT3(0.5f, 0.5f, -0.5f) },
+			{ XMFLOAT3(-0.5f, -0.5f, -0.5f) },
+			{ XMFLOAT3(-0.5f, -0.5f, 0.5f) },
+			{ XMFLOAT3(0.5f, -0.5f, 0.5f) },
+			{ XMFLOAT3(0.5f, -0.5f, -0.5f) },
 		};
 
 		std::vector<DWORD> indices =
 		{
-			0,1,2,
+			0,1,3, 1,2,3,	// top
+			4,7,5, 5,7,6,	// bottom
+			4,0,3, 4,3,7,	// front
+			6,2,5, 5,2,1,	// back
+			5,0,4, 5,1,0,	// left
+			7,3,6, 6,3,2,	// right
 		};
 
 		std::vector<std::shared_ptr<IBindable>> bindPtrs;

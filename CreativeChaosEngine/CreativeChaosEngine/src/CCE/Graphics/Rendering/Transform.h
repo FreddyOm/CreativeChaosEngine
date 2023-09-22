@@ -33,9 +33,9 @@ public:
 	void SetRotation(DirectX::XMFLOAT3 _rotation)
 	{
 		rotation = _rotation;
-		rotationXMatrix = DirectX::XMMatrixRotationX(rotation.x);
-		rotationYMatrix = DirectX::XMMatrixRotationY(rotation.y);
-		rotationZMatrix = DirectX::XMMatrixRotationZ(rotation.z);
+		rotationXMatrix = DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(rotation.x));
+		rotationYMatrix = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(rotation.y));
+		rotationZMatrix = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(rotation.z));
 	}
 
 	DirectX::XMFLOAT3 Position()
