@@ -113,6 +113,9 @@ namespace CCE
 		maxUsedFibersPerFrame = mJobManager.GetUsedFibers() > maxUsedFibersPerFrame ?
 			mJobManager.GetUsedFibers() : maxUsedFibersPerFrame;
 		PUSH_EDITOR_INT("fibersPerFrame", maxUsedFibersPerFrame);
+
+		mInputManager.FinalizeWinInput();
+
 		frameEnd = Time::Now();
 		Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));
 	}

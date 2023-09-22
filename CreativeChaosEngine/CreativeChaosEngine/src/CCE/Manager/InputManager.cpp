@@ -51,6 +51,17 @@ namespace CCE
 	InputManager* InputManager::Instance = nullptr;
 
 #ifdef CCE_PLATFORM_WINDOWS // PLATFORM WINDOWS
+
+	void InputManager::FinalizeWinInput()
+	{
+		// Reset values for accuracy
+		mouse.deltaX = mouse.xPos - mouse.lastXPos;
+		mouse.deltaY = mouse.yPos - mouse.lastYPos;
+
+		mouse.lastXPos = mouse.xPos;
+		mouse.lastYPos = mouse.yPos;
+	}
+
 	/// <summary>
 	/// Handle window input (Mouse + Keyoard).
 	/// </summary>
@@ -119,15 +130,15 @@ namespace CCE
 		case WM_MOUSEMOVE:
 		{
 			// handle mouse movement
-			mouse.lastXPos = mouse.xPos;
-			mouse.lastYPos = mouse.yPos;
+			/*mouse.lastXPos = mouse.xPos;
+			mouse.lastYPos = mouse.yPos;*/
 
 			mouse.xPos = GET_X_LPARAM(lParam);
 			mouse.yPos = GET_Y_LPARAM(lParam);
 		
 			// TDOD: check how to get actual delta
-			mouse.deltaX = mouse.lastXPos - mouse.xPos;
-			mouse.deltaY = mouse.lastYPos - mouse.yPos;
+			//mouse.deltaX = mouse.lastXPos - mouse.xPos;
+			//mouse.deltaY = mouse.lastYPos - mouse.yPos;
 
 			LOG_INPUT("Mouse position [x: %i y: %i]", mouse.xPos, mouse.yPos);
 			break;

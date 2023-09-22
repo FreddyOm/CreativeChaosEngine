@@ -23,6 +23,8 @@ namespace CCE
 		void StartUp() override;
 		void ShutDown() override;
 
+		void FinalizeWinInput();
+
 		static InputManager* Instance;
 		GuiInputCallback inputCallback = NULL;
 
@@ -33,6 +35,7 @@ namespace CCE
 		void InitializeDualSense();
 		void HandleDualSenseInput();
 		
+
 		// TODO: Keep left handed mouse layout in mind
 		// TODO: Store input values per bit in DWORD (or similar)
 		struct Mouse : private Input::InputDevice  // 64 bytes

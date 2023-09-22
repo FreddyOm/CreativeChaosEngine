@@ -103,6 +103,8 @@ namespace CCE::Graphics
 
 		if (InputManager::Instance->mouse.rightMouseButton == InputDevice::ButtonState::PRESSED)
 		{
+			#pragma region wasd
+
 			if (InputManager::Instance->keyboard.keys[(int)InputDevice::Keycode::KEY_W] == InputDevice::ButtonState::PRESSED)
 			{
 				transform.SetTranslation({ transform.Position().x, transform.Position().y, transform.Position().z + (camMovementDelta * (float)CCE::Time::deltaTime) });
@@ -132,6 +134,13 @@ namespace CCE::Graphics
 			{
 				transform.SetTranslation({ transform.Position().x, transform.Position().y - (camMovementDelta * (float)CCE::Time::deltaTime), transform.Position().z });
 			}
+
+#pragma endregion wasd
+		}
+		else if (InputManager::Instance->mouse.middleMouseButton == InputDevice::ButtonState::PRESSED)
+		{
+			transform.SetTranslation({ transform.Position().x - InputManager::Instance->mouse.deltaX * (camMovementDelta * (float)CCE::Time::deltaTime),
+				transform.Position().y + InputManager::Instance->mouse.deltaY * (camMovementDelta * (float)CCE::Time::deltaTime), transform.Position().z });
 		}
 	}
 }
