@@ -2,6 +2,10 @@
 #include "../../Core.h"
 #include "D3D11.h"
 #include "Transform.h"
+#include "../../Input/IInputHandler.h"
+#include "../../Input/Keyboard.h"
+#include "../../Input/Controller.h"
+#include "../../Input/Mouse.h"
 #include <memory>
 
 namespace CCE::Graphics
@@ -11,7 +15,7 @@ namespace CCE::Graphics
 	template<typename C>
 	class VSConstantBuffer;
 
-	struct CCE_API Camera
+	struct CCE_API Camera : protected Input::IInputHandler
 	{
 	public:
 		Camera();
@@ -34,9 +38,6 @@ namespace CCE::Graphics
 		void Update();
 
 	private:
-		void PollInput();
-
-	private:
 		float nearPlane = 0.1f;
 		float farPlane = 20.0f;
 		float fovVertical = 120.0f;
@@ -53,5 +54,11 @@ namespace CCE::Graphics
 		} cameraConstBufs = { };
 
 		std::shared_ptr<VSConstantBuffer<CameraConstantBufs>> pCameraConstBuf = nullptr;
+
+		// Inherited via IInputHandler
+		void InputCallback(const Input::Mouse* mouse,
+			const Input::Keyboard* keyboard,
+			const Input::Controller* controller) override;
+
 	};
 }

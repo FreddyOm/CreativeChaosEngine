@@ -281,6 +281,18 @@
     <ClInclude Include="src\CCE\Graphics\Rendering\Transform.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="src\CCE\Input\IInputHandler.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Input\Mouse.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Input\Keyboard.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CCE\Input\Controller.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\sdk\ds5w_x64.dll" />

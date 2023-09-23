@@ -60,6 +60,11 @@ namespace CCE
 
 		mouse.lastXPos = mouse.xPos;
 		mouse.lastYPos = mouse.yPos;
+
+		for (auto* handler : handlerList)
+		{
+			handler->InputCallback(&mouse, &keyboard, &controller[0]);
+		}
 	}
 
 	/// <summary>

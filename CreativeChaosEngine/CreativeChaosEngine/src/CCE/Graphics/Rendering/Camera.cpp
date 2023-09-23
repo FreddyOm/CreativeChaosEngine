@@ -13,6 +13,8 @@ namespace CCE::Graphics
 		SetFovAndLookDir();
 		CreateConstBufs();
 
+		InputManager::Instance->RegisterInputCallback(*this);
+
 		REGISTER_LEAK_DETECT;
 	}
 
@@ -86,8 +88,6 @@ namespace CCE::Graphics
 
 	void Camera::Update()
 	{
-		PollInput();
-
 		SetFovAndLookDir();
 
 		HRESULT hr;
@@ -96,51 +96,59 @@ namespace CCE::Graphics
 		pCameraConstBuf->Bind();
 	}
 
-	void Camera::PollInput()
+	void Camera::InputCallback(const Input::Mouse* mouse, const Input::Keyboard* keyboard, const Input::Controller* controller)
 	{
 		using namespace CCE::Input;
 		using CCE::Input::InputDevice;
 
-		if (InputManager::Instance->mouse.rightMouseButton == InputDevice::ButtonState::PRESSED)
+		if (mouse->rightMouseButton == InputDevice::ButtonState::PRESSED)
 		{
 			#pragma region wasd
 
-			if (InputManager::Instance->keyboard.keys[(int)InputDevice::Keycode::KEY_W] == InputDevice::ButtonState::PRESSED)
+			if (keyboard->keys[(int)InputDevice::Keycode::KEY_W] == InputDevice::ButtonState::PRESSED)
 			{
 				transform.SetTranslation({ transform.Position().x, transform.Position().y, transform.Position().z + (camMovementDelta * (float)CCE::Time::deltaTime) });
 			}
 
-			if (InputManager::Instance->keyboard.keys[(int)InputDevice::Keycode::KEY_A] == InputDevice::ButtonState::PRESSED)
+			if (keyboard->keys[(int)InputDevice::Keycode::KEY_A] == InputDevice::ButtonState::PRESSED)
 			{
 				transform.SetTranslation({ transform.Position().x - (camMovementDelta * (float)CCE::Time::deltaTime), transform.Position().y, transform.Position().z });
 			}
 
-			if (InputManager::Instance->keyboard.keys[(int)InputDevice::Keycode::KEY_S] == InputDevice::ButtonState::PRESSED)
+			if (keyboard->keys[(int)InputDevice::Keycode::KEY_S] == InputDevice::ButtonState::PRESSED)
 			{
 				transform.SetTranslation({ transform.Position().x, transform.Position().y, transform.Position().z - (camMovementDelta * (float)CCE::Time::deltaTime) });
 			}
 
-			if (InputManager::Instance->keyboard.keys[(int)InputDevice::Keycode::KEY_D] == InputDevice::ButtonState::PRESSED)
+			if (keyboard->keys[(int)InputDevice::Keycode::KEY_D] == InputDevice::ButtonState::PRESSED)
 			{
 				transform.SetTranslation({ transform.Position().x + (camMovementDelta * (float)CCE::Time::deltaTime), transform.Position().y, transform.Position().z });
 			}
 
-			if (InputManager::Instance->keyboard.keys[(int)InputDevice::Keycode::KEY_Q] == InputDevice::ButtonState::PRESSED)
+			if (keyboard->keys[(int)InputDevice::Keycode::KEY_Q] == InputDevice::ButtonState::PRESSED)
 			{
 				transform.SetTranslation({ transform.Position().x, transform.Position().y + (camMovementDelta * (float)CCE::Time::deltaTime), transform.Position().z });
 			}
 
-			if (InputManager::Instance->keyboard.keys[(int)InputDevice::Keycode::KEY_E] == InputDevice::ButtonState::PRESSED)
+			if (keyboard->keys[(int)InputDevice::Keycode::KEY_E] == InputDevice::ButtonState::PRESSED)
 			{
 				transform.SetTranslation({ transform.Position().x, transform.Position().y - (camMovementDelta * (float)CCE::Time::deltaTime), transform.Position().z });
 			}
 
 #pragma endregion wasd
+
+			#pragma region rotate cam
+
+
+
+			#pragma endregion rotate cam
+
 		}
-		else if (InputManager::Instance->mouse.middleMouseButton == InputDevice::ButtonState::PRESSED)
+		else if (mouse->middleMouseButton == InputDevice::ButtonState::PRESSED)
 		{
-			transform.SetTranslation({ transform.Position().x - InputManager::Instance->mouse.deltaX * (camMovementDelta * (float)CCE::Time::deltaTime),
-				transform.Position().y + InputManager::Instance->mouse.deltaY * (camMovementDelta * (float)CCE::Time::deltaTime), transform.Position().z });
+			transform.SetTranslation({ transform.Position().x - mouse->deltaX * (camMovementDelta * (float)CCE::Time::deltaTime),
+				transform.Position().y + mouse->deltaY * (camMovementDelta * (float)CCE::Time::deltaTime), transform.Position().z });
 		}
+
 	}
 }
