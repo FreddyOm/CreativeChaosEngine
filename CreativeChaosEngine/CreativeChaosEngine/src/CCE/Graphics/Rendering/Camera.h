@@ -44,7 +44,11 @@ namespace CCE::Graphics
 		float fovHorizontal = 160.0f;
 
 		DirectX::XMVECTOR lookDir = {0, 0, 1};
-		float camMovementDelta = 0.005f;
+		float camMovementDelta = 0.003f;
+		float defaultCamMovementDelta = 0.003f;
+		float fastCamMovementDelta = 0.007f;
+		float camPanDelta = 0.005f;
+		float camZoomDelta = 0.5f;
 
 		struct CameraConstantBufs 
 		{

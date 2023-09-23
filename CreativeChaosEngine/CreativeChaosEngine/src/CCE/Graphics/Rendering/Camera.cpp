@@ -96,13 +96,21 @@ namespace CCE::Graphics
 		pCameraConstBuf->Bind();
 	}
 
+	// TODO: Only do this on the viewport cam (create another class for the viewport cam or derive from it -> indirection[!])
+	// Also, keep in mind virtual functions are runtime performance critical!
 	void Camera::InputCallback(const Input::Mouse* mouse, const Input::Keyboard* keyboard, const Input::Controller* controller)
 	{
 		using namespace CCE::Input;
 		using CCE::Input::InputDevice;
-
-		if (mouse->rightMouseButton == InputDevice::ButtonState::PRESSED)
+		if (mouse->middleMouseButton == InputDevice::ButtonState::PRESSED)
 		{
+			transform.SetTranslation({ transform.Position().x - mouse->deltaX * (camPanDelta * (float)CCE::Time::deltaTime),
+				transform.Position().y + mouse->deltaY * (camPanDelta * (float)CCE::Time::deltaTime), transform.Position().z });
+		}
+		else if (mouse->rightMouseButton == InputDevice::ButtonState::PRESSED)
+		{
+			camMovementDelta = keyboard->keys[(int)InputDevice::Keycode::SHIFT] == InputDevice::ButtonState::PRESSED ? fastCamMovementDelta : defaultCamMovementDelta;
+
 			#pragma region wasd
 
 			if (keyboard->keys[(int)InputDevice::Keycode::KEY_W] == InputDevice::ButtonState::PRESSED)
@@ -143,12 +151,17 @@ namespace CCE::Graphics
 
 			#pragma endregion rotate cam
 
+			return;
 		}
-		else if (mouse->middleMouseButton == InputDevice::ButtonState::PRESSED)
+		
+		#pragma region zoom
+
+		if (mouse->wheelDelta != 0)
 		{
-			transform.SetTranslation({ transform.Position().x - mouse->deltaX * (camMovementDelta * (float)CCE::Time::deltaTime),
-				transform.Position().y + mouse->deltaY * (camMovementDelta * (float)CCE::Time::deltaTime), transform.Position().z });
+			transform.SetTranslation({ transform.Position().x, transform.Position().y ,transform.Position().z + mouse->wheelDelta * camZoomDelta * (float)CCE::Time::deltaTime });
 		}
+
+		#pragma endregion zoom
 
 	}
 }

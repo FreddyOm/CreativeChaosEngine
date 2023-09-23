@@ -155,7 +155,7 @@ namespace CCE::Input
 			
 			NUM_LOCK = 0x90,
 			SCROLL_LOCK = 0x91,
-			LEFT_SHIFT = 0xA0,
+			LEFT_SHIFT = 0xA0,		// REDUNDANT
 			RIGHT_SHIFT = 0xA1,
 			LEFT_CTRL = 0xA2,
 			RIGHT_CTRL = 0xA3,

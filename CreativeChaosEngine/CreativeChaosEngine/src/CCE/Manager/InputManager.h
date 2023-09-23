@@ -30,7 +30,7 @@ namespace CCE
 		void StartUp() override;
 		void ShutDown() override;
 
-		void FinalizeWinInput();
+		
 		void RegisterInputCallback(Input::IInputHandler& handler)
 		{
 			handlerList.push_back(&handler);
@@ -46,6 +46,9 @@ namespace CCE
 		void InitializeDualSense();
 		void HandleDualSenseInput();
 		
+		void FinalizeWinInput();
+		void ResetInputValues();
+
 	public:
 		alignas (64)	Input::Mouse mouse = {};
 		alignas (256)	Input::Keyboard keyboard = {};

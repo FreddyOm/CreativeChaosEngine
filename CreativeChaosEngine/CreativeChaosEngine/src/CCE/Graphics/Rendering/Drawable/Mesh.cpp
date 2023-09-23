@@ -52,7 +52,8 @@ namespace CCE::Graphics
 
 		CreateConstBufs();
 
-		transform.SetTranslation({0.0, 0.3, 0.1});
+		transform.SetTranslation({ 0.0, 0.0, 0.0 });
+		transform.SetScale({1.0, 1.0, 0.25});
 
 		REGISTER_LEAK_DETECT;
 	}

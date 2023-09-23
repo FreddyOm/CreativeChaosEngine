@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
         RenderingDebugger rendEditorWin = RenderingDebugger("Rendering");
         //MemoryWindow memEditorWin = MemoryWindow("Memory");
         Inspector inspector = Inspector("Inspector");
-        InputWindow inpput = InputWindow("Input");
+        //InputWindow input = InputWindow("Input");
 
         // Editor viewport camera
         CCE::Graphics::Camera viewportCamera = CCE::Graphics::Camera();

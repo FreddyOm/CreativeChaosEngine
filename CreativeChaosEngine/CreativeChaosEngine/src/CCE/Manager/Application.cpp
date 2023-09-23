@@ -83,6 +83,7 @@ namespace CCE
 
 #else
 		window->UpdateClientWindow(rValue);
+		mInputManager.FinalizeWinInput();
 		window->GetRenderPipeline()->BeginFrame(window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
 
 		//mInputManager.HandleDirectInput();
@@ -107,14 +108,13 @@ namespace CCE
 
 #else
 		window->GetRenderPipeline()->EndFrame();
+		mInputManager.ResetInputValues();
 		mMemoryManager.UpdateMemoryUsage();
 
 #endif
 		maxUsedFibersPerFrame = mJobManager.GetUsedFibers() > maxUsedFibersPerFrame ?
 			mJobManager.GetUsedFibers() : maxUsedFibersPerFrame;
 		PUSH_EDITOR_INT("fibersPerFrame", maxUsedFibersPerFrame);
-
-		mInputManager.FinalizeWinInput();
 
 		frameEnd = Time::Now();
 		Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));

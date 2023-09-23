@@ -52,6 +52,9 @@ namespace CCE
 
 #ifdef CCE_PLATFORM_WINDOWS // PLATFORM WINDOWS
 
+	/// <summary>
+	/// Calculate some intermediate values and update all input callback receiver.
+	/// </summary>
 	void InputManager::FinalizeWinInput()
 	{
 		// Reset values for accuracy
@@ -61,10 +64,21 @@ namespace CCE
 		mouse.lastXPos = mouse.xPos;
 		mouse.lastYPos = mouse.yPos;
 
+		//mouse.wheelDelta = 0;
+
+		// TODO: Do this only when values change
 		for (auto* handler : handlerList)
 		{
 			handler->InputCallback(&mouse, &keyboard, &controller[0]);
 		}
+	}
+
+	/// <summary>
+	/// Reset input values that are otherwise not reset by the windows message proc.
+	/// </summary>
+	void InputManager::ResetInputValues()
+	{
+		mouse.wheelDelta = 0;
 	}
 
 	/// <summary>
@@ -135,15 +149,9 @@ namespace CCE
 		case WM_MOUSEMOVE:
 		{
 			// handle mouse movement
-			/*mouse.lastXPos = mouse.xPos;
-			mouse.lastYPos = mouse.yPos;*/
 
 			mouse.xPos = GET_X_LPARAM(lParam);
 			mouse.yPos = GET_Y_LPARAM(lParam);
-		
-			// TDOD: check how to get actual delta
-			//mouse.deltaX = mouse.lastXPos - mouse.xPos;
-			//mouse.deltaY = mouse.lastYPos - mouse.yPos;
 
 			LOG_INPUT("Mouse position [x: %i y: %i]", mouse.xPos, mouse.yPos);
 			break;
@@ -170,8 +178,8 @@ namespace CCE
 		}
 		case WM_MOUSEWHEEL:
 		{
+			mouse.wheelDelta = GET_WHEEL_DELTA_WPARAM(wParam) / 120.f;
 			mouse.lastWheelDelta = mouse.wheelDelta;
-			mouse.wheelDelta = GET_WHEEL_DELTA_WPARAM(wParam);
 			LOG_INPUT("Mousewheel [%f]", mouse.wheelDelta);
 			break;
 		}
@@ -292,8 +300,6 @@ namespace CCE
 		}
 		// ------------------------------------------------
 		}
-		// reset value
-		mouse.wheelDelta = 0;
 	}
 	
 	/// <summary>
