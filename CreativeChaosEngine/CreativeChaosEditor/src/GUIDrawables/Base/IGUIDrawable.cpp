@@ -67,6 +67,7 @@ void IGUIDrawable::InitializeGUI() const
 
 	io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter-Light.ttf", 14);
 	io.Fonts->AddFontFromFileTTF("./resources/fonts/Lexend-Light.ttf", 14);
+	io.Fonts->Build();
 
 	ImGui::StyleColorsCCE();
 
