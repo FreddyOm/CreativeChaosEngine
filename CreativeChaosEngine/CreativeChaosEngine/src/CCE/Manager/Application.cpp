@@ -125,6 +125,7 @@ namespace CCE
 #ifdef CCE_PLATFORM_WINDOWS
 
 		persistentDataPath = GetPersistentDataPath();
+		applicationDataPath = GetApplicationDataPath();
 
 		// Set engine config file location to persistenDataPath + engine config name and suffix
 		std::string configFilePath = persistentDataPath.GetPath().Value(); 
@@ -177,6 +178,7 @@ namespace CCE
 #error CCE is currently only supported for Windows
 #endif
 
+		// TODO: Fix this, this is awful...
 		persDir = Directory(strdup(persDataPath.c_str()));
 		if (!Directory::Exists(persDir))
 		{
@@ -184,5 +186,26 @@ namespace CCE
 		}
 
 		return persDir;
+	}
+
+
+	Directory Application::GetApplicationDataPath() const
+	{
+#ifdef CCE_PLATFORM_WINDOWS
+		char pBuf[256];
+
+		int bytes = GetModuleFileNameA(NULL, pBuf, sizeof(pBuf));
+		if (bytes >= sizeof(pBuf))
+		{ DERROR("The application data path could be invalid due to buffer overflow."); }
+
+		std::string appDataPath = std::string(&pBuf[0], bytes);
+
+		std::string::size_type pos = appDataPath.find_last_of("\\");
+		appDataPath = appDataPath.substr(0, pos);
+
+		return Directory(appDataPath.c_str());
+#else
+#error CCE is currently only supported for Windows
+#endif	
 	}
 }

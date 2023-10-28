@@ -6,11 +6,12 @@
 #include "PhysicsManager.h"
 #include "ProfilingManager.h"
 #include "JobManager.h"
-#include "../ClientWindow/ClientWindow.h"
+//#include "../ClientWindow/ClientWindow.h"
 #include "../Utilities/IO/IO.h"
 
 namespace CCE
 {
+	class ClientWindow;
 	struct CCE_API Application
 	{
 	public:
@@ -30,7 +31,7 @@ namespace CCE
 
 		String companyName = "CreativeChaosEngine";
 		Directory persistentDataPath;
-		//File applicationDataPath;
+		Directory applicationDataPath;
 		//...
 
 	private:
@@ -38,6 +39,7 @@ namespace CCE
 		void Initialize();
 		void Deinitialize();
 		Directory GetPersistentDataPath() const;
+		Directory GetApplicationDataPath() const;
 
 	private:
 

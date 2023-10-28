@@ -49,7 +49,6 @@ namespace CCE
 		}
 
 	private:
-
 		String filePath;
 	};
 
@@ -74,13 +73,12 @@ namespace CCE
 
 		static Directory Create(String dirPath);
 
-		String GetPath() const
+		String GetPath()
 		{
 			return dirPath;
 		}
 
 	private:
-
 		String dirPath;
 	};
 
@@ -99,6 +97,7 @@ namespace CCE
 
 		static CCE::String ReadText(const String& filePath, const FileMode fileMode = FileMode::DEFAULT);
 		static CCE::String ReadText(const File& file, const FileMode fileMode = FileMode::DEFAULT);
+		// TODO: Implement Reading bytes
 		//static std::shared_ptr<char> ReadBytes(String filePath, FileMode fileMode = FileMode::DEFAULT);
 
 		static bool WriteText(const String& filePath, const String input, bool createFileIfNonExistent = false, FileMode fileMode = FileMode::DEFAULT);

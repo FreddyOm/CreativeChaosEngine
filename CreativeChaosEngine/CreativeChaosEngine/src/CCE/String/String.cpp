@@ -64,7 +64,7 @@ namespace CCE
 	/// Returns the length of the string.
 	/// </summary>
 	/// <returns></returns>
-	UINT64 String::Length()
+	UINT64 String::Length() const
 	{
 		if (gStringTable[sId] == NULL)
 		{

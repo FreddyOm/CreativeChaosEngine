@@ -28,7 +28,7 @@ namespace CCE
 			UNREGISTER_LEAK_DETECT;
 		}
 
-		bool OpenWindow(HINSTANCE hInstance, CCE::String winName = "Creative Chaos Engine - v0.1");
+		bool OpenWindow(HINSTANCE hInstance, String winName = "Creative Chaos Engine - v0.1");
 		void UpdateClientWindow(int& _returnVal);
 		int CloseClientWindow();
 
@@ -37,9 +37,9 @@ namespace CCE
 
 		HWND GetClientWindowHandle() const;
 		WNDCLASS GetClientWindowClass() const;
-		CCE::Graphics::RenderPipeline* GetRenderPipeline();
-		CCE::String GetClientWindowName() const;
-		void SetClientWindowName(CCE::String name);
+		Graphics::RenderPipeline* GetRenderPipeline();
+		String GetClientWindowName() const;
+		void SetClientWindowName(String name);
 
 		bool windowRunning = false;
 		bool demoWindowShowing = false;
@@ -47,11 +47,11 @@ namespace CCE
 
 		static ClientWindow* Instance;
 	private:
-		CCE::String windowName = "";
+		String windowName = "";
 	private:
 		static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 		WNDCLASS wndClass = {}; // TODO: Make this a reference to a style class
 		HWND hWnd = {};
-		CCE::Graphics::RenderPipeline renderPipeline;
+		Graphics::RenderPipeline renderPipeline;
 	};
 }

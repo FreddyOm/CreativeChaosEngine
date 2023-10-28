@@ -1,6 +1,7 @@
 #include "RenderPipeline.h"
 #include "../Analysis/Logger.h"
 #include "../Manager/MemoryManager.h"
+#include "../Manager/Application.h"
 #include "../ClientWindow/ClientWindow.h"
 #include <functional>
 #include "Rendering/Drawable/Mesh.h"
@@ -38,8 +39,11 @@ namespace CCE::Graphics
 		// Create viewport
 		CreateViewport();
 
+
 		mainCamera = new Camera();
-		testMesh = new Mesh();
+
+		testMesh = new Mesh(Application::Instance->applicationDataPath.GetPath() + String("\\DefaultPixelShader.cso"),
+			Application::Instance->applicationDataPath.GetPath() + String("\\DefaultVertexShader.cso"));
 	}
 
 	/// <summary>
@@ -129,7 +133,11 @@ namespace CCE::Graphics
 
 		HRESULT cdasc = D3D11CreateDeviceAndSwapChain(
 			NULL,									// default adapter
+#if 0
 			D3D_DRIVER_TYPE_HARDWARE,				// driver type
+#else
+			D3D_DRIVER_TYPE_WARP,                   // driver type
+#endif
 			NULL,									// software module (Default: NULL)
 			swapCreateFlags,						// flags
 			nullptr,								// featureLvl
