@@ -105,6 +105,7 @@
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\VertexBuffer.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\VertexShader.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Topology.h" />
+    <ClInclude Include="src\CCE\String\StringConverter.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\sdk\ds5w_x64.dll" />
@@ -250,7 +251,7 @@ xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$
       <Message>Copying DLLs into Editor Folder</Message>
     </PostBuildEvent>
     <FxCompile>
-      <ShaderModel>5.0</ShaderModel>
+      <ShaderModel>4.0</ShaderModel>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

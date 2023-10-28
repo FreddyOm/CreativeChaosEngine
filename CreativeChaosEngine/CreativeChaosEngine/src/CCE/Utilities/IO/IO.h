@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "../../String/StringConverter.h"
 
 namespace CCE
 {
@@ -16,7 +17,10 @@ namespace CCE
 
 		File(String filePath)
 			: filePath(filePath)
-		{ }
+		{
+			if(!Exists(filePath))
+				DWARNING("File was not found. Create it or check the file path!");
+		}
 
 		File()
 			: filePath("")
@@ -32,6 +36,16 @@ namespace CCE
 		String GetPath() const
 		{
 			return filePath;
+		}
+
+		std::string GetPathSTDString() const
+		{
+			return std::string(filePath.Value());
+		}
+
+		std::wstring GetPathWSTDString() const
+		{
+			return StringConverter::StringToWString(filePath.Value());
 		}
 
 	private:
