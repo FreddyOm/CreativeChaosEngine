@@ -1,6 +1,7 @@
 #include "UnitTestString.h"
 #include "../Logger.h"
 #include "../../Analysis/Time.h"
+#include "../../String/StringConverter.h"
 #include <random>
 
 namespace CCE_Testing
@@ -19,8 +20,12 @@ namespace CCE_Testing
 		if (TestString4()) { LOGC_TEST("Testing UnitTestString::TestString4: successful", COLOR_GREEN); }
 		else { LOGC_TEST("Testing UnitTestString::TestString4: failed", COLOR_RED); }
 	
-		if(TestStringRandomized()) { LOGC_TEST("Testing UnitTestString::TestStringRandomized: successful", COLOR_GREEN); }
+		if (TestStringRandomized()) { LOGC_TEST("Testing UnitTestString::TestStringRandomized: successful", COLOR_GREEN); }
 		else { LOGC_TEST("Testing UnitTestString::TestStringRandomized: failed", COLOR_RED); }
+
+		if (TestStringConversion()) { LOGC_TEST("Testing UnitTestString::TestStringConversion: successful", COLOR_GREEN); }
+		else { LOGC_TEST("Testing UnitTestString::TestStringConversion: failed", COLOR_RED); }
+
 	}
 
 	void UnitTestString::Cleanup()
@@ -105,6 +110,31 @@ namespace CCE_Testing
 		bool test7 = strcmp(s3.Value(), s1.Value()) == 0;
 
 		return test1 && test2 && test3 && test4 && test5 && test6 && test7;
+	}
+
+	bool UnitTestString::TestStringConversion() noexcept
+	{
+		std::wstring wstr = std::wstring(L"Test String mit ein paar Zeichen");
+		bool test1 = std::string("Test String mit ein paar Zeichen") == 
+			StringConverter::WStringToString(wstr);
+
+		wstr = std::wstring(L"Andere Zeichen koennen auch auftauchen... !");
+		bool test2 = std::string("Andere Zeichen koennen auch auftauchen... !") ==
+			StringConverter::WStringToString(wstr);
+
+		bool test3 = std::wstring(L"Nocheinmal andere Zeichen 938457 ?/.,,:_-<62514354689223+`#+'*") ==
+			StringConverter::StringToWString(std::string("Nocheinmal andere Zeichen 938457 ?/.,,:_-<62514354689223+`#+'*"));
+
+		bool test4 = std::wstring(L"^!/&($\"897356()/ <> | -_.:,;12345678*8wefoiuwgh") ==
+			StringConverter::StringToWString("^!/&($\"897356()/ <> | -_.:,;12345678*8wefoiuwgh");
+	
+		bool test5 = std::wstring() == 
+			StringConverter::StringToWString(std::string());
+
+		bool test6 = std::string() == 
+			StringConverter::WStringToString(std::wstring());
+
+		return test1 && test2 && test3 && test4 && test5 && test6;
 	}
 
 	CCE::String UnitTestString::GetRandomString() noexcept

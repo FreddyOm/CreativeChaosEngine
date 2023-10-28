@@ -109,6 +109,7 @@
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\VertexBuffer.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\VertexShader.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Topology.h" />
+    <ClInclude Include="src\CCE\String\StringConverter.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\sdk\ds5w_x64.dll" />

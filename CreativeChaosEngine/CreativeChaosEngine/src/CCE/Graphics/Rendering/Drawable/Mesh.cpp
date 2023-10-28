@@ -1,11 +1,12 @@
 #include "Mesh.h"
 #include "../Bindable/BindableCommon.h"
-#include <memory>
 #include "../../RenderPipeline.h"
+#include <memory>
 
 namespace CCE::Graphics
 {
-	Mesh::Mesh()
+	Mesh::Mesh(File _pixelShader, File _vertexShader)
+		: pixelShader(_pixelShader), vertexShader(_vertexShader)
 	{
 		std::vector<Vertex> vertices =
 		{
@@ -31,8 +32,11 @@ namespace CCE::Graphics
 
 		std::vector<std::shared_ptr<IBindable>> bindPtrs;
 
-		auto ps = std::make_shared<PixelShader>(L"D:/Repos/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultPixelShader.cso");
-		auto vs = std::make_shared<VertexShader>(L"D:/Repos/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultVertexShader.cso");
+		// D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultPixelShader.cso
+		// D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultVertexShader.cso
+
+		auto ps = std::make_shared<PixelShader>(pixelShader.GetPathWSTDString());
+		auto vs = std::make_shared<VertexShader>(vertexShader.GetPathWSTDString());
 		auto ib = std::make_shared<IndexBuffer>(indices);
 		auto vb = std::make_shared<VertexBuffer>(vertices);
 		auto il = std::make_shared<InputLayout>(vs->GetBytecode());
@@ -45,6 +49,8 @@ namespace CCE::Graphics
 		bindPtrs.push_back(std::move(vs));
 		bindPtrs.push_back(std::move(il));
 
+		// This is currently redundant but could later be used to assemble 
+		// all components of the mesh and add the bindables.
 		for (auto& bind : bindPtrs)
 		{
 			AddBind(std::move(bind));
