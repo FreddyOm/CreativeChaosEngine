@@ -251,7 +251,7 @@ xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$
       <Message>Copying DLLs into Editor Folder</Message>
     </PostBuildEvent>
     <FxCompile>
-      <ShaderModel>4.0</ShaderModel>
+      <ShaderModel>5.0</ShaderModel>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
