@@ -67,14 +67,9 @@ namespace CCE::Graphics
 		// Create viewport
 		CreateViewport();
 
-
 		viewportCamera = new Camera();
 
-		String test = Application::Instance->applicationDataPath.GetPath();
-		String psPath = Application::Instance->applicationDataPath.GetPath()/* + String("\\DefaultPixelShader.cso")*/;
-		String vsPath = Application::Instance->applicationDataPath.GetPath() + String("\\DefaultVertexShader.cso");
-
-		testMesh = new Mesh(psPath, vsPath);
+		testMesh = new Mesh();
 		String test1 = Application::Instance->applicationDataPath.GetPath();
 	}
 
@@ -165,7 +160,7 @@ namespace CCE::Graphics
 
 		HRESULT cdasc = D3D11CreateDeviceAndSwapChain(
 			NULL,									// default adapter
-#if 0
+#if 1
 			D3D_DRIVER_TYPE_HARDWARE,				// driver type
 #else
 			D3D_DRIVER_TYPE_WARP,                   // driver type

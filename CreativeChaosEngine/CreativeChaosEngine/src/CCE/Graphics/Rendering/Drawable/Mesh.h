@@ -18,7 +18,7 @@ namespace CCE::Graphics
 	struct CCE_API Mesh : public IDrawable
 	{
 	public:
-		Mesh(const String _pixelShader, const String _vertexShader);
+		Mesh();
 		~Mesh()
 		{
 			UNREGISTER_LEAK_DETECT;
