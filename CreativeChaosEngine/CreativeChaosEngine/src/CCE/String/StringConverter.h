@@ -1,7 +1,7 @@
 #pragma once
+#include <string>
 #include "../Core.h"
 #include "../Analysis/Debug.h"
-#include <string>
 
 struct CCE_API StringConverter
 {
@@ -24,7 +24,7 @@ public:
 
 		if (defaultCharUsed) { DWARNING("Some characters couldn't be converted from wstring to string!"); }
 
-		DASSERT(convertResult > 0, "Failed to convert string '%s' to narrow string!", source.c_str());
+		DASSERT(convertResult > 0, "Failed to convert string to narrow string!");
 
 		return std::string(buf, convertResult);
 
@@ -47,7 +47,7 @@ public:
 			MultiByteToWideChar(CP_UTF8, 0, &source[0],
 			(int)source.size(), &buf[0], sizeof(buf));
 		
-		DASSERT(convertResult > 0, "Failed to convert string '%s' to wide string!", source.c_str());
+		DASSERT(convertResult > 0, "Failed to convert string to wide string!");
 
 		return std::wstring(buf, convertResult);
 #else

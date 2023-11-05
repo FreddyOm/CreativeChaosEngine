@@ -1,11 +1,11 @@
 #include "RenderPipeline.h"
+#include "Rendering/Camera.h"
 #include "../Analysis/Logger.h"
+#include "Rendering/Drawable/Mesh.h"
 #include "../Manager/MemoryManager.h"
-#include "../Manager/Application.h"
 #include "../ClientWindow/ClientWindow.h"
 #include <functional>
-#include "Rendering/Drawable/Mesh.h"
-#include "Rendering/Camera.h"
+#include "../Manager/Application.h"
 
 namespace CCE::Graphics
 {
@@ -35,7 +35,7 @@ namespace CCE::Graphics
 		//if (cnt != nullptr)
 			//delete cnt;
 
-		//delete viewportCamera;
+		delete viewportCamera;
 		delete testMesh;
 
 		UNREGISTER_LEAK_DETECT;
@@ -68,10 +68,14 @@ namespace CCE::Graphics
 		CreateViewport();
 
 
-		mainCamera = new Camera();
+		viewportCamera = new Camera();
 
-		testMesh = new Mesh(Application::Instance->applicationDataPath.GetPath() + String("\\DefaultPixelShader.cso"),
-			Application::Instance->applicationDataPath.GetPath() + String("\\DefaultVertexShader.cso"));
+		String test = Application::Instance->applicationDataPath.GetPath();
+		String psPath = Application::Instance->applicationDataPath.GetPath()/* + String("\\DefaultPixelShader.cso")*/;
+		String vsPath = Application::Instance->applicationDataPath.GetPath() + String("\\DefaultVertexShader.cso");
+
+		testMesh = new Mesh(psPath, vsPath);
+		String test1 = Application::Instance->applicationDataPath.GetPath();
 	}
 
 	/// <summary>
@@ -215,7 +219,6 @@ namespace CCE::Graphics
 		swapChainDesc->Flags = 0;											// flags
 	}
 
-
 	/// <summary>
 	/// Starts the frame by clearing the depth and the stencil buffer.
 	/// </summary>
@@ -253,7 +256,7 @@ namespace CCE::Graphics
 
 		// Test Cube
 
-		//viewportCamera->Update();
+		viewportCamera->Update();
 
 		testMesh->Draw();
 	}

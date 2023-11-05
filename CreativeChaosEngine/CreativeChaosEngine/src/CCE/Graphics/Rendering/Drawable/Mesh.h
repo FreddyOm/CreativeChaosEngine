@@ -3,8 +3,8 @@
 #include "../../../Manager/ProfilingManager.h"
 #include "../../../Utilities/IO/IO.h"
 #include "../../../Core.h"
-#include "../Vertex.h"
 #include "../Transform.h"
+#include "../Vertex.h"
 #include "IDrawable.h"
 #include <memory>
 
@@ -18,7 +18,7 @@ namespace CCE::Graphics
 	struct CCE_API Mesh : public IDrawable
 	{
 	public:
-		Mesh(File _pixelShader, File _vertexShader);
+		Mesh(const String _pixelShader, const String _vertexShader);
 		~Mesh()
 		{
 			UNREGISTER_LEAK_DETECT;
@@ -35,8 +35,8 @@ namespace CCE::Graphics
 	public:
 		Transform transform = {};
 
-		File pixelShader = {};
-		File vertexShader = {};
+		String pixelShader = {};
+		String vertexShader = {};
 
 	private:
 		DirectX::XMMATRIX modelMatrix;

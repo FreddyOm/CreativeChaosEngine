@@ -13,17 +13,40 @@ namespace CCE
 
 		void ClearGlobalStringTable();
 
-		// TODO: Add copy and move constructors and move impl to cpp
+		String(const String& other)
+		{ 
+			if (&other == this)
+			{ return; }
+			sId = other.sId;
+		}
+
+		String(String&& other) noexcept
+		{ 
+			if (&other == this)
+			{ return; }
+
+			sId = other.sId;
+			other.sId = -1; 
+		}
 
 		String& operator=(const String& other)
 		{
 			// check if both refs are the same instance
 			if (this == &other)
-			{
-				return *this;
-			}
+			{ return *this; }
 
 			this->sId = other.sId;
+			return *this;
+		}
+
+		String& operator=(String&& other)
+		{
+			// check if both refs are the same instance
+			if (this == &other)
+			{ return *this; }
+
+			this->sId = other.sId;
+			other.sId = -1;
 			return *this;
 		}
 
@@ -55,16 +78,32 @@ namespace CCE
 			return this->sId != GetStringID(other);
 		}
 
-		String operator+(const String& other)
-		{
-			std::string concatStr = std::string(Value()) + std::string(other.Value());
-			return String(concatStr.c_str());
-		}
-
 		String operator+=(const String& other)
 		{
-			std::string concatStr = std::string(Value()) + std::string(other.Value());
-			return String(concatStr.c_str());
+			if (Length() == 0)
+			{
+				return other;
+			}
+
+			if (other.Length() == 0)
+			{
+				return *this;
+			}
+
+			char buf[4096];
+			ZeroMemory(&buf[0], sizeof(buf));
+
+			memcpy(&buf[0], Value(), Length());
+			memcpy(&buf[0 + Length()], other.Value(), other.Length());
+
+			sId = GetStringID(&buf[0]);
+			gStringTable.try_emplace(sId, std::move(&buf[0]));
+			return String(&buf[0]);
+		}
+
+		String operator+(const String& other)
+		{
+			return *this += other;
 		}
 
 		UINT64 Length() const;

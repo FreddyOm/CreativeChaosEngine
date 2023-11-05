@@ -1,9 +1,9 @@
 #include "Camera.h"
-#include "../Rendering/../../Manager/ProfilingManager.h"
 #include "../RenderPipeline.h"
+#include "../../Analysis/Time.h"
 #include "Bindable\ConstantBuffer.h"
 #include "../../Manager/InputManager.h"
-#include "../../Analysis/Time.h"
+#include "../Rendering/../../Manager/ProfilingManager.h"
 
 namespace CCE::Graphics
 {

@@ -124,11 +124,6 @@ HWND CCE::ClientWindow::GetClientWindowHandle() const
 	return hWnd;
 }
 
-CCE::Graphics::RenderPipeline* CCE::ClientWindow::GetRenderPipeline()
-{
-	return &renderPipeline;
-}
-
 /// <summary>
 /// Get the current editor window's class.
 /// </summary>
@@ -155,6 +150,11 @@ void CCE::ClientWindow::SetClientWindowName(CCE::String name)
 {
 	windowName = name;
 	SetWindowTextA(GetClientWindowHandle(), windowName.Value());
+}
+
+CCE::Graphics::RenderPipeline* CCE::ClientWindow::GetRenderPipeline()
+{
+	return &renderPipeline;
 }
 
 using namespace CCE;
@@ -191,7 +191,7 @@ LRESULT CALLBACK ClientWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 
 		// Update D3D11 and GUI
 		if (CCE::Graphics::RenderPipeline::Instance->GetDeviceContextPtr() == NULL) { break; }
-		CCE::Graphics::RenderPipeline::Instance->OnResize(hwnd, wParam, width, height);
+		CCE::Graphics::RenderPipeline::Instance->OnResize(hwnd, static_cast<UINT>(wParam), width, height);
 		break;
 	}
 	case WM_CLOSE:

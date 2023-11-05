@@ -10,7 +10,7 @@ namespace CCE::Graphics
 		HRESULT hr = D3DReadFileToBlob(resourcePath.c_str(), &pBlob);
 		DASSERT(hr == S_OK, "Failed reading the pixel shader.");
 		// Check shader version for older cpus / gpus (my laptop!! :O)
-		hr = GetDevice(RenderPipeline::Instance)->CreatePixelShader(
+		hr = GetDevice()->CreatePixelShader(
 			pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pPixelShader);
 		DASSERT( hr == S_OK, "Failed creating the pixel shader resource.");
 	}
@@ -22,6 +22,6 @@ namespace CCE::Graphics
 
 	void PixelShader::Bind()
 	{
-		GetContext(RenderPipeline::Instance)->PSSetShader(pPixelShader.Get(), nullptr, 0u);
+		GetContext()->PSSetShader(pPixelShader.Get(), nullptr, 0u);
 	}
 }

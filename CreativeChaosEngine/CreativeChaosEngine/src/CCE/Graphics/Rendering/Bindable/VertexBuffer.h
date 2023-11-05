@@ -1,8 +1,8 @@
 #pragma once
 #include "IBindable.h"
 #include "../../../Core.h"
-#include <vector>
 #include "../Vertex.h"
+#include <vector>
 
 namespace CCE::Graphics
 {

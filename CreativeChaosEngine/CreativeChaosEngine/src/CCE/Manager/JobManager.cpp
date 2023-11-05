@@ -116,9 +116,9 @@ namespace CCE
 			}
 		}
 
-		PUSH_EDITOR_INT("jobWaitListHigh", jobQueue_High.size());
-		PUSH_EDITOR_INT("jobWaitListNormal", jobQueue_Normal.size());
-		PUSH_EDITOR_INT("jobWaitListLow", jobQueue_Low.size());
+		PUSH_EDITOR_INT("jobWaitListHigh", static_cast<unsigned int>(jobQueue_High.size()));
+		PUSH_EDITOR_INT("jobWaitListNormal", static_cast<unsigned int>(jobQueue_Normal.size()));
+		PUSH_EDITOR_INT("jobWaitListLow", static_cast<unsigned int>(jobQueue_Low.size()));
 
 		return true;
 	}
@@ -152,9 +152,9 @@ namespace CCE
 		}
 		}
 
-		PUSH_EDITOR_INT("jobWaitListHigh", jobQueue_High.size());
-		PUSH_EDITOR_INT("jobWaitListNormal", jobQueue_Normal.size());
-		PUSH_EDITOR_INT("jobWaitListLow", jobQueue_Low.size());
+		PUSH_EDITOR_INT("jobWaitListHigh", static_cast<const int>(jobQueue_High.size()));
+		PUSH_EDITOR_INT("jobWaitListNormal", static_cast<const int>(jobQueue_Normal.size()));
+		PUSH_EDITOR_INT("jobWaitListLow", static_cast<const int>(jobQueue_Low.size()));
 
 		return true;
 	}

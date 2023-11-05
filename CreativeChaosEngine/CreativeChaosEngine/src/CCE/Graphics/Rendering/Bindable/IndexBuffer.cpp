@@ -18,7 +18,7 @@ namespace CCE::Graphics
 		D3D11_SUBRESOURCE_DATA isd = {};
 		isd.pSysMem = indices.data();
 		
-		DASSERT(GetDevice(RenderPipeline::Instance)->CreateBuffer(&ibd, &isd, &pIndexBuffer) == S_OK,
+		DASSERT(GetDevice()->CreateBuffer(&ibd, &isd, &pIndexBuffer) == S_OK,
 			"Failed creating the index buffer!");
 	}
 
@@ -35,7 +35,7 @@ namespace CCE::Graphics
 	void IndexBuffer::Bind()
 	{
 		// Bind to pipeline
-		GetContext(RenderPipeline::Instance)->IASetIndexBuffer(
+		GetContext()->IASetIndexBuffer(
 			pIndexBuffer.Get(), 
 			DXGI_FORMAT_R32_UINT, 
 			0u);

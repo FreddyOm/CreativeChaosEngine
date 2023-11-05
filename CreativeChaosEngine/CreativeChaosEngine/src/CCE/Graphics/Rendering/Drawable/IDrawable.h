@@ -6,8 +6,8 @@
 namespace CCE::Graphics
 {
 	class RenderPipeline;
-	class IBindable;
-	class IndexBuffer;
+	struct IBindable;
+	struct IndexBuffer;
 
 	struct CCE_API IDrawable
 	{

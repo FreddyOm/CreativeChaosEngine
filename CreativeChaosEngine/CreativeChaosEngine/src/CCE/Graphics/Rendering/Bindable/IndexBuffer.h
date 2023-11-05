@@ -2,10 +2,11 @@
 #include "IBindable.h"
 #include "../../../Core.h"
 #include <vector>
-#include "D3D11.h"
+#include <wrl.h>
 
 namespace CCE::Graphics
 {
+	struct RenderPipeline;
 	struct CCE_API IndexBuffer : public IBindable
 	{
 	public:
@@ -18,6 +19,6 @@ namespace CCE::Graphics
 
 	private:
 		UINT count;
-		ComPtr<ID3D11Buffer> pIndexBuffer;
+		Microsoft::WRL::ComPtr<ID3D11Buffer> pIndexBuffer;
 	};
 }

@@ -142,7 +142,7 @@ namespace CCE_Testing
 		DWORD64 _seed;
 		
 		_seed = __rdtsc();
-		std::srand(_seed);
+		std::srand(static_cast<unsigned int>(_seed));
 
 		int randomChar = std::rand() % 128;
 		int randomStrLen = std::rand() % 256;

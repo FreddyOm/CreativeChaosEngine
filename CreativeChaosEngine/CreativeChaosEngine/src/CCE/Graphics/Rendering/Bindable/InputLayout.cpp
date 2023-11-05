@@ -1,4 +1,6 @@
 #include "InputLayout.h"
+#include "../../../Analysis/Debug.h"
+#include "../../RenderPipeline.h"
 
 namespace CCE::Graphics
 {
@@ -11,7 +13,7 @@ namespace CCE::Graphics
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
 
-		HRESULT hr = GetDevice(RenderPipeline::Instance)->CreateInputLayout(
+		HRESULT hr = GetDevice()->CreateInputLayout(
 			layout, 1, pVertexShaderBytecode->GetBufferPointer(),
 			pVertexShaderBytecode->GetBufferSize(), &pInputLayout);
 		DASSERT(hr == S_OK, "Failed creating input layout resource.");
@@ -24,6 +26,6 @@ namespace CCE::Graphics
 
 	void InputLayout::Bind()
 	{
-		GetContext(RenderPipeline::Instance)->IASetInputLayout(pInputLayout.Get());
+		GetContext()->IASetInputLayout(pInputLayout.Get());
 	}
 }

@@ -6,12 +6,12 @@
 #include "PhysicsManager.h"
 #include "ProfilingManager.h"
 #include "JobManager.h"
-//#include "../ClientWindow/ClientWindow.h"
 #include "../Utilities/IO/IO.h"
+#include "../Utilities/Serialization/ISerializable.h"
 
 namespace CCE
 {
-	class ClientWindow;
+	struct ClientWindow;
 	struct CCE_API Application
 	{
 	public:
@@ -49,7 +49,7 @@ namespace CCE
 		InputManager mInputManager = InputManager();
 		MemoryManager mMemoryManager = MemoryManager();
 
-		ClientWindow* window = nullptr;
+		ClientWindow *window = nullptr;
 
 		std::chrono::steady_clock::time_point frameBegin;
 		std::chrono::steady_clock::time_point frameEnd;

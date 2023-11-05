@@ -2,6 +2,8 @@
 #include "../Analysis/Debug.h"
 #include "../Analysis/Logger.h"
 #include "../Analysis/Time.h"
+#include "../Graphics/RenderPipeline.h"
+#include "../ClientWindow/ClientWindow.h"
 
 namespace CCE
 {
@@ -12,12 +14,13 @@ namespace CCE
 	{
 		DASSERT(Instance == nullptr, "Application was instantiated more than once!");
 
+		Instance = this;
 		Initialize();
 
 
 #ifdef CCE_PLATFORM_WINDOWS
 		// Load engine config
-		if (File::Exists(engineConfig))
+		if (File::Exists(engineConfig.GetPath().Value()))
 		{
 			std::string config = IO::ReadText(engineConfig).Value();
 			window->GetRenderPipeline()->GetRenderPipelineConfig()->DeserializeFromString(config);
@@ -25,7 +28,6 @@ namespace CCE
 #else
 #error CCE is currently only supported for Windows
 #endif
-
 
 		initialized = true;
 		LOGC("RuntimeManager initialized!", COLOR_BLUE);
@@ -114,7 +116,7 @@ namespace CCE
 #endif
 		maxUsedFibersPerFrame = mJobManager.GetUsedFibers() > maxUsedFibersPerFrame ?
 			mJobManager.GetUsedFibers() : maxUsedFibersPerFrame;
-		PUSH_EDITOR_INT("fibersPerFrame", maxUsedFibersPerFrame);
+		PUSH_EDITOR_INT("fibersPerFrame", static_cast<const int>(maxUsedFibersPerFrame));
 
 		frameEnd = Time::Now();
 		Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));
@@ -183,7 +185,7 @@ namespace CCE
 
 		// TODO: Fix this, this is awful...
 		persDir = Directory(strdup(persDataPath.c_str()));
-		if (!Directory::Exists(persDir))
+		if (!Directory::Exists(persDataPath.c_str()))
 		{
 			Directory::Create(persDir.GetPath());
 		}
@@ -191,22 +193,22 @@ namespace CCE
 		return persDir;
 	}
 
-
 	Directory Application::GetApplicationDataPath() const
 	{
 #ifdef CCE_PLATFORM_WINDOWS
 		char pBuf[256];
+		ZeroMemory(&pBuf[0], sizeof(pBuf));
 
 		int bytes = GetModuleFileNameA(NULL, pBuf, sizeof(pBuf));
 		if (bytes >= sizeof(pBuf))
 		{ DERROR("The application data path could be invalid due to buffer overflow."); }
 
-		std::string appDataPath = std::string(&pBuf[0], bytes);
+		std::string appDataPath = std::string(std::move(&pBuf[0]), bytes);
 
 		std::string::size_type pos = appDataPath.find_last_of("\\");
 		appDataPath = appDataPath.substr(0, pos);
 
-		return Directory(appDataPath.c_str());
+		return Directory(strdup(appDataPath.c_str()));
 #else
 #error CCE is currently only supported for Windows
 #endif	

@@ -1,18 +1,18 @@
 #pragma once
 
-#include "../Memory/StackAllocator.h"
-#include "../Utilities/Color/Color.h"
+#include "Rendering/Camera.h"
 #include "../Manager/JobManager.h"
+#include "Rendering\Drawable\Mesh.h"
+#include "../Utilities/Color/Color.h"
+#include "../Memory/StackAllocator.h"
 #include "../Manager/ProfilingManager.h"
 #include "../Utilities/Serialization/ISerializable.h"
-#include "Rendering/Camera.h"
-#include "Rendering\Drawable\Mesh.h"
 
 namespace CCE::Graphics
 {
 	using CCE::Color;
 
-	class Mesh;
+	struct Mesh;
 
 	class CCE_API RenderPipeline
 	{
@@ -121,7 +121,7 @@ namespace CCE::Graphics
 
 	public:
 		static RenderPipeline* Instance;
-		//Camera* viewportCamera = nullptr;
+		Camera* viewportCamera = nullptr;
 		Mesh* testMesh = nullptr;
 
 	public:

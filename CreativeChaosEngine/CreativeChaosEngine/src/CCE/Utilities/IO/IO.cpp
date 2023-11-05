@@ -13,7 +13,7 @@ namespace CCE
 	/// </summary>
 	/// <param name="filePath">The path to the file.</param>
 	/// <returns></returns>
-	bool File::Exists(String filePath)
+	bool File::Exists(const String& filePath)
 	{
 #ifdef CCE_PLATFORM_WINDOWS
 		if (FILE* file = fopen(filePath.Value(), "r")) {
@@ -29,21 +29,11 @@ namespace CCE
 	}
 
 	/// <summary>
-	/// Checks if a specific file exists or not.
-	/// </summary>
-	/// <param name="filePath">The file.</param>
-	/// <returns></returns>
-	bool File::Exists(File file)
-	{
-		return Exists(file.GetPath());
-	}
-
-	/// <summary>
 	/// Creates a file at the specified path if not already existent.
 	/// </summary>
 	/// <param name="filePath">The path to the file to create.</param>
 	/// <returns>The created file.</returns>
-	File File::Create(String filePath)
+	File File::Create(const String& filePath)
 	{
 		if (!File::Exists(filePath))
 		{
@@ -87,7 +77,7 @@ namespace CCE
 		return CCE::String(&buf[0]);
 	}
 
-	CCE::String IO::ReadText(const File& file, const FileMode fileMode)
+	CCE::String IO::ReadText(const File file, const FileMode fileMode)
 	{
 		return ReadText(file.GetPath(), fileMode);
 	}
@@ -126,7 +116,7 @@ namespace CCE
 	/// <param name="createFileIfNonExistent">Whether or not the file should be created if not already existent.</param>
 	/// <param name="fileMode">The filemode to open the file with.</param>
 	/// <returns>True if successful. False if unsuccessful.</returns>
-	bool IO::WriteText(const String& filePath, const String input, bool createFileIfNonExistent, FileMode fileMode)
+	bool IO::WriteText(const String& filePath, const String& input, bool createFileIfNonExistent, FileMode fileMode)
 	{
 		if (!File::Exists(filePath))
 		{
@@ -157,7 +147,7 @@ namespace CCE
 	/// <param name="createFileIfNonExistent">Whether or not the file should be created if not already existent.</param>
 	/// <param name="fileMode">The filemode to open the file with.</param>
 	/// <returns>True if successful. False if unsuccessful.</returns>
-	bool IO::WriteText(const File& file, const String input, bool createFileIfNonExistent, FileMode fileMode)
+	bool IO::WriteText(const File file, const String input, bool createFileIfNonExistent, FileMode fileMode)
 	{
 		return WriteText(file.GetPath(), input, createFileIfNonExistent, fileMode);
 	}
@@ -171,7 +161,7 @@ namespace CCE
 	/// <param name="createFileIfNonExistent">Whether or not to create the file if not already existent.</param>
 	/// <param name="fileMode">Mode with which the file is accessed.</param>
 	/// <returns>True if successful. False if unsuccessful.</returns>
-	bool IO::WriteBytes(const String& filePath, const char* input, size_t size, bool createFileIfNonExistent, FileMode fileMode)
+	bool IO::WriteBytes(const String filePath, const char* input, size_t size, bool createFileIfNonExistent, FileMode fileMode)
 	{
 		//DASSERT(!String::IsEmpty(filePath), "The filepath must not be empty!");
 		return false;
@@ -182,7 +172,7 @@ namespace CCE
 	/// </summary>
 	/// <param name="dirPath">The path to the directory to check.</param>
 	/// <returns>True if the directory does exist. False if not.</returns>
-	bool Directory::Exists(String dirPath)
+	bool Directory::Exists(const String& dirPath)
 	{
 #ifdef CCE_PLATFORM_WINDOWS
 		struct stat pathInfo;
@@ -199,15 +189,6 @@ namespace CCE
 #endif
 	}
 
-	/// <summary>
-	/// Checks whether or not a directory exists in the file system.
-	/// </summary>
-	/// <param name="directory">The directory to check.</param>
-	/// <returns>True if the directory does exist. False if not.</returns>
-	bool Directory::Exists(Directory directory)
-	{
-		return Exists(directory.GetPath());
-	}
 
 	/// <summary>
 	/// Checks whether or not a directory contains any files or subdirectories.
@@ -215,7 +196,7 @@ namespace CCE
 	/// <param name="dirPath">The path to the specified directory.</param>
 	/// <returns>True if no files or subdirectories are present. 
 	/// False if files or subdirectories are peresent or the directory does not exist.</returns>
-	bool Directory::IsEmpty(String dirPath)
+	bool Directory::IsEmpty(const String& dirPath)
 	{
 #ifdef CCE_PLATFORM_WINDOWS
 		//return Exists(dirPath) && PathIsDirectoryEmptyA(dirPath.Value());
@@ -226,23 +207,12 @@ namespace CCE
 	}
 
 	/// <summary>
-	/// Checks whether or not a directory contains any files or subdirectories.
-	/// </summary>
-	/// <param name="directory">The path to the specified directory.</param>
-	/// <returns>True if no files or subdirectories are present. 
-	/// False if files or subdirectories are peresent or the directory does not exist.</returns>
-	bool Directory::IsEmpty(Directory directory)
-	{
-		return IsEmpty(directory.GetPath());
-	}
-
-	/// <summary>
 	/// Creates a directory at the specified path. 
 	/// If unsuccessful an error is thrown and an empty directory is returned.
 	/// </summary>
 	/// <param name="dirPath">The path to create the directory in.</param>
 	/// <returns>The directory with the specified path.</returns>
-	Directory Directory::Create(String dirPath)
+	Directory Directory::Create(const String& dirPath)
 	{
 #ifdef CCE_PLATFORM_WINDOWS
 		if (Exists(dirPath)) { return Directory(dirPath); }
@@ -254,6 +224,6 @@ namespace CCE
 #elif
 #error CCE is currently only supported for Windows
 #endif
-		return Directory("");
+		return Directory{};
 	}
 }

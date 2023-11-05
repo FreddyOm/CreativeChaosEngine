@@ -367,7 +367,7 @@ namespace CCE
 		}
 		}
 
-		for (int i = 0; i < dualSenseCount; i++)
+		for (unsigned int i = 0; i < dualSenseCount; i++)
 		{
 			DASSERT(DS5W::initDeviceContext(&infos[0], &con[i]) == _DS5W_ReturnValue::OK,
 				"Initialization of Dual Sense device was unsuccessful!");

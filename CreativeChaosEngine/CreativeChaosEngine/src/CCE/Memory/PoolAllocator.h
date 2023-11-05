@@ -124,7 +124,7 @@ namespace CCMemory
 					adress += offset;
 
 					AllocOffset* pOffset = (AllocOffset*)(adress -1);
-					*pOffset = offset;
+					*pOffset = static_cast<unsigned char>(offset);
 					va_list args;
 					va_start(args, defaultAlignSize);
 					ptr = reinterpret_cast<T*> (adress);

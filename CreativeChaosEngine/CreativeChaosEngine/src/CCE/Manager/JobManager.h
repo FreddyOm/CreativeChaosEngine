@@ -22,7 +22,7 @@ namespace CCE
 #define WAIT_CNTR_LOOPS 200
 #define JOBDECL CCE::JobManager::JobDeclaration
 	// TODO: Override an operator to make the binding even more easy to use
-#define BIND(func, obj, ...) std::bind(&func, obj, ##__VA_ARGS__)
+#define BIND_BASIC(func, obj, ...) std::bind(&func, obj, ##__VA_ARGS__)
 #define BIND(func, ...) [&](...){return func(##__VA_ARGS__);};
 #define JOB_ENTRY_POINT void
 
@@ -90,7 +90,7 @@ using namespace Events;
 		{
 			LPVOID fiber;
 			Counter* pCounter;
-			unsigned int desiredCount;
+			int desiredCount;
 
 			WaitData(const LPVOID _fiber, Counter* _counter, const unsigned int _desiredCount)
 			{

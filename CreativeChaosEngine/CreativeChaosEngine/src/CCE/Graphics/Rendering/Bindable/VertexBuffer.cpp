@@ -1,4 +1,5 @@
 #include "VertexBuffer.h"
+#include "../../../Analysis/Debug.h"
 
 namespace CCE::Graphics
 {
@@ -19,7 +20,7 @@ namespace CCE::Graphics
 		initData.SysMemPitch = 0;
 		initData.SysMemSlicePitch = 0;
 
-		DASSERT(GetDevice(RenderPipeline::Instance)->CreateBuffer(
+		DASSERT(GetDevice()->CreateBuffer(
 		&bufferDesc, &initData, &pVertexBuffer) == S_OK, "Failed creating the vertex buffer!");
 	}
 
@@ -32,7 +33,7 @@ namespace CCE::Graphics
 	{
 		const UINT offset = 0u;
 		const UINT stride = sizeof(Vertex);
-		GetContext(RenderPipeline::Instance)->IASetVertexBuffers(
+		GetContext()->IASetVertexBuffers(
 			0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
 	}
 }

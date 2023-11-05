@@ -1,5 +1,6 @@
 #include "IDrawable.h"
 #include "../Bindable/IndexBuffer.h"
+#include "../../RenderPipeline.h"
 
 namespace CCE::Graphics
 {
@@ -11,6 +12,7 @@ namespace CCE::Graphics
 		}
 		RenderPipeline::Instance->GetDeviceContextPtr()->DrawIndexed(pIndexBuffer->GetCount(), 0u, 0u);
 	}
+
 	void IDrawable::AddBind(std::shared_ptr<IBindable> bind) noexcept
 	{
 		if (typeid(*bind) == typeid(IndexBuffer))

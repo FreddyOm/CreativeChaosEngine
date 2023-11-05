@@ -1,11 +1,11 @@
 #include "Mesh.h"
-#include "../Bindable/BindableCommon.h"
-#include "../../RenderPipeline.h"
 #include <memory>
+#include "../../RenderPipeline.h"
+#include "../Bindable/BindableCommon.h"
 
 namespace CCE::Graphics
 {
-	Mesh::Mesh(File _pixelShader, File _vertexShader)
+	Mesh::Mesh(const String _pixelShader, const String _vertexShader)
 		: pixelShader(_pixelShader), vertexShader(_vertexShader)
 	{
 		std::vector<Vertex> vertices =
@@ -35,8 +35,10 @@ namespace CCE::Graphics
 		// D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultPixelShader.cso
 		// D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultVertexShader.cso
 
-		auto ps = std::make_shared<PixelShader>(pixelShader.GetPathWSTDString());
-		auto vs = std::make_shared<VertexShader>(vertexShader.GetPathWSTDString());
+		//auto ps = std::make_shared<PixelShader>(StringConverter::StringToWString(pixelShader.Value()));
+		//auto vs = std::make_shared<VertexShader>(StringConverter::StringToWString(vertexShader.Value()));
+		auto ps = std::make_shared<PixelShader>(L"D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultPixelShader.cso");
+		auto vs = std::make_shared<VertexShader>(L"D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultVertexShader.cso");
 		auto ib = std::make_shared<IndexBuffer>(indices);
 		auto vb = std::make_shared<VertexBuffer>(vertices);
 		auto il = std::make_shared<InputLayout>(vs->GetBytecode());
@@ -55,7 +57,7 @@ namespace CCE::Graphics
 		{
 			AddBind(std::move(bind));
 		}
-
+		
 		CreateConstBufs();
 
 		transform.SetTranslation({ 0.0, 0.0, 0.0 });

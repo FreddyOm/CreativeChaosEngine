@@ -15,6 +15,6 @@ namespace CCE::Graphics
 	/// </summary>
 	void Topology::Bind()
 	{
-		RenderPipeline::Instance->GetDeviceContextPtr()->IASetPrimitiveTopology(pTopology);
+		GetContext()->IASetPrimitiveTopology(pTopology);
 	}
 }

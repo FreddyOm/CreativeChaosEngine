@@ -4,11 +4,12 @@
 
 namespace CCE::Graphics
 {
+	struct RenderPipeline;
 	template<typename C>
 	struct CCE_API ConstantBuffer : public IBindable
 	{
 	public:
-		ConstantBuffer(const C& _constant, UINT _slot = 0u)
+		ConstantBuffer( const C& _constant, UINT _slot = 0u)
 			: slot(_slot)
 		{
 			D3D11_BUFFER_DESC constBufDescription;

@@ -15,6 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IBindable.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Camera.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Drawable\IDrawable.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\InputLayout.cpp" />

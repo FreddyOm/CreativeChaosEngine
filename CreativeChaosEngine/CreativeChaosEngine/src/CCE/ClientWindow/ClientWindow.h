@@ -37,9 +37,9 @@ namespace CCE
 
 		HWND GetClientWindowHandle() const;
 		WNDCLASS GetClientWindowClass() const;
-		Graphics::RenderPipeline* GetRenderPipeline();
 		String GetClientWindowName() const;
 		void SetClientWindowName(String name);
+		Graphics::RenderPipeline* GetRenderPipeline();
 
 		bool windowRunning = false;
 		bool demoWindowShowing = false;
@@ -52,6 +52,6 @@ namespace CCE
 		static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 		WNDCLASS wndClass = {}; // TODO: Make this a reference to a style class
 		HWND hWnd = {};
-		Graphics::RenderPipeline renderPipeline;
+		Graphics::RenderPipeline renderPipeline = Graphics::RenderPipeline();
 	};
 }

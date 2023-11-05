@@ -21,7 +21,6 @@ namespace CCE
 		public BaseManager
 	{
 		MemoryManager() = default;
-
 		~MemoryManager() = default;
 
 		void StartUp();
@@ -29,14 +28,14 @@ namespace CCE
 
 		void UpdateMemoryUsage()
 		{
-			PUSH_EDITOR_FLOAT("debugMemTotal", debugMemory.GetTotalMem());
-			PUSH_EDITOR_FLOAT("debugMemUsed", debugMemory.GetUsedMem());
+			PUSH_EDITOR_FLOAT("debugMemTotal", (const float) debugMemory.GetTotalMem());
+			PUSH_EDITOR_FLOAT("debugMemUsed", (const float) debugMemory.GetUsedMem());
 
-			PUSH_EDITOR_FLOAT("jobMemTotal", jobMemory.GetTotalMem());
-			PUSH_EDITOR_FLOAT("jobMemUsed", jobMemory.GetUsedMem());
+			PUSH_EDITOR_FLOAT("jobMemTotal", (const float) jobMemory.GetTotalMem());
+			PUSH_EDITOR_FLOAT("jobMemUsed", (const float) jobMemory.GetUsedMem());
 
-			PUSH_EDITOR_FLOAT("rendMemTotal", rendMemory.GetTotalMem());
-			PUSH_EDITOR_FLOAT("rendMemUsed", rendMemory.GetUsedMem());			
+			PUSH_EDITOR_FLOAT("rendMemTotal", (const float) rendMemory.GetTotalMem());
+			PUSH_EDITOR_FLOAT("rendMemUsed", (const float) rendMemory.GetUsedMem());
 		}
 
 	public:

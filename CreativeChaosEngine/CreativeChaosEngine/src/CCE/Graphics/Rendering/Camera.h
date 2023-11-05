@@ -1,12 +1,12 @@
 #pragma once
-#include "../../Core.h"
+#include <memory>
 #include "D3D11.h"
 #include "Transform.h"
-#include "../../Input/IInputHandler.h"
+#include "../../Core.h"
+#include "../../Input/Mouse.h"
 #include "../../Input/Keyboard.h"
 #include "../../Input/Controller.h"
-#include "../../Input/Mouse.h"
-#include <memory>
+#include "../../Input/IInputHandler.h"
 
 namespace CCE::Graphics
 {	

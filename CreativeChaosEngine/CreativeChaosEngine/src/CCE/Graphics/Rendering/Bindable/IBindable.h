@@ -1,25 +1,20 @@
 #pragma once
 #include "../../../Core.h"
-#include "../../RenderPipeline.h"
+#include "../D3D11.h"
 
 namespace CCE::Graphics
 {
+	class RenderPipeline;
+
 	struct CCE_API IBindable
 	{
 	public:
 		IBindable() = default;
 		virtual ~IBindable() = default;
 		virtual void Bind() = 0;
+
 	protected:
-
-		static ID3D11DeviceContext* GetContext(RenderPipeline* rp) noexcept
-		{
-			return rp->GetDeviceContextPtr();
-		}
-
-		static ID3D11Device* GetDevice(RenderPipeline* rp) noexcept 
-		{
-			return rp->GetDevicePtr();
-		}
+		ID3D11DeviceContext* GetContext() noexcept;
+		ID3D11Device* GetDevice() noexcept;
 	};
 }
