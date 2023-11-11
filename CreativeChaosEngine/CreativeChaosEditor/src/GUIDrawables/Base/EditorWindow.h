@@ -28,7 +28,7 @@ public:
 	void UpdateDrawable() override;
 
 protected:
-	String windowName;
+	String windowName = "";
 
 private:
 	bool isOpen = true;

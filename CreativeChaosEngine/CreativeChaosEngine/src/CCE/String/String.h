@@ -1,8 +1,7 @@
 #pragma once
 #include "../Core.h"
-#include <unordered_map>
-#include <iterator>
 #include "../Analysis/Debug.h"
+#include "StringMemory.h"
 
 namespace CCE
 {
@@ -11,13 +10,11 @@ namespace CCE
 		String(const char* str = "");
 		~String();
 
-		void ClearGlobalStringTable();
-
 		String(const String& other)
 		{ 
 			if (&other == this)
 			{ return; }
-			sId = other.sId;
+			sId = StringMemory::CreateString(other.Value());
 		}
 
 		String(String&& other) noexcept
@@ -25,7 +22,7 @@ namespace CCE
 			if (&other == this)
 			{ return; }
 
-			sId = other.sId;
+			sId = StringMemory::CreateString(other.Value());
 			other.sId = -1; 
 		}
 
@@ -45,7 +42,7 @@ namespace CCE
 			if (this == &other)
 			{ return *this; }
 
-			this->sId = other.sId;
+			this->sId = StringMemory::CreateString(other.Value());;
 			other.sId = -1;
 			return *this;
 		}
@@ -70,34 +67,24 @@ namespace CCE
 
 		bool operator==(const char* other)
 		{
-			return this->sId == GetStringID(other);
+			return sId == StringMemory::GetStringID(other);
 		}
 
 		bool operator!=(const char* other)
 		{
-			return this->sId != GetStringID(other);
+			return sId != StringMemory::GetStringID(other);
 		}
 
 		String operator+=(const String& other)
 		{
-			if (Length() == 0)
-			{
-				return other;
-			}
-
-			if (other.Length() == 0)
-			{
-				return *this;
-			}
+			DASSERT(Length() + other.Length() < 4096,
+				"Buffer overflow on String concatination!");
 
 			char buf[4096];
 			ZeroMemory(&buf[0], sizeof(buf));
+			memcpy(&buf[0], this->Value(), this->Length());
+			memcpy(&buf[this->Length()], other.Value(), other.Length());
 
-			memcpy(&buf[0], Value(), Length());
-			memcpy(&buf[0 + Length()], other.Value(), other.Length());
-
-			sId = GetStringID(&buf[0]);
-			gStringTable.try_emplace(sId, std::move(&buf[0]));
 			return String(&buf[0]);
 		}
 
@@ -113,11 +100,5 @@ namespace CCE
 
 	public:
 		UINT64 sId = 0;			// 8 bytes
-		
-	private:
-		static std::unordered_map<UINT64, const char*> gStringTable;
-
-	private:
-		const UINT64 GetStringID(const char* str);
 	};
 }

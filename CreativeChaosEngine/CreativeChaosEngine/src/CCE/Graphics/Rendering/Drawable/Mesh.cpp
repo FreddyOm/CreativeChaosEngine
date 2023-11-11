@@ -34,8 +34,8 @@ namespace CCE::Graphics
 		// D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultPixelShader.cso
 		// D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultVertexShader.cso
 
-		auto ps = std::make_shared<PixelShader>(L"D:/Repos/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultPixelShader.cso");
-		auto vs = std::make_shared<VertexShader>(L"D:/Repos/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultVertexShader.cso");
+		auto ps = std::make_shared<PixelShader>(L"D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultPixelShader.cso");
+		auto vs = std::make_shared<VertexShader>(L"D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultVertexShader.cso");
 		auto ib = std::make_shared<IndexBuffer>(indices);
 		auto vb = std::make_shared<VertexBuffer>(vertices);
 		auto il = std::make_shared<InputLayout>(vs->GetBytecode());

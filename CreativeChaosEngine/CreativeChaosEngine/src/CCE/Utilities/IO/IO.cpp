@@ -43,7 +43,7 @@ namespace CCE
 		return File(filePath);
 	}
 
-	String IO::ReadText(const String& filePath, const FileMode fileMode)
+	String IO::ReadText(const String filePath, const FileMode fileMode)
 	{
 		// TODO: Append the flags according to the fileMode input(s)
 		//DASSERT(!String::IsEmpty(filePath), "The filepath must not be empty!");
@@ -116,7 +116,7 @@ namespace CCE
 	/// <param name="createFileIfNonExistent">Whether or not the file should be created if not already existent.</param>
 	/// <param name="fileMode">The filemode to open the file with.</param>
 	/// <returns>True if successful. False if unsuccessful.</returns>
-	bool IO::WriteText(const String& filePath, const String& input, bool createFileIfNonExistent, FileMode fileMode)
+	bool IO::WriteText(const String filePath, const String input, bool createFileIfNonExistent, FileMode fileMode)
 	{
 		if (!File::Exists(filePath))
 		{

@@ -160,7 +160,7 @@ namespace CCE::Graphics
 
 		HRESULT cdasc = D3D11CreateDeviceAndSwapChain(
 			NULL,									// default adapter
-#if 1
+#if 0
 			D3D_DRIVER_TYPE_HARDWARE,				// driver type
 #else
 			D3D_DRIVER_TYPE_WARP,                   // driver type

@@ -43,6 +43,7 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\VertexShader.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Topology.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IBindable.cpp" />
+    <ClCompile Include="src\CCE\String\StringMemory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\ConstantBuffer.h" />
@@ -101,6 +102,7 @@
     <ClInclude Include="src\CCE\Input\IInputHandler.h" />
     <ClInclude Include="src\CCE\Input\Keyboard.h" />
     <ClInclude Include="src\CCE\Input\Mouse.h" />
+    <ClInclude Include="src\CCE\String\StringMemory.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="resources\sdk\ds5w_x64.lib" />

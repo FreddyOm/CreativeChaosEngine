@@ -67,7 +67,6 @@ namespace CCE
 	public:
 		bool multithreaded = false;
 
-
 		std::string SerializeToString(bool prettyPrint = false) override
 		{
 			JSON data;

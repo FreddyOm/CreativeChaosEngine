@@ -16,7 +16,7 @@ namespace CCE
 	public:
 
 		File(const String& filePath)
-			: filePath(filePath.Value())
+			: filePath(filePath)
 		{
 			if(!Exists(filePath))
 				DWARNING("File was not found. Create it or check the file path!");
@@ -54,12 +54,12 @@ namespace CCE
 
 		std::string GetPathSTDString() const
 		{
-			return std::string(filePath);
+			return filePath.Value();
 		}
 
 		std::wstring GetPathWSTDString() const
 		{
-			return StringConverter::StringToWString(filePath);
+			return StringConverter::StringToWString(filePath.Value());
 		}
 
 		File& operator=(const File& other)
@@ -80,7 +80,7 @@ namespace CCE
 		}
 
 	private:
-		const char* filePath;
+		String filePath;
 	};
 
 	class CCE_API Directory
@@ -88,7 +88,7 @@ namespace CCE
 	public:
 
 		Directory(const String& dirPath)
-			: dirPath(dirPath.Value())
+			: dirPath(dirPath)
 		{ }
 
 		Directory()
@@ -119,7 +119,7 @@ namespace CCE
 
 		String GetPath() const
 		{
-			return String(dirPath);
+			return dirPath;
 		}
 
 		Directory& operator=(const Directory& other)
@@ -140,7 +140,7 @@ namespace CCE
 		}
 
 	private:
-		const char* dirPath;
+		String dirPath;
 	};
 
 	class CCE_API IO
@@ -156,12 +156,12 @@ namespace CCE
 			OVERRIDE = 0x10, //std::ios::trunc
 		};
 
-		static CCE::String ReadText(const String& filePath, const FileMode fileMode = FileMode::DEFAULT);
+		static CCE::String ReadText(const String filePath, const FileMode fileMode = FileMode::DEFAULT);
 		static CCE::String ReadText(const File file, const FileMode fileMode = FileMode::DEFAULT);
 		// TODO: Implement Reading bytes
 		//static std::shared_ptr<char> ReadBytes(String filePath, FileMode fileMode = FileMode::DEFAULT);
 
-		static bool WriteText(const String& filePath, const String& input, bool createFileIfNonExistent = false, FileMode fileMode = FileMode::DEFAULT);
+		static bool WriteText(const String filePath, const String input, bool createFileIfNonExistent = false, FileMode fileMode = FileMode::DEFAULT);
 		static bool WriteText(const File file, const String input, bool createFileIfNonExistent = false, FileMode fileMode = FileMode::DEFAULT);
 		static bool WriteBytes(const String filePath, const char* input, size_t size, bool createFileIfNonExistent = false, FileMode fileMod = FileMode::DEFAULT);
 	};
