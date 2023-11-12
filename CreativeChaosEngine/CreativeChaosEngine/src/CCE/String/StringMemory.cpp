@@ -69,8 +69,7 @@ namespace CCE
 		if (--smd->refCount <= 0)
 		{
 			// Override string by defragmenting string buffer 
-			DefragmentBuffer(smd->pStringBuf, smd->length);
-			bufPtr -= smd->length + 1;
+			bufPtr = DefragmentBuffer(smd->pStringBuf, smd->length + 1);
 			
 			// Remove string mem descr ref
 			std::vector<StringMemDescritpion>::iterator it = strHndlDesc.begin();
@@ -121,7 +120,16 @@ namespace CCE
 	/// </summary>
 	/// <param name="pos">The position of the removed object.</param>
 	/// <param name="shift">The length of the gap.</param>
-	void StringMemory::DefragmentBuffer(const char* pos, size_t shift)
+	/// 
+	
+	/// <summary>
+	/// Shifts all memory starting at pos ending at the end of the string mem buf
+	/// to the left by the length of the gap.
+	/// </summary>
+	/// <param name="pos">The position of the removed object.</param>
+	/// <param name="shift">The length of the gap.</param>
+	/// <returns>The new top buffer pointer.</returns>
+	char* StringMemory::DefragmentBuffer(const char* pos, size_t shift)
 	{
 		// TODO: Maybe do this every other frame generically instead of 
 		// when a string is deconstructed
@@ -139,6 +147,7 @@ namespace CCE
 
 		// TODO: Evaluate if this is necessary
 		ZeroMemory(&stringBuf[STRING_BUF_LEN - shift], shift);
+		return (bufPtr - shift);
 	}
 
 	char StringMemory::stringBuf[STRING_BUF_LEN] = { 0 };

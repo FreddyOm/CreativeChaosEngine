@@ -90,7 +90,15 @@ namespace CCE
 
 		String operator+(const String& other)
 		{
-			return *this += other;
+			DASSERT(Length() + other.Length() < 4096,
+				"Buffer overflow on String concatination!");
+
+			char buf[4096];
+			ZeroMemory(&buf[0], sizeof(buf));
+			memcpy(&buf[0], this->Value(), this->Length());
+			memcpy(&buf[this->Length()], other.Value(), other.Length());
+
+			return String(&buf[0]);
 		}
 
 		UINT64 Length() const;

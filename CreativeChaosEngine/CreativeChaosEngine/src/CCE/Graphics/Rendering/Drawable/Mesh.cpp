@@ -2,6 +2,7 @@
 #include <memory>
 #include "../../RenderPipeline.h"
 #include "../Bindable/BindableCommon.h"
+#include "../../../Manager/Application.h"
 
 namespace CCE::Graphics
 {
@@ -31,11 +32,13 @@ namespace CCE::Graphics
 
 		std::vector<std::shared_ptr<IBindable>> bindPtrs;
 
-		// D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultPixelShader.cso
-		// D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultVertexShader.cso
+		String pixelShaderPath = Application::Instance->resourceDataPath.Path() + "/shader/DefaultPixelShader.cso";
+		String vertexShader = Application::Instance->resourceDataPath.Path() + "/shader/DefaultVertexShader.cso";
 
-		auto ps = std::make_shared<PixelShader>(L"D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultPixelShader.cso");
-		auto vs = std::make_shared<VertexShader>(L"D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/shader/DefaultVertexShader.cso");
+		std::string s = vertexShader.Value();
+
+		auto ps = std::make_shared<PixelShader>(StringConverter::StringToWString(pixelShaderPath.Value()));
+		auto vs = std::make_shared<VertexShader>(StringConverter::StringToWString(vertexShader.Value()));
 		auto ib = std::make_shared<IndexBuffer>(indices);
 		auto vb = std::make_shared<VertexBuffer>(vertices);
 		auto il = std::make_shared<InputLayout>(vs->GetBytecode());

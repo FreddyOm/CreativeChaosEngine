@@ -68,9 +68,7 @@ namespace CCE::Graphics
 		CreateViewport();
 
 		viewportCamera = new Camera();
-
 		testMesh = new Mesh();
-		String test1 = Application::Instance->applicationDataPath.GetPath();
 	}
 
 	/// <summary>

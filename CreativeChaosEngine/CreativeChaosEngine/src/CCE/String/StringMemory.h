@@ -36,7 +36,7 @@ namespace CCE
 
 	private:
 		static StringMemDescritpion* FindStrMemDesc(UINT64 stringHandle);
-		static void DefragmentBuffer(const char* pos, size_t offset);
+		static char* DefragmentBuffer(const char* pos, size_t offset);
 
 		static char stringBuf[STRING_BUF_LEN];
 		static char* bufPtr;

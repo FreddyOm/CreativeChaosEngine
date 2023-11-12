@@ -47,7 +47,7 @@ namespace CCE
 		static bool Exists(const String& filePath);
 		static File Create(const String& filePath);
 
-		String GetPath() const
+		String Path() const
 		{
 			return filePath;
 		}
@@ -117,7 +117,7 @@ namespace CCE
 
 		static Directory Create(const String& dirPath);
 
-		String GetPath() const
+		String Path() const
 		{
 			return dirPath;
 		}

@@ -79,7 +79,7 @@ namespace CCE
 
 	CCE::String IO::ReadText(const File file, const FileMode fileMode)
 	{
-		return ReadText(file.GetPath(), fileMode);
+		return ReadText(file.Path(), fileMode);
 	}
 
 	/*
@@ -149,7 +149,7 @@ namespace CCE
 	/// <returns>True if successful. False if unsuccessful.</returns>
 	bool IO::WriteText(const File file, const String input, bool createFileIfNonExistent, FileMode fileMode)
 	{
-		return WriteText(file.GetPath(), input, createFileIfNonExistent, fileMode);
+		return WriteText(file.Path(), input, createFileIfNonExistent, fileMode);
 	}
 
 	/// <summary>

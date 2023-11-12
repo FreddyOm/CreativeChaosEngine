@@ -32,6 +32,7 @@ namespace CCE
 		String companyName = "CreativeChaosEngine";
 		Directory persistentDataPath;
 		Directory applicationDataPath;
+		Directory resourceDataPath;
 		//...
 
 	private:

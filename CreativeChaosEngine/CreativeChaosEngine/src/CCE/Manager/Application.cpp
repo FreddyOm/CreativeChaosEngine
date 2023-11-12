@@ -20,7 +20,7 @@ namespace CCE
 
 #ifdef CCE_PLATFORM_WINDOWS
 		// Load engine config
-		if (File::Exists(engineConfig.GetPath().Value()))
+		if (File::Exists(engineConfig.Path().Value()))
 		{
 			std::string config = IO::ReadText(engineConfig).Value();
 			window->GetRenderPipeline()->GetRenderPipelineConfig()->DeserializeFromString(config);
@@ -131,11 +131,12 @@ namespace CCE
 
 		persistentDataPath = GetPersistentDataPath();
 		applicationDataPath = GetApplicationDataPath();
+		resourceDataPath = applicationDataPath.Path() + String("/resources");
 
 		// Set engine config file location to persistenDataPath + engine config name and suffix
-		std::string configFilePath = persistentDataPath.GetPath().Value(); 
-		configFilePath += "/config.cce";
-		engineConfig = File(strdup(configFilePath.c_str()));
+		engineConfig = persistentDataPath.Path() + String("/config.cce");
+
+		std::string eC = engineConfig.Path().Value();
 #else
 #error CCE is currently only supported for Windows
 #endif
@@ -187,7 +188,7 @@ namespace CCE
 		persDir = Directory(strdup(persDataPath.c_str()));
 		if (!Directory::Exists(persDataPath.c_str()))
 		{
-			Directory::Create(persDir.GetPath());
+			Directory::Create(persDir.Path());
 		}
 
 		return persDir;
