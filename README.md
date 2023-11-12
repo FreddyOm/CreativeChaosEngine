@@ -112,13 +112,27 @@ The **RuntimeManager** is the bootstrapping unit on the engine side. It initiali
 the engine's update loop.
 
 ### Strings
-In the CCE, strings are implemented via a StringID. This is a CRC hashed char array which is then saved into
-a global string table. When calling a **CCE::String**s **myString.Value()** function, the actual char* is returned.
+In CCE, strings are implemented via a String-Handle. This is a CRC hashed value of the raw char pointer which is then saved
+into a global handle table. When calling a **CCE::String**s **myString.Value()** function, the actual char* is returned.
 Adding a new string is therefore not that much more efficent while comparing, reusing or transfering Strings
 is significantly improved in terms of performance.
 
+Since the String object containes the hanlde to the char pointer, the underlying **StringMemory** system can relocate and
+therefore defragmentize the maintained memory. This is currently done whenever a string object is destroyed. In order to do 
+this relaibly and not to soon, a reference count is saved with the handle and the char pointer.
+
 The goal is to create a string system that uses IDs ***everywhere***. In the best case, all strings can be loaded
 or written during compiletime and don't need to be created at all after release.
+
+Performant: 
+- Creating new string objects of strings that already exist
+- Copying / Moving / Assigning / Comparing Strings
+
+Inperformant:
+- Destroying the last reference of a string (defragmentizing the whole memory)
+
+Fortunaltely, because temporary strings are destroyed quickly and the memory is defragmentized immediately
+this system doesn't seem to consume too much memory.
 
 ### Graphics
 
