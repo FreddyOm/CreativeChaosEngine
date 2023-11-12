@@ -16,9 +16,11 @@ This will register the window and will call it's ***OnGui()*** method.
 
 ## TODOs
 - [x] Implement ImGui
-- [ ] Create new EditorWindows
-- [ ] Create Input Debugging Window
-- [ ] Change CCEditor implementation to use variants 
+- [ ] Create Runtime Input Debugger
+- [ ] Create Runtime Debug Console 
+- [ ] Update all ImGui editor elements to be runtime debugging tools
+- [ ] Implement CCEditor in .NET C#
+- [ ] Change CCEditor to use gRPC
 
 # CreativeChaosEngine
 Some custom game engine subsystems 
@@ -36,6 +38,9 @@ Some custom game engine subsystems
 - [ ] Differentiate between "Editor Memory" and "Game Memory" (which memory does only the editor need and which will be used in the game)
 - [ ] Implement some basic SSE
 - [ ] Move testing to individual solution and use it as a dll (?) inside the engine (?)
+- [ ] Implement ECS as basis for the scene structure
+- [ ] Implement USD as basis for Resource-Management
+- [ ] Implement Physics System
 - [ ] Implement Rendering System
    - [x] IBindable
    - [x] IDrawable
@@ -48,7 +53,7 @@ Some custom game engine subsystems
    - [ ] General Mesh
    - [ ] General Renderer Component (?)
    - [ ] Basic Lighting
-   - [ ] 
+   - [ ] Instanced Drawing
 
 ## Documentation
 
@@ -147,3 +152,4 @@ Utilities currently include:
 - [Tomas Akenine-Möller, Eric Haines, Naty Hoffman, Angelo Pesce, Michał Iwanicki, Sébastien Hillaire - Real Time Rendering](https://www.realtimerendering.com/)
 - [ChiliTomatoNoodle](https://www.youtube.com/@ChiliTomatoNoodle)
 - [TheCherno](https://www.youtube.com/@TheCherno)
+- [Remedy Entertainment](https://www.remedygames.com/northlight)
