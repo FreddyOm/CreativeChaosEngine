@@ -39,7 +39,7 @@ namespace CCE::Graphics
 		String vertexShader = {};
 
 	private:
-		DirectX::XMMATRIX modelMatrix;
-		std::shared_ptr<VSConstantBuffer<DirectX::XMMATRIX>> pMeshConstBuf = nullptr;
+		DirectX::XMFLOAT4X4 modelMatrix;
+		std::shared_ptr<VSConstantBuffer<DirectX::XMFLOAT4X4>> pMeshConstBuf = nullptr;
 	};
 }
