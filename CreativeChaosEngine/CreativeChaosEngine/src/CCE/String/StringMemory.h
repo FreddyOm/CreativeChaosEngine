@@ -2,6 +2,16 @@
 #include "../Core.h"
 #include <unordered_map>
 
+/********************************************************************
+String Table:
+			<| Handle | RefCount | StrPtr | Length |>
+			                        |
+String Memory:                      v
+             ______________________________________
+            |             String Data              |
+			|______________________________________|
+********************************************************************/
+
 #define STRING_BUF_LEN 65536
 
 namespace CCE

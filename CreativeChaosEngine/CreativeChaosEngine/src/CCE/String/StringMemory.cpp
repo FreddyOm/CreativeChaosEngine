@@ -69,7 +69,7 @@ namespace CCE
 		if (--smd->refCount <= 0)
 		{
 			// Override string by defragmenting string buffer 
-			bufPtr = DefragmentBuffer(smd->pStringBuf, smd->length + 1);
+			bufPtr = DefragmentBuffer(smd->pStringBuf, smd->length);
 			
 			// Remove string mem descr ref
 			std::vector<StringMemDescritpion>::iterator it = strHndlDesc.begin();
@@ -134,6 +134,8 @@ namespace CCE
 		// TODO: Maybe do this every other frame generically instead of 
 		// when a string is deconstructed
 	
+		++shift; // This is necessary in order to include the null terminator in the removal.
+
 		for (size_t i = 0; i < strHndlDesc.size(); i++)
 		{
 			if (strHndlDesc.at(i).pStringBuf > pos)
