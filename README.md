@@ -18,7 +18,8 @@ This will register the window and will call it's ***OnGui()*** method.
 - [x] Implement ImGui
 - [ ] Create Runtime Input Debugger
 - [ ] Create Runtime Debug Console 
-- [ ] Update all ImGui editor elements to be runtime debugging tools
+- [ ] Update all ImGui editor elements to be Runtime Debugging Tools
+- [ ] Enable Runtime Debugging via cmd arguments
 - [ ] Implement CCEditor in .NET C#
 - [ ] Change CCEditor to use gRPC
 
