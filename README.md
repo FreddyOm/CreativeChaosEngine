@@ -19,7 +19,7 @@ This will register the window and will call it's ***OnGui()*** method.
 - [ ] Create Runtime Input Debugger
 - [ ] Create Runtime Debug Console 
 - [ ] Update all ImGui editor elements to be Runtime Debugging Tools
-- [ ] Enable Runtime Debugging via cmd arguments
+- [ ] Enable Runtime Debugging via shortcut in debug runtime
 - [ ] Implement CCEditor in .NET C#
 - [ ] Change CCEditor to use gRPC
 
@@ -112,7 +112,7 @@ The **RuntimeManager** is the bootstrapping unit on the engine side. It initiali
 the engine's update loop.
 
 ### Strings
-In CCE, strings are implemented via a String-Handle. This is a CRC hashed value of the raw char pointer which is then saved
+In CCE, strings are implemented via a String-Handle. This is a CRC hashed value of the string value which is then saved
 into a global handle table. When calling a **CCE::String**s **myString.Value()** function, the actual char* is returned.
 Adding a new string is therefore not that much more efficent while comparing, reusing or transfering Strings
 is significantly improved in terms of performance.
@@ -124,11 +124,11 @@ this relaibly and not to soon, a reference count is saved with the handle and th
 The goal is to create a string system that uses IDs ***everywhere***. In the best case, all strings can be loaded
 or written during compiletime and don't need to be created at all after release.
 
-Performant: 
+***Performant***: 
 - Creating new string objects of strings that already exist
 - Copying / Moving / Assigning / Comparing Strings
 
-Inperformant:
+***Inperformant***:
 - Destroying the last reference of a string (defragmentizing the whole memory)
 
 Fortunaltely, because temporary strings are destroyed quickly and the memory is defragmentized immediately
