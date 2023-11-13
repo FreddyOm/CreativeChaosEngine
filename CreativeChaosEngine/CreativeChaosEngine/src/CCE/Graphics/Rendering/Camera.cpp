@@ -167,6 +167,5 @@ namespace CCE::Graphics
 		}
 
 		#pragma endregion zoom
-
 	}
 }
