@@ -4,7 +4,6 @@
 
 #include "GUIDrawables/Base/IGUIDrawable.h"
 #include "GUIDrawables/Base/EditorWindow.h"
-#include "GUIDrawables/MenuBar.h"
 #include "GUIDrawables/RenderingDebugger.h"
 #include "GUIDrawables/MemoryWindow.h"
 #include "GUIDrawables/JobWindow.h"
@@ -91,7 +90,6 @@ int main(int argc, char* argv[])
 
     {
         // EditorGUI
-        MenuBar menuBar = MenuBar();
         RenderingDebugger rendEditorWin = RenderingDebugger("Rendering");
         //MemoryWindow memEditorWin = MemoryWindow("Memory");
         Inspector inspector = Inspector("Inspector");
@@ -125,6 +123,7 @@ int main(int argc, char* argv[])
                 IGUIDrawable::GetGUIDrawablePtrs().at(i)->UpdateDrawable();
             }
 
+            //ImGui::ShowDemoWindow();
             IGUIDrawable::PostGUIUpdate();
            
             mRuntimeManager.PostEditorUpdate();

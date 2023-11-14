@@ -69,7 +69,18 @@ void IGUIDrawable::InitializeGUI() const
 	io.Fonts->AddFontFromFileTTF("./resources/fonts/Lexend-Light.ttf", 14);
 	io.Fonts->Build();
 
+	// Use CCE Colors
 	ImGui::StyleColorsCCE();
+
+	// Set Window specs1
+	ImGui::GetStyle().WindowRounding = 4.0f;
+	ImGui::GetStyle().ChildRounding = 4.0f;
+	ImGui::GetStyle().FrameRounding = 1.0f;
+	ImGui::GetStyle().GrabRounding = 0.0f;
+	ImGui::GetStyle().PopupRounding = 4.0f;
+	ImGui::GetStyle().ScrollbarRounding = 4.0f;
+
+	// Insert Icons
 
 	// Hook the editors input calls to the engines input
 	InputManager::Instance->inputCallback = &ImGui_ImplWin32_WndProcHandler;

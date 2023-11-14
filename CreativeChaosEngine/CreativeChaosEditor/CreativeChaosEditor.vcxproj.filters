@@ -51,9 +51,6 @@
     <ClCompile Include="src\GUIDrawables\JobWindow.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\GUIDrawables\MenuBar.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="src\GUIDrawables\Base\IGUIDrawable.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -102,9 +99,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\GUIDrawables\JobWindow.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GUIDrawables\MenuBar.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\GUIDrawables\Base\IGUIDrawable.h">
