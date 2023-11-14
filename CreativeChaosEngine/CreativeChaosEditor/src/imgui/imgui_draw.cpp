@@ -394,7 +394,7 @@ void ImGui::StyleColorsCCE(ImGuiStyle* dst)
     colors[ImGuiCol_CheckMark] = ImVec4(0.35f, 0.35f, 0.35f, 1.00f);
     colors[ImGuiCol_SliderGrab] = ImVec4(0.45f, 0.45f, 0.45f, 1.00f);
     colors[ImGuiCol_SliderGrabActive] = ImVec4(0.35f, 0.35f, 0.35f, 1.00f);
-    colors[ImGuiCol_Button] = ImVec4(0.21f, 0.21f, 0.21f, 1.00f);
+    colors[ImGuiCol_Button] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
     colors[ImGuiCol_ButtonHovered] = ImVec4(0.45f, 0.45f, 0.45f, 1.00f);
     colors[ImGuiCol_ButtonActive] = ImVec4(0.35f, 0.35f, 0.35f, 1.00f);
     colors[ImGuiCol_Header] = ImVec4(0.60f, 0.60f, 0.60f, 0.31f);
