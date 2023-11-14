@@ -80,8 +80,6 @@ void IGUIDrawable::InitializeGUI() const
 	ImGui::GetStyle().PopupRounding = 4.0f;
 	ImGui::GetStyle().ScrollbarRounding = 4.0f;
 
-	// Insert Icons
-
 	// Hook the editors input calls to the engines input
 	InputManager::Instance->inputCallback = &ImGui_ImplWin32_WndProcHandler;
 
