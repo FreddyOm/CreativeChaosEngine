@@ -30,10 +30,16 @@ void IGUIDrawable::PostGUIUpdate()
 /// Returns a list of pointers to drawable gui elements.
 /// </summary>
 /// <returns>A vector of gui drawables.</returns>
-std::vector<IGUIDrawable*> IGUIDrawable::GetGUIDrawablePtrs()
+std::vector<IGUIDrawable*>* IGUIDrawable::GetGUIDrawablePtrs()
 {
-	return guiDrawables;
+	return &guiDrawables;
 }
+
+void IGUIDrawable::ToggleWindow()
+{
+	isOpen = !isOpen;
+}
+
 
 /// <summary>
 /// Uninitializes the gui context.
@@ -57,7 +63,7 @@ void IGUIDrawable::UnInitializeGUI() const
 /// <summary>
 /// Initializes the gui context.
 /// </summary>
-void IGUIDrawable::InitializeGUI() const
+void IGUIDrawable::InitializeGUI()
 {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -65,11 +71,21 @@ void IGUIDrawable::InitializeGUI() const
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-	io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter-Light.ttf", 14);
-	io.Fonts->AddFontFromFileTTF("./resources/fonts/Lexend-Light.ttf", 14);
+	//lexend_light = io.Fonts->AddFontFromFileTTF("./resources/fonts/Lexend-Light.ttf", 14);
+	inter_light = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter-Light.ttf", 14);
+	inter_bold = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter-Bold.ttf", 11);
 	io.Fonts->Build();
 
+	// Use CCE Colors
 	ImGui::StyleColorsCCE();
+
+	// Set Window specs1
+	ImGui::GetStyle().WindowRounding = 4.0f;
+	ImGui::GetStyle().ChildRounding = 4.0f;
+	ImGui::GetStyle().FrameRounding = 1.0f;
+	ImGui::GetStyle().GrabRounding = 0.0f;
+	ImGui::GetStyle().PopupRounding = 4.0f;
+	ImGui::GetStyle().ScrollbarRounding = 4.0f;
 
 	// Hook the editors input calls to the engines input
 	InputManager::Instance->inputCallback = &ImGui_ImplWin32_WndProcHandler;
@@ -90,9 +106,9 @@ std::atomic<bool> IGUIDrawable::initialized = false;
 /// <summary>
 /// A list of registered gui drawables.
 /// </summary>
-std::vector<IGUIDrawable*> IGUIDrawable::guiDrawables;
+std::vector<IGUIDrawable*> IGUIDrawable::guiDrawables = {};
 
 /// <summary>
 /// ImGuis draw data. 
 /// </summary>
-ImDrawData* IGUIDrawable::p_drawData = { 0 };
+ImDrawData* IGUIDrawable::p_drawData = nullptr;

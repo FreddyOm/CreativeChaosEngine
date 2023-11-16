@@ -4,7 +4,7 @@
 
 #include "GUIDrawables/Base/IGUIDrawable.h"
 #include "GUIDrawables/Base/EditorWindow.h"
-#include "GUIDrawables/MenuBar.h"
+#include "GUIDrawables/RuntimeDebugger.h"
 #include "GUIDrawables/RenderingDebugger.h"
 #include "GUIDrawables/MemoryWindow.h"
 #include "GUIDrawables/JobWindow.h"
@@ -40,20 +40,23 @@ int main(int argc, char* argv[])
 
     Application mRuntimeManager = CCE::Application();
 
-    {
 #ifdef DEBUG
-        // Conduct unit tests by opening the application with '-test'
-        bool unittesting = false;
-        for(int i = 0; i < argc; i++)
-        {
-            std::string arg = std::string(argv[i]);
-            
-            if (arg == std::string("-test"))
-            {
-                unittesting = true;
-            }
-        }
 
+    // Conduct unit tests by opening the application with '-test'
+    bool unittesting = false;
+    for (int i = 0; i < argc; i++)
+    {
+        std::string arg = std::string(argv[i]);
+
+        LOG("%s", argv[i]);
+
+        if (arg == "-test")
+        {
+            unittesting = true;
+        }
+    }
+
+    {
         if (unittesting)
         {
             // TODO: Wrap in class / struct
@@ -88,14 +91,15 @@ int main(int argc, char* argv[])
 
     {
         // EditorGUI
-        MenuBar menuBar = MenuBar();
+        float imgui_process_time_ms = 0;
+        RuntimeDebugger runtimeDebugger = RuntimeDebugger(&imgui_process_time_ms);
         RenderingDebugger rendEditorWin = RenderingDebugger("Rendering");
         //MemoryWindow memEditorWin = MemoryWindow("Memory");
         Inspector inspector = Inspector("Inspector");
-        //InputWindow input = InputWindow("Input");
+        InputWindow input = InputWindow("Input");
 
         // Editor viewport camera
-        CCE::Graphics::Camera viewportCamera = CCE::Graphics::Camera();
+        //CCE::Graphics::Camera viewportCamera = CCE::Graphics::Camera();
 
 #if MULTITHREADED
         JobWindow jobWin = JobWindow("Jobs");
@@ -113,17 +117,24 @@ int main(int argc, char* argv[])
         {
             mRuntimeManager.PreEditorUpdate(rValue);
             
-            viewportCamera.Update();
+            //viewportCamera.Update();
+            
+            // ------------------------------ RUNTIME DEBUGGER ------------------------------
+
+            auto start = CCE::Time::Now();
 
             IGUIDrawable::PreGUIUpdate();
 
-            for (int i = 0; i < IGUIDrawable::GetGUIDrawablePtrs().size(); i++)
+            for (int i = 0; i < IGUIDrawable::GetGUIDrawablePtrs()->size(); i++)
             {
-                IGUIDrawable::GetGUIDrawablePtrs().at(i)->UpdateDrawable();
+                IGUIDrawable::GetGUIDrawablePtrs()->at(i)->UpdateDrawable();
             }
-
+            //ImGui::ShowDemoWindow();
             IGUIDrawable::PostGUIUpdate();
            
+            auto end = CCE::Time::Now(); imgui_process_time_ms = CCE::Time::GetDurationInMilliSec(start, end);
+            // ------------------------------------------------------------------------------
+
             mRuntimeManager.PostEditorUpdate();
         }
     }

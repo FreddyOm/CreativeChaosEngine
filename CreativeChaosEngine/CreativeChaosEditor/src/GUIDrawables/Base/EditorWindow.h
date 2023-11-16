@@ -30,7 +30,4 @@ public:
 protected:
 	String windowName = "";
 
-private:
-	bool isOpen = true;
-
 };

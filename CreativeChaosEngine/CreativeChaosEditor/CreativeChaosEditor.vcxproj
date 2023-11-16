@@ -133,10 +133,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\GUIDrawables\DebugElements\DebugCategoryButton.cpp" />
+    <ClCompile Include="src\GUIDrawables\RuntimeDebugger.cpp" />
     <ClCompile Include="src\GUIDrawables\InputWindow.cpp" />
     <ClCompile Include="src\GUIDrawables\Inspector.cpp" />
     <ClCompile Include="src\GUIDrawables\Base\IGUIDrawable.cpp" />
-    <ClCompile Include="src\GUIDrawables\MenuBar.cpp" />
     <ClCompile Include="src\GUIDrawables\JobWindow.cpp" />
     <ClCompile Include="src\GUIDrawables\MemoryWindow.cpp" />
     <ClCompile Include="src\GUIDrawables\RenderingDebugger.cpp" />
@@ -156,10 +157,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\GUIDrawables\DebugElements\DebugCategoryButton.h" />
+    <ClInclude Include="src\GUIDrawables\DebugElements\DebugLabelFilter.h" />
+    <ClInclude Include="src\GUIDrawables\DebugElements\DebugInfoLabel.h" />
+    <ClInclude Include="src\GUIDrawables\DebugElements\FrameTimeDebugInfoLabel.h" />
+    <ClInclude Include="src\GUIDrawables\DebugElements\ImGuiDebugInfoLabel.h" />
+    <ClInclude Include="src\GUIDrawables\RuntimeDebugger.h" />
     <ClInclude Include="src\GUIDrawables\InputWindow.h" />
     <ClInclude Include="src\GUIDrawables\Inspector.h" />
     <ClInclude Include="src\GUIDrawables\Base\IGUIDrawable.h" />
-    <ClInclude Include="src\GUIDrawables\MenuBar.h" />
     <ClInclude Include="src\GUIDrawables\JobWindow.h" />
     <ClInclude Include="src\GUIDrawables\MemoryWindow.h" />
     <ClInclude Include="src\GUIDrawables\RenderingDebugger.h" />

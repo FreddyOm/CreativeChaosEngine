@@ -51,9 +51,6 @@
     <ClCompile Include="src\GUIDrawables\JobWindow.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\GUIDrawables\MenuBar.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="src\GUIDrawables\Base\IGUIDrawable.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -61,6 +58,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\GUIDrawables\InputWindow.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUIDrawables\RuntimeDebugger.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUIDrawables\DebugElements\DebugCategoryButton.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -104,9 +107,6 @@
     <ClInclude Include="src\GUIDrawables\JobWindow.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\GUIDrawables\MenuBar.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="src\GUIDrawables\Base\IGUIDrawable.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -114,6 +114,24 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\GUIDrawables\InputWindow.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUIDrawables\RuntimeDebugger.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUIDrawables\DebugElements\DebugCategoryButton.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUIDrawables\DebugElements\DebugInfoLabel.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUIDrawables\DebugElements\FrameTimeDebugInfoLabel.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUIDrawables\DebugElements\ImGuiDebugInfoLabel.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUIDrawables\DebugElements\DebugLabelFilter.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

@@ -17,43 +17,49 @@ namespace CCE::Graphics
 
 	struct CCE_API Camera : protected Input::IInputHandler
 	{
+	private:
+		enum class ProjectionType : unsigned char
+		{
+			PERSPECTIVE = 0,
+			ORTHOGRAPHIC = 1,
+		};
+
 	public:
 		Camera();
 		~Camera();
 
 		Transform transform;
 
-		void SetProjection(float _near, float _far, float _fovV, float _fovH) noexcept;
-
-		//const DirectX::XMMATRIX GetViewProjectionMatrix() const noexcept
-		//{ return DirectX::XMMatrixMultiply(modelMatrix, viewProjectionMatrix); }
+		void SetProjectionData(float _near, float _far, float _fovV) noexcept;
+		void SetProjectionType(unsigned char type) noexcept;
 		
 		const float GetNearPlane() const noexcept;
 		const float GetFarPlane() const noexcept;
 		const float GetVerticalFOV() const noexcept;
-		const float GetHorizontalFOV() const noexcept;
 
 		void CreateConstBufs();
 		void SetFovAndLookDir() noexcept;
 		void Update();
 
+		float fovVertical = 30.0f;
+
 	private:
 		float nearPlane = 0.1f;
-		float farPlane = 20.0f;
-		float fovVertical = 120.0f;
-		float fovHorizontal = 160.0f;
+		float farPlane = 50.0f;
 
-		DirectX::XMVECTOR lookDir = {0, 0, 1};
+		DirectX::XMFLOAT3 lookDir = {0, 0, 1};
 		float camMovementDelta = 0.003f;
 		float defaultCamMovementDelta = 0.003f;
 		float fastCamMovementDelta = 0.007f;
 		float camPanDelta = 0.005f;
 		float camZoomDelta = 0.5f;
 
+		ProjectionType projType = ProjectionType::PERSPECTIVE;
+
 		struct CameraConstantBufs 
 		{
-			DirectX::XMMATRIX viewMatrix = { };
-			DirectX::XMMATRIX projectionMatrix = { };
+			alignas(16) DirectX::XMFLOAT4X4 viewMatrix = { };
+			alignas(16) DirectX::XMFLOAT4X4 projectionMatrix = { };
 
 		} cameraConstBufs = { };
 

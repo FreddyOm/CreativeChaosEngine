@@ -1,7 +1,7 @@
 #include "Camera.h"
 #include "../RenderPipeline.h"
 #include "../../Analysis/Time.h"
-#include "Bindable\ConstantBuffer.h"
+#include "Bindable/ConstantBuffer.h"
 #include "../../Manager/InputManager.h"
 #include "../Rendering/../../Manager/ProfilingManager.h"
 
@@ -9,7 +9,7 @@ namespace CCE::Graphics
 {
 	Camera::Camera()
 	{
-		transform.SetTranslation({0.0f, 0.0f, -2.0f});
+		transform.SetTranslation({0.0f, 0.0f, -10.0f});
 		SetFovAndLookDir();
 		CreateConstBufs();
 
@@ -25,12 +25,16 @@ namespace CCE::Graphics
 
 #pragma region setter
 
-	void Camera::SetProjection(float _near, float _far, float _fovV, float _fovH) noexcept
+	void Camera::SetProjectionData(float _near, float _far, float _fovV) noexcept
 	{
 		nearPlane = _near;
 		farPlane = _far;
 		fovVertical = _fovV;
-		fovHorizontal = _fovH;
+	}
+
+	void Camera::SetProjectionType(unsigned char type) noexcept
+	{
+		projType = (ProjectionType)type;
 	}
 
 #pragma endregion setter
@@ -52,11 +56,6 @@ namespace CCE::Graphics
 		return fovVertical;
 	}
 
-	const float Camera::GetHorizontalFOV() const noexcept
-	{
-		return fovHorizontal;
-	}
-
 #pragma endregion getter
 
 	void Camera::CreateConstBufs()
@@ -73,24 +72,30 @@ namespace CCE::Graphics
 		ZeroMemory(&cameraConstBufs.viewMatrix, sizeof(DirectX::XMMATRIX));
 		ZeroMemory(&cameraConstBufs.projectionMatrix, sizeof(DirectX::XMMATRIX));
 
-		float fovRadians = (fovVertical / 360.0f) * XM_2PI;
+		float width = static_cast<float>(RenderPipeline::Instance->GetRenderTargetWidth());
+		float height = static_cast<float>(RenderPipeline::Instance->GetRenderTargetHeight());
 
-		cameraConstBufs.projectionMatrix = XMMatrixPerspectiveFovLH(fovRadians,
-			static_cast<float>(RenderPipeline::Instance->GetRenderTargetWidth()) /
-			static_cast<float>(RenderPipeline::Instance->GetRenderTargetHeight()),
-			0.1f,
-			100.0f);
-
-		 cameraConstBufs.viewMatrix = XMMatrixLookAtLH(
+		XMMATRIX fovMatr = XMMatrixIdentity();
+		if (projType == ProjectionType::PERSPECTIVE)
+		{
+			fovMatr = XMMatrixPerspectiveFovLH(XMConvertToRadians(fovVertical), (float)width / (float)height, nearPlane, farPlane);
+		}
+		else 
+		{
+			fovMatr = XMMatrixOrthographicLH((float)width, (float)height, nearPlane, farPlane);
+		}
+		
+		XMMATRIX viewMatr = XMMatrixLookAtLH(
 			{ transform.Position().x, transform.Position().y, transform.Position().z },
-			 { transform.Position().x, transform.Position().y, transform.Position().z + 1 }, {0,1,0,0});
+			{ transform.Position().x, transform.Position().y, transform.Position().z + 1 }, { 0,1,0,0 });
+
+		XMStoreFloat4x4(&cameraConstBufs.projectionMatrix, fovMatr);
+		XMStoreFloat4x4(&cameraConstBufs.viewMatrix, viewMatr);
 	}
 
 	void Camera::Update()
 	{
 		SetFovAndLookDir();
-
-		HRESULT hr;
 
 		pCameraConstBuf->UpdateConstantBuffer(cameraConstBufs);
 		pCameraConstBuf->Bind();
@@ -162,6 +167,5 @@ namespace CCE::Graphics
 		}
 
 		#pragma endregion zoom
-
 	}
 }

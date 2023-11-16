@@ -61,7 +61,7 @@ namespace CCE::Graphics
 		CreateConstBufs();
 
 		transform.SetTranslation({ 0.0, 0.0, 0.0 });
-		transform.SetScale({1.0, 1.0, 0.25});
+		transform.SetScale({1.0, 1.0, 1.0});
 
 		REGISTER_LEAK_DETECT;
 	}
@@ -74,7 +74,7 @@ namespace CCE::Graphics
 		IDrawable::Draw();
 
 		// TODO: Only do this when necessary
-		modelMatrix = transform.GetTransformationMatrix();
+		XMStoreFloat4x4(&modelMatrix, transform.GetTransformationMatrix());
 
 		pMeshConstBuf->UpdateConstantBuffer(modelMatrix);
 		pMeshConstBuf->Bind();
@@ -82,7 +82,7 @@ namespace CCE::Graphics
 
 	void Mesh::CreateConstBufs()
 	{
-		modelMatrix = transform.GetTransformationMatrix();
-		pMeshConstBuf = std::make_shared<VSConstantBuffer<DirectX::XMMATRIX>>(modelMatrix, 0);
+		XMStoreFloat4x4(&modelMatrix, transform.GetTransformationMatrix());
+		pMeshConstBuf = std::make_shared<VSConstantBuffer<DirectX::XMFLOAT4X4>>(modelMatrix, 0);
 	}
 }

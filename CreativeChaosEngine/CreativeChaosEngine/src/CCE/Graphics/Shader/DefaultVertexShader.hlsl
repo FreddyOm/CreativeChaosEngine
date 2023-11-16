@@ -1,12 +1,12 @@
 cbuffer ModelConstantBuffer : register(b0)
 {
-    row_major matrix modelMatrix; // world matrix for object
+    row_major float4x4 modelMatrix; // world matrix for object
 };
 
 cbuffer ViewProjectionBuffer : register(b1)
 {
-    row_major matrix viewMatrix;
-    row_major matrix projMatrix;
+    row_major float4x4 viewMatrix;
+    row_major float4x4 projMatrix;
 };
 
 struct vs_in
