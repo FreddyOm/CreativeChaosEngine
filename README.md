@@ -14,47 +14,8 @@ The **CCEditor** provides a way of initializing the engines **RuntimeManager** a
 They can be created by initializing a new EditorWindow before the editor loop starts.
 This will register the window and will call it's ***OnGui()*** method.
 
-## TODOs
-- [x] Implement ImGui
-- [x] Create Runtime Input Debugger
-- [ ] Create Runtime Debug Console 
-- [ ] Update all ImGui editor elements to be Runtime Debugging Tools
-- [ ] Enable Runtime Debugging via shortcut in debug runtime
-- [ ] Implement CCEditor in .NET C#
-- [ ] Change CCEditor to use gRPC
-
 # CreativeChaosEngine
 Some custom game engine subsystems 
-
-## TODOs
-- [x] Implement a central engine loop that runs all the engine calls (as jobs)
-- [x] Implement Counters so they move the current job to the wait list
-- [x] Implement file system
-- [x] Save an load engine config
-- [x] Make sure the job system only loads and initializes if multithreading is explicitly requested
-- [ ] Refactor JobDeclaration and EntryPoint to be more easily used
-- [ ] Add an interface to be able to inject resources into the engine loop (e.g. query assets to renderpipeline) 
-- [ ] Refactor custom MemAllocs so they are compatible with stl containers and custom containers
-- [ ] Use custom MemAlloc and custom Container everywhere
-- [ ] Differentiate between "Editor Memory" and "Game Memory" (which memory does only the editor need and which will be used in the game)
-- [ ] Implement some basic SSE
-- [ ] Move testing to individual solution and use it as a dll (?) inside the engine (?)
-- [ ] Implement ECS as basis for the scene structure
-- [ ] Implement USD as basis for Resource-Management
-- [ ] Implement Physics System
-- [ ] Implement Rendering System
-   - [x] IBindable
-   - [x] IDrawable
-   - [x] Pixel Shader
-   - [x] Vertex Shader
-   - [x] Input Layout
-   - [x] Vertex Buffer
-   - [x] Index Buffer
-   - [x] Basic Mesh
-   - [ ] General Mesh
-   - [ ] General Renderer Component (?)
-   - [ ] Basic Lighting
-   - [ ] Instanced Drawing
 
 ## Documentation
 
