@@ -133,6 +133,9 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\GUIDrawables\DebugElements\DebugLabels.cpp" />
+    <ClCompile Include="src\GUIDrawables\DebugElements\DebugCategoryButton.cpp" />
+    <ClCompile Include="src\GUIDrawables\RuntimeDebugger.cpp" />
     <ClCompile Include="src\GUIDrawables\InputWindow.cpp" />
     <ClCompile Include="src\GUIDrawables\Inspector.cpp" />
     <ClCompile Include="src\GUIDrawables\Base\IGUIDrawable.cpp" />
@@ -155,6 +158,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\GUIDrawables\DebugElements\DebugLabels.h" />
+    <ClInclude Include="src\GUIDrawables\DebugElements\DebugCategoryButton.h" />
+    <ClInclude Include="src\GUIDrawables\RuntimeDebugger.h" />
     <ClInclude Include="src\GUIDrawables\InputWindow.h" />
     <ClInclude Include="src\GUIDrawables\Inspector.h" />
     <ClInclude Include="src\GUIDrawables\Base\IGUIDrawable.h" />

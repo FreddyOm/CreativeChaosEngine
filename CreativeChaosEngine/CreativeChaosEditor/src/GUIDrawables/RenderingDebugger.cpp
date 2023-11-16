@@ -38,5 +38,4 @@ void RenderingDebugger::OnGui()
 		ImGui::ColorPicker4("Background Color", RenderPipeline::Instance->GetRenderPipelineConfig()->backgroundColor.rgba);
 
 	}
-	
 }

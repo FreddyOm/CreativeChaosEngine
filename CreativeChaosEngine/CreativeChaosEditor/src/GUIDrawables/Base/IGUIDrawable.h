@@ -12,7 +12,8 @@ using namespace CCE;
 struct IGUIDrawable
 {
 public:
-	IGUIDrawable()
+	IGUIDrawable(bool isOpen = false)
+		: isOpen(isOpen)
 	{
 		if (!initialized)
 		{
@@ -40,15 +41,21 @@ public:
 
 	static void PreGUIUpdate();
 	static void PostGUIUpdate();
-	static std::vector<IGUIDrawable*> GetGUIDrawablePtrs();
+	static std::vector<IGUIDrawable*>* GetGUIDrawablePtrs();
 
+	void ToggleWindow();
 
 private:
 	void UnInitializeGUI() const;
-	void InitializeGUI() const;
+	void InitializeGUI();
 
 protected:
+	bool isOpen = false;
 	static std::atomic<bool> initialized;
+	
+	ImFont *inter_light = nullptr;
+	ImFont *inter_bold = nullptr;
+	ImFont *lexend_light = nullptr;
 
 private:
 	static std::vector<IGUIDrawable*> guiDrawables;

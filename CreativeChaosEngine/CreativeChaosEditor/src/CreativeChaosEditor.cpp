@@ -4,6 +4,7 @@
 
 #include "GUIDrawables/Base/IGUIDrawable.h"
 #include "GUIDrawables/Base/EditorWindow.h"
+#include "GUIDrawables/RuntimeDebugger.h"
 #include "GUIDrawables/RenderingDebugger.h"
 #include "GUIDrawables/MemoryWindow.h"
 #include "GUIDrawables/JobWindow.h"
@@ -90,6 +91,8 @@ int main(int argc, char* argv[])
 
     {
         // EditorGUI
+        float imgui_process_time_ms = 0;
+        RuntimeDebugger runtimeDebugger = RuntimeDebugger(&imgui_process_time_ms);
         RenderingDebugger rendEditorWin = RenderingDebugger("Rendering");
         //MemoryWindow memEditorWin = MemoryWindow("Memory");
         Inspector inspector = Inspector("Inspector");
@@ -115,17 +118,23 @@ int main(int argc, char* argv[])
             mRuntimeManager.PreEditorUpdate(rValue);
             
             //viewportCamera.Update();
+            
+            // ------------------------------ RUNTIME DEBUGGER ------------------------------
+
+            auto start = CCE::Time::Now();
 
             IGUIDrawable::PreGUIUpdate();
 
-            for (int i = 0; i < IGUIDrawable::GetGUIDrawablePtrs().size(); i++)
+            for (int i = 0; i < IGUIDrawable::GetGUIDrawablePtrs()->size(); i++)
             {
-                IGUIDrawable::GetGUIDrawablePtrs().at(i)->UpdateDrawable();
+                IGUIDrawable::GetGUIDrawablePtrs()->at(i)->UpdateDrawable();
             }
-
             //ImGui::ShowDemoWindow();
             IGUIDrawable::PostGUIUpdate();
            
+            auto end = CCE::Time::Now(); imgui_process_time_ms = CCE::Time::GetDurationInMilliSec(start, end);
+            // ------------------------------------------------------------------------------
+
             mRuntimeManager.PostEditorUpdate();
         }
     }
