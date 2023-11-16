@@ -16,7 +16,7 @@ This will register the window and will call it's ***OnGui()*** method.
 
 ## TODOs
 - [x] Implement ImGui
-- [ ] Create Runtime Input Debugger
+- [x] Create Runtime Input Debugger
 - [ ] Create Runtime Debug Console 
 - [ ] Update all ImGui editor elements to be Runtime Debugging Tools
 - [ ] Enable Runtime Debugging via shortcut in debug runtime
