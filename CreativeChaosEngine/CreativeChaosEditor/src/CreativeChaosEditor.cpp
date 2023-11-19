@@ -109,8 +109,6 @@ int main(int argc, char* argv[])
 
         // update window input
         int rValue = 0;
-        DWARNING("This is a very long test warning to see if anything actually breaks apart - and to see ImGuis text breaking.!!!");
-        DERROR("Test Error!!!");
 
         // ----------------------------------------
 
