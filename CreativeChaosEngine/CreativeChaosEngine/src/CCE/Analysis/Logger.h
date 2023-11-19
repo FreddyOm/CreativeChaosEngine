@@ -4,6 +4,7 @@
 #include "../String/String.h"
 #include "../Utilities/Concurrency/ScopedSpinLock.h"
 #include "../Utilities/Concurrency/SpinLock.h"
+#include "Time.h"
 
 #ifdef DEBUG
 
@@ -82,35 +83,61 @@ namespace CCE
 	enum class LogLevel
 	{
 		NONE = 0,
-		INPUT = 1,
-		RENDERING = 2,
-		TEST = 3,
-		JOBS = 4,
-		PROFILING = 5
+		WARNING = 1,
+		ERR = 2,
+		INPUT = 3,
+		RENDERING = 4,
+		TEST = 5,
+		JOBS = 6,
+		PROFILING = 7,
 	};
 
 	struct CCE_API Logger
 	{
+		struct DebugInfoDesc // 24 byte
+		{
+			DebugInfoDesc(const std::string msg, const std::string file, const int line, const LogLevel type)
+				: line(line), debugType(type), fileName(file)
+			{
+				this->msg = "[";
+				this->msg += DateTime::GetTime();
+				this->msg += "] " + msg;
+			}
+
+			int line = 0;
+			LogLevel debugType = LogLevel::NONE;
+			std::string fileName = "";
+			std::string msg = "";
+		};
+
 		Logger() = default;
 		~Logger() = default;
 		static void Log(const char* msg, const COLOR color, const LogLevel level, ...);
 		static void Log(const String msg, const COLOR color, const LogLevel level, ...);
+		static void Log(const DebugInfoDesc desc);
 
 		static void SetLogLvlMaks(const DWORD mask)
 		{
 			logLvLFilterMask = mask;
 		}
 
+		// TODO: Probably move this out of logger and combine this with some other 
+		// system to hook into an event.
+		static std::vector<DebugInfoDesc> logBuffer;
+		static void ClearDebugBuffer();
+		static size_t logCount[3];
+
 	private:
 		static bool LogLvlActive(const LogLevel msgLogLvl)
 		{
 			return (logLvLFilterMask & 1 << (int)msgLogLvl) != 0;
 		}
+		static void CapDebugBuffer();
 
 	private:
 		static SpinLock logSpinLock;
-		static HANDLE hConsole;								// 8 bytes
-		static DWORD logLvLFilterMask; // 0b00000001		// 8 bytes
+		static HANDLE hConsole;					            // 8 bytes
+		static DWORD logLvLFilterMask; // 0b00000001		// 8 bytes		
 	};
 }
 

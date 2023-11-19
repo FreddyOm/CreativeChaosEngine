@@ -7,7 +7,7 @@
 
 using namespace CCE;
 
-class EditorWindow : private IGUIDrawable
+class EditorWindow : protected IGUIDrawable
 {
 public:
 

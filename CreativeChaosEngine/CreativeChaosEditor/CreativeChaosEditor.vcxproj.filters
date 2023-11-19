@@ -66,6 +66,9 @@
     <ClCompile Include="src\GUIDrawables\DebugElements\DebugCategoryButton.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\GUIDrawables\Console.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CreativeChaosEditor.h">
@@ -132,6 +135,12 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\GUIDrawables\DebugElements\DebugLabelFilter.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUIDrawables\Console.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUIDrawables\DebugElements\ConsoleDebugInfoLabel.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

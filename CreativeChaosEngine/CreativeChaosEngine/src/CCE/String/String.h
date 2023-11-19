@@ -1,7 +1,7 @@
 #pragma once
 #include "../Core.h"
-#include "../Analysis/Debug.h"
 #include "StringMemory.h"
+#include "../Analysis/Debug.h"
 
 namespace CCE
 {
