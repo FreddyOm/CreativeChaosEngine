@@ -16,6 +16,8 @@ public:
 	{
 		if (!isActive) { return; } // If label is not activated, don't show anything
 
+		AdaptColor();
+
 		ImGui::PushFont(pFont);
 		ImGui::PushStyleColor(ImGuiCol_Text, text_color);
 		ImGui::PushStyleColor(ImGuiCol_Button, bg_color);
@@ -30,6 +32,26 @@ public:
 
 		ImGui::PopStyleColor(2);
 		ImGui::PopFont();
+	}
+
+	void AdaptColor()
+	{
+		if (Logger::logCount[2] > 0)
+		{
+			bg_color = ImVec4(0.5, 0.1, 0.1, 0.2);
+			text_color = ImVec4(1, 0.2, 0.2, 0.8f);
+			return;
+		}
+
+		if (Logger::logCount[1] > 0)
+		{
+			bg_color = ImVec4(0.5, 0.5, 0.1, 0.2);
+			text_color = ImVec4(1, 1, 0.2, 0.8f);
+			return;
+		}
+
+		bg_color = ImVec4(0.5, 0.5, 0.5, 0.2);
+		text_color = ImVec4(1, 1, 1, 0.8f);
 	}
 
 private:

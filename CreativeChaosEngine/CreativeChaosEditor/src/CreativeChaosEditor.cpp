@@ -110,9 +110,11 @@ int main(int argc, char* argv[])
         // update window input
         int rValue = 0;
 
+        DERROR("Error!!");
+
         // ----------------------------------------
 
-        // TODO: Miltithread the editor loop as well
+        // TODO: Multithread the editor loop as well
         while (rValue != (int)WM_QUIT)
         {
             mRuntimeManager.PreEditorUpdate(rValue);
