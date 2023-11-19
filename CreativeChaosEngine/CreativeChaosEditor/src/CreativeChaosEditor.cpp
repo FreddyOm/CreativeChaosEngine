@@ -10,6 +10,7 @@
 #include "GUIDrawables/JobWindow.h"
 #include "GUIDrawables/Inspector.h"
 #include "GUIDrawables/InputWindow.h"
+#include "GUIDrawables/Console.h"
 
 // -------- Testing ---------
 
@@ -47,8 +48,6 @@ int main(int argc, char* argv[])
     for (int i = 0; i < argc; i++)
     {
         std::string arg = std::string(argv[i]);
-
-        LOG("%s", argv[i]);
 
         if (arg == "-test")
         {
@@ -94,9 +93,10 @@ int main(int argc, char* argv[])
         float imgui_process_time_ms = 0;
         RuntimeDebugger runtimeDebugger = RuntimeDebugger(&imgui_process_time_ms);
         RenderingDebugger rendEditorWin = RenderingDebugger("Rendering");
-        //MemoryWindow memEditorWin = MemoryWindow("Memory");
-        Inspector inspector = Inspector("Inspector");
+        Console debugConsole = Console("Debug Console");
         InputWindow input = InputWindow("Input");
+        Inspector inspector = Inspector("Inspector");
+        //MemoryWindow memEditorWin = MemoryWindow("Memory");
 
         // Editor viewport camera
         //CCE::Graphics::Camera viewportCamera = CCE::Graphics::Camera();
@@ -109,6 +109,8 @@ int main(int argc, char* argv[])
 
         // update window input
         int rValue = 0;
+        DWARNING("This is a very long test warning to see if anything actually breaks apart - and to see ImGuis text breaking.!!!");
+        DERROR("Test Error!!!");
 
         // ----------------------------------------
 

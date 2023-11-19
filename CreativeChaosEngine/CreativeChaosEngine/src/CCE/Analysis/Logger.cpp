@@ -1,5 +1,4 @@
 #include "Logger.h"
-#include "Time.h"
 
 namespace CCE
 {
@@ -67,6 +66,8 @@ namespace CCE
 
         printf(s_buffer);
         printf("\n");
+
+        Log(DebugInfoDesc(s_buffer, "", -1, LogLevel::NONE));
     }
 
     /// <summary>
@@ -122,7 +123,35 @@ namespace CCE
 
         printf(s_buffer);
         printf("\n");
+
+        Log(DebugInfoDesc(s_buffer, "", -1, LogLevel::NONE));
     }
+
+    void Logger::Log(const DebugInfoDesc desc)
+    {
+        logCount[(int)desc.debugType]++;
+        logBuffer.push_back(desc);
+        CapDebugBuffer();
+    }
+
+    void Logger::ClearDebugBuffer()
+    {
+        ZeroMemory(&logCount[0], sizeof(logCount));
+        logBuffer.clear();
+    }
+
+    void Logger::CapDebugBuffer()
+    {
+        if (logBuffer.size() > 999)
+        {
+            logCount[(int)logBuffer.at(0).debugType]--;
+            logBuffer.erase(logBuffer.begin(), logBuffer.begin() + logBuffer.size() - 999);
+        }
+    }
+
+    std::vector<Logger::DebugInfoDesc> Logger::logBuffer = std::vector<Logger::DebugInfoDesc>();
+    size_t Logger::logCount[3] = {0,0,0};
+
 
     /// <summary>
     /// The spinlock used to synchronize the logging
@@ -143,11 +172,13 @@ namespace CCE
     enum LogLevel
     {
         NONE = 0,
-        INPUT = 1,
-        RENDERING = 2,
-        TEST = 3,
-        JOBS = 4,
-        PROFILING = 5,
+		WARNING = 1,
+		ERR = 2,
+		INPUT = 3,
+		RENDERING = 4,
+		TEST = 5,
+		JOBS = 6,
+		PROFILING = 7,
     };
     */
 }

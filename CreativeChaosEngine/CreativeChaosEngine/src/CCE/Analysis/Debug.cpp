@@ -5,18 +5,24 @@ namespace CCE
 {
 	void Debug::DebugInfo(const char* msg, const char* file, const int line) noexcept
 	{
-		CCE::Logger::Log("[INFO] %s\n%s\n%i", COLOR_WHITE, LogLevel::NONE, msg, file, line);
+		auto desc = Logger::DebugInfoDesc{ msg, file, line, LogLevel::NONE };
+		CCE::Logger::Log(desc);
 	}
 
 	void Debug::DebugWarning(const char* msg, const char* file, const int line) noexcept
 	{
-		CCE::Logger::Log("[WARNING] %s\n%s\n%i", COLOR_YELLOW, LogLevel::NONE, msg, file, line);
+		std::string msgStr = std::string("[WARNING] ");
+		msgStr += msg;
+		auto desc = Logger::DebugInfoDesc{ msgStr, file, line, LogLevel::WARNING };
+		CCE::Logger::Log(desc);
 	}
 
 	void Debug::DebugError(const char* msg, const char* file, const int line) noexcept
 	{
-		CCE::Logger::Log("[ERROR] %s\n%s\n%i", COLOR_RED, LogLevel::NONE, msg, file, line);
-		DebugBreak();
+		std::string msgStr = std::string("[ERROR] ");
+		msgStr += msg;
+		auto desc = Logger::DebugInfoDesc{ msgStr, file, line, LogLevel::ERR };
+		CCE::Logger::Log(desc);
 	}
 
 	void Debug::DebugError(const DWORD error, const char* file, const int line) noexcept

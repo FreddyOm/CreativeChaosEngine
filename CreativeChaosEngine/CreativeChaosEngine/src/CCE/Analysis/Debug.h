@@ -1,5 +1,7 @@
 #pragma once
 #include "../Core.h"
+#include <string>
+#include <vector>
 
 #ifdef DEBUG
 #define DINFO(msg) CCE::Debug::DebugInfo(msg, __FILE__, __LINE__)
@@ -31,7 +33,5 @@ namespace CCE
 		static void DebugError(const char* msg, const char* file, const int line) noexcept;
 		static void DebugError(const DWORD error, const char* file, const int line) noexcept;
 		static void DebugAssert(const bool condition, const char* msg, const char* file, const int line) noexcept;
-	private:
-
 	};
 }
