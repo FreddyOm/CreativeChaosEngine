@@ -17,9 +17,9 @@ public:
 	{
 		catButtons =
 		{
-			DebugCategoryButton(ImVec2(40,40), GetGUIDrawablePtrs(), "Rendering"),
-			DebugCategoryButton(ImVec2(40,40), GetGUIDrawablePtrs(), "Log"),
-			DebugCategoryButton(ImVec2(40,40), GetGUIDrawablePtrs(), "Input"),
+			DebugCategoryButton(ImVec2(40,40), GetGUIDrawablePtrs(), ICON_FK_VIDEO_CAMERA),
+			DebugCategoryButton(ImVec2(40,40), GetGUIDrawablePtrs(), ICON_FK_TERMINAL),
+			DebugCategoryButton(ImVec2(40,40), GetGUIDrawablePtrs(), ICON_FK_KEYBOARD_O),
 		};
 
 		// Add more individual metrics here (e.g. GPU time, vertex count, mesh count, ...)
@@ -42,7 +42,7 @@ public:
 	}
 
 public:
-	void UpdateDrawable() override;
+	void UpdateDrawable(ImFont* font) override;
 
 private:
 	void OnGui();

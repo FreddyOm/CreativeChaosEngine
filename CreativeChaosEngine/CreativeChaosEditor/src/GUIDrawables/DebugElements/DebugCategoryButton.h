@@ -21,4 +21,7 @@ private:
 	ImVec2 size;
 	std::vector<IGUIDrawable*>* pDrawables;
 	CCE::String id = "default";
+
+	static ImVec4 normalColor;
+	static ImVec4 selectedColor;
 };

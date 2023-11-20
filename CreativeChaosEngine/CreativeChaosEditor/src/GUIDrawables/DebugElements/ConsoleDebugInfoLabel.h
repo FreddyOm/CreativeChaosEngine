@@ -1,5 +1,6 @@
-#pragma once
+﻿#pragma once
 #include "DebugInfoLabel.h"
+#include "../Icons.h"
 
 struct ConsoleDebugInfoLabel : public DebugInfoLabel
 {
@@ -23,8 +24,8 @@ public:
 		ImGui::PushStyleColor(ImGuiCol_Button, bg_color);
 
 		DebugInfoLabel::Draw();
-		if (ImGui::DynamicTextButton("Mes: %d | Warn: %d | Err: %d", 0, size, 
-			Logger::logCount[0], Logger::logCount[1], Logger::logCount[2]))
+		if (ImGui::DynamicTextButton(ICON_FK_INFO_CIRCLE " %d      " ICON_FK_EXCLAMATION_CIRCLE " %d      "
+			ICON_FK_BAN " %d", 0, size, Logger::logCount[0], Logger::logCount[1], Logger::logCount[2]))
 		{
 			// Toggle console
 			pDrawables->at(2)->ToggleWindow(); // FIX-ME: Don't look for the console via an index! 

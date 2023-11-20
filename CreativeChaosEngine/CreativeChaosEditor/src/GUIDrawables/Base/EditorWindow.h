@@ -25,7 +25,7 @@ public:
 	~EditorWindow()
 	{ }
 
-	void UpdateDrawable() override;
+	void UpdateDrawable(ImFont* font) override;
 
 protected:
 	String windowName = "";

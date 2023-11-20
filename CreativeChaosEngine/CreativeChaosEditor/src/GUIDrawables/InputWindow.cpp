@@ -1,4 +1,4 @@
-#include "InputWindow.h"
+﻿#include "InputWindow.h"
 
 void InputWindow::OnGui()
 {
