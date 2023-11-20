@@ -40,6 +40,11 @@ void IGUIDrawable::ToggleWindow()
 	isOpen = !isOpen;
 }
 
+bool IGUIDrawable::IsOpen()
+{
+	return isOpen;
+}
+
 
 /// <summary>
 /// Uninitializes the gui context.
@@ -73,7 +78,19 @@ void IGUIDrawable::InitializeGUI()
 
 	//lexend_light = io.Fonts->AddFontFromFileTTF("./resources/fonts/Lexend-Light.ttf", 14);
 	inter_light = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter-Light.ttf", 14);
+
+	ImFontConfig config;
+	config.MergeMode = true;
+	config.GlyphMinAdvanceX = 14.0f; // Use if you want to make the icon monospaced
+	static const ImWchar icon_ranges[] = { 0xf000, 0xf372, 0 };
+	io.Fonts->AddFontFromFileTTF("./resources/fonts/IconFont.ttf", 14.0f, &config, icon_ranges);
+
+	config.MergeMode = false;
 	inter_bold = io.Fonts->AddFontFromFileTTF("./resources/fonts/Inter-Bold.ttf", 11);
+
+	config.MergeMode = true;
+	io.Fonts->AddFontFromFileTTF("./resources/fonts/IconFont.ttf", 14.0f, &config, icon_ranges);
+
 	io.Fonts->Build();
 
 	// Use CCE Colors
@@ -102,6 +119,9 @@ void IGUIDrawable::InitializeGUI()
 /// A flag that indicates wether or not the gui is initialized.
 /// </summary>
 std::atomic<bool> IGUIDrawable::initialized = false;
+
+ImFont* IGUIDrawable::inter_light = nullptr;
+ImFont* IGUIDrawable::inter_bold = nullptr;
 
 /// <summary>
 /// A list of registered gui drawables.

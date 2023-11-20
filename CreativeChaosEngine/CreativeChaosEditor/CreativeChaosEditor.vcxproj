@@ -165,6 +165,7 @@
     <ClInclude Include="src\GUIDrawables\DebugElements\DebugInfoLabel.h" />
     <ClInclude Include="src\GUIDrawables\DebugElements\FrameTimeDebugInfoLabel.h" />
     <ClInclude Include="src\GUIDrawables\DebugElements\ImGuiDebugInfoLabel.h" />
+    <ClInclude Include="src\GUIDrawables\Icons.h" />
     <ClInclude Include="src\GUIDrawables\RuntimeDebugger.h" />
     <ClInclude Include="src\GUIDrawables\InputWindow.h" />
     <ClInclude Include="src\GUIDrawables\Inspector.h" />

@@ -11,6 +11,7 @@
 #include "GUIDrawables/Inspector.h"
 #include "GUIDrawables/InputWindow.h"
 #include "GUIDrawables/Console.h"
+#include "GUIDrawables\Icons.h"
 
 // -------- Testing ---------
 
@@ -92,9 +93,9 @@ int main(int argc, char* argv[])
         // EditorGUI
         float imgui_process_time_ms = 0;
         RuntimeDebugger runtimeDebugger = RuntimeDebugger(&imgui_process_time_ms);
-        RenderingDebugger rendEditorWin = RenderingDebugger("Rendering");
-        Console debugConsole = Console("Debug Console");
-        InputWindow input = InputWindow("Input");
+        RenderingDebugger rendEditorWin = RenderingDebugger(String(ICON_FK_VIDEO_CAMERA) + " Rendering");
+        Console debugConsole = Console(String(ICON_FK_TERMINAL) + " Debug Console");
+        InputWindow input = InputWindow(String(ICON_FK_KEYBOARD_O) + " Input");
         Inspector inspector = Inspector("Inspector");
         //MemoryWindow memEditorWin = MemoryWindow("Memory");
 

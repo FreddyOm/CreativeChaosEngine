@@ -6,6 +6,7 @@
 #include "../../imgui/imgui_impl_dx11.h"
 #include "../../imgui/imgui_impl_win32.h"
 #include <atomic>
+#include "../Icons.h"
 
 using namespace CCE;
 
@@ -37,13 +38,14 @@ public:
 	/// <summary>
 	/// Method that specifies how the OnGui is called.
 	/// </summary>
-	virtual void UpdateDrawable() = 0;
+	virtual void UpdateDrawable(ImFont* font = inter_bold) = 0;
 
 	static void PreGUIUpdate();
 	static void PostGUIUpdate();
 	static std::vector<IGUIDrawable*>* GetGUIDrawablePtrs();
 
 	void ToggleWindow();
+	bool IsOpen();
 
 private:
 	void UnInitializeGUI() const;
@@ -53,9 +55,8 @@ protected:
 	bool isOpen = false;
 	static std::atomic<bool> initialized;
 	
-	ImFont *inter_light = nullptr;
-	ImFont *inter_bold = nullptr;
-	ImFont *lexend_light = nullptr;
+	static ImFont *inter_light;
+	static ImFont *inter_bold;
 
 private:
 	static std::vector<IGUIDrawable*> guiDrawables;

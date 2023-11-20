@@ -3,8 +3,6 @@
 
 void Console::OnGui()
 {
-	ImGui::PushFont(inter_bold);
-
 	if (ImGui::Button("Clear", ImVec2(40, 20)))
 	{
 		Logger::ClearDebugBuffer();
@@ -54,8 +52,6 @@ void Console::OnGui()
 	}
 
 	ImGui::EndChild();
-
-	ImGui::PopFont();
 }
 
 void Console::OpenIDE(const std::string fileName, const int line)
