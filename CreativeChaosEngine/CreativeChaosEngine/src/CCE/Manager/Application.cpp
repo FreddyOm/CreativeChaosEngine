@@ -62,7 +62,7 @@ namespace CCE
 	/// <summary>
 	/// Run one frame
 	/// </summary>
-	void Application::PreEditorUpdate(int& rValue)
+	void Application::PreEditorUpdate(int& rValue, bool handleInput)
 	{
 		frameBegin = Time::Now();
 #if MULTITHREADED
@@ -85,7 +85,10 @@ namespace CCE
 
 #else
 		window->UpdateClientWindow(rValue);
-		mInputManager.FinalizeWinInput();
+
+		if(handleInput)
+			mInputManager.FinalizeWinInput();
+
 		window->GetRenderPipeline()->BeginFrame(window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
 
 		//mInputManager.HandleDirectInput();

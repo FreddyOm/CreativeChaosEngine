@@ -159,7 +159,7 @@ namespace CCE::Graphics
 			float deltaX = mouse->deltaX * camRotYDelta * (float)CCE::Time::deltaTime;
 			float deltaY = mouse->deltaY * camRotXDelta * (float)CCE::Time::deltaTime;
 			// Make sure, the global up vector still holds true in any case!!
-			if (transform.Rotation().x + deltaY > -80.0f && transform.Rotation().x + deltaX < 80.0f)
+			if (transform.Rotation().x + deltaY > -80.0f && transform.Rotation().x + deltaY < 80.0f)
 			{
 				transform.SetRotation({ transform.Rotation().x + deltaY,
 				transform.Rotation().y + deltaX, transform.Rotation().z });

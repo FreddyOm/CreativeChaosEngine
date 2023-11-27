@@ -24,7 +24,7 @@ namespace CCE
 
 		static Application* Instance;
 
-		void PreEditorUpdate(int& rValue);
+		void PreEditorUpdate(int& rValue, bool handleInput);
 		void PostEditorUpdate();
 
 	public:

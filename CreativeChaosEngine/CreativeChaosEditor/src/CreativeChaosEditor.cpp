@@ -116,7 +116,7 @@ int main(int argc, char* argv[])
         // TODO: Multithread the editor loop as well
         while (rValue != (int)WM_QUIT)
         {
-            mRuntimeManager.PreEditorUpdate(rValue);
+            mRuntimeManager.PreEditorUpdate(rValue, true);
             
             //viewportCamera.Update();
             

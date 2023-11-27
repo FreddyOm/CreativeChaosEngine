@@ -50,7 +50,7 @@ void Console::OnGui()
 		selectedLog = false;
 		ImGui::PopStyleColor();
 	}
-
+	ImGui::SetScrollHereY(1);
 	ImGui::EndChild();
 }
 
