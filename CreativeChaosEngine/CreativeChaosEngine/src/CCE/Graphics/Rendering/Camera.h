@@ -53,6 +53,8 @@ namespace CCE::Graphics
 		float fastCamMovementDelta = 0.007f;
 		float camPanDelta = 0.005f;
 		float camZoomDelta = 0.5f;
+		float camRotXDelta = 0.05f;
+		float camRotYDelta = 0.05f;
 
 		ProjectionType projType = ProjectionType::PERSPECTIVE;
 

@@ -41,17 +41,58 @@ public:
 			DirectX::XMConvertToRadians(rotation.z)));
 	}
 
-	DirectX::XMFLOAT3 Position()
+	/// <summary>
+	/// Transforms the global forward vector into the current model space.
+	/// </summary>
+	/// <returns>The local Forward-Vector as XMVECTOR</returns>
+	DirectX::XMVECTOR Forward()
+	{
+		using namespace DirectX;
+		
+		XMVECTOR gForw = XMVectorSet(0, 0, 1, 0);
+		auto forw = XMVector3Transform(gForw, XMLoadFloat4x4(&rotationMatrix));
+		return XMVector3Normalize(forw);
+	}
+
+	/// <summary>
+	/// Transforms the global up vector into the current model space.
+	/// </summary>
+	/// <returns>The local Up-Vector as XMMVECTOR</returns>
+	DirectX::XMVECTOR Up()
+	{
+		using namespace DirectX;
+
+		XMVECTOR gUp = XMVectorSet(0, 1, 0, 0);
+		auto right = XMVector3Transform(gUp, XMLoadFloat4x4(&rotationMatrix));
+
+		return XMVector3Normalize(right);
+	}
+
+	/// <summary>
+	/// Transforms the global right vector into the current model space.
+	/// </summary>
+	/// <returns>The local Right-Vector as XMMVECTOR</returns>
+	DirectX::XMVECTOR Right()
+	{
+		using namespace DirectX;
+
+		XMVECTOR gRight = XMVectorSet(1, 0, 0, 0);
+		auto right = XMVector3Transform(gRight, XMLoadFloat4x4(&rotationMatrix));
+
+		return XMVector3Normalize(right);
+	}
+
+	DirectX::XMFLOAT3& Position()
 	{
 		return position;
 	}
 
-	DirectX::XMFLOAT3 Scale()
+	DirectX::XMFLOAT3& Scale()
 	{
 		return scale;
 	}
 
-	DirectX::XMFLOAT3 Rotation()
+	DirectX::XMFLOAT3& Rotation()
 	{
 		return rotation;
 	}

@@ -122,7 +122,7 @@ namespace CCE::Graphics
 	public:
 		static RenderPipeline* Instance;
 		Camera* viewportCamera = nullptr;
-		Mesh* testMesh = nullptr;
+		std::vector<Mesh*> testMeshes = { };
 
 	public:
 		void InitializeD3D11(const HWND hWnd, const int width, const int height);

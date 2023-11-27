@@ -18,7 +18,7 @@ public:
 		catButtons =
 		{
 			DebugCategoryButton(ImVec2(40,40), GetGUIDrawablePtrs(), ICON_FK_VIDEO_CAMERA),
-			DebugCategoryButton(ImVec2(40,40), GetGUIDrawablePtrs(), ICON_FK_TERMINAL),
+			DebugCategoryButton(ImVec2(40,40), GetGUIDrawablePtrs(), ICON_FK_CHECK_CIRCLE_O),
 			DebugCategoryButton(ImVec2(40,40), GetGUIDrawablePtrs(), ICON_FK_KEYBOARD_O),
 		};
 

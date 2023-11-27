@@ -36,7 +36,8 @@ namespace CCE::Graphics
 			//delete cnt;
 
 		delete viewportCamera;
-		delete testMesh;
+		for(auto* mesh : testMeshes)
+			delete mesh;
 
 		UNREGISTER_LEAK_DETECT;
 	}
@@ -68,7 +69,16 @@ namespace CCE::Graphics
 		CreateViewport();
 
 		viewportCamera = new Camera();
-		testMesh = new Mesh();
+
+		testMeshes.push_back(new Mesh());
+		testMeshes.push_back(new Mesh());
+		testMeshes.push_back(new Mesh());
+		testMeshes.push_back(new Mesh());
+
+		testMeshes.at(0)->transform.SetTranslation({ 3,5,1 });
+		testMeshes.at(1)->transform.SetTranslation({ 1,2,0 });
+		testMeshes.at(2)->transform.SetTranslation({ -1,0,2 });
+		testMeshes.at(3)->transform.SetTranslation({ -3,1,1 });
 	}
 
 	/// <summary>
@@ -251,7 +261,8 @@ namespace CCE::Graphics
 
 		viewportCamera->Update();
 
-		testMesh->Draw();
+		for(auto* mesh : testMeshes)
+			mesh->Draw();
 	}
 
 	/// <summary>

@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
         float imgui_process_time_ms = 0;
         RuntimeDebugger runtimeDebugger = RuntimeDebugger(&imgui_process_time_ms);
         RenderingDebugger rendEditorWin = RenderingDebugger(String(ICON_FK_VIDEO_CAMERA) + " Rendering");
-        Console debugConsole = Console(String(ICON_FK_TERMINAL) + " Debug Console");
+        Console debugConsole = Console(String(ICON_FK_CHECK_CIRCLE_O) + " Debug Console");
         InputWindow input = InputWindow(String(ICON_FK_KEYBOARD_O) + " Input");
         Inspector inspector = Inspector("Inspector");
         //MemoryWindow memEditorWin = MemoryWindow("Memory");

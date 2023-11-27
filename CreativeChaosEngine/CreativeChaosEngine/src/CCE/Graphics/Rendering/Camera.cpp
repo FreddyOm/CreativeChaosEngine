@@ -85,9 +85,12 @@ namespace CCE::Graphics
 			fovMatr = XMMatrixOrthographicLH((float)width, (float)height, nearPlane, farPlane);
 		}
 		
-		XMMATRIX viewMatr = XMMatrixLookAtLH(
-			{ transform.Position().x, transform.Position().y, transform.Position().z },
-			{ transform.Position().x, transform.Position().y, transform.Position().z + 1 }, { 0,1,0,0 });
+		
+		auto forward = transform.Forward();
+		auto focusPoint = XMVectorAdd(XMLoadFloat3(&transform.Position()), forward);
+		XMMATRIX viewMatr = XMMatrixLookAtLH(XMLoadFloat3(&transform.Position()),
+			focusPoint, {0, 1, 0});
+		
 
 		XMStoreFloat4x4(&cameraConstBufs.projectionMatrix, fovMatr);
 		XMStoreFloat4x4(&cameraConstBufs.viewMatrix, viewMatr);
@@ -120,39 +123,47 @@ namespace CCE::Graphics
 
 			if (keyboard->keys[(int)InputDevice::Keycode::KEY_W] == InputDevice::ButtonState::PRESSED)
 			{
-				transform.SetTranslation({ transform.Position().x, transform.Position().y, transform.Position().z + (camMovementDelta * (float)CCE::Time::deltaTime) });
+				XMVECTOR deltaPos = XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Forward() * camMovementDelta * (float)CCE::Time::deltaTime));
+				XMStoreFloat3(&transform.Position(), deltaPos);
 			}
 
 			if (keyboard->keys[(int)InputDevice::Keycode::KEY_A] == InputDevice::ButtonState::PRESSED)
 			{
-				transform.SetTranslation({ transform.Position().x - (camMovementDelta * (float)CCE::Time::deltaTime), transform.Position().y, transform.Position().z });
+				XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (-transform.Right() * camMovementDelta * (float)CCE::Time::deltaTime)));
 			}
 
 			if (keyboard->keys[(int)InputDevice::Keycode::KEY_S] == InputDevice::ButtonState::PRESSED)
 			{
-				transform.SetTranslation({ transform.Position().x, transform.Position().y, transform.Position().z - (camMovementDelta * (float)CCE::Time::deltaTime) });
+				XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (-transform.Forward() * camMovementDelta * (float)CCE::Time::deltaTime)));
 			}
 
 			if (keyboard->keys[(int)InputDevice::Keycode::KEY_D] == InputDevice::ButtonState::PRESSED)
 			{
-				transform.SetTranslation({ transform.Position().x + (camMovementDelta * (float)CCE::Time::deltaTime), transform.Position().y, transform.Position().z });
+				XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Right() * camMovementDelta * (float)CCE::Time::deltaTime)));
 			}
 
 			if (keyboard->keys[(int)InputDevice::Keycode::KEY_Q] == InputDevice::ButtonState::PRESSED)
 			{
-				transform.SetTranslation({ transform.Position().x, transform.Position().y + (camMovementDelta * (float)CCE::Time::deltaTime), transform.Position().z });
+				XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Up() * camMovementDelta * (float)CCE::Time::deltaTime)));
 			}
 
 			if (keyboard->keys[(int)InputDevice::Keycode::KEY_E] == InputDevice::ButtonState::PRESSED)
 			{
-				transform.SetTranslation({ transform.Position().x, transform.Position().y - (camMovementDelta * (float)CCE::Time::deltaTime), transform.Position().z });
+				XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (-transform.Up() * camMovementDelta * (float)CCE::Time::deltaTime)));
 			}
 
 #pragma endregion wasd
 
 			#pragma region rotate cam
 
-
+			float deltaX = mouse->deltaX * camRotYDelta * (float)CCE::Time::deltaTime;
+			float deltaY = mouse->deltaY * camRotXDelta * (float)CCE::Time::deltaTime;
+			// Make sure, the global up vector still holds true in any case!!
+			if (transform.Rotation().x + deltaY > -80.0f && transform.Rotation().x + deltaX < 80.0f)
+			{
+				transform.SetRotation({ transform.Rotation().x + deltaY,
+				transform.Rotation().y + deltaX, transform.Rotation().z });
+			}
 
 			#pragma endregion rotate cam
 
@@ -163,7 +174,7 @@ namespace CCE::Graphics
 
 		if (mouse->wheelDelta != 0)
 		{
-			transform.SetTranslation({ transform.Position().x, transform.Position().y ,transform.Position().z + mouse->wheelDelta * camZoomDelta * (float)CCE::Time::deltaTime });
+			XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Forward() * mouse->wheelDelta * camZoomDelta * (float)CCE::Time::deltaTime)));
 		}
 
 		#pragma endregion zoom
