@@ -112,8 +112,8 @@ namespace CCE::Graphics
 		using CCE::Input::InputDevice;
 		if (mouse->middleMouseButton == InputDevice::ButtonState::PRESSED)
 		{
-			transform.SetTranslation({ transform.Position().x - mouse->deltaX * (camPanDelta * (float)CCE::Time::deltaTime),
-				transform.Position().y + mouse->deltaY * (camPanDelta * (float)CCE::Time::deltaTime), transform.Position().z });
+			XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Right() * -mouse->deltaX * camPanDelta * (float)CCE::Time::deltaTime)));
+			XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Up() * mouse->deltaY * camPanDelta * (float)CCE::Time::deltaTime)));
 		}
 		else if (mouse->rightMouseButton == InputDevice::ButtonState::PRESSED)
 		{
