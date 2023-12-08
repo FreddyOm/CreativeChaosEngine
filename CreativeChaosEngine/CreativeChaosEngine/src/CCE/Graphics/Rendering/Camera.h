@@ -1,8 +1,8 @@
 #pragma once
 #include <memory>
 #include "D3D11.h"
-#include "Transform.h"
 #include "../../Core.h"
+#include "..\..\Resources\Components\Transform.h"
 #include "../../Input/Mouse.h"
 #include "../../Input/Keyboard.h"
 #include "../../Input/Controller.h"
@@ -28,7 +28,7 @@ namespace CCE::Graphics
 		Camera();
 		~Camera();
 
-		Transform transform;
+		CCE::Resources::Transform transform;
 
 		void SetProjectionData(float _near, float _far, float _fovV) noexcept;
 		void SetProjectionType(unsigned char type) noexcept;

@@ -2,6 +2,8 @@
 #include "CCE/ClientWindow/ClientWindow.h"
 #include <functional>
 
+#pragma region drawables
+
 #include "GUIDrawables/Base/IGUIDrawable.h"
 #include "GUIDrawables/Base/EditorWindow.h"
 #include "GUIDrawables/RuntimeDebugger.h"
@@ -12,6 +14,8 @@
 #include "GUIDrawables/InputWindow.h"
 #include "GUIDrawables/Console.h"
 #include "GUIDrawables\Icons.h"
+
+#pragma endregion drawables
 
 // -------- Testing ---------
 

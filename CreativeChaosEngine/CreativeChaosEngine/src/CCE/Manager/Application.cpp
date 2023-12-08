@@ -144,8 +144,9 @@ namespace CCE
 #if MULTITHREADED
 		mJobManager.StartUp();
 #endif
-		mPhysicsManager.StartUp();
 		mInputManager.StartUp();
+		mECS.StartUp();
+		mPhysicsManager.StartUp();
 
 		window = new ClientWindow();
 		window->OpenWindow(GetModuleHandle(NULL));
@@ -156,8 +157,9 @@ namespace CCE
 	/// </summary>
 	void Application::Deinitialize()
 	{
-		mInputManager.ShutDown();
 		mPhysicsManager.ShutDown();
+		mECS.ShutDown();
+		mInputManager.ShutDown();
 #if MULTITHREADED
 		mJobManager.ShutDown();
 #endif

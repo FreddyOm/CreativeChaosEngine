@@ -44,6 +44,10 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Topology.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IBindable.cpp" />
     <ClCompile Include="src\CCE\String\StringMemory.cpp" />
+    <ClCompile Include="src\CCE\Resources\EntityComponentSystem.cpp" />
+    <ClCompile Include="src\CCE\Resources\Components\Transform.cpp" />
+    <ClCompile Include="src\CCE\Resources\Entity.cpp" />
+    <ClCompile Include="src\CCE\Resources\ComponentBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\ConstantBuffer.h" />
@@ -56,7 +60,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\D3D11.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Drawable\IDrawable.h" />
-    <ClInclude Include="src\CCE\Graphics\Rendering\Transform.h" />
+    <ClInclude Include="src\CCE\Resources\Components\Transform.h" />
     <ClInclude Include="src\CCE\Utilities\IO\IO.h" />
     <ClInclude Include="src\CCE\Manager\MemoryManager.h" />
     <ClInclude Include="src\CCE\ClientWindow\ClientWindow.h" />
@@ -103,6 +107,12 @@
     <ClInclude Include="src\CCE\Input\Keyboard.h" />
     <ClInclude Include="src\CCE\Input\Mouse.h" />
     <ClInclude Include="src\CCE\String\StringMemory.h" />
+    <ClInclude Include="src\CCE\Resources\EntityComponentSystem.h" />
+    <ClInclude Include="src\CCE\Resources\Component.h" />
+    <ClInclude Include="src\CCE\Resources\Components\ComponentHeaders.h" />
+    <ClInclude Include="src\CCE\Resources\Entity.h" />
+    <ClInclude Include="src\CCE\Resources\IComponentBuffer.h" />
+    <ClInclude Include="src\CCE\Resources\ComponentBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="resources\sdk\ds5w_x64.lib" />
