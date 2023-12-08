@@ -11,7 +11,7 @@
 // TODO: Refactor static manager pointers to work in a defined way
 namespace CCE
 {
-	struct CCE_API ClientWindow
+	class CCE_API ClientWindow
 	{
 	public:
 		ClientWindow()
