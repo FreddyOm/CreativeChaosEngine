@@ -14,7 +14,7 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
-*.dll
+# *.dll
 
 # Fortran module files
 *.mod
@@ -24,7 +24,7 @@
 *.lai
 *.la
 *.a
-*.lib
+# *.lib
 
 # User specific files
 *.user
@@ -40,5 +40,4 @@ CreativeChaosEngine/bin/
 CreativeChaosEngine/bin-int/
 CreativeChaosEngine/x64/
 CreativeChaosEngine/CreativeChaosEditor/imgui.ini
-!CreativeChaosEngine/CreativeChaosEngine/resources/*.lib
-!CreativeChaosEngine/CreativeChaosEngine/resources/*.dll
+CreativeChaosEngine/CreativeChaosEngine/
