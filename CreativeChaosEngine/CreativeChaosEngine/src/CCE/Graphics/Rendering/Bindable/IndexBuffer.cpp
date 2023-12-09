@@ -32,12 +32,17 @@ namespace CCE::Graphics
 		return count;
 	}
 
-	void IndexBuffer::Bind()
+	void IndexBuffer::DynamicBind()
 	{
 		// Bind to pipeline
 		GetContext()->IASetIndexBuffer(
 			pIndexBuffer.Get(), 
 			DXGI_FORMAT_R32_UINT, 
 			0u);
+	}
+
+	void IndexBuffer::StaticBind()
+	{
+
 	}
 }

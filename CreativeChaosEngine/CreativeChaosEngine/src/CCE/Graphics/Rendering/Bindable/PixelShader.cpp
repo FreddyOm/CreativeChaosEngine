@@ -20,8 +20,13 @@ namespace CCE::Graphics
 		pPixelShader.Reset();
 	}
 
-	void PixelShader::Bind()
+	void PixelShader::DynamicBind()
 	{
 		GetContext()->PSSetShader(pPixelShader.Get(), nullptr, 0u);
+	}
+
+	void PixelShader::StaticBind()
+	{
+
 	}
 }

@@ -101,7 +101,7 @@ namespace CCE::Graphics
 		SetFovAndLookDir();
 
 		pCameraConstBuf->UpdateConstantBuffer(cameraConstBufs);
-		pCameraConstBuf->Bind();
+		pCameraConstBuf->DynamicBind();
 	}
 
 	// TODO: Only do this on the viewport cam (create another class for the viewport cam or derive from it -> indirection[!])

@@ -13,7 +13,8 @@ namespace CCE::Graphics
 		~VertexBuffer();
 
 		// Geerbt über IBindable
-		void Bind() override;
+		void DynamicBind() override;
+		void StaticBind() override;
 
 	private:
 		UINT count;

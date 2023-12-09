@@ -12,7 +12,9 @@ namespace CCE::Graphics
 		~VertexShader();
 
 		// Geerbt über IBindable
-		void Bind() override;
+		void DynamicBind() override;
+		void StaticBind() override;
+
 		ID3DBlob* GetBytecode() const;
 		ID3D11VertexShader* GetVertexShader() const;
 

@@ -1,5 +1,6 @@
 #include "IO.h"
 #include <shlwapi.h>
+#include <fileapi.h>
 
 namespace CCE
 {
@@ -80,6 +81,15 @@ namespace CCE
 	CCE::String IO::ReadText(const File file, const FileMode fileMode)
 	{
 		return ReadText(file.Path(), fileMode);
+	}
+
+	size_t IO::ReadBytes(const String filePath, const BYTE* destination, const FileMode fileMode)
+	{
+		HANDLE fHndl = CreateFileA(filePath.Value(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		DWORD bytesRead = 0;
+
+		//TODO: Check maximum buffer size
+		return ReadFile(fHndl, (LPVOID) destination, 524288, &bytesRead, NULL) ? bytesRead : 0;
 	}
 
 	/*

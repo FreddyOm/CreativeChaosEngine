@@ -29,11 +29,16 @@ namespace CCE::Graphics
 		pVertexBuffer.Reset();
 	}
 
-	void VertexBuffer::Bind()
+	void VertexBuffer::DynamicBind()
 	{
 		const UINT offset = 0u;
 		const UINT stride = sizeof(Vertex);
 		GetContext()->IASetVertexBuffers(
 			0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
+	}
+
+	void VertexBuffer::StaticBind()
+	{
+
 	}
 }

@@ -44,6 +44,9 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Topology.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IBindable.cpp" />
     <ClCompile Include="src\CCE\String\StringMemory.cpp" />
+    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Texture2D.cpp" />
+    <ClCompile Include="src\CCE\Resources\TextureLoader.cpp" />
+    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Sampler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\ConstantBuffer.h" />
@@ -103,14 +106,21 @@
     <ClInclude Include="src\CCE\Input\Keyboard.h" />
     <ClInclude Include="src\CCE\Input\Mouse.h" />
     <ClInclude Include="src\CCE\String\StringMemory.h" />
+    <ClInclude Include="src\CCE\Utilities\FreeImg\FreeImage.h" />
+    <ClInclude Include="src\CCE\Resources\TextureLoader.h" />
+    <ClInclude Include="src\CCE\Resources\Resource.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Texture2D.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Sampler.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="resources\sdk\ds5w_x64.lib" />
+    <Library Include="resources\sdk\FreeImage.lib" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CreativeChaosEngineCore.rc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\sdk\ds5w_x64.dll" />
+    <None Include="resources\sdk\FreeImage.dll" />
   </ItemGroup>
 </Project>

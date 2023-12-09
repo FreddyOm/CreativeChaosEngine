@@ -17,7 +17,8 @@ namespace CCE::Graphics
 		}
 
 		// Geerbt über IBindable
-		void Bind() override;
+		void DynamicBind() override;
+		void StaticBind() override;
 
 	private:
 		ComPtr<ID3D11PixelShader> pPixelShader;

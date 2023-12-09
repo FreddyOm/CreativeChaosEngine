@@ -158,6 +158,7 @@ namespace CCE
 
 		static CCE::String ReadText(const String filePath, const FileMode fileMode = FileMode::DEFAULT);
 		static CCE::String ReadText(const File file, const FileMode fileMode = FileMode::DEFAULT);
+		static size_t ReadBytes(const String filePath, const BYTE* destination, const FileMode fileMode = FileMode::DEFAULT);
 		// TODO: Implement Reading bytes
 		//static std::shared_ptr<char> ReadBytes(String filePath, FileMode fileMode = FileMode::DEFAULT);
 

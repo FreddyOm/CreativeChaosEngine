@@ -11,7 +11,8 @@ namespace CCE::Graphics
 		~InputLayout();
 
 		// Geerbt über IBindable
-		virtual void Bind() override;
+		void DynamicBind() override;
+		void StaticBind() override;
 
 	private:
 		ComPtr<ID3D11InputLayout> pInputLayout;

@@ -10,11 +10,13 @@ namespace CCE::Graphics
 
 		D3D11_INPUT_ELEMENT_DESC layout[] =
 		{
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 
+		int iNumElements = sizeof(layout) / sizeof(D3D11_INPUT_ELEMENT_DESC);
 		HRESULT hr = GetDevice()->CreateInputLayout(
-			layout, 1, pVertexShaderBytecode->GetBufferPointer(),
+			layout, iNumElements, pVertexShaderBytecode->GetBufferPointer(),
 			pVertexShaderBytecode->GetBufferSize(), &pInputLayout);
 		DASSERT(hr == S_OK, "Failed creating input layout resource.");
 	}
@@ -24,8 +26,13 @@ namespace CCE::Graphics
 		pInputLayout.Reset();
 	}
 
-	void InputLayout::Bind()
+	void InputLayout::DynamicBind()
 	{
 		GetContext()->IASetInputLayout(pInputLayout.Get());
+	}
+
+	void InputLayout::StaticBind()
+	{
+
 	}
 }

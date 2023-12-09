@@ -15,7 +15,8 @@ namespace CCE::Graphics
 		UINT GetCount() const noexcept;
 
 		// Geerbt über IBindable
-		void Bind() override;
+		void DynamicBind() override;
+		void StaticBind() override;
 
 	private:
 		UINT count;

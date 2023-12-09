@@ -9,6 +9,6 @@ namespace CCE::Graphics
 	struct CCE_API Vertex
 	{
 		XMFLOAT3 Position;
-		//XMFLOAT3 Color;
+		XMFLOAT2 UVCoord;
 	};
 }

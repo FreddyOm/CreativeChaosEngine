@@ -11,10 +11,18 @@ namespace CCE::Graphics
 	{ }
 
 	/// <summary>
-	/// Binds the provided topology to the pipeline.
+	/// Binds the provided topology to the pipeline (every frame).
 	/// </summary>
-	void Topology::Bind()
+	void Topology::DynamicBind()
 	{
 		GetContext()->IASetPrimitiveTopology(pTopology);
+	}
+
+	/// <summary>
+	/// Binds the provided topology to the pipeline (once).
+	/// </summary>
+	void Topology::StaticBind()
+	{
+		
 	}
 }

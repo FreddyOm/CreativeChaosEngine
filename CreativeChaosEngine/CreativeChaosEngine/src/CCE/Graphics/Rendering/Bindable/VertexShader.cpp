@@ -21,11 +21,17 @@ namespace CCE::Graphics
 		pVertexShader.Reset();
 	}
 
-	void VertexShader::Bind()
+	void VertexShader::DynamicBind()
 	{
 		GetContext()->VSSetShader(
 			pVertexShader.Get(), nullptr, 0u);
 	}
+
+	void VertexShader::StaticBind()
+	{
+
+	}
+
 	ID3DBlob* VertexShader::GetBytecode() const
 	{
 		return pBytecodeBlob.Get();

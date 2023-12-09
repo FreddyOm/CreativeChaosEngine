@@ -7,3 +7,5 @@
 #include "VertexShader.h"
 #include "Topology.h"
 #include "ConstantBuffer.h"
+#include "Texture2D.h"
+#include "Sampler.h"
