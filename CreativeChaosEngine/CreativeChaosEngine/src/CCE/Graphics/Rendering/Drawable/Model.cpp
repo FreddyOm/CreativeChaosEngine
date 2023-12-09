@@ -1,4 +1,4 @@
-#include "Mesh.h"
+#include "Model.h"
 #include <memory>
 #include "../../RenderPipeline.h"
 #include "../Bindable/BindableCommon.h"
@@ -6,7 +6,7 @@
 
 namespace CCE::Graphics
 {
-	Mesh::Mesh()
+	Model::Model()
 	{
 		//std::vector<Vertex> vertices =
 		//{
@@ -87,7 +87,7 @@ namespace CCE::Graphics
 	/// <summary>
 	/// Draw the mesh.
 	/// </summary>
-	void Mesh::Draw()
+	void Model::Draw()
 	{
 		IDrawable::Draw();
 
@@ -98,7 +98,7 @@ namespace CCE::Graphics
 		pMeshConstBuf->DynamicBind();
 	}
 
-	void Mesh::CreateConstBufs()
+	void Model::CreateConstBufs()
 	{
 		XMStoreFloat4x4(&modelMatrix, transform.GetTransformationMatrix());
 		pMeshConstBuf = std::make_shared<VSConstantBuffer<DirectX::XMFLOAT4X4>>( modelMatrix, 0);

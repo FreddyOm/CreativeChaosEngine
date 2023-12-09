@@ -1,11 +1,10 @@
 #include "RenderPipeline.h"
 #include "Rendering/Camera.h"
 #include "../Analysis/Logger.h"
-#include "Rendering/Drawable/Mesh.h"
 #include "../Manager/MemoryManager.h"
 #include "../ClientWindow/ClientWindow.h"
-#include <functional>
 #include "../Manager/Application.h"
+#include <functional>
 
 namespace CCE::Graphics
 {
@@ -36,8 +35,8 @@ namespace CCE::Graphics
 			//delete cnt;
 
 		delete viewportCamera;
-		for(auto* mesh : testMeshes)
-			delete mesh;
+		for(auto* model : testModels)
+			delete model;
 
 		UNREGISTER_LEAK_DETECT;
 	}
@@ -70,15 +69,15 @@ namespace CCE::Graphics
 
 		viewportCamera = new Camera();
 
-		testMeshes.push_back(new Mesh());
-		testMeshes.push_back(new Mesh());
-		testMeshes.push_back(new Mesh());
-		testMeshes.push_back(new Mesh());
+		testModels.push_back(new Model());
+		//testMeshes.push_back(new Mesh());
+		//testMeshes.push_back(new Mesh());
+		//testMeshes.push_back(new Mesh());
 
-		testMeshes.at(0)->transform.SetTranslation({ 0,0,0 });
-		testMeshes.at(1)->transform.SetTranslation({ 1,0,0 });
-		testMeshes.at(2)->transform.SetTranslation({ 0,1,0 });
-		testMeshes.at(3)->transform.SetTranslation({ 1,1,0 });
+		testModels.at(0)->transform.SetTranslation({ 0,0,0 });
+		//testMeshes.at(1)->transform.SetTranslation({ 1,0,0 });
+		//testMeshes.at(2)->transform.SetTranslation({ 0,1,0 });
+		//testMeshes.at(3)->transform.SetTranslation({ 1,1,0 });
 	}
 
 	/// <summary>
@@ -168,7 +167,7 @@ namespace CCE::Graphics
 
 		HRESULT cdasc = D3D11CreateDeviceAndSwapChain(
 			NULL,									// default adapter
-#if 1
+#if 0
 			D3D_DRIVER_TYPE_HARDWARE,				// driver type
 #else
 			D3D_DRIVER_TYPE_WARP,                   // driver type
@@ -261,7 +260,7 @@ namespace CCE::Graphics
 
 		viewportCamera->Update();
 
-		for(auto* mesh : testMeshes)
+		for(auto* mesh : testModels)
 			mesh->Draw();
 	}
 

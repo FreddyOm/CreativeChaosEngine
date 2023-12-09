@@ -15,11 +15,11 @@ namespace CCE::Graphics
 	template<typename C>
 	class VSConstantBuffer;
 
-	struct CCE_API Mesh : public IDrawable
+	struct CCE_API Model : public IDrawable
 	{
 	public:
-		Mesh();
-		~Mesh()
+		Model();
+		~Model()
 		{
 			UNREGISTER_LEAK_DETECT;
 		}

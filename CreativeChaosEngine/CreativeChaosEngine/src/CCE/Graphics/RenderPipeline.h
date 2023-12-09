@@ -2,7 +2,7 @@
 
 #include "Rendering/Camera.h"
 #include "../Manager/JobManager.h"
-#include "Rendering/Drawable/Mesh.h"
+#include "Rendering/Drawable/Model.h"
 #include "../Utilities/Color/Color.h"
 #include "../Memory/StackAllocator.h"
 #include "../Manager/ProfilingManager.h"
@@ -11,8 +11,7 @@
 namespace CCE::Graphics
 {
 	using CCE::Color;
-
-	struct Mesh;
+	struct Model;
 
 	class CCE_API RenderPipeline
 	{
@@ -122,7 +121,7 @@ namespace CCE::Graphics
 	public:
 		static RenderPipeline* Instance;
 		Camera* viewportCamera = nullptr;
-		std::vector<Mesh*> testMeshes = { };
+		std::vector<Model*> testModels = { };
 
 	public:
 		void InitializeD3D11(const HWND hWnd, const int width, const int height);
@@ -198,6 +197,5 @@ namespace CCE::Graphics
 		D3D11_DEPTH_STENCIL_VIEW_DESC* descDSV = { };
 		ComPtr<ID3D11Texture2D> pDepthStencil = nullptr;
 		ComPtr<ID3D11DepthStencilState> pDSState = nullptr;
-		
 	};
 }
