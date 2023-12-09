@@ -231,7 +231,8 @@
       <Command>if not exist $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\ mkdir $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\
 xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
-xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"</Command>
+xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"
+xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying DLLs into Editor Folder</Message>
@@ -264,7 +265,8 @@ xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$
       <Command>if not exist $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\ mkdir $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\
 xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
-xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"</Command>
+xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"
+xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying DLLs into Editor Folder</Message>
@@ -301,7 +303,8 @@ xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$
       <Command>if not exist $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\ mkdir $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\
 xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
-xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"</Command>
+xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"
+xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying DLLs into Editor Folder</Message>
