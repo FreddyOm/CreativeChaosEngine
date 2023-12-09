@@ -122,6 +122,7 @@ Utilities currently include:
 - [DS5W SDK](https://github.com/Ohjurot/DualSense-Windows)
 - [JSON Parser](https://github.com/nlohmann/json) | Part of JSON Parser is [Google Abseil](https://opensource.org/license/apache-2-0/)
 - [Fork Awesome](https://forkaweso.me/Fork-Awesome/)
+- [FreeImage](https://freeimage.sourceforge.io/)
 
 # Inspiration and Learning
 
