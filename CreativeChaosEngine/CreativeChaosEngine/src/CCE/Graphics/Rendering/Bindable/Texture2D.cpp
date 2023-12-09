@@ -10,6 +10,8 @@ namespace CCE::Graphics
 		CCE::Resources::TextureLoader loader;
 		auto tex = loader.LoadResource(filePath);
 
+		FIBITMAP* texture = &tex->bitmap;
+
 		D3D11_TEXTURE2D_DESC texDesc = {};
 		texDesc.Width = tex->width;
 		texDesc.Height = tex->height;
@@ -26,7 +28,14 @@ namespace CCE::Graphics
 		case FIF_PNG:
 			texDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
 			break;
+		case FIF_JPEG:
+			// 24bit images not allowed in D3D11! Convert to 32 bit!
+			texDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
+			texture = FreeImage_ConvertTo32Bits(&tex->bitmap);
+			//FreeImage_ConvertTo32Bits(&tex->bitmap);
+			break;
 		defaut:
+			DERROR("Unknown file format!");
 			texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 			break;
 		}
@@ -38,7 +47,7 @@ namespace CCE::Graphics
 		srvd.Texture2D.MostDetailedMip = 0;
 
 		D3D11_SUBRESOURCE_DATA srd = {};
-		srd.pSysMem = FreeImage_GetBits(&tex->bitmap);
+		srd.pSysMem = FreeImage_GetBits(texture);
 		srd.SysMemPitch = (32 / 8) * tex->width;
 
 		pTexture2DArray.push_back({});		// Push back empty objects in order to reference them via pp		
@@ -59,6 +68,8 @@ namespace CCE::Graphics
 				CCE::Resources::TextureLoader loader;
 				auto tex = loader.LoadResource(filePaths.at(i));
 
+				FIBITMAP* texture = &tex->bitmap;
+
 				D3D11_TEXTURE2D_DESC texDesc = {};
 				texDesc.Width = tex->width;
 				texDesc.Height = tex->height;
@@ -75,7 +86,14 @@ namespace CCE::Graphics
 				case FIF_PNG:
 					texDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
 					break;
+				case FIF_JPEG:
+					// 24bit images not allowed in D3D11! Convert to 32 bit!
+					texDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
+					texture = FreeImage_ConvertTo32Bits(&tex->bitmap);
+					//FreeImage_Unload(&tex->bitmap);
+					break;
 				defaut:
+					DERROR("Unknown file format!");
 					texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 					break;
 				}
@@ -87,7 +105,7 @@ namespace CCE::Graphics
 				srvd.Texture2D.MostDetailedMip = 0;
 
 				D3D11_SUBRESOURCE_DATA srd = {};
-				srd.pSysMem = FreeImage_GetBits(&tex->bitmap);
+				srd.pSysMem = FreeImage_GetBits(texture);
 				srd.SysMemPitch = (32 / 8) * tex->width;
 
 				pTexture2DArray.push_back({});		// Push back empty objects in order to reference them via pp		

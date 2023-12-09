@@ -75,10 +75,10 @@ namespace CCE::Graphics
 		testMeshes.push_back(new Mesh());
 		testMeshes.push_back(new Mesh());
 
-		testMeshes.at(0)->transform.SetTranslation({ 3,5,1 });
-		testMeshes.at(1)->transform.SetTranslation({ 1,2,0 });
-		testMeshes.at(2)->transform.SetTranslation({ -1,0,2 });
-		testMeshes.at(3)->transform.SetTranslation({ -3,1,1 });
+		testMeshes.at(0)->transform.SetTranslation({ 0,0,0 });
+		testMeshes.at(1)->transform.SetTranslation({ 1,0,0 });
+		testMeshes.at(2)->transform.SetTranslation({ 0,1,0 });
+		testMeshes.at(3)->transform.SetTranslation({ 1,1,0 });
 	}
 
 	/// <summary>

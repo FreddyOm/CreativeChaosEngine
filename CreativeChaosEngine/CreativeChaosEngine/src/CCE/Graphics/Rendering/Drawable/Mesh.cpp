@@ -10,14 +10,14 @@ namespace CCE::Graphics
 	{
 		//std::vector<Vertex> vertices =
 		//{
-		//	{ XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT2(0, 0)},	// Left Upper Near
-		//	{ XMFLOAT3(-0.5f, 0.5f, 0.5f), XMFLOAT2(0, 0) },	// Left Upper Far
-		//	{ XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT2(0, 0) },		// Right Upper Far
-		//	{ XMFLOAT3(0.5f, 0.5f, -0.5f), XMFLOAT2(0, 1) },	// Right Upper Near
-		//	{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT2(1, 0) },  // Left Lower Near
-		//	{ XMFLOAT3(-0.5f, -0.5f, 0.5f), XMFLOAT2(0, 0) },	// Left Lower Far
-		//	{ XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT2(0, 0) },	// Right Lower Far
-		//	{ XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT2(1, 1) },	// Right Lower Near
+		//	{ XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT2(.25f, .33f)},		// Left Upper Near
+		//	{ XMFLOAT3(-0.5f, 0.5f, 0.5f), XMFLOAT2(.25f, 0) },			// Left Upper Far
+		//	{ XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT2(.5f, 0) },			// Right Upper Far
+		//	{ XMFLOAT3(0.5f, 0.5f, -0.5f), XMFLOAT2(.5f, .33f) },		// Right Upper Near
+		//	{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT2(.25, .33f) },		// Left Lower Near
+		//	{ XMFLOAT3(-0.5f, -0.5f, 0.5f), XMFLOAT2(.25f, 1) },		// Left Lower Far
+		//	{ XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT2(.5f, 1) },			// Right Lower Far
+		//	{ XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT2(.5f, .66f) },		// Right Lower Near
 		//};
 
 		//std::vector<DWORD> indices =
@@ -32,10 +32,10 @@ namespace CCE::Graphics
 
 		std::vector<Vertex> vertices =
 		{
-			{ XMFLOAT3(-1, 1, 0.0f), XMFLOAT2(0, 0)},		// Left Upper
-			{ XMFLOAT3(1, 1, 0.0f), XMFLOAT2(1, 0) },		// Right Upper
-			{ XMFLOAT3(-1, -1, 0.0f), XMFLOAT2(0, 1) },		// Left Lower
-			{ XMFLOAT3(1, -1, 0.0f), XMFLOAT2(1, 1) },		// Right Lower
+			{ XMFLOAT3(-0.5, 0.5, 0.0f), XMFLOAT2(0, 0)},		// Left Upper
+			{ XMFLOAT3(0.5, 0.5, 0.0f), XMFLOAT2(1, 0) },		// Right Upper
+			{ XMFLOAT3(-0.5, -0.5, 0.0f), XMFLOAT2(0, 1) },		// Left Lower
+			{ XMFLOAT3(0.5, -0.5, 0.0f), XMFLOAT2(1, 1) },		// Right Lower
 		};
 
 		std::vector<DWORD> indices =
@@ -47,7 +47,7 @@ namespace CCE::Graphics
 
 		String pixelShaderPath = Application::Instance->resourceDataPath.Path() + "/shader/DefaultPixelShader.cso";
 		String vertexShader = Application::Instance->resourceDataPath.Path() + "/shader/DefaultVertexShader.cso";
-		String textureFilePath = Application::Instance->resourceDataPath.Path() + "/textures/test.png";
+		String textureFilePath = Application::Instance->resourceDataPath.Path() + "/textures/brickwall.jpg";
 
 		std::string s = vertexShader.Value();
 
