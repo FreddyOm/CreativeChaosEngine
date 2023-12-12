@@ -78,8 +78,8 @@ int main(int argc, char* argv[])
 
             LOGC("----------------------------------", COLOR_BLUE);
         }
-#endif // Only test when in debug mode
     }
+#endif // Only test when in debug mode
     
 
     // ------ STARTUP MANAGER ------

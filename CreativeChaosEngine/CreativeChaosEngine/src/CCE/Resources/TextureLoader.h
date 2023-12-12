@@ -1,8 +1,8 @@
 #pragma once
+#include <memory>
 #include "../Core.h"
 #include "D3D11.h"
-#include "Resource.h"
-#include <memory>
+#include "ResourceLoader.h"
 #include "../Utilities/FreeImg/FreeImage.h"
 
 namespace CCE::Resources
