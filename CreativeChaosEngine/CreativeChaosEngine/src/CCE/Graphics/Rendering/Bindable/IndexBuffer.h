@@ -3,6 +3,7 @@
 #include "../../../Core.h"
 #include <vector>
 #include <wrl.h>
+#include <memory>
 
 namespace CCE::Graphics
 {
@@ -10,7 +11,7 @@ namespace CCE::Graphics
 	struct CCE_API IndexBuffer : public IBindable
 	{
 	public:
-		IndexBuffer(std::vector<DWORD>& indices);
+		IndexBuffer(std::shared_ptr<std::vector<unsigned int>> indices);
 		~IndexBuffer();
 		UINT GetCount() const noexcept;
 

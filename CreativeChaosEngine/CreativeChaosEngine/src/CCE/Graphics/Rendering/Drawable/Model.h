@@ -18,7 +18,7 @@ namespace CCE::Graphics
 	struct CCE_API Model : public IDrawable
 	{
 	public:
-		Model();
+		Model(String path);
 		~Model()
 		{
 			UNREGISTER_LEAK_DETECT;

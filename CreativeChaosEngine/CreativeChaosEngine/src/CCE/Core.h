@@ -4,6 +4,7 @@
 
 // Windows header
 // TODO: Maybe split up so that its a bit more lightweight
+#define NOMINMAX
 #include <Windows.h>
 #include <windowsx.h>
 #include <Lmcons.h>

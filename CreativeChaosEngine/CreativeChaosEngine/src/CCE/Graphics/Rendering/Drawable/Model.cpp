@@ -3,10 +3,11 @@
 #include "../../RenderPipeline.h"
 #include "../Bindable/BindableCommon.h"
 #include "../../../Manager/Application.h"
+#include "../Resources/MeshLoader.h"
 
 namespace CCE::Graphics
 {
-	Model::Model()
+	Model::Model(String path)
 	{
 		//std::vector<Vertex> vertices =
 		//{
@@ -30,6 +31,7 @@ namespace CCE::Graphics
 		//	7,3,6, 6,3,2,	// right
 		//};
 
+		/*
 		std::vector<Vertex> vertices =
 		{
 			{ XMFLOAT3(-0.5, 0.5, 0.0f), XMFLOAT2(0, 0)},		// Left Upper
@@ -42,6 +44,12 @@ namespace CCE::Graphics
 		{
 			0,1,2, 2,1,3,	// front
 		};
+		*/
+
+		CCE::Resources::MeshLoader meshLoader;
+
+		std::unique_ptr<CCE::Resources::MeshData> meshData = meshLoader.LoadResource(path);
+
 
 		std::vector<std::shared_ptr<IBindable>> bindPtrs;
 
@@ -51,17 +59,17 @@ namespace CCE::Graphics
 
 		std::string s = vertexShader.Value();
 
-		auto tex = std::make_shared<Texture2D>(textureFilePath);
-		auto splr = std::make_shared<Sampler>(D3D11_TEXTURE_ADDRESS_WRAP);
+		//auto tex = std::make_shared<Texture2D>(textureFilePath);
+		//auto splr = std::make_shared<Sampler>(D3D11_TEXTURE_ADDRESS_WRAP);
 		auto ps = std::make_shared<PixelShader>(StringConverter::StringToWString(pixelShaderPath.Value()));
 		auto vs = std::make_shared<VertexShader>(StringConverter::StringToWString(vertexShader.Value()));
-		auto ib = std::make_shared<IndexBuffer>(indices);
-		auto vb = std::make_shared<VertexBuffer>(vertices);
+		auto ib = std::make_shared<IndexBuffer>(meshData->IndexBuffer);
+		auto vb = std::make_shared<VertexBuffer>(meshData->VertexData);
 		auto il = std::make_shared<InputLayout>(vs->GetBytecode());
 		auto to = std::make_shared<Topology>();
 
-		bindPtrs.push_back(std::move(tex));
-		bindPtrs.push_back(std::move(splr));
+		//bindPtrs.push_back(std::move(tex));
+		//bindPtrs.push_back(std::move(splr));
 		bindPtrs.push_back(std::move(to));
 		bindPtrs.push_back(std::move(ib));
 		bindPtrs.push_back(std::move(vb));

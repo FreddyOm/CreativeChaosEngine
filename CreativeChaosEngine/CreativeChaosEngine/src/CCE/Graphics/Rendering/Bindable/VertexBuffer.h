@@ -3,13 +3,14 @@
 #include "../../../Core.h"
 #include "../Vertex.h"
 #include <vector>
+#include <memory>
 
 namespace CCE::Graphics
 {
 	struct CCE_API VertexBuffer : public IBindable
 	{
 	public:
-		VertexBuffer(std::vector<Vertex>& vertexBuffer);
+		VertexBuffer(std::shared_ptr<std::vector<Vertex>> vertexBuffer);
 		~VertexBuffer();
 
 		// Geerbt über IBindable

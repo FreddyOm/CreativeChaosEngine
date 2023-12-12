@@ -69,15 +69,9 @@ namespace CCE::Graphics
 
 		viewportCamera = new Camera();
 
-		testModels.push_back(new Model());
-		//testMeshes.push_back(new Mesh());
-		//testMeshes.push_back(new Mesh());
-		//testMeshes.push_back(new Mesh());
+		testModels.push_back(new Model(Application::Instance->resourceDataPath.Path() + "/models/dragon.fbx"));
 
 		testModels.at(0)->transform.SetTranslation({ 0,0,0 });
-		//testMeshes.at(1)->transform.SetTranslation({ 1,0,0 });
-		//testMeshes.at(2)->transform.SetTranslation({ 0,1,0 });
-		//testMeshes.at(3)->transform.SetTranslation({ 1,1,0 });
 	}
 
 	/// <summary>

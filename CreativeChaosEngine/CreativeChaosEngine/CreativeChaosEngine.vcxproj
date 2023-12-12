@@ -321,7 +321,7 @@
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -335,7 +335,8 @@
 xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"
-xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"</Command>
+xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
+xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying DLLs into Editor Folder</Message>
@@ -357,7 +358,7 @@ xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Co
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -371,7 +372,8 @@ xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Co
 xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"
-xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"</Command>
+xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
+xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying DLLs into Editor Folder</Message>
@@ -395,7 +397,7 @@ xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Co
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -411,7 +413,8 @@ xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Co
 xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"
-xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"</Command>
+xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
+xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying DLLs into Editor Folder</Message>
