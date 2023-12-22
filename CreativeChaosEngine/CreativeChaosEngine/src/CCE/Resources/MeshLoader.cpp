@@ -39,6 +39,7 @@ namespace CCE::Resources
 				DirectX::XMStoreFloat3(&vertex, 
 					{ mesh->mMeshes[i]->mVertices[v].x, mesh->mMeshes[i]->mVertices[v].y, mesh->mMeshes[i]->mVertices[v].z });
 
+				// UVs
 				DirectX::XMFLOAT2 uv = {};
 				unsigned int channels = mesh->mMeshes[i]->GetNumUVChannels();
 				if (channels > 0 && mesh->mMeshes[i]->mTextureCoords[0] != nullptr)
