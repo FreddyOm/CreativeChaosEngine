@@ -39,15 +39,15 @@ namespace CCE::Resources
 				DirectX::XMStoreFloat3(&vertex, 
 					{ mesh->mMeshes[i]->mVertices[v].x, mesh->mMeshes[i]->mVertices[v].y, mesh->mMeshes[i]->mVertices[v].z });
 
-				data.VertexData->push_back({ std::move(vertex), {} });
+				DirectX::XMFLOAT2 uv = {};
+				unsigned int channels = mesh->mMeshes[i]->GetNumUVChannels();
+				if (channels > 0 && mesh->mMeshes[i]->mTextureCoords[0] != nullptr)
+				{
+					DirectX::XMStoreFloat2(&uv, { mesh->mMeshes[i]->mTextureCoords[0][v].x, mesh->mMeshes[i]->mTextureCoords[0][v].y });
+				}
+
+				data.VertexData->push_back({ std::move(vertex), {std::move(uv)}});
 			}
-			/*
-			DirectX::XMFLOAT2 uv = {};
-			if (mesh->mMeshes[i]->mTextureCoords[v] != nullptr)
-			{
-				DirectX::XMStoreFloat2(&uv, { mesh->mMeshes[i]->mTextureCoords[v]->x , mesh->mMeshes[i]->mTextureCoords[v]->y });
-			}
-			*/			
 
 			// Index Buffer
 			for (size_t f = 0; f < mesh->mMeshes[i]->mNumFaces; ++f)

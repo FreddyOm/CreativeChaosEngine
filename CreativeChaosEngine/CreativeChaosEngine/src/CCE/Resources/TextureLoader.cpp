@@ -7,8 +7,8 @@ namespace CCE::Resources
 	std::unique_ptr<TexData> TextureLoader::LoadResource(String filePath)
 	{
 		TexData texData;
-		BYTE* bytes = new BYTE[524288];
-		ZeroMemory(bytes, 524288);
+		BYTE* bytes = new BYTE[41943040];
+		ZeroMemory(bytes, 41943040);
 
 		DWORD fileSize = IO::ReadBytes(filePath, bytes);
 		DASSERT(fileSize > 0, 

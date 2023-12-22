@@ -1,6 +1,7 @@
 #pragma once
 #include "IBindable.h"
 #include "../../../String/String.h"
+#include "../../../Manager/JobManager.h"
 #include <vector>
 #include <wrl.h>
 
@@ -9,8 +10,8 @@ namespace CCE::Graphics
 	struct CCE_API Texture2D : public IBindable
 	{
 	public:
-		Texture2D(String& filePath);
-		Texture2D(std::vector<String>& filePath);
+		Texture2D(String& filePath, unsigned short startSlot = 0);
+		Texture2D(std::vector<String>& filePaths, unsigned short startSlot = 0);
 		~Texture2D();
 
 		// Geerbt über IBindable
@@ -19,8 +20,9 @@ namespace CCE::Graphics
 
 	private:
 		unsigned short count = 0;
-		std::vector<String> resourcePaths = {};
-		std::vector<Microsoft::WRL::ComPtr<ID3D11Texture2D>> pTexture2DArray = {};
+		unsigned short startSlot = 0;
+		Microsoft::WRL::ComPtr<ID3D11Texture2D> pTexture2D = {};
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pResourceView = {};
+		std::vector<D3D11_SUBRESOURCE_DATA> subresourceDataArr = {};
 	};
 }

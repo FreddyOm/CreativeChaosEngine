@@ -1,66 +1,29 @@
 #include "Model.h"
-#include <memory>
 #include "../../RenderPipeline.h"
+#include "../Resources/MeshLoader.h"
 #include "../Bindable/BindableCommon.h"
 #include "../../../Manager/Application.h"
-#include "../Resources/MeshLoader.h"
+#include <memory>
 
 namespace CCE::Graphics
 {
 	Model::Model(String path)
 	{
-		//std::vector<Vertex> vertices =
-		//{
-		//	{ XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT2(.25f, .33f)},		// Left Upper Near
-		//	{ XMFLOAT3(-0.5f, 0.5f, 0.5f), XMFLOAT2(.25f, 0) },			// Left Upper Far
-		//	{ XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT2(.5f, 0) },			// Right Upper Far
-		//	{ XMFLOAT3(0.5f, 0.5f, -0.5f), XMFLOAT2(.5f, .33f) },		// Right Upper Near
-		//	{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT2(.25, .33f) },		// Left Lower Near
-		//	{ XMFLOAT3(-0.5f, -0.5f, 0.5f), XMFLOAT2(.25f, 1) },		// Left Lower Far
-		//	{ XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT2(.5f, 1) },			// Right Lower Far
-		//	{ XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT2(.5f, .66f) },		// Right Lower Near
-		//};
-
-		//std::vector<DWORD> indices =
-		//{
-		//	0,1,3, 1,2,3,	// top
-		//	4,7,5, 5,7,6,	// bottom
-		//	4,0,3, 4,3,7,	// front
-		//	6,2,5, 5,2,1,	// back
-		//	5,0,4, 5,1,0,	// left
-		//	7,3,6, 6,3,2,	// right
-		//};
-
-		/*
-		std::vector<Vertex> vertices =
-		{
-			{ XMFLOAT3(-0.5, 0.5, 0.0f), XMFLOAT2(0, 0)},		// Left Upper
-			{ XMFLOAT3(0.5, 0.5, 0.0f), XMFLOAT2(1, 0) },		// Right Upper
-			{ XMFLOAT3(-0.5, -0.5, 0.0f), XMFLOAT2(0, 1) },		// Left Lower
-			{ XMFLOAT3(0.5, -0.5, 0.0f), XMFLOAT2(1, 1) },		// Right Lower
-		};
-
-		std::vector<DWORD> indices =
-		{
-			0,1,2, 2,1,3,	// front
-		};
-		*/
-
 		CCE::Resources::MeshLoader meshLoader;
-
 		std::unique_ptr<CCE::Resources::MeshData> meshData = meshLoader.LoadResource(path);
-
 
 		std::vector<std::shared_ptr<IBindable>> bindPtrs;
 
 		String pixelShaderPath = Application::Instance->resourceDataPath.Path() + "/shader/DefaultPixelShader.cso";
 		String vertexShader = Application::Instance->resourceDataPath.Path() + "/shader/DefaultVertexShader.cso";
-		String textureFilePath = Application::Instance->resourceDataPath.Path() + "/textures/brickwall.jpg";
+		String diffuseTexFilePath = Application::Instance->resourceDataPath.Path() + "/models/textures/DefaultMaterial_albedo.jpeg";
+		String normalTexFilePath = Application::Instance->resourceDataPath.Path() + "/models/textures/DefaultMaterial_AO.jpeg";
 
-		std::string s = vertexShader.Value();
+		std::vector<String> texturePaths = { normalTexFilePath, diffuseTexFilePath };
 
-		//auto tex = std::make_shared<Texture2D>(textureFilePath);
-		//auto splr = std::make_shared<Sampler>(D3D11_TEXTURE_ADDRESS_WRAP);
+		auto albedoTex = std::make_shared<Texture2D>(diffuseTexFilePath);
+		auto normalTex = std::make_shared<Texture2D>(normalTexFilePath, 1);
+		auto splr = std::make_shared<Sampler>(D3D11_TEXTURE_ADDRESS_WRAP);
 		auto ps = std::make_shared<PixelShader>(StringConverter::StringToWString(pixelShaderPath.Value()));
 		auto vs = std::make_shared<VertexShader>(StringConverter::StringToWString(vertexShader.Value()));
 		auto ib = std::make_shared<IndexBuffer>(meshData->IndexBuffer);
@@ -68,8 +31,9 @@ namespace CCE::Graphics
 		auto il = std::make_shared<InputLayout>(vs->GetBytecode());
 		auto to = std::make_shared<Topology>();
 
-		//bindPtrs.push_back(std::move(tex));
-		//bindPtrs.push_back(std::move(splr));
+		bindPtrs.push_back(std::move(albedoTex));
+		bindPtrs.push_back(std::move(normalTex));
+		bindPtrs.push_back(std::move(splr));
 		bindPtrs.push_back(std::move(to));
 		bindPtrs.push_back(std::move(ib));
 		bindPtrs.push_back(std::move(vb));
@@ -109,6 +73,6 @@ namespace CCE::Graphics
 	void Model::CreateConstBufs()
 	{
 		XMStoreFloat4x4(&modelMatrix, transform.GetTransformationMatrix());
-		pMeshConstBuf = std::make_shared<VSConstantBuffer<DirectX::XMFLOAT4X4>>( modelMatrix, 0);
+		pMeshConstBuf = std::make_shared<VSConstantBuffer<DirectX::XMFLOAT4X4>>(modelMatrix, 0);
 	}
 }

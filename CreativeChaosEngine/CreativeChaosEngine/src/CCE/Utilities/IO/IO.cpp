@@ -89,7 +89,7 @@ namespace CCE
 		DWORD bytesRead = 0;
 
 		//TODO: Check maximum buffer size
-		return ReadFile(fHndl, (LPVOID) destination, 524288, &bytesRead, NULL) ? bytesRead : 0;
+		return ReadFile(fHndl, (LPVOID) destination, 41943040, &bytesRead, NULL) && bytesRead != 41943040 ? bytesRead : 0;
 	}
 
 	/*

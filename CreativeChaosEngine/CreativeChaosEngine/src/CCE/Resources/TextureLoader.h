@@ -9,10 +9,10 @@ namespace CCE::Resources
 {
 	struct CCE_API TexData
 	{
-		unsigned int width;
-		unsigned int height;
-		FREE_IMAGE_FORMAT format;
-		FIBITMAP bitmap;
+		unsigned int width = 0;
+		unsigned int height = 0;
+		FREE_IMAGE_FORMAT format = FIF_UNKNOWN;
+		FIBITMAP bitmap = {};
 	};
 
 	struct CCE_API TextureLoader : protected ResourceLoader<TexData>

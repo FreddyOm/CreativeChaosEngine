@@ -69,9 +69,10 @@ namespace CCE::Graphics
 
 		viewportCamera = new Camera();
 
-		testModels.push_back(new Model(Application::Instance->resourceDataPath.Path() + "/models/dragon.fbx"));
+		testModels.push_back(new Model(Application::Instance->resourceDataPath.Path() + "/models/Stanford_Dragon.fbx"));
 
 		testModels.at(0)->transform.SetTranslation({ 0,0,0 });
+		testModels.at(0)->transform.SetScale({ 0.1,0.1,0.1 });
 	}
 
 	/// <summary>
@@ -161,7 +162,7 @@ namespace CCE::Graphics
 
 		HRESULT cdasc = D3D11CreateDeviceAndSwapChain(
 			NULL,									// default adapter
-#if 0
+#if 1
 			D3D_DRIVER_TYPE_HARDWARE,				// driver type
 #else
 			D3D_DRIVER_TYPE_WARP,                   // driver type
