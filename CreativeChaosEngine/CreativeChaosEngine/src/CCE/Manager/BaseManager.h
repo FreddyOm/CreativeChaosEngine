@@ -1,5 +1,6 @@
 #pragma once
 #include "../Core.h"
+#include <atomic>
 
 namespace CCE
 {
@@ -13,6 +14,6 @@ namespace CCE
 		virtual void ShutDown() = 0;
 
 	protected:
-		bool initialized = false;
+		std::atomic<bool> initialized = false;
 	};
 }

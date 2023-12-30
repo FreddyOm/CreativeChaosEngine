@@ -12,7 +12,7 @@ class RuntimeDebugger : private IGUIDrawable
 {
 public:
 
-	RuntimeDebugger(float *pImgui_process_time_ms) :
+	RuntimeDebugger(double *pImgui_process_time_ms) :
 		IGUIDrawable(true)
 	{
 		catButtons =

@@ -30,7 +30,7 @@
 
 #define EDITOR_VERSION "Creative Chaos Engine - v0.1"
 
-#define MULTITHREADED 0
+#define MULTITHREADED 1
 
 using namespace CCE;
 
@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
 
     {
         // EditorGUI
-        float imgui_process_time_ms = 0;
+        double imgui_process_time_ms = 0;
         RuntimeDebugger runtimeDebugger = RuntimeDebugger(&imgui_process_time_ms);
         RenderingDebugger rendEditorWin = RenderingDebugger(String(ICON_FK_VIDEO_CAMERA) + " Rendering");
         Console debugConsole = Console(String(ICON_FK_CHECK_CIRCLE_O) + " Debug Console");
@@ -103,7 +103,7 @@ int main(int argc, char* argv[])
         //CCE::Graphics::Camera viewportCamera = CCE::Graphics::Camera();
 
 #if MULTITHREADED
-        JobWindow jobWin = JobWindow("Jobs");
+        //JobWindow jobWin = JobWindow("Jobs");
 #endif
 
         using namespace CCE;

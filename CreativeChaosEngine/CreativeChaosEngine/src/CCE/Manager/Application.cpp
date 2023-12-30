@@ -4,6 +4,7 @@
 #include "../Analysis/Time.h"
 #include "../Graphics/RenderPipeline.h"
 #include "../ClientWindow/ClientWindow.h"
+#include <functional>
 
 namespace CCE
 {
@@ -65,13 +66,36 @@ namespace CCE
 	void Application::PreEditorUpdate(int& rValue, bool handleInput)
 	{
 		frameBegin = Time::Now();
-#if MULTITHREADED
-		cnt = 4;
+#if 1
 
-		JobManager::EntryPoint epRPBF = BIND(window.GetRenderPipeline()->BeginFrame, 
-				window.GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
+		if (handleInput)
+			mInputManager.FinalizeWinInput();
+
+		window->UpdateClientWindow(rValue);
+
+		cnt = 1;
+
+		JobManager::EntryPoint epRPBF = std::bind(&Graphics::BeginFrame,
+			Graphics::RenderPipeline::Instance->GetDeviceContextPtr(),
+			Graphics::RenderPipeline::Instance->GetRenderTargetComPtr(),
+			Graphics::RenderPipeline::Instance->GetDepthStencilViewPtr(),
+			Graphics::RenderPipeline::Instance->pViewportCamera,
+			Graphics::RenderPipeline::Instance->testModels,
+			window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
+
 		JOBDECL declBeginFrame = JOBDECL(epRPBF, JobManager::Priority::LOW);
 
+		mJobManager.KickJob(declBeginFrame, &cnt);
+
+		// Make sure not to busy wait on main thread!
+		// Otherwise, the main thread waits for execution and 
+		// puts the main fiber onto the waitlist infinitely!!
+		while (cnt != 0)
+		{
+			continue;
+		}
+
+		/*
 		JobManager::EntryPoint epHXI = BIND(mInputManager.HandleXInput);
 		JOBDECL declHandleInput = JOBDECL(epHXI, JobManager::Priority::LOW);
 
@@ -79,10 +103,10 @@ namespace CCE
 		mJobManager.KickJobAndFreeDecl(declBeginFrame, &cnt);
 		mJobManager.KickJobAndFreeDecl(declHandleInput, &cnt);
 
-		window.UpdateClientWindow(rValue);
+		window->UpdateClientWindow(rValue);
 
 		mJobManager.BusyWaitForCounter(cnt, 2);
-
+		*/
 #else
 		window->UpdateClientWindow(rValue);
 
@@ -117,9 +141,6 @@ namespace CCE
 		mMemoryManager.UpdateMemoryUsage();
 
 #endif
-		maxUsedFibersPerFrame = mJobManager.GetUsedFibers() > maxUsedFibersPerFrame ?
-			mJobManager.GetUsedFibers() : maxUsedFibersPerFrame;
-		PUSH_EDITOR_INT("fibersPerFrame", static_cast<const int>(maxUsedFibersPerFrame));
 
 		frameEnd = Time::Now();
 		Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));
@@ -144,7 +165,7 @@ namespace CCE
 #error CCE is currently only supported for Windows
 #endif
 		mMemoryManager.StartUp();
-#if MULTITHREADED
+#if 1
 		mJobManager.StartUp();
 #endif
 		mPhysicsManager.StartUp();
@@ -161,7 +182,7 @@ namespace CCE
 	{
 		mInputManager.ShutDown();
 		mPhysicsManager.ShutDown();
-#if MULTITHREADED
+#if 1
 		mJobManager.ShutDown();
 #endif
 		mMemoryManager.ShutDown();
@@ -200,7 +221,7 @@ namespace CCE
 	Directory Application::GetApplicationDataPath() const
 	{
 #ifdef CCE_PLATFORM_WINDOWS
-		char pBuf[256];
+		char pBuf[256] = {};
 		ZeroMemory(&pBuf[0], sizeof(pBuf));
 
 		int bytes = GetModuleFileNameA(NULL, pBuf, sizeof(pBuf));

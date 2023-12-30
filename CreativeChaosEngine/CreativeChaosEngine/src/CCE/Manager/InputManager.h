@@ -10,7 +10,7 @@
 
 #include <Xinput.h>
 #pragma comment(lib, "XInput.lib")
-#pragma comment(lib, "D:/Repos/CreativeChaosEngine/CreativeChaosEngine/CreativeChaosEngine/resources/sdk/ds5w_x64.lib")
+#pragma comment(lib, "D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/CreativeChaosEngine/resources/sdk/ds5w_x64.lib")
 //#pragma comment(lib, "ds5w_x64.lib")
 
 #include "../include/ds5w/ds5w.h"

@@ -9,13 +9,18 @@ namespace CCE
 		ScopedSpinLock(SpinLock& _spinlock)
 		{
 			spinlock = &_spinlock;
-			spinlock->Lock();
+			while (!spinlock->Lock())
+			{
+				continue;
+			}
 		}
+
 		~ScopedSpinLock()
 		{
 			spinlock->Unlock();
 			spinlock = nullptr;
 		}
+
 	private:
 		SpinLock* spinlock = nullptr;
 	};
