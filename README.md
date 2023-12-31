@@ -124,11 +124,12 @@ Utilities currently include:
 - [Fork Awesome](https://forkaweso.me/Fork-Awesome/)
 - [FreeImage](https://freeimage.sourceforge.io/)
 
-# Inspiration and Learning
+# Resources and Learning
 
 - [Jason Gregory - Game Engine Architecture](https://gameenginebook.com/)
 - [Tomas Akenine-Möller, Eric Haines, Naty Hoffman, Angelo Pesce, Michał Iwanicki, Sébastien Hillaire - Real Time Rendering](https://www.realtimerendering.com/)
 - [Naughty Dog, LLC](https://www.naughtydog.com/)
 - [Remedy Entertainment](https://www.remedygames.com/northlight)
+- [Austin Morlan](https://austinmorlan.com/)
 - [ChiliTomatoNoodle](https://www.youtube.com/@ChiliTomatoNoodle)
 - [TheCherno](https://www.youtube.com/@TheCherno)
