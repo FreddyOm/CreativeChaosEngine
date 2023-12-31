@@ -15,18 +15,25 @@
 #include <queue>
 #include <mutex>
 
-namespace CCE
+namespace CCE::Jobs
 {
 #define NUM_FIBERS (unsigned int)100
 #define MAX_JOBS 500
 #define WAIT_CNTR_LOOPS 200
-#define JOBDECL CCE::JobManager::JobDeclaration
+#define JOBDECL CCE::Jobs::JobManager::JobDeclaration
 	// TODO: Override an operator to make the binding even more easy to use
 #define BIND_BASIC(func, obj, ...) std::bind(&func, obj, ##__VA_ARGS__)
 #define BIND(func, ...) [&](...){return func(##__VA_ARGS__);};
 #define JOB_ENTRY_POINT void
 
 using namespace Events;
+
+	enum class alignas(4) Priority
+	{
+		HIGH,
+		NORMAL,
+		LOW
+	};
 
 	struct CCE_API JobManager : public BaseManager
 	{
@@ -42,13 +49,6 @@ using namespace Events;
 
 		static JobManager* Instance;
 
-		enum class alignas(4) Priority
-		{
-			HIGH,
-			NORMAL,
-			LOW
-		};
-
 		struct alignas(128) JobDeclaration // 128 bytes
 		{
 			EntryPoint m_pEntryPoint;				// 64 bytes
@@ -63,15 +63,13 @@ using namespace Events;
 			byte padding[32];						// 32 bytes
 
 			JobDeclaration()
-			{
-				m_pEntryPoint = nullptr;
-			}
+				: m_pEntryPoint(nullptr)
+			{ }
 
 			JobDeclaration(const EntryPoint& ep, Priority pr, ...)
+				: m_pEntryPoint(ep)
+				, m_priority(pr)
 			{
-				m_pEntryPoint = ep;
-				m_priority = pr;
-
 				va_list args;
 				va_start(args, pr);
 				va_end(args);
@@ -80,24 +78,22 @@ using namespace Events;
 			}			
 
 			JobDeclaration(const JobDeclaration& other)
-			{
-				m_pEntryPoint = other.m_pEntryPoint;
-				m_pFiber = other.m_pFiber;
-				m_pCounter = other.m_pCounter;
-				m_priority = other.m_priority;
-				mDesiredCount = other.mDesiredCount;
-				m_param = other.m_param;
-			}
+				: m_pEntryPoint(other.m_pEntryPoint)
+				, m_pFiber(other.m_pFiber)
+				, m_pCounter(other.m_pCounter)
+				, m_priority(other.m_priority)
+				, mDesiredCount(other.mDesiredCount)
+				, m_param(other.m_param)
+			{ }
 
 			JobDeclaration(JobDeclaration&& other) noexcept
-			{
-				m_pEntryPoint = other.m_pEntryPoint;
-				m_pFiber = other.m_pFiber;
-				m_pCounter = other.m_pCounter;
-				m_priority = other.m_priority;
-				mDesiredCount = other.mDesiredCount;
-				m_param = other.m_param;
-			}
+				: m_pEntryPoint(other.m_pEntryPoint)
+				, m_pFiber(other.m_pFiber)
+				, m_pCounter(other.m_pCounter)
+				, m_priority(other.m_priority)
+				, mDesiredCount(other.mDesiredCount)
+				, m_param(other.m_param)
+			{ }
 
 			JobDeclaration& operator=(const JobDeclaration& other)
 			{
@@ -132,9 +128,9 @@ using namespace Events;
 
 		struct WaitData
 		{
-			LPVOID fiber;
-			Counter* pCounter;
-			int desiredCount;
+			LPVOID fiber = {};
+			Counter* pCounter = nullptr;
+			int desiredCount = 0;
 
 			WaitData()
 				: fiber(0), pCounter(nullptr), desiredCount(0)
@@ -163,8 +159,9 @@ using namespace Events;
 			WaitData(WaitData&& other) noexcept
 				: fiber(other.fiber), pCounter(other.pCounter), desiredCount(other.desiredCount)
 			{
-				// Don't reset other's members because of performance
-				// This data is probably overridden by the calling function anyways.
+				// reset to indicate movement to waitlist
+				LOG_JOBS("Moved wait data");
+				other.fiber == NULL;
 			}
 
 			WaitData& operator=(WaitData&& other) noexcept
@@ -184,12 +181,8 @@ using namespace Events;
 			KickJob(jobDecl);
 		}
 
-		bool KickJobAndFreeDecl(JobDeclaration& decl, Counter* cnt = nullptr);
 		bool KickJob(JobDeclaration& decl, Counter* cnt = nullptr);
 		bool KickJobAndWait(JobDeclaration& decl, const Counter* waitForCnt);
-		bool KickJobs(int count, JobDeclaration decls[], Counter* pJobCounter = nullptr);
-		void WaitForCounter(Counter& pJobCounter, const int desiredCnt) const;
-		void WaitForCounterAndFree(Counter& pJobCounter, const int desiredCnt) const;
 		void BusyWaitForCounter(Counter& pJobCounter, const int desiredCnt) const;
 		void BusyWaitForCounterAndFree(Counter& pJobCounter, const int desiredCnt) const;
 		void SpawnWorkerThreads(const short numOfThreads = -1);
@@ -198,7 +191,7 @@ using namespace Events;
 
 		UINT64 GetFiberPoolSize() const
 		{
-			return fiber_pool.size();
+			return fiberPool.size();
 		}
 
 		UINT64 GetUsedFibers() const
@@ -212,7 +205,7 @@ using namespace Events;
 		void PopulateFiberPoolWin(const short numOfFibers);
 		void PopulateFiberPool(const short numOfFibers = NUM_FIBERS);
 		
-		static LPVOID GetFiber();
+		static LPVOID GetNextFiber();
 		static void ReturnFiber(LPVOID fiber);
 
 		static void RunThread();
@@ -230,7 +223,7 @@ using namespace Events;
 	private:
 
 		// Wait list for Fibers and their jobs
-		alignas(128) static std::array<WaitData, NUM_FIBERS> wait_list;
+		alignas(128) static std::array<WaitData, NUM_FIBERS> waitList;
 		static std::atomic<int> waitListPointer;
 		
 		// TODO: Implement custom queue class
@@ -240,12 +233,12 @@ using namespace Events;
 		alignas(128) static std::queue<JobDeclaration> jobQueue_Low;
 
 		static LPVOID mainFiber;	// 8 bytes
-		alignas(8) static std::array<LPVOID, NUM_FIBERS> fiber_pool;
+		alignas(8) static std::array<LPVOID, NUM_FIBERS> fiberPool;
 		alignas(16) static std::unordered_map<DWORD, LPVOID> thread_fibers;
 
 		static std::atomic<unsigned int> fiberPoolPointer;
 
 		// TODO: Implement custom vector / list class
-		std::vector<std::thread*> worker_threads;
+		std::vector<std::thread*> workerThreadPtrs;
 	};
 }

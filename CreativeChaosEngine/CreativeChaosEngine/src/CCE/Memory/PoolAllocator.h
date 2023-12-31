@@ -17,7 +17,7 @@ namespace CCMemory
 			totalSpace = (intptr_t)(_poolSize * elements);
 			freeSpace = totalSpace;
 			
-			// malloc [ poolIndices | pe0 |  pe1 | pe2 | ... | pen ]
+			// malloc [ poolIndices | pe0 |  pe1 | pe2 | ... | peN ]
 			bottom = (intptr_t) malloc((sizeof(bool) * elements) + totalSpace);
 			pool = new (reinterpret_cast<bool*>(bottom)) bool[elements];
 			memset(pool, FALSE, elements);
@@ -52,7 +52,7 @@ namespace CCMemory
 			// allocate
 			unsigned int elementIndex = 0;
 			T* ptr = 0;
-			for (intptr_t elementStatus = (intptr_t)pool; elementStatus < (intptr_t)pool + numPoolElements; elementStatus += sizeof(bool))
+			for (intptr_t elementStatus = reinterpret_cast<intptr_t>(pool); elementStatus < reinterpret_cast<intptr_t>(pool + numPoolElements); elementStatus += sizeof(bool))
 			{
 				if (*(bool*)elementStatus == false)
 				{
@@ -177,8 +177,28 @@ namespace CCMemory
 			}
 		}
 
-		void Free(const intptr_t adr, const unsigned int size);
-		void FreeAligned(const intptr_t adr, const unsigned int size);
+		template<typename T>
+		void Free(const T* adr)
+		{
+			// check
+			DASSERT(reinterpret_cast<intptr_t>(adr) < allocatableMemBottom + totalSpace,
+				"Trying to free a memory adress which is not part of the allocated memory!");
+
+			// free
+			intptr_t poolIndex = (reinterpret_cast<intptr_t>(adr) - allocatableMemBottom) / poolSize;
+
+			if (pool[poolIndex])
+			{
+				pool[poolIndex] = false;
+
+				// update
+				freePoolElements++;
+				numFrees++;
+				usedSpace -= sizeof(T);
+				freeSpace += sizeof(T);
+			}
+		}
+		
 		void Clear();
 		const unsigned long GetPoolSize();
 		const unsigned int GetNumPoolElements();

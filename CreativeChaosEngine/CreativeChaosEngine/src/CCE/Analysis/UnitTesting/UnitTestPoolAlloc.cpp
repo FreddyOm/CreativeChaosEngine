@@ -158,7 +158,7 @@ namespace CCE_Testing
 		p_testAlloc2_4 = alloc4.Alloc<TestStruct2>();
 		bool check3 = alloc4.GetUsedMem() == 64;
 
-		alloc4.Free((intptr_t)p_testAlloc2_3, sizeof(TestStruct2));
+		alloc4.Free<TestStruct2>(p_testAlloc2_3);
 		bool check4 = alloc4.GetNumFrees() == 1;
 
 		p_testAlloc2_5 = alloc4.Alloc<TestStruct2>();
@@ -170,10 +170,10 @@ namespace CCE_Testing
 	bool UnitTestPoolAlloc::TestFree1() noexcept
 	{
 		bool check1 = alloc1.GetNumFreePoolElements() == 10;
-		alloc1.Free((intptr_t)p_testAlloc1,sizeof(TestStruct1));
+		alloc1.Free<TestStruct1>(p_testAlloc1);
 
 		bool check2 = alloc1.GetNumFreePoolElements() == 11;
-		alloc1.Free((intptr_t)p_testAlloc2, sizeof(TestStruct2));
+		alloc1.Free<TestStruct2>(p_testAlloc2);
 
 		bool check3 = alloc1.GetFreeMem() == alloc1.GetTotalMem();
 
@@ -189,7 +189,7 @@ namespace CCE_Testing
 		bool check2 = alloc2.GetNumFreePoolElements() != alloc2.GetNumPoolElements();
 		bool check3 = alloc2.GetUsedMem() == 128;
 
-		alloc2.Free((uintptr_t)p_testAlloc3, sizeof(TestStruct3));
+		alloc2.Free<TestStruct3>(p_testAlloc3);
 		
 		bool check4 = alloc2.GetFreeMem() == 8 * 128;
 		bool check5 = alloc2.GetNumFreePoolElements() == 8;
@@ -203,12 +203,12 @@ namespace CCE_Testing
 		bool check2 = alloc3.GetNumFreePoolElements() == 
 			alloc3.GetNumPoolElements() - alloc3.GetNumAllocs();
 
-		alloc3.Free((intptr_t)p_testAlloc1_2, sizeof(TestStruct1));
+		alloc3.Free<TestStruct1>(p_testAlloc1_2);
 		bool check3 = alloc3.GetNumFrees() == 1;
 		bool check4 = alloc3.GetNumFreePoolElements() == 
 			alloc3.GetNumPoolElements() - 1;
 
-		alloc3.Free((intptr_t)p_testAlloc2_2, sizeof(TestStruct2));
+		alloc3.Free<TestStruct2>(p_testAlloc2_2);
 		bool check5 = alloc3.GetFreeMem() == alloc3.GetTotalMem();
 
 		return check1 && check2 && check3 && check4 && check5;
@@ -220,13 +220,13 @@ namespace CCE_Testing
 		bool check2 = alloc4.GetNumPoolElements() == 2;
 		bool check3 = alloc4.GetPoolSize() == 32;
 
-		alloc4.Free((intptr_t)p_testAlloc2_4, sizeof(TestStruct2));
+		alloc4.Free<TestStruct2>(p_testAlloc2_4);
 
 		bool check4 = alloc4.GetFreeMem() == alloc4.GetTotalMem() - 32;
 		bool check5 = alloc4.GetNumFrees() == 2;
 		bool check6 = alloc4.GetNumFreePoolElements() == 1;
 
-		alloc4.Free((intptr_t)p_testAlloc2_5, sizeof(TestStruct2));
+		alloc4.Free<TestStruct2>(p_testAlloc2_5);
 
 		bool check7 = alloc4.GetUsedMem() == 0;
 		bool check8 = alloc4.GetNumFreePoolElements() == 2;
@@ -446,7 +446,7 @@ namespace CCE_Testing
 
 		for (int i = 0; i < 120; i++)
 		{
-			ta.Free((intptr_t)ptrs[i], sizeof(TestStruct2));
+			ta.Free<TestStruct2>(ptrs[i]);
 		}
 
 		bool check1 = ta.GetNumFrees() == 120;
@@ -462,7 +462,7 @@ namespace CCE_Testing
 
 		for (int i = 0; i < 29; i++)
 		{
-			ta.Free((intptr_t) ptrs2[i], sizeof(TestStruct1));
+			ta.Free<TestStruct1>(ptrs2[i]);
 		}
 
 		bool check2 = ta.GetNumFrees() == 149;
@@ -472,8 +472,8 @@ namespace CCE_Testing
 		auto* one = ta2.Alloc<TestStruct1>();
 		auto* two = ta2.Alloc<TestStruct1>();
 
-		ta2.Free((intptr_t)one, sizeof(TestStruct1));
-		ta2.Free((intptr_t)two, sizeof(TestStruct1));
+		ta2.Free<TestStruct1>(one);
+		ta2.Free<TestStruct1>(two);
 
 		bool check3 = ta2.GetNumFrees() == 2;
 
@@ -485,7 +485,7 @@ namespace CCE_Testing
 
 		for (int i = 0; i < 41; i++)
 		{
-			ta.Free((intptr_t)ptrs3[i],sizeof(TestStruct1));
+			ta.Free<TestStruct1>(ptrs3[i]);
 		}
 
 		bool check4 = ta.GetNumFrees() == 190;
@@ -543,11 +543,11 @@ namespace CCE_Testing
 		TestStruct1* p_testAlloc4 = alloc5.AllocAligned<TestStruct1>();
 
 		bool check1 = alloc5.GetNumFreePoolElements() == 8;
-		alloc5.Free((intptr_t)p_testAlloc5, sizeof(TestStruct2));
+		alloc5.Free<TestStruct2>(p_testAlloc5);
 
 
 		bool check2 = alloc5.GetNumFreePoolElements() == 9;
-		alloc5.Free((intptr_t)p_testAlloc4, sizeof(TestStruct1));
+		alloc5.Free<TestStruct1>(p_testAlloc4);
 
 		bool check3 = alloc5.GetFreeMem() == alloc5.GetTotalMem();
 
@@ -565,7 +565,7 @@ namespace CCE_Testing
 		bool check2 = alloc6.GetNumFreePoolElements() != alloc6.GetNumPoolElements();
 		bool check3 = alloc6.GetUsedMem() == 8;
 
-		alloc6.FreeAligned((uintptr_t)p_testAlloc3, sizeof(TestStruct1));
+		alloc6.FreeAligned<TestStruct1>(p_testAlloc3);
 
 		bool check4 = alloc6.GetFreeMem() == 4 * 32;
 		bool check5 = alloc6.GetNumFreePoolElements() == 4;

@@ -82,8 +82,39 @@ namespace CCMemory
 			return _ptr;
 		}
 
-		void Free(const unsigned long _size);
-		void FreeAligned(const unsigned long _size);
+		template<typename T>
+		void Free()
+		{
+			if (usedSpace > 0)
+			{
+				top -= sizeof(T);
+				usedSpace -= sizeof(T);
+				UpdateFreeSpace();
+				numFrees++;
+			}
+			else
+			{
+				DWARNING("You are trying to free memory from an empty allocator!");
+			}
+		}
+
+		template<typename T>
+		void FreeAligned()
+		{
+			if (usedSpace > 0)
+			{
+				AllocOffset* pOffset = (AllocOffset*)(top - sizeof(T) - 1);
+
+				top -= ((intptr_t)sizeof(T) + *pOffset);
+				usedSpace -= sizeof(T);
+				UpdateFreeSpace();
+				numFrees++;
+			}
+			else
+			{
+				DWARNING("You are trying to free memory from an empty allocator!");
+			}
+		}
 
 		void RollbackToMarker(StackAllocMarker _marker);
 		void ClearAll();

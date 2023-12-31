@@ -153,7 +153,7 @@ namespace CCE_Testing
 		auto* ts = alloc2.Alloc<TestStruct2>();
 		bool check1 = alloc2.GetNumAllocs() == 1;
 		bool check2 = alloc2.GetUsedMem() == 32;
-		alloc2.Free(sizeof(TestStruct2));
+		alloc2.Free<TestStruct2>();
 		bool check3 = alloc2.GetNumFrees() == 1;
 		bool check4 = alloc2.GetUsedMem() == 0;
 
@@ -168,7 +168,7 @@ namespace CCE_Testing
 		bool check2 = alloc3.GetUsedMem() == 64;
 		bool check3 = alloc3.GetNumAllocs() == 2;
 
-		alloc3.Free(sizeof(TestStruct2));
+		alloc3.Free<TestStruct2>();
 		bool check4 = alloc3.GetNumFrees() == 1;
 		bool check5 = alloc3.GetUsedMem() == 32;
 
@@ -179,11 +179,11 @@ namespace CCE_Testing
 
 	bool UnitTestStackAlloc::TestFree3() noexcept
 	{
-		alloc3.Free(sizeof(TestStruct2));
+		alloc3.Free<TestStruct2>();
 		bool check1 = alloc3.GetNumFrees() == 2;
 		bool check2 = alloc3.GetUsedMem() == 0;
 
-		alloc3.Free(sizeof(TestStruct2));
+		alloc3.Free<TestStruct2>();
 		bool check3 = alloc3.GetNumFrees() == 2;
 		bool check4 = alloc3.GetUsedMem() == 0;
 
@@ -194,10 +194,10 @@ namespace CCE_Testing
 	{
 		alloc2.Alloc<TestStruct2>();
 
-		alloc2.Free(sizeof(TestStruct1));
-		alloc2.Free(sizeof(TestStruct1));
-		alloc2.Free(sizeof(TestStruct1));
-		alloc2.Free(sizeof(TestStruct1));
+		alloc2.Free<TestStruct1>();
+		alloc2.Free<TestStruct1>();
+		alloc2.Free<TestStruct1>();
+		alloc2.Free<TestStruct1>();
 
 		bool check1 = alloc2.GetNumFrees() == 5;
 		bool check2 = alloc2.GetUsedMem() == 0;
@@ -348,10 +348,10 @@ namespace CCE_Testing
 		alloc4.Alloc<TestStruct1>();
 		alloc4.Alloc<TestStruct1>();
 		
-		alloc4.Free(sizeof(TestStruct1));
-		alloc4.Free(sizeof(TestStruct1));
-		alloc4.Free(sizeof(TestStruct1));
-		alloc4.Free(sizeof(TestStruct1));
+		alloc4.Free<TestStruct1>();
+		alloc4.Free<TestStruct1>();
+		alloc4.Free<TestStruct1>();
+		alloc4.Free<TestStruct1>();
 		
 		return alloc4.GetTotalMem() == 8192;
 	}
@@ -396,10 +396,10 @@ namespace CCE_Testing
 		auto* scnd = sa.Alloc<TestStruct1>();
 		auto* thrd = sa.Alloc<TestStruct1>();
 
-		sa.Free(sizeof(TestStruct1));
-		sa.Free(sizeof(TestStruct1));
-		sa.Free(sizeof(TestStruct1));
-		sa.Free(sizeof(TestStruct1));
+		sa.Free<TestStruct1>();
+		sa.Free<TestStruct1>();
+		sa.Free<TestStruct1>();
+		sa.Free<TestStruct1>();
 
 		return sa.GetNumFrees() == 3;
 	}
@@ -412,11 +412,11 @@ namespace CCE_Testing
 		bool check1 = sa.GetCurretTop() == (intptr_t)frst + 16;
 		auto* thrd = sa.Alloc<TestStruct1>();
 
-		sa.Free(sizeof(TestStruct1));
-		sa.Free(sizeof(TestStruct1));
+		sa.Free<TestStruct1>();
+		sa.Free<TestStruct1>();
 		bool check2 = sa.GetCurretTop() == (intptr_t)frst + 8;
-		sa.Free(sizeof(TestStruct1));
-		sa.Free(sizeof(TestStruct1));
+		sa.Free<TestStruct1>();
+		sa.Free<TestStruct1>();
 
 		return check1 && check2;
 	}
@@ -452,7 +452,7 @@ namespace CCE_Testing
 	bool UnitTestStackAlloc::TestAlignedFree1() noexcept
 	{
 		auto top = alloc5.GetCurretTop();
-		alloc5.FreeAligned(sizeof(TestStruct1));
+		alloc5.FreeAligned<TestStruct1>();
 		auto top2 = alloc5.GetCurretTop();
 		bool check1 = top2 < top;
 
@@ -465,7 +465,7 @@ namespace CCE_Testing
 	bool UnitTestStackAlloc::TestAlignedFree2() noexcept
 	{
 		auto top = alloc6.GetCurretTop();
-		alloc6.FreeAligned(sizeof(TestStruct1));
+		alloc6.FreeAligned<TestStruct1>();
 		auto top2 = alloc6.GetCurretTop();
 
 		bool check1 = top == top2;
@@ -477,7 +477,7 @@ namespace CCE_Testing
 		bool check4 = (intptr_t)p1 > top;
 		bool check5 = alloc6.GetNumAllocs() == 1;
 
-		alloc6.FreeAligned(sizeof(char));
+		alloc6.FreeAligned<char>();
 
 		bool check6 = alloc6.GetCurretTop() == top;
 		bool check7 = alloc6.GetNumFrees() == 1;

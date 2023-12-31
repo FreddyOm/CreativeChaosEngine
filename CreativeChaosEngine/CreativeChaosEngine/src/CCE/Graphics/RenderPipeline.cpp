@@ -340,10 +340,10 @@ namespace CCE::Graphics
 		p_Context->Flush();
 
 		// TODO: Check alloc and free order!!
-		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
-		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(D3D11_DEPTH_STENCIL_DESC));
-		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(DXGI_SWAP_CHAIN_DESC));
-		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(RECT));
+		MemoryManager::Instance->rendMemory.FreeAligned<D3D11_DEPTH_STENCIL_VIEW_DESC>();
+		MemoryManager::Instance->rendMemory.FreeAligned<D3D11_DEPTH_STENCIL_DESC>();
+		MemoryManager::Instance->rendMemory.FreeAligned<DXGI_SWAP_CHAIN_DESC>();
+		MemoryManager::Instance->rendMemory.FreeAligned<RECT>();
 	}
 
 	/// <summary>
@@ -435,25 +435,25 @@ namespace CCE::Graphics
 	{
 		if (CCE::ClientWindow::Instance->minimized) { return; }
 
-		JobManager::Counter cnt = JobManager::Counter(2);
+		Jobs::JobManager::Counter cnt = Jobs::JobManager::Counter(2);
 
 		// Clear render view and draw background color
 		
 		// Create job descriptions
-		JobManager::EntryPoint crtvEp = std::bind(&ClearRenderTargetView,
+		Jobs::JobManager::EntryPoint crtvEp = std::bind(&ClearRenderTargetView,
 			pContext, p_renderTarget, col);
-		JobManager::EntryPoint cdsvEp = std::bind(&ClearDepthStencilView,
+		Jobs::JobManager::EntryPoint cdsvEp = std::bind(&ClearDepthStencilView,
 			pContext, pDSV);
 
-		JOBDECL cdsv = JOBDECL(cdsvEp, JobManager::Priority::HIGH);
-		JOBDECL crtv = JOBDECL(crtvEp, JobManager::Priority::NORMAL);
+		JOBDECL cdsv = JOBDECL(cdsvEp, Jobs::Priority::HIGH);
+		JOBDECL crtv = JOBDECL(crtvEp, Jobs::Priority::NORMAL);
 
 		// Kick jobs
-		JobManager::Instance->KickJob(cdsv);
-		JobManager::Instance->KickJob(crtv);
+		Jobs::JobManager::Instance->KickJob(cdsv, &cnt);
+		Jobs::JobManager::Instance->KickJob(crtv, &cnt);
 
 		// Await execution
-		JobManager::Instance->BusyWaitForCounter(cnt, 0);
+		Jobs::JobManager::Instance->BusyWaitForCounter(cnt, 0);
 
 		pContext->OMSetRenderTargets(1u, p_renderTarget.GetAddressOf(), pDSV);
 

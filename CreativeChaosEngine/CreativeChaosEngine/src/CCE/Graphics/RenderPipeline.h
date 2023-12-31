@@ -192,7 +192,7 @@ namespace CCE::Graphics
 
 	public:
 		JOB_ENTRY_POINT ClearDepthStencilView() const;
-		JobManager::Counter cnt = JobManager::Counter(2);
+		Jobs::JobManager::Counter cnt = Jobs::JobManager::Counter(2);
 
 	private:
 		ComPtr<ID3D11Debug> pDebug;

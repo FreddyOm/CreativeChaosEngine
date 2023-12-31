@@ -44,7 +44,7 @@ namespace CCE
 
 	private:
 
-		JobManager mJobManager = CCE::JobManager();
+		Jobs::JobManager mJobManager = CCE::Jobs::JobManager();
 		ProfilingManager mProfilingManager = CCE::ProfilingManager();
 		PhysicsManager mPhysicsManager = PhysicsManager();
 		InputManager mInputManager = InputManager();
@@ -55,7 +55,7 @@ namespace CCE
 		std::chrono::steady_clock::time_point frameBegin;
 		std::chrono::steady_clock::time_point frameEnd;
 	
-		JobManager::Counter cnt;
+		Jobs::JobManager::Counter cnt;
 
 		File engineConfig;
 

@@ -75,7 +75,7 @@ namespace CCE
 
 		cnt = 1;
 
-		JobManager::EntryPoint epRPBF = std::bind(&Graphics::BeginFrame,
+		Jobs::JobManager::EntryPoint epRPBF = std::bind(&Graphics::BeginFrame,
 			Graphics::RenderPipeline::Instance->GetDeviceContextPtr(),
 			Graphics::RenderPipeline::Instance->GetRenderTargetComPtr(),
 			Graphics::RenderPipeline::Instance->GetDepthStencilViewPtr(),
@@ -83,7 +83,7 @@ namespace CCE
 			Graphics::RenderPipeline::Instance->testModels,
 			window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
 
-		JOBDECL declBeginFrame = JOBDECL(epRPBF, JobManager::Priority::LOW);
+		JOBDECL declBeginFrame = JOBDECL(epRPBF, Jobs::Priority::LOW);
 
 		mJobManager.KickJob(declBeginFrame, &cnt);
 
