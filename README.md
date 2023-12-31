@@ -128,6 +128,7 @@ Utilities currently include:
 
 - [Jason Gregory - Game Engine Architecture](https://gameenginebook.com/)
 - [Tomas Akenine-Möller, Eric Haines, Naty Hoffman, Angelo Pesce, Michał Iwanicki, Sébastien Hillaire - Real Time Rendering](https://www.realtimerendering.com/)
+- [Naughty Dog, LLC](https://www.naughtydog.com/)
+- [Remedy Entertainment](https://www.remedygames.com/northlight)
 - [ChiliTomatoNoodle](https://www.youtube.com/@ChiliTomatoNoodle)
 - [TheCherno](https://www.youtube.com/@TheCherno)
-- [Remedy Entertainment](https://www.remedygames.com/northlight)
