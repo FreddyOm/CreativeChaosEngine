@@ -28,7 +28,6 @@
 #include "CCE/Analysis/UnitTesting/UnitTestString.h"
 
 #endif
-#include <CCE/CCEditor/CCEditor.h>
 
 // -------------------------
 
@@ -82,8 +81,8 @@ int main(int argc, char* argv[])
 
             LOGC("----------------------------------", COLOR_BLUE);
         }
-#endif // Only test when in debug mode
     }
+#endif // Only test when in debug mode
     
 
     // ------ STARTUP MANAGER ------
@@ -95,7 +94,7 @@ int main(int argc, char* argv[])
 
     {
         // EditorGUI
-        float imgui_process_time_ms = 0;
+        double imgui_process_time_ms = 0;
         RuntimeDebugger runtimeDebugger = RuntimeDebugger(&imgui_process_time_ms);
         RenderingDebugger rendEditorWin = RenderingDebugger(String(ICON_FK_VIDEO_CAMERA) + " Rendering");
         Console debugConsole = Console(String(ICON_FK_CHECK_CIRCLE_O) + " Debug Console");
@@ -107,7 +106,7 @@ int main(int argc, char* argv[])
         //CCE::Graphics::Camera viewportCamera = CCE::Graphics::Camera();
 
 #if MULTITHREADED
-        JobWindow jobWin = JobWindow("Jobs");
+        //JobWindow jobWin = JobWindow("Jobs");
 #endif
 
         using namespace CCE;
@@ -120,7 +119,7 @@ int main(int argc, char* argv[])
         // TODO: Multithread the editor loop as well
         while (rValue != (int)WM_QUIT)
         {
-            mRuntimeManager.PreEditorUpdate(rValue);
+            mRuntimeManager.PreEditorUpdate(rValue, true);
             
             //viewportCamera.Update();
             
@@ -137,7 +136,7 @@ int main(int argc, char* argv[])
             //ImGui::ShowDemoWindow();
             IGUIDrawable::PostGUIUpdate();
            
-            auto end = CCE::Time::Now(); imgui_process_time_ms = CCE::Time::GetDurationInMilliSec(start, end);
+            auto end = CCE::Time::Now(); imgui_process_time_ms = static_cast<float>( CCE::Time::GetDurationInMilliSec( start, end ) );
             // ------------------------------------------------------------------------------
 
             mRuntimeManager.PostEditorUpdate();

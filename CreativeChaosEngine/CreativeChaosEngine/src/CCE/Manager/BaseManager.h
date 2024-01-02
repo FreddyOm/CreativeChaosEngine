@@ -1,9 +1,10 @@
 #pragma once
 #include "../Core.h"
+#include <atomic>
 
 namespace CCE
 {
-	struct CCE_API BaseManager
+	struct BaseManager
 	{
 	public:
 		BaseManager() noexcept {}
@@ -13,6 +14,6 @@ namespace CCE
 		virtual void ShutDown() = 0;
 
 	protected:
-		bool initialized = false;
+		std::atomic<bool> initialized = false;
 	};
 }

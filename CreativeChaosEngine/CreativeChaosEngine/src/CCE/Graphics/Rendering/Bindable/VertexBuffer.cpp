@@ -3,8 +3,8 @@
 
 namespace CCE::Graphics
 {
-	VertexBuffer::VertexBuffer(std::vector<Vertex>& vertexBuffer)
-		: count(vertexBuffer.size())
+	VertexBuffer::VertexBuffer(std::shared_ptr<std::vector<Vertex>> vertexBuffer)
+		: count(vertexBuffer->size())
 	{
 		// Create buffer description
 
@@ -16,7 +16,7 @@ namespace CCE::Graphics
 		bufferDesc.MiscFlags = 0;
 
 		D3D11_SUBRESOURCE_DATA initData;
-		initData.pSysMem = vertexBuffer.data();
+		initData.pSysMem = vertexBuffer.get()->data();
 		initData.SysMemPitch = 0;
 		initData.SysMemSlicePitch = 0;
 
@@ -29,11 +29,16 @@ namespace CCE::Graphics
 		pVertexBuffer.Reset();
 	}
 
-	void VertexBuffer::Bind()
+	void VertexBuffer::DynamicBind()
 	{
 		const UINT offset = 0u;
 		const UINT stride = sizeof(Vertex);
 		GetContext()->IASetVertexBuffers(
 			0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
+	}
+
+	void VertexBuffer::StaticBind()
+	{
+
 	}
 }

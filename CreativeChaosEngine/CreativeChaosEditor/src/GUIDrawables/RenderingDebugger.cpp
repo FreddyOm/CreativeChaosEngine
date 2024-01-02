@@ -8,9 +8,9 @@ void RenderingDebugger::OnGui()
 {
 	if (ImGui::CollapsingHeader("Stats"))
 	{
-		ImGui::Text("FPS: %d", GET_EDITOR_INT("fps"));
-		ImGui::Text("Frametime (ms): %f", GET_EDITOR_FLOAT("frameTime"));
-		ImGui::Text("Avg. Frametime (ms): %f", GET_EDITOR_FLOAT("avgFrameTime"));
+		ImGui::Text("FPS: %d", static_cast<int>(((1.0 / Time::deltaTime) * 1000.0)));
+		ImGui::Text("Frametime (ms): %f", Time::deltaTime);
+		ImGui::Text("Avg. Frametime (ms): %f", Time::GetAverageFrameTime());
 
 		ImGui::Spacing();
 		ImGui::Separator();
@@ -26,13 +26,13 @@ void RenderingDebugger::OnGui()
 		{
 			switch (projection_idx)
 			{
-			case 0: RenderPipeline::Instance->viewportCamera->SetProjectionType(projection_idx); break;
-			case 1: RenderPipeline::Instance->viewportCamera->SetProjectionType(projection_idx); break;
+			case 0: RenderPipeline::Instance->pViewportCamera->SetProjectionType(projection_idx); break;
+			case 1: RenderPipeline::Instance->pViewportCamera->SetProjectionType(projection_idx); break;
 			}
 		}
 		
 		if(projection_idx == 0)
-		    ImGui::SliderFloat("Camera FOV", &RenderPipeline::Instance->viewportCamera->fovVertical, 1.0F, 179.0F, "%f.1");
+		    ImGui::SliderFloat("Camera FOV", &RenderPipeline::Instance->pViewportCamera->fovVertical, 1.0F, 179.0F, "%f.1");
 
 		ImGui::Spacing();
 		ImGui::ColorPicker4("Background Color", RenderPipeline::Instance->GetRenderPipelineConfig()->backgroundColor.rgba);

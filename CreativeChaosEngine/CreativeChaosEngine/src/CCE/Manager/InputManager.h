@@ -1,17 +1,19 @@
 #pragma once
 #include "BaseManager.h"
-#include "../Input/InputDevice.h"
-#include "../Input/IInputHandler.h"
-#include "../Input/Controller.h"
-#include "../Input/Keyboard.h"
 #include "../Input/Mouse.h"
 #include "../String/String.h"
+#include "../Input/Keyboard.h"
+#include "../Input/Controller.h"
+#include "../Input/InputDevice.h"
+#include "../Input/IInputHandler.h"
 #include <vector>
 
 #include <Xinput.h>
 #pragma comment(lib, "XInput.lib")
+//#pragma comment(lib, "D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/CreativeChaosEngine/resources/sdk/ds5w_x64.lib")
+//#pragma comment(lib, "ds5w_x64.lib")
 
-#include "../Input/ds5w.h"
+#include "../include/ds5w/ds5w.h"
 
 namespace CCE
 {
@@ -30,7 +32,6 @@ namespace CCE
 		void StartUp() override;
 		void ShutDown() override;
 
-		
 		void RegisterInputCallback(Input::IInputHandler& handler)
 		{
 			handlerList.push_back(&handler);
@@ -55,7 +56,7 @@ namespace CCE
 		alignas (128)	Input::Controller controller[4] = {};
 	
 	private:
-		Input::Controller* _currentController = nullptr;					// 8 bytes ?
+		Input::Controller* _currentController = nullptr;			// 8 bytes
 		unsigned char connectedDeviceCount = 0;						// 1 byte
 		unsigned char lastConnectedDeviceCount = 0;					// 1 byte
 		std::vector<bool> activeController = { false, false, false, false };
@@ -64,13 +65,13 @@ namespace CCE
 		XINPUT_STATE state = {};
 		
 		// dual sense
-		DS5W::DeviceEnumInfo infos[XUSER_MAX_COUNT];
-		DS5W::DeviceContext con[XUSER_MAX_COUNT];
-		DS5W::DS5InputState inState[XUSER_MAX_COUNT];
-		DS5W::DS5OutputState outState[XUSER_MAX_COUNT];
+		DS5W::DeviceEnumInfo infos[XUSER_MAX_COUNT] = {};
+		DS5W::DeviceContext con[XUSER_MAX_COUNT] = {};
+		DS5W::DS5InputState inState[XUSER_MAX_COUNT] = {};
+		DS5W::DS5OutputState outState[XUSER_MAX_COUNT] = {};
 
 		// InputHandler
-		std::vector<Input::IInputHandler*> handlerList;
+		std::vector<Input::IInputHandler*> handlerList = {};
 
 	private:
 

@@ -8,7 +8,7 @@ namespace CCE::Graphics
 	{
 		for (auto& b : binds)
 		{
-			b->Bind();
+			b->DynamicBind();
 		}
 		RenderPipeline::Instance->GetDeviceContextPtr()->DrawIndexed(pIndexBuffer->GetCount(), 0u, 0u);
 	}

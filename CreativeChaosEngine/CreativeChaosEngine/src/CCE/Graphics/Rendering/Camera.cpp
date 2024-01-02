@@ -101,7 +101,7 @@ namespace CCE::Graphics
 		SetFovAndLookDir();
 
 		pCameraConstBuf->UpdateConstantBuffer(cameraConstBufs);
-		pCameraConstBuf->Bind();
+		pCameraConstBuf->DynamicBind();
 	}
 
 	// TODO: Only do this on the viewport cam (create another class for the viewport cam or derive from it -> indirection[!])
@@ -112,8 +112,14 @@ namespace CCE::Graphics
 		using CCE::Input::InputDevice;
 		if (mouse->middleMouseButton == InputDevice::ButtonState::PRESSED)
 		{
-			XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Right() * -mouse->deltaX * camPanDelta * (float)CCE::Time::deltaTime)));
-			XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Up() * mouse->deltaY * camPanDelta * (float)CCE::Time::deltaTime)));
+			XMStoreFloat3( &transform.Position(), 
+				XMVectorAdd( XMLoadFloat3( &transform.Position() ), 
+				( transform.Right() * static_cast<float>( -mouse->deltaX ) * camPanDelta * static_cast<float>(CCE::Time::deltaTime) ) ) );
+
+
+			XMStoreFloat3( &transform.Position(), 
+				XMVectorAdd( XMLoadFloat3( &transform.Position() ), 
+				( transform.Up() * static_cast<float>(mouse->deltaY ) * camPanDelta * static_cast<float>(CCE::Time::deltaTime) ) ) );
 		}
 		else if (mouse->rightMouseButton == InputDevice::ButtonState::PRESSED)
 		{
@@ -159,7 +165,7 @@ namespace CCE::Graphics
 			float deltaX = mouse->deltaX * camRotYDelta * (float)CCE::Time::deltaTime;
 			float deltaY = mouse->deltaY * camRotXDelta * (float)CCE::Time::deltaTime;
 			// Make sure, the global up vector still holds true in any case!!
-			if (transform.Rotation().x + deltaY > -80.0f && transform.Rotation().x + deltaX < 80.0f)
+			if (transform.Rotation().x + deltaY > -80.0f && transform.Rotation().x + deltaY < 80.0f)
 			{
 				transform.SetRotation({ transform.Rotation().x + deltaY,
 				transform.Rotation().y + deltaX, transform.Rotation().z });

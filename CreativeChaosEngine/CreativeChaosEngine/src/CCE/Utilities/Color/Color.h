@@ -4,7 +4,7 @@
 
 namespace CCE
 {
-	struct CCE_API Color
+	struct Color
 	{
 		float rgba[4];
 

@@ -1,9 +1,6 @@
 #include "JobManager.h"
 #include <winternl.h>
-#include "../Analysis/Debug.h"
-#include "../Analysis/Time.h"
 #include "MemoryManager.h"
-#include "../CCEditor/CCEditor.h"
 
 // TODO: Currently the threads fight for the next job. Fix that to make it more efficient.
 
@@ -35,21 +32,27 @@ namespace CCE
 		LOGC("Shutting down JobManager...", COLOR_BLUE);
 		initialized = false;
 
-		for (int i = 0; i < fiber_pool.size(); i++)
+		auto lock = ScopedSpinLock(fiberSpinLock);
+
+		// TODO: Find a better solution (CancellationToken or similar) to 
+		// wait for completion of last jobs.
+		// Jobs are only run while the JobManager is initialized. When it's 
+		// being dinitialized, we have to wait until the last jobs finished running
+		Sleep(2); // Currently used to make sure, no job is running anymore
+
+		for (int i = 0; i < fiber_pool.size(); ++i)
 		{
-			DeleteFiber(fiber_pool.front());
-			fiber_pool.pop();
+			DeleteFiber(fiber_pool.at(i));
 		}
 
-		fiber_pool._Get_container().~deque();
-		wait_list.clear();
-
-		for (short i = 0; i < worker_threads.size(); i++)
+		for (short i = 0; i < worker_threads.size(); ++i)
 		{
 			if(worker_threads.at(i)->joinable())
 				worker_threads.at(i)->join();
+
 			worker_threads.at(i)->~thread();
 			MemoryManager::Instance->jobMemory.FreeAligned<std::thread>(worker_threads.at(i));
+			LOG("Joined worker thread!");
 		}
 		
 		worker_threads.clear();
@@ -104,21 +107,17 @@ namespace CCE
 		{
 			case JobManager::Priority::HIGH:
 			{
-				jobQueue_High.push(decl); break;
+				jobQueue_High.push(std::move(decl)); break;
 			}
 			case JobManager::Priority::LOW:
 			{
-				jobQueue_Low.push(decl); break;
+				jobQueue_Low.push(std::move(decl)); break;
 			}
 			default:
 			{
-				jobQueue_Normal.push(decl); break;
+				jobQueue_Normal.push(std::move(decl)); break;
 			}
 		}
-
-		PUSH_EDITOR_INT("jobWaitListHigh", static_cast<unsigned int>(jobQueue_High.size()));
-		PUSH_EDITOR_INT("jobWaitListNormal", static_cast<unsigned int>(jobQueue_Normal.size()));
-		PUSH_EDITOR_INT("jobWaitListLow", static_cast<unsigned int>(jobQueue_Low.size()));
 
 		return true;
 	}
@@ -128,33 +127,29 @@ namespace CCE
 	/// </summary>
 	/// <param name="decl">Declaration of the job.</param>
 	/// <returns>True if job was successfully kicked, false if an error occured.</returns>
-	bool JobManager::KickJob(JobManager::JobDeclaration* decl, JobManager::Counter* cnt)
+	bool JobManager::KickJob(JobManager::JobDeclaration& decl, JobManager::Counter* cnt)
 	{
-		if (decl->m_pEntryPoint == nullptr) { return false; }
+		if (decl.m_pEntryPoint == nullptr) { return false; }
 
 		auto lock = ScopedSpinLock(jobQueueSpinLock);
-		decl->m_pCounter = cnt;
+		decl.m_pCounter = cnt;
 
 		// Add job to queue depending on its priority
-		switch (decl->m_priority)
+		switch (decl.m_priority)
 		{
 		case JobManager::Priority::HIGH:
 		{
-			jobQueue_High.push(*decl); break;
+			jobQueue_High.push(std::move(decl)); break;
 		}
 		case JobManager::Priority::LOW:
 		{
-			jobQueue_Low.push(*decl); break;
+			jobQueue_Low.push(std::move(decl)); break;
 		}
 		default:
 		{
-			jobQueue_Normal.push(*decl); break;
+			jobQueue_Normal.push(std::move(decl)); break;
 		}
 		}
-
-		PUSH_EDITOR_INT("jobWaitListHigh", static_cast<const int>(jobQueue_High.size()));
-		PUSH_EDITOR_INT("jobWaitListNormal", static_cast<const int>(jobQueue_Normal.size()));
-		PUSH_EDITOR_INT("jobWaitListLow", static_cast<const int>(jobQueue_Low.size()));
 
 		return true;
 	}
@@ -176,15 +171,15 @@ namespace CCE
 		{
 		case JobManager::Priority::HIGH:
 		{
-			jobQueue_High.push(decl); break;
+			jobQueue_High.push(std::move(decl)); break;
 		}
 		case JobManager::Priority::LOW:
 		{
-			jobQueue_Low.push(decl); break;
+			jobQueue_Low.push(std::move(decl)); break;
 		}
 		default:
 		{
-			jobQueue_Normal.push(decl); break;
+			jobQueue_Normal.push(std::move(decl)); break;
 		}
 		}
 		DASSERT(waitForCnt != nullptr, "Conter may not be null!");
@@ -232,7 +227,7 @@ namespace CCE
 				timeout = 127;
 				if (pJobCounter > desiredCnt)
 				{
-					wait_list.push_back(std::move(WaitData(GetCurrentFiber(), &pJobCounter, desiredCnt)));
+					wait_list.at(waitListPointer) = std::move(WaitData(GetCurrentFiber(), &pJobCounter, desiredCnt));
 					SwitchToFiber(GetThreadFiber());
 				}
 			}
@@ -260,8 +255,8 @@ namespace CCE
 				timeout = 127;
 				if (pJobCounter > desiredCnt)
 				{
-					wait_list.push_back(WaitData(GetCurrentFiber(),
-						&pJobCounter, desiredCnt));
+					wait_list.at(waitListPointer++) = WaitData(GetCurrentFiber(),
+						&pJobCounter, desiredCnt);
 					SwitchToFiber(GetThreadFiber());
 				}
 			}
@@ -279,9 +274,23 @@ namespace CCE
 	/// <param name="desiredCnt"></param>
 	void JobManager::BusyWaitForCounter(Counter& pJobCounter, const int desiredCnt) const
 	{
+		unsigned short timeout = 127;
+		auto lock = ScopedSpinLock(waitListSpinLock);
 		while (pJobCounter > desiredCnt)
 		{
-			continue;
+			if (--timeout == 0)
+			{
+				timeout = 127;
+				if (pJobCounter > desiredCnt)
+				{
+					DASSERT(waitListPointer < NUM_FIBERS - 1, 
+						"Waitlist is full! Make sure the waitlist pointer is decreased correctly or increase the wait list capacity!");
+					wait_list.at(++waitListPointer) = std::move(WaitData(GetCurrentFiber(),
+						&pJobCounter, desiredCnt));
+					LPVOID thisThread = GetThreadFiber();
+					SwitchToFiber(thisThread); // Don't go back to this fiber, go back to the fiber that ran on the thread initially!
+				}
+			}
 		}
 	}
 
@@ -321,7 +330,7 @@ namespace CCE
 		DASSERT(!processAffinityError,"Setting process affinity mask wasn't successful!");
 
 		// Spawn worker threads and set affinity
-		for (unsigned short t_index = 0; t_index < numOfThreads; t_index++)
+		for (unsigned short t_index = 0; t_index < numOfThreads; ++t_index)
 		{
 			// Spawn threads
 			std::thread* workerThread = 
@@ -338,8 +347,6 @@ namespace CCE
 			// Add to list
 			worker_threads.push_back(std::move(workerThread));
 		}
-
-		PUSH_EDITOR_INT("threadPoolSize", numOfThreads);
 	}
 
 	/// <summary>
@@ -350,10 +357,11 @@ namespace CCE
 	void JobManager::PopulateFiberPoolWin(const short numOfFibers)
 	{
 		LOG_JOBS("Creating %i fibers...", numOfFibers);
-		PUSH_EDITOR_INT("fiberPoolSize", numOfFibers);
 		// convert main thread to fiber
 		mainFiber = ConvertThreadToFiber(NULL);
 		DASSERT(mainFiber != nullptr, "Conversion main thread -> fiber not succesful!");
+
+		thread_fibers.insert({ GetThreadId(GetCurrentThread()), mainFiber});  // Add main thread to list
 
 		// populate the fiber pools
 		for (int i = 0; i < numOfFibers; i++)
@@ -364,8 +372,11 @@ namespace CCE
 				NULL);
 
 			DASSERT(fiber != NULL, "Failed creating fiber pool!");
-			fiber_pool.push(std::move(fiber));
+			fiber_pool.at(i) = std::move(fiber);
 		}
+
+		// Top index should be on the last fiber
+		fiberPoolPointer = numOfFibers - 1;
 	}
 
 	/// <summary>
@@ -446,10 +457,29 @@ namespace CCE
 		DWORD threadId = GetThreadId(GetCurrentThread());
 
 		auto lock = ScopedSpinLock(threadIdSpinLock);
-		return thread_fibers.at(threadId);
+		LPVOID fiber = thread_fibers.at(threadId); // TODO: Can't find main thread in thread_fibers!!
 
-		DASSERT(false, "The thread was not found!");
-		return NULL;
+		DASSERT(0 != fiber, "The thread was not found!");
+		return fiber;
+	}
+
+	/// <summary>
+	/// Removes a wait list element at a given index and moves all elements down by one. 
+	/// </summary>
+	/// <param name="index">The index of the fiber to remove from the wait list.</param>
+	/// <returns>Pointer to a fiber.</returns>
+	LPVOID JobManager::RemoveWaitListElement(unsigned int index)
+	{
+		auto lock = ScopedSpinLock(waitListSpinLock);
+		LPVOID fiber = wait_list.at(index).fiber;
+
+		// Don't swap the last element. This will be redundant but we don't care!
+		for (size_t i = index; i < NUM_FIBERS - 1; ++i)
+		{
+			wait_list.at(i) = std::move(wait_list.at(i + 1));
+		}
+
+		return fiber;
 	}
 
 	/// <summary>
@@ -512,33 +542,22 @@ namespace CCE
 	/// <returns>A fiber from the pool. NULL if empty.</returns>
 	LPVOID JobManager::GetFiber()
 	{
+		auto fiberLock = CCE::ScopedSpinLock(fiberSpinLock);
 		{
-			 auto lock=  ScopedSpinLock(getFiberSpinLock);
 
-			if (!wait_list.empty())
+			if (waitListPointer > 0)
 			{
-				LPVOID fiber;
-
-				for (int i = 0; i < wait_list.size(); i++)
+				for (int i = 0; i <= waitListPointer; ++i)
 				{
 					if (wait_list.at(i).desiredCount <= (*wait_list.at(i).pCounter))
 					{
-						fiber = wait_list.at(i).fiber;
-						wait_list.erase(wait_list.begin() + i);
-						return fiber;
+						return RemoveWaitListElement(i);
 					}
 				}
 			}
 		}
-		
 
-		auto fiberLock = CCE::ScopedSpinLock(fiberSpinLock);
-		if (fiber_pool.empty()) { return NULL; }
-
-		LPVOID fiber = fiber_pool.front();
-		fiber_pool.pop();
-
-		return fiber;
+		return fiberPoolPointer == 0 ? NULL : fiber_pool.at(fiberPoolPointer--);
 	}
 
 	/// <summary>
@@ -548,7 +567,7 @@ namespace CCE
 	void JobManager::ReturnFiber(LPVOID fiber)
 	{
 		auto lock = ScopedSpinLock(fiberSpinLock);
-		fiber_pool.push(fiber);
+		fiber_pool.at(++fiberPoolPointer) = std::move(fiber);
 	}
 
 	/// <summary>
@@ -577,11 +596,6 @@ namespace CCE
 	SpinLock JobManager::waitListSpinLock = SpinLock();
 
 	/// <summary>
-	/// A spin lock for getting the next free fiber from the waitlist or the fiber pool;
-	/// </summary>
-	SpinLock JobManager::getFiberSpinLock = SpinLock();
-
-	/// <summary>
 	/// A pointer to the main fiber.
 	/// </summary>
 	LPVOID JobManager::mainFiber = nullptr;
@@ -589,30 +603,40 @@ namespace CCE
 	/// <summary>
 	/// A collection of fibers to use by the threads.
 	/// </summary>
-	alignas(8) std::queue<LPVOID> JobManager::fiber_pool;
+	alignas(8) std::array<LPVOID, NUM_FIBERS> JobManager::fiber_pool = {};
 
 	/// <summary>
 	/// A wait list for jobs to wait on.
 	/// </summary>
-	alignas(128) std::vector<JobManager::WaitData> JobManager::wait_list;
+	alignas(128) std::array<JobManager::WaitData, NUM_FIBERS> JobManager::wait_list = {};
+
+	/// <summary>
+	/// The pointer to the top most fiber in the waitlist
+	/// </summary>
+	std::atomic<int> JobManager::waitListPointer = -1;
 
 	/// <summary>
 	/// The high priority queue for jobs.
 	/// </summary>
-	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_High;
+	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_High = {};
 
 	/// <summary>
 	/// The normal priority queue for jobs.
 	/// </summary>
-	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Normal;
+	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Normal = {};
 
 	/// <summary>
 	/// The low priority queue for jobs.
 	/// </summary>
-	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Low;
+	alignas(128) std::queue<JobManager::JobDeclaration> JobManager::jobQueue_Low = {};
 
 	/// <summary>
 	/// A list for th threads to store their fiber handles.
 	/// </summary>
-	alignas(16) std::unordered_map<DWORD, LPVOID> JobManager::thread_fibers;
+	alignas(16) std::unordered_map<DWORD, LPVOID> JobManager::thread_fibers = {};
+
+	/// <summary>
+	/// A pointer to the topmost fiber in the fiber pool.
+	/// </summary>
+	std::atomic<unsigned int> JobManager::fiberPoolPointer = 0;
 }

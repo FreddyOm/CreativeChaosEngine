@@ -9,28 +9,30 @@ cbuffer ViewProjectionBuffer : register(b1)
     row_major float4x4 projMatrix;
 };
 
-struct vs_in
+struct VertexShaderInput
 {
     float3 position_local : POSITION;
+    float2 uv_coordinates : TEXCOORD;
 };
 
-struct vs_out
+struct VertexShaderOutput
 {
     float4 position_clip : SV_POSITION; // required output of VS
+    float2 uv_coordinates : TEXCOORD;
 };
 
-vs_out main(vs_in input)
+VertexShaderOutput main(VertexShaderInput vsInput)
 {
-    vs_out output;
+    VertexShaderOutput output;
     
-    
-    float4 pos = float4(input.position_local, 1.0f);
+    float4 pos = float4(vsInput.position_local, 1.0f);
 
     // Transform the position from object space to homogeneous projection space
     pos = mul(pos, modelMatrix);
     pos = mul(pos, viewMatrix);
     pos = mul(pos, projMatrix);
     output.position_clip = pos;
-
+    output.uv_coordinates = vsInput.uv_coordinates;
+    
     return output;
 }

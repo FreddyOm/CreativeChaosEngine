@@ -1,17 +1,17 @@
 #pragma once
-#include "../Core.h"
-#include "../Manager/BaseManager.h"
 #include "./Components/ComponentHeaders.h"
-#include "../Analysis/Debug.h"
+#include "../Manager/BaseManager.h"
 #include "../Analysis/Logger.h"
+#include "../Analysis/Debug.h"
 #include "ComponentBuffer.h"
+#include <unordered_map>
+#include <typeindex>
+#include "../Core.h"
+#include "Entity.h"
 #include <vector>
+#include <memory>
 #include <array>
 #include <queue>
-#include <memory>
-#include <typeindex>
-#include <unordered_map>
-#include "Entity.h"
 
 #define MAX_ENTITIES 4096
 
@@ -107,7 +107,6 @@ namespace CCE::Resources
 			ComponentTypeLUT.insert({ typeIndex, (DWORD)1 << mRegisteredComponentIndex });
 
 			auto ptr = new ComponentBuffer<T>();
-			mComponents.insert({ typeIndex, static_cast<IComponentBuffer*>(ptr) });
 
 			++mRegisteredComponentIndex;
 		}
@@ -124,8 +123,6 @@ namespace CCE::Resources
 				mEntityPool.push(Entity(i));
 			}
 
-
-			RegisterComponent<Transform>();
 			//RegisterComponent<Mesh>();
 			//RegisterComponent<MeshRenderer>();
 			//RegisterComponent<Collider>();
@@ -154,12 +151,12 @@ namespace CCE::Resources
 		/// <typeparam name="T">The type of the component.</typeparam>
 		/// <returns>A pointer reference to the component buffer.</returns>
 		template<typename T>
-		ComponentBuffer<T>* GetComponentBuffer()
+		IComponentBuffer* GetComponentBuffer()
 		{
 			std::type_index typeIndex(typeid(T));
 			DASSERT(ComponentTypeLUT.find(typeIndex) != ComponentTypeLUT.end(),
 				"Component not registered.");
-			ComponentBuffer<T>* iCompBuf = static_cast<IComponentBuffer*>(mComponents[typeIndex]);
+			ComponentBuffer<T>* iCompBuf = dynamic_cast<IComponentBuffer*>(mComponents[typeIndex]);
 			//std::shared_ptr<ComponentBuffer<T>> ret = std::static_pointer_cast<ComponentBuffer<T>>(iCompBuf);
 			return iCompBuf;
 		}

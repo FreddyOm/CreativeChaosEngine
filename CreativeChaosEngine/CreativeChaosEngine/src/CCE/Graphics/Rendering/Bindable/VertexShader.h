@@ -5,14 +5,16 @@
 
 namespace CCE::Graphics
 {
-	struct CCE_API VertexShader : public IBindable
+	struct VertexShader : public IBindable
 	{
 	public:
 		VertexShader(const std::wstring resourcePath);
 		~VertexShader();
 
 		// Geerbt über IBindable
-		void Bind() override;
+		void DynamicBind() override;
+		void StaticBind() override;
+
 		ID3DBlob* GetBytecode() const;
 		ID3D11VertexShader* GetVertexShader() const;
 

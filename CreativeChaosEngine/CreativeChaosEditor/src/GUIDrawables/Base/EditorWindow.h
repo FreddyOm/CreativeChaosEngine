@@ -1,7 +1,6 @@
 #pragma once
 #include "CCE/Core.h"
 #include "CCE/String/String.h"
-#include "CCE/CCEditor/CCEditor.h"
 #include "IGUIDrawable.h"
 #include <CCEngine.h>
 

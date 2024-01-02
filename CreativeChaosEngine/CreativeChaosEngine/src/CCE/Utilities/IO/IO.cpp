@@ -1,5 +1,6 @@
 #include "IO.h"
 #include <shlwapi.h>
+#include <fileapi.h>
 
 namespace CCE
 {
@@ -35,11 +36,13 @@ namespace CCE
 	/// <returns>The created file.</returns>
 	File File::Create(const String& filePath)
 	{
+		FILE* fHandle = nullptr;
 		if (!File::Exists(filePath))
 		{
-			fopen(filePath.Value(), "w+");
+			fHandle = fopen(filePath.Value(), "w+");
 		}
 
+		if (nullptr != fHandle) { fclose(fHandle); }
 		return File(filePath);
 	}
 
@@ -69,7 +72,7 @@ namespace CCE
 		}
 		else 
 		{
-			DERROR("Failed to read file \"%s\"", filePath);
+			DERROR("Failed to read file.");
 		}
 		
 		openFileStream.close();
@@ -80,6 +83,15 @@ namespace CCE
 	CCE::String IO::ReadText(const File file, const FileMode fileMode)
 	{
 		return ReadText(file.Path(), fileMode);
+	}
+
+	size_t IO::ReadBytes(const String filePath, const BYTE* destination, const FileMode fileMode)
+	{
+		HANDLE fHndl = CreateFileA(filePath.Value(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		DWORD bytesRead = 0;
+
+		//TODO: Check maximum buffer size
+		return ReadFile(fHndl, (LPVOID) destination, 41943040, &bytesRead, NULL) && bytesRead != 41943040 ? bytesRead : 0;
 	}
 
 	/*
@@ -220,7 +232,7 @@ namespace CCE
 		if (SUCCEEDED(CreateDirectoryA(dirPath.Value(), NULL)))
 		{ return Directory(dirPath); }
 		else
-		{ DERROR("Failed creating a directory at path \"%s\".", dirPath.Value()); }
+		{ DERROR("Failed creating a directory!."); }
 #elif
 #error CCE is currently only supported for Windows
 #endif

@@ -15,7 +15,7 @@ namespace CCE
 	/// </summary>
 	/// <typeparam name="T">The class to be (de-) serialized.</typeparam>
 	template<typename T>
-	struct CCE_API ISerializable
+	struct ISerializable
 	{
 	public:
 

@@ -12,8 +12,8 @@
 
 namespace CCE
 {
-	struct ClientWindow;
-	struct CCE_API Application
+	class ClientWindow;
+	class CCE_API Application
 	{
 	public:
 
@@ -25,15 +25,15 @@ namespace CCE
 
 		static Application* Instance;
 
-		void PreEditorUpdate(int& rValue);
+		void PreEditorUpdate(int& rValue, bool handleInput);
 		void PostEditorUpdate();
 
 	public:
 
 		String companyName = "CreativeChaosEngine";
-		Directory persistentDataPath;
-		Directory applicationDataPath;
-		Directory resourceDataPath;
+		Directory persistentDataPath = {};
+		Directory applicationDataPath = {};
+		Directory resourceDataPath = {};
 		//...
 
 	private:
@@ -58,9 +58,9 @@ namespace CCE
 		std::chrono::steady_clock::time_point frameBegin;
 		std::chrono::steady_clock::time_point frameEnd;
 	
-		JobManager::Counter cnt;
+		JobManager::Counter cnt = 0;
 
-		File engineConfig;
+		File engineConfig = {};
 
 		UINT64 maxUsedFibersPerFrame = 0;
 		bool initialized = false;

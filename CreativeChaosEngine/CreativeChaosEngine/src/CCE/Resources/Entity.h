@@ -4,7 +4,7 @@
 
 namespace CCE::Resources
 {
-	struct CCE_API Entity
+	struct Entity
 	{
 	public:
 		Entity() {};
@@ -16,7 +16,41 @@ namespace CCE::Resources
 			: Id(name.sId)
 		{}
 
-		~Entity() = default;		
+		~Entity() {};
+
+		Entity(const Entity& other)
+		{
+			Id = other.Id;
+		}
+
+		Entity(Entity&& other) noexcept
+		{
+			Id = other.Id;
+			other.Id = 0;
+		}
+
+		Entity& operator=(const Entity& other)
+		{
+			Id = other.Id;
+			return *this;
+		}
+
+		Entity& operator=(Entity&& other) noexcept
+		{
+			Id = other.Id;
+			other.Id = 0;
+			return *this;
+		}
+
+		bool operator<(const Entity& other)
+		{
+			return Id < other.Id;
+		}
+
+		bool operator>(const Entity& other)
+		{
+			return Id > other.Id;
+		}
 
 		template<typename T>
 		void AddComponent();

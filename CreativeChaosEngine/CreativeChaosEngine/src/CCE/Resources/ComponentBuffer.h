@@ -6,7 +6,7 @@
 namespace CCE::Resources
 {
 	template<typename T>
-	struct CCE_API ComponentBuffer : public IComponentBuffer
+	class ComponentBuffer
 	{
 	public:
 		ComponentBuffer() : IComponentBuffer() {}

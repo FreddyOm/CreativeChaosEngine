@@ -2,7 +2,7 @@
 
 #include "Rendering/Camera.h"
 #include "../Manager/JobManager.h"
-#include "Rendering/Drawable/Mesh.h"
+#include "Rendering/Drawable/Model.h"
 #include "../Utilities/Color/Color.h"
 #include "../Memory/StackAllocator.h"
 #include "../Manager/ProfilingManager.h"
@@ -11,8 +11,19 @@
 namespace CCE::Graphics
 {
 	using CCE::Color;
+	struct Model;
 
-	struct Mesh;
+	JOB_ENTRY_POINT BeginFrame(ID3D11DeviceContext* pContext,
+		ComPtr<ID3D11RenderTargetView>& p_renderTarget,
+		ID3D11DepthStencilView* pDSV, CCE::Graphics::Camera* pViewportCamera,
+		std::vector<CCE::Graphics::Model*>& testModels, 
+		const CCE::Graphics::Color col);
+
+	JOB_ENTRY_POINT ClearRenderTargetView(ID3D11DeviceContext* pContext,
+		ComPtr<ID3D11RenderTargetView>& p_renderTarget, Color col);
+
+	JOB_ENTRY_POINT ClearDepthStencilView(ID3D11DeviceContext* pContext, 
+		ID3D11DepthStencilView* pDSV);
 
 	class CCE_API RenderPipeline
 	{
@@ -121,8 +132,8 @@ namespace CCE::Graphics
 
 	public:
 		static RenderPipeline* Instance;
-		Camera* viewportCamera = nullptr;
-		std::vector<Mesh*> testMeshes = { };
+		Camera* pViewportCamera = nullptr;
+		std::vector<Model*> testModels = { };
 
 	public:
 		void InitializeD3D11(const HWND hWnd, const int width, const int height);
@@ -159,6 +170,11 @@ namespace CCE::Graphics
 			return p_renderTarget.Get();
 		}
 		
+		ComPtr<ID3D11RenderTargetView> GetRenderTargetComPtr() const
+		{
+			return p_renderTarget;
+		}
+
 		ID3D11DepthStencilView* GetDepthStencilViewPtr() const
 		{
 			return p_DSV.Get();
@@ -175,9 +191,8 @@ namespace CCE::Graphics
 		}
 
 	public:
-		JOB_ENTRY_POINT ClearRenderTargetView(Color col) const;
 		JOB_ENTRY_POINT ClearDepthStencilView() const;
-		JobManager::Counter* cnt = new JobManager::Counter(2);
+		JobManager::Counter cnt = JobManager::Counter(2);
 
 	private:
 		ComPtr<ID3D11Debug> pDebug;
@@ -198,6 +213,5 @@ namespace CCE::Graphics
 		D3D11_DEPTH_STENCIL_VIEW_DESC* descDSV = { };
 		ComPtr<ID3D11Texture2D> pDepthStencil = nullptr;
 		ComPtr<ID3D11DepthStencilState> pDSState = nullptr;
-		
 	};
 }

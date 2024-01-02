@@ -5,9 +5,9 @@ struct ImGuiDebugInfoLabel : public DebugInfoLabel
 {
 public:
 	ImGuiDebugInfoLabel(CCE::String labelName,
-		ImFont* pFont, float* pImGuiDrawTime, ImVec2 size = ImVec2(0, 0),
-		ImVec4 bg_color = ImVec4(0.5, 0.5, 0.1, 0.2),
-		ImVec4 text_color = ImVec4(1, 1, 0.2, 0.8f))
+		ImFont* pFont, double* pImGuiDrawTime, ImVec2 size = ImVec2(0, 0),
+		ImVec4 bg_color = ImVec4(0.5f, 0.5f, 0.1f, 0.2f),
+		ImVec4 text_color = ImVec4(1, 1, 0.2f, 0.8f))
 		: DebugInfoLabel(labelName, pFont, false, size, bg_color, text_color), 
 		pImGuiDrawTime(pImGuiDrawTime)
 	{}
@@ -28,6 +28,6 @@ public:
 	}
 
 private:
-	float* pImGuiDrawTime = nullptr;
+	double* pImGuiDrawTime = nullptr;
 
 };

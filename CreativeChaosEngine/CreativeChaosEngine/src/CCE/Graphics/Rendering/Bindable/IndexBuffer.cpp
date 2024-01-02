@@ -3,8 +3,8 @@
 
 namespace CCE::Graphics
 {
-	IndexBuffer::IndexBuffer(std::vector<DWORD>& indices)
-		: count(indices.size())
+	IndexBuffer::IndexBuffer(std::shared_ptr<std::vector<unsigned int>> indices)
+		: count(indices->size())
 	{
 		// Create buffer description
 		D3D11_BUFFER_DESC ibd = {};
@@ -12,11 +12,11 @@ namespace CCE::Graphics
 		ibd.Usage = D3D11_USAGE_DEFAULT;
 		ibd.CPUAccessFlags = 0u;
 		ibd.MiscFlags = 0u;
-		ibd.ByteWidth = UINT64(count * sizeof(DWORD));
-		ibd.StructureByteStride = sizeof(DWORD);
+		ibd.ByteWidth = UINT64(count * sizeof(unsigned int));
+		ibd.StructureByteStride = sizeof(unsigned int);
 
 		D3D11_SUBRESOURCE_DATA isd = {};
-		isd.pSysMem = indices.data();
+		isd.pSysMem = indices.get()->data();
 		
 		DASSERT(GetDevice()->CreateBuffer(&ibd, &isd, &pIndexBuffer) == S_OK,
 			"Failed creating the index buffer!");
@@ -32,12 +32,17 @@ namespace CCE::Graphics
 		return count;
 	}
 
-	void IndexBuffer::Bind()
+	void IndexBuffer::DynamicBind()
 	{
 		// Bind to pipeline
 		GetContext()->IASetIndexBuffer(
 			pIndexBuffer.Get(), 
 			DXGI_FORMAT_R32_UINT, 
 			0u);
+	}
+
+	void IndexBuffer::StaticBind()
+	{
+
 	}
 }

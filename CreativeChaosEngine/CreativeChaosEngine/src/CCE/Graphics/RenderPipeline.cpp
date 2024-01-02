@@ -1,11 +1,10 @@
 #include "RenderPipeline.h"
 #include "Rendering/Camera.h"
 #include "../Analysis/Logger.h"
-#include "Rendering/Drawable/Mesh.h"
 #include "../Manager/MemoryManager.h"
 #include "../ClientWindow/ClientWindow.h"
-#include <functional>
 #include "../Manager/Application.h"
+#include <functional>
 
 namespace CCE::Graphics
 {
@@ -35,9 +34,10 @@ namespace CCE::Graphics
 		//if (cnt != nullptr)
 			//delete cnt;
 
-		delete viewportCamera;
-		for(auto* mesh : testMeshes)
-			delete mesh;
+		delete pViewportCamera;
+
+		for(auto* model : testModels)
+			delete model;
 
 		UNREGISTER_LEAK_DETECT;
 	}
@@ -68,17 +68,12 @@ namespace CCE::Graphics
 		// Create viewport
 		CreateViewport();
 
-		viewportCamera = new Camera();
+		pViewportCamera = new Camera();
 
-		testMeshes.push_back(new Mesh());
-		testMeshes.push_back(new Mesh());
-		testMeshes.push_back(new Mesh());
-		testMeshes.push_back(new Mesh());
+		testModels.push_back(new Model(Application::Instance->resourceDataPath.Path() + "/models/Stanford_Dragon.fbx"));
 
-		testMeshes.at(0)->transform.SetTranslation({ 3,5,1 });
-		testMeshes.at(1)->transform.SetTranslation({ 1,2,0 });
-		testMeshes.at(2)->transform.SetTranslation({ -1,0,2 });
-		testMeshes.at(3)->transform.SetTranslation({ -3,1,1 });
+		testModels.at(0)->transform.SetTranslation({ 0,0,0 });
+		testModels.at(0)->transform.SetScale({ 0.1,0.1,0.1 });
 	}
 
 	/// <summary>
@@ -168,7 +163,7 @@ namespace CCE::Graphics
 
 		HRESULT cdasc = D3D11CreateDeviceAndSwapChain(
 			NULL,									// default adapter
-#if 0
+#if 1
 			D3D_DRIVER_TYPE_HARDWARE,				// driver type
 #else
 			D3D_DRIVER_TYPE_WARP,                   // driver type
@@ -234,34 +229,14 @@ namespace CCE::Graphics
 		p_Context->ClearRenderTargetView(p_renderTarget.Get(), col.RGBA());
 		p_Context->ClearDepthStencilView(p_DSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 		
-#if MULTITHREADED
-		*cnt = 2;
 
-		JobManager::EntryPoint cdsvEp = BIND(RenderPipeline::Instance->ClearDepthStencilView);
-		JOBDECL cdsv = JOBDECL(cdsvEp, JobManager::Priority::HIGH);
-
-		JobManager::EntryPoint crtvEp = BIND(RenderPipeline::Instance->ClearRenderTargetView, col);
-		JOBDECL crtv = JOBDECL(crtvEp, JobManager::Priority::NORMAL);
-
-		JobManager::Instance->KickJobAndFreeDecl(crtv, cnt);
-
-		JobManager::Instance->WaitForCounter(*cnt, 1);
-
-		JobManager::Instance->KickJobAndFreeDecl(cdsv, cnt);
-
-		JobManager::Instance->WaitForCounter(*cnt, 0);
-
-#else
 		p_Context->OMSetRenderTargets(1u, p_renderTarget.GetAddressOf(), p_DSV.Get());
-#endif	
 
 		// TODO: Render triangles
+		// Update scene - jobify this heavily!!
+		pViewportCamera->Update();
 
-		// Test Cube
-
-		viewportCamera->Update();
-
-		for(auto* mesh : testMeshes)
+		for(auto* mesh : testModels)
 			mesh->Draw();
 	}
 
@@ -427,22 +402,65 @@ namespace CCE::Graphics
 	}
 
 #pragma region Job System Entry Points
-
+	
 	/// <summary>
 	/// The job entry point for creating the reder target view.
 	/// </summary>
 	/// <param name="col">The background color.</param>
-	JOB_ENTRY_POINT RenderPipeline::ClearRenderTargetView(Color col) const
+	JOB_ENTRY_POINT ClearRenderTargetView(ID3D11DeviceContext* pContext, 
+		ComPtr<ID3D11RenderTargetView>& p_renderTarget, Color col)
 	{
-		p_Context->ClearRenderTargetView(p_renderTarget.Get(), col.RGBA());
+		pContext->ClearRenderTargetView(p_renderTarget.Get(), col.RGBA());
 	}
 
 	/// <summary>
 	/// The job entry point for clearing the depth stencil view.
 	/// </summary>
-	JOB_ENTRY_POINT RenderPipeline::ClearDepthStencilView() const
+	JOB_ENTRY_POINT ClearDepthStencilView(ID3D11DeviceContext* pContext,
+		ID3D11DepthStencilView* pDSV)
 	{
-		p_Context->ClearDepthStencilView(p_DSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+		pContext->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.0f, 0u);
+	}
+
+	/// <summary>
+	///  Starts the frame by clearing the depth and the stencil buffer.
+	/// </summary>
+	/// <param name="pContext"></param>
+	/// <param name="col">The color of the background.</param>
+	JOB_ENTRY_POINT BeginFrame(ID3D11DeviceContext* pContext,
+		ComPtr<ID3D11RenderTargetView>& p_renderTarget,
+		ID3D11DepthStencilView* pDSV, CCE::Graphics::Camera* pViewportCamera,
+		std::vector<CCE::Graphics::Model*>& testModels, 
+		const CCE::Graphics::Color col)
+	{
+		if (CCE::ClientWindow::Instance->minimized) { return; }
+
+		JobManager::Counter cnt = JobManager::Counter(2);
+
+		// Clear render view and draw background color
+		
+		// Create job descriptions
+		JobManager::EntryPoint crtvEp = std::bind(&ClearRenderTargetView,
+			pContext, p_renderTarget, col);
+		JobManager::EntryPoint cdsvEp = std::bind(&ClearDepthStencilView,
+			pContext, pDSV);
+
+		JOBDECL cdsv = JOBDECL(cdsvEp, JobManager::Priority::HIGH);
+		JOBDECL crtv = JOBDECL(crtvEp, JobManager::Priority::NORMAL);
+
+		// Kick jobs
+		JobManager::Instance->KickJob(cdsv);
+		JobManager::Instance->KickJob(crtv);
+
+		// Await execution
+		JobManager::Instance->BusyWaitForCounter(cnt, 0);
+
+		pContext->OMSetRenderTargets(1u, p_renderTarget.GetAddressOf(), pDSV);
+
+		pViewportCamera->Update();
+
+		for (auto* mesh : testModels)
+			mesh->Draw();
 	}
 
 #pragma endregion

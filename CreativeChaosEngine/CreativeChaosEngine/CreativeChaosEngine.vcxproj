@@ -20,19 +20,21 @@
     <ClCompile Include="src\CCE\Resources\Entity.cpp" />
     <ClCompile Include="src\CCE\Resources\EntityComponentSystem.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IBindable.cpp" />
+    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Sampler.cpp" />
+    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Texture2D.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Camera.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Drawable\IDrawable.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\InputLayout.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\PixelShader.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IndexBuffer.cpp" />
+    <ClCompile Include="src\CCE\Resources\MeshLoader.cpp" />
+    <ClCompile Include="src\CCE\Resources\TextureLoader.cpp" />
     <ClCompile Include="src\CCE\String\StringMemory.cpp" />
     <ClCompile Include="src\CCE\Utilities\IO\IO.cpp" />
     <ClCompile Include="src\CCE\Manager\MemoryManager.cpp" />
     <ClCompile Include="src\CCE\ClientWindow\ClientWindow.cpp" />
-    <ClCompile Include="src\CCE\CCEditor\CCEditor.cpp" />
-    <ClCompile Include="src\CCE\Graphics\Rendering\Drawable\Mesh.cpp" />
+    <ClCompile Include="src\CCE\Graphics\Rendering\Drawable\Model.cpp" />
     <ClCompile Include="src\CCE\Manager\Application.cpp" />
-    <ClCompile Include="src\CCE\Utilities\Events\Delegate.cpp" />
     <ClCompile Include="src\CCE\Utilities\Color\Color.cpp" />
     <ClCompile Include="src\CCE\Graphics\RenderPipeline.cpp" />
     <ClCompile Include="src\CCE\Manager\InputManager.cpp" />
@@ -66,6 +68,8 @@
     <ClInclude Include="src\CCE\Resources\Entity.h" />
     <ClInclude Include="src\CCE\Resources\EntityComponentSystem.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\ConstantBuffer.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Sampler.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Texture2D.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Camera.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\BindableCommon.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\InputLayout.h" />
@@ -75,23 +79,109 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\D3D11.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Drawable\IDrawable.h" />
-    <ClInclude Include="src\CCE\Resources\Components\Transform.h" />
+    <ClInclude Include="src\CCE\include\assimp\aabb.h" />
+    <ClInclude Include="src\CCE\include\assimp\ai_assert.h" />
+    <ClInclude Include="src\CCE\include\assimp\anim.h" />
+    <ClInclude Include="src\CCE\include\assimp\Base64.hpp" />
+    <ClInclude Include="src\CCE\include\assimp\BaseImporter.h" />
+    <ClInclude Include="src\CCE\include\assimp\Bitmap.h" />
+    <ClInclude Include="src\CCE\include\assimp\BlobIOSystem.h" />
+    <ClInclude Include="src\CCE\include\assimp\ByteSwapper.h" />
+    <ClInclude Include="src\CCE\include\assimp\camera.h" />
+    <ClInclude Include="src\CCE\include\assimp\cexport.h" />
+    <ClInclude Include="src\CCE\include\assimp\cfileio.h" />
+    <ClInclude Include="src\CCE\include\assimp\cimport.h" />
+    <ClInclude Include="src\CCE\include\assimp\ColladaMetaData.h" />
+    <ClInclude Include="src\CCE\include\assimp\color4.h" />
+    <ClInclude Include="src\CCE\include\assimp\commonMetaData.h" />
+    <ClInclude Include="src\CCE\include\assimp\Compiler\poppack1.h" />
+    <ClInclude Include="src\CCE\include\assimp\Compiler\pstdint.h" />
+    <ClInclude Include="src\CCE\include\assimp\Compiler\pushpack1.h" />
+    <ClInclude Include="src\CCE\include\assimp\config.h" />
+    <ClInclude Include="src\CCE\include\assimp\CreateAnimMesh.h" />
+    <ClInclude Include="src\CCE\include\assimp\DefaultIOStream.h" />
+    <ClInclude Include="src\CCE\include\assimp\DefaultIOSystem.h" />
+    <ClInclude Include="src\CCE\include\assimp\DefaultLogger.hpp" />
+    <ClInclude Include="src\CCE\include\assimp\defs.h" />
+    <ClInclude Include="src\CCE\include\assimp\Exceptional.h" />
+    <ClInclude Include="src\CCE\include\assimp\Exporter.hpp" />
+    <ClInclude Include="src\CCE\include\assimp\fast_atof.h" />
+    <ClInclude Include="src\CCE\include\assimp\GenericProperty.h" />
+    <ClInclude Include="src\CCE\include\assimp\GltfMaterial.h" />
+    <ClInclude Include="src\CCE\include\assimp\Hash.h" />
+    <ClInclude Include="src\CCE\include\assimp\Importer.hpp" />
+    <ClInclude Include="src\CCE\include\assimp\importerdesc.h" />
+    <ClInclude Include="src\CCE\include\assimp\IOStream.hpp" />
+    <ClInclude Include="src\CCE\include\assimp\IOStreamBuffer.h" />
+    <ClInclude Include="src\CCE\include\assimp\IOSystem.hpp" />
+    <ClInclude Include="src\CCE\include\assimp\light.h" />
+    <ClInclude Include="src\CCE\include\assimp\LineSplitter.h" />
+    <ClInclude Include="src\CCE\include\assimp\LogAux.h" />
+    <ClInclude Include="src\CCE\include\assimp\Logger.hpp" />
+    <ClInclude Include="src\CCE\include\assimp\LogStream.hpp" />
+    <ClInclude Include="src\CCE\include\assimp\material.h" />
+    <ClInclude Include="src\CCE\include\assimp\MathFunctions.h" />
+    <ClInclude Include="src\CCE\include\assimp\matrix3x3.h" />
+    <ClInclude Include="src\CCE\include\assimp\matrix4x4.h" />
+    <ClInclude Include="src\CCE\include\assimp\MemoryIOWrapper.h" />
+    <ClInclude Include="src\CCE\include\assimp\mesh.h" />
+    <ClInclude Include="src\CCE\include\assimp\metadata.h" />
+    <ClInclude Include="src\CCE\include\assimp\NullLogger.hpp" />
+    <ClInclude Include="src\CCE\include\assimp\ObjMaterial.h" />
+    <ClInclude Include="src\CCE\include\assimp\ParsingUtils.h" />
+    <ClInclude Include="src\CCE\include\assimp\pbrmaterial.h" />
+    <ClInclude Include="src\CCE\include\assimp\port\AndroidJNI\AndroidJNIIOSystem.h" />
+    <ClInclude Include="src\CCE\include\assimp\port\AndroidJNI\BundledAssetIOSystem.h" />
+    <ClInclude Include="src\CCE\include\assimp\postprocess.h" />
+    <ClInclude Include="src\CCE\include\assimp\Profiler.h" />
+    <ClInclude Include="src\CCE\include\assimp\ProgressHandler.hpp" />
+    <ClInclude Include="src\CCE\include\assimp\qnan.h" />
+    <ClInclude Include="src\CCE\include\assimp\quaternion.h" />
+    <ClInclude Include="src\CCE\include\assimp\RemoveComments.h" />
+    <ClInclude Include="src\CCE\include\assimp\scene.h" />
+    <ClInclude Include="src\CCE\include\assimp\SceneCombiner.h" />
+    <ClInclude Include="src\CCE\include\assimp\SGSpatialSort.h" />
+    <ClInclude Include="src\CCE\include\assimp\SkeletonMeshBuilder.h" />
+    <ClInclude Include="src\CCE\include\assimp\SmallVector.h" />
+    <ClInclude Include="src\CCE\include\assimp\SmoothingGroups.h" />
+    <ClInclude Include="src\CCE\include\assimp\SpatialSort.h" />
+    <ClInclude Include="src\CCE\include\assimp\StandardShapes.h" />
+    <ClInclude Include="src\CCE\include\assimp\StreamReader.h" />
+    <ClInclude Include="src\CCE\include\assimp\StreamWriter.h" />
+    <ClInclude Include="src\CCE\include\assimp\StringComparison.h" />
+    <ClInclude Include="src\CCE\include\assimp\StringUtils.h" />
+    <ClInclude Include="src\CCE\include\assimp\Subdivision.h" />
+    <ClInclude Include="src\CCE\include\assimp\texture.h" />
+    <ClInclude Include="src\CCE\include\assimp\TinyFormatter.h" />
+    <ClInclude Include="src\CCE\include\assimp\types.h" />
+    <ClInclude Include="src\CCE\include\assimp\vector2.h" />
+    <ClInclude Include="src\CCE\include\assimp\vector3.h" />
+    <ClInclude Include="src\CCE\include\assimp\version.h" />
+    <ClInclude Include="src\CCE\include\assimp\Vertex.h" />
+    <ClInclude Include="src\CCE\include\assimp\XmlParser.h" />
+    <ClInclude Include="src\CCE\include\assimp\XMLTools.h" />
+    <ClInclude Include="src\CCE\include\assimp\ZipArchiveIOSystem.h" />
+    <ClInclude Include="src\CCE\include\json\json.hpp" />
+    <ClInclude Include="src\CCE\include\json\json_fwd.hpp" />
+    <ClInclude Include="src\CCE\Resources\MeshLoader.h" />
+    <ClInclude Include="src\CCE\Resources\ResourceLoader.h" />
+    <ClInclude Include="src\CCE\Resources\TextureLoader.h" />
     <ClInclude Include="src\CCE\Input\Controller.h" />
     <ClInclude Include="src\CCE\Input\IInputHandler.h" />
     <ClInclude Include="src\CCE\Input\Keyboard.h" />
     <ClInclude Include="src\CCE\Input\Mouse.h" />
     <ClInclude Include="src\CCE\Resources\IComponentBuffer.h" />
+    <ClInclude Include="src\CCE\Resources\Resource.h" />
     <ClInclude Include="src\CCE\String\StringMemory.h" />
+    <ClInclude Include="src\CCE\Utilities\FreeImg\FreeImage.h" />
     <ClInclude Include="src\CCE\Utilities\IO\IO.h" />
     <ClInclude Include="src\CCE\Manager\MemoryManager.h" />
     <ClInclude Include="src\CCE\ClientWindow\ClientWindow.h" />
-    <ClInclude Include="src\CCE\CCEditor\CCEditor.h" />
-    <ClInclude Include="src\CCE\Graphics\Rendering\Drawable\Mesh.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Drawable\Model.h" />
     <ClInclude Include="src\CCE\Manager\Application.h" />
     <ClInclude Include="src\CCE\Utilities\Concurrency\ScopedSpinLock.h" />
     <ClInclude Include="src\CCE\Utilities\Concurrency\SpinLock.h" />
-    <ClInclude Include="src\CCE\Utilities\Events\Delegate.h" />
-    <ClInclude Include="src\CCE\Input\ds5w.h" />
+    <ClInclude Include="src\CCE\include\ds5w\ds5w.h" />
     <ClInclude Include="src\CCE\Utilities\Color\Color.h" />
     <ClInclude Include="src\CCE\Graphics\RenderPipeline.h" />
     <ClInclude Include="src\CCE\Input\InputDevice.h" />
@@ -125,10 +215,24 @@
     <ClInclude Include="src\CCE\String\StringConverter.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\sdk\assimp-vc143-mt.dll" />
     <None Include="resources\sdk\ds5w_x64.dll" />
+    <None Include="resources\sdk\FreeImage.dll" />
+    <None Include="src\CCE\include\assimp\.editorconfig" />
+    <None Include="src\CCE\include\assimp\color4.inl" />
+    <None Include="src\CCE\include\assimp\config.h.in" />
+    <None Include="src\CCE\include\assimp\material.inl" />
+    <None Include="src\CCE\include\assimp\matrix3x3.inl" />
+    <None Include="src\CCE\include\assimp\matrix4x4.inl" />
+    <None Include="src\CCE\include\assimp\quaternion.inl" />
+    <None Include="src\CCE\include\assimp\SmoothingGroups.inl" />
+    <None Include="src\CCE\include\assimp\vector2.inl" />
+    <None Include="src\CCE\include\assimp\vector3.inl" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="resources\sdk\assimp-vc143-mt.lib" />
     <Library Include="resources\sdk\ds5w_x64.lib" />
+    <Library Include="resources\sdk\FreeImage.lib" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CreativeChaosEngineCore.rc" />
@@ -197,15 +301,18 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <ExternalIncludePath>$(SolutionDir)CreativeChaosEngine\src\CCE\include</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Profile|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
-    <ExternalIncludePath>D:\Repositories\json\single_include;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>
+    </ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <ExternalIncludePath>$(SolutionDir)CreativeChaosEngine\src\CCE\include</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -219,19 +326,23 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>./resources/sdk/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ds5w_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)CreativeChaosEngine\resources\sdk;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ds5w_x64.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\ mkdir $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\
 xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
-xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"</Command>
+xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"
+xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
+xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying DLLs into Editor Folder</Message>
@@ -258,14 +369,16 @@ xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>./resources/sdk/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ds5w_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)CreativeChaosEngine\resources\sdk;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ds5w_x64.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\ mkdir $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\
 xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
-xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"</Command>
+xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"
+xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
+xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying DLLs into Editor Folder</Message>
@@ -288,6 +401,8 @@ xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$
       <LanguageStandard>stdcpp17</LanguageStandard>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -295,14 +410,16 @@ xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>./resources/sdk/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ds5w_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)CreativeChaosEngine\resources\sdk;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ds5w_x64.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\ mkdir $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\
 xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
-xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"</Command>
+xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"
+xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
+xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying DLLs into Editor Folder</Message>

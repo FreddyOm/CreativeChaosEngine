@@ -53,7 +53,7 @@ namespace CCE
 	void ProfilingManager::UnregisterInstance(String name) noexcept
 	{
 		DASSERT(memLeakTable->find(name.sId) != memLeakTable->end(),
-			"The instance %s you try to unregister was never reigstered!", name.Value());
+			"The instance you try to unregister was never reigstered!");
 		
 		// Increase the instance count for this name
 		memLeakTable->insert_or_assign(name.sId, memLeakTable->at(name.sId) - 1);

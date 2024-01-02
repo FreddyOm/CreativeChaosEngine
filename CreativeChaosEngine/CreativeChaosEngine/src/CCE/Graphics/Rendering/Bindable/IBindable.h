@@ -6,12 +6,13 @@ namespace CCE::Graphics
 {
 	class RenderPipeline;
 
-	struct CCE_API IBindable
+	struct IBindable
 	{
 	public:
 		IBindable() = default;
 		virtual ~IBindable() = default;
-		virtual void Bind() = 0;
+		virtual void DynamicBind() = 0;
+		virtual void StaticBind() = 0;
 
 	protected:
 		ID3D11DeviceContext* GetContext() noexcept;

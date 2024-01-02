@@ -44,6 +44,6 @@
 
 // --------- Editor ----------
 
-#include "CCE/CCEditor/CCEditor.h"
+// TODO: Add new editor interface using gRPC
 
 // --------------------------
