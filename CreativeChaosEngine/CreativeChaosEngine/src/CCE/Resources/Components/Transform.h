@@ -4,11 +4,41 @@
 
 namespace CCE::Resources 
 {
-	struct CCE_API Transform
+	class Transform
 	{
 	public:
 		Transform();
 		~Transform() = default;
+
+		Transform(const Transform& other) noexcept
+		{
+			position = other.position;
+			rotation = other.rotation;
+			scale = other.scale;
+		}
+
+		Transform(Transform&& other) noexcept
+		{
+			position = other.position;
+			rotation = other.rotation;
+			scale = other.scale;
+		}
+
+		Transform& operator=(const Transform& other) noexcept
+		{
+			position = other.position;
+			rotation = other.rotation;
+			scale = other.scale;
+			return *this;
+		}
+
+		Transform& operator=(Transform&& other) noexcept
+		{
+			position = other.position;
+			rotation = other.rotation;
+			scale = other.scale;
+			return *this;
+		}
 
 		DirectX::XMMATRIX GetTransformationMatrix() const;
 

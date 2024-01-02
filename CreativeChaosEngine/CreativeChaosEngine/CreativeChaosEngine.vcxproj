@@ -65,6 +65,7 @@
     <ClInclude Include="src\CCE\Resources\Component.h" />
     <ClInclude Include="src\CCE\Resources\ComponentBuffer.h" />
     <ClInclude Include="src\CCE\Resources\Components\ComponentHeaders.h" />
+    <ClInclude Include="src\CCE\Resources\Components\Transform.h" />
     <ClInclude Include="src\CCE\Resources\Entity.h" />
     <ClInclude Include="src\CCE\Resources\EntityComponentSystem.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\ConstantBuffer.h" />

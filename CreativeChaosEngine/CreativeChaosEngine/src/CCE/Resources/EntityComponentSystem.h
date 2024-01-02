@@ -123,6 +123,7 @@ namespace CCE::Resources
 				mEntityPool.push(Entity(i));
 			}
 
+			RegisterComponent<Transform>();
 			//RegisterComponent<Mesh>();
 			//RegisterComponent<MeshRenderer>();
 			//RegisterComponent<Collider>();

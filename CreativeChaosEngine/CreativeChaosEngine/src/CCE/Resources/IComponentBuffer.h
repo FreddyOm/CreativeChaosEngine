@@ -4,12 +4,11 @@
 
 namespace CCE::Resources
 {
-	struct CCE_API IComponentBuffer
+	struct IComponentBuffer
 	{
 	public:
 		IComponentBuffer() {}
-		virtual ~IComponentBuffer() = default;
-		virtual void EntityDestroyed(Entity entity) {};
-
+		virtual ~IComponentBuffer() {}
+		virtual void EntityDestroyed(Entity entity) {}
 	};
 }

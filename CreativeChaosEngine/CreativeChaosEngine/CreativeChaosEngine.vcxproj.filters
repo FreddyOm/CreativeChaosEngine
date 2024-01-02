@@ -5,6 +5,10 @@
     <FxCompile Include="src\CCE\Graphics\Shader\DefaultVertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CCE\Resources\ComponentBuffer.cpp" />
+    <ClCompile Include="src\CCE\Resources\Components\Transform.cpp" />
+    <ClCompile Include="src\CCE\Resources\Entity.cpp" />
+    <ClCompile Include="src\CCE\Resources\EntityComponentSystem.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IBindable.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Sampler.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Texture2D.cpp" />
@@ -46,17 +50,13 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\VertexBuffer.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\VertexShader.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Topology.cpp" />
-<<<<<<< HEAD
-    <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IBindable.cpp" />
-    <ClCompile Include="src\CCE\String\StringMemory.cpp" />
-    <ClCompile Include="src\CCE\Resources\EntityComponentSystem.cpp" />
-    <ClCompile Include="src\CCE\Resources\Components\Transform.cpp" />
-    <ClCompile Include="src\CCE\Resources\Entity.cpp" />
-    <ClCompile Include="src\CCE\Resources\ComponentBuffer.cpp" />
-=======
->>>>>>> fa3f56aeedc1040323408010e5535ca277a4e528
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CCE\Resources\Component.h" />
+    <ClInclude Include="src\CCE\Resources\ComponentBuffer.h" />
+    <ClInclude Include="src\CCE\Resources\Components\ComponentHeaders.h" />
+    <ClInclude Include="src\CCE\Resources\Entity.h" />
+    <ClInclude Include="src\CCE\Resources\EntityComponentSystem.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\ConstantBuffer.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Sampler.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Texture2D.h" />
@@ -69,9 +69,6 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\D3D11.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Drawable\IDrawable.h" />
-<<<<<<< HEAD
-    <ClInclude Include="src\CCE\Resources\Components\Transform.h" />
-=======
     <ClInclude Include="src\CCE\include\assimp\aabb.h" />
     <ClInclude Include="src\CCE\include\assimp\ai_assert.h" />
     <ClInclude Include="src\CCE\include\assimp\anim.h" />
@@ -159,15 +156,14 @@
     <ClInclude Include="src\CCE\Resources\MeshLoader.h" />
     <ClInclude Include="src\CCE\Resources\ResourceLoader.h" />
     <ClInclude Include="src\CCE\Resources\TextureLoader.h" />
-    <ClInclude Include="src\CCE\Graphics\Rendering\Transform.h" />
     <ClInclude Include="src\CCE\Input\Controller.h" />
     <ClInclude Include="src\CCE\Input\IInputHandler.h" />
     <ClInclude Include="src\CCE\Input\Keyboard.h" />
     <ClInclude Include="src\CCE\Input\Mouse.h" />
+    <ClInclude Include="src\CCE\Resources\IComponentBuffer.h" />
     <ClInclude Include="src\CCE\Resources\Resource.h" />
     <ClInclude Include="src\CCE\String\StringMemory.h" />
     <ClInclude Include="src\CCE\Utilities\FreeImg\FreeImage.h" />
->>>>>>> fa3f56aeedc1040323408010e5535ca277a4e528
     <ClInclude Include="src\CCE\Utilities\IO\IO.h" />
     <ClInclude Include="src\CCE\Manager\MemoryManager.h" />
     <ClInclude Include="src\CCE\ClientWindow\ClientWindow.h" />
@@ -207,20 +203,7 @@
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\VertexShader.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Topology.h" />
     <ClInclude Include="src\CCE\String\StringConverter.h" />
-<<<<<<< HEAD
-    <ClInclude Include="src\CCE\Input\Controller.h" />
-    <ClInclude Include="src\CCE\Input\IInputHandler.h" />
-    <ClInclude Include="src\CCE\Input\Keyboard.h" />
-    <ClInclude Include="src\CCE\Input\Mouse.h" />
-    <ClInclude Include="src\CCE\String\StringMemory.h" />
-    <ClInclude Include="src\CCE\Resources\EntityComponentSystem.h" />
-    <ClInclude Include="src\CCE\Resources\Component.h" />
-    <ClInclude Include="src\CCE\Resources\Components\ComponentHeaders.h" />
-    <ClInclude Include="src\CCE\Resources\Entity.h" />
-    <ClInclude Include="src\CCE\Resources\IComponentBuffer.h" />
-    <ClInclude Include="src\CCE\Resources\ComponentBuffer.h" />
-=======
->>>>>>> fa3f56aeedc1040323408010e5535ca277a4e528
+    <ClInclude Include="src\CCE\Resources\Components\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="resources\sdk\assimp-vc143-mt.lib" />
