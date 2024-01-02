@@ -1,9 +1,6 @@
 #include "JobManager.h"
 #include <winternl.h>
 #include "MemoryManager.h"
-#include "../Analysis/Time.h"
-#include "../Analysis/Debug.h"
-#include "../CCEditor/CCEditor.h"
 
 // TODO: Currently the threads fight for the next job. Fix that to make it more efficient.
 
@@ -153,6 +150,7 @@ namespace CCE
 			jobQueue_Normal.push(std::move(decl)); break;
 		}
 		}
+
 		return true;
 	}
 

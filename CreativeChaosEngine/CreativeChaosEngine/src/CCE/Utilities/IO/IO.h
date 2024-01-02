@@ -70,7 +70,7 @@ namespace CCE
 			return *this;
 		}
 
-		File& operator=(File&& other)
+		File& operator=(File&& other) noexcept
 		{
 			if (this == &other)
 			{ return *this; }

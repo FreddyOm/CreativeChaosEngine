@@ -30,7 +30,7 @@ void Console::OnGui()
 		LogLevel type = pLogBuffer->at(i).debugType;
 		
 		if (type != LogLevel::NONE) 
-		{ logColor = type == LogLevel::WARNING ? ImVec4(0.8, 0.8, 0, 1) : ImVec4(0.8, 0, 0, 1); }
+		{ logColor = type == LogLevel::WARNING ? ImVec4(0.8f, 0.8f, 0, 1) : ImVec4(0.8f, 0, 0, 1); }
 		else { logColor = ImVec4(1, 1, 1, 1); }
 			
 		ImGui::PushStyleColor(ImGuiCol_Text, logColor);

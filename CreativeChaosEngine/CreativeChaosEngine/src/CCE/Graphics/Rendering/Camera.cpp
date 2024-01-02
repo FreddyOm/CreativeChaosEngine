@@ -112,8 +112,14 @@ namespace CCE::Graphics
 		using CCE::Input::InputDevice;
 		if (mouse->middleMouseButton == InputDevice::ButtonState::PRESSED)
 		{
-			XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Right() * -mouse->deltaX * camPanDelta * (float)CCE::Time::deltaTime)));
-			XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Up() * mouse->deltaY * camPanDelta * (float)CCE::Time::deltaTime)));
+			XMStoreFloat3( &transform.Position(), 
+				XMVectorAdd( XMLoadFloat3( &transform.Position() ), 
+				( transform.Right() * static_cast<float>( -mouse->deltaX ) * camPanDelta * static_cast<float>(CCE::Time::deltaTime) ) ) );
+
+
+			XMStoreFloat3( &transform.Position(), 
+				XMVectorAdd( XMLoadFloat3( &transform.Position() ), 
+				( transform.Up() * static_cast<float>(mouse->deltaY ) * camPanDelta * static_cast<float>(CCE::Time::deltaTime) ) ) );
 		}
 		else if (mouse->rightMouseButton == InputDevice::ButtonState::PRESSED)
 		{

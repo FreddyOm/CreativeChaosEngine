@@ -1,13 +1,12 @@
 #pragma once
 #include "DebugInfoLabel.h"
-#include "CCE\CCEditor\CCEditor.h"
 
 struct FrameTimeDebugInfoLabel : public DebugInfoLabel
 {
 public:
 	FrameTimeDebugInfoLabel(CCE::String labelName,
 		ImFont* pFont, ImVec2 size = ImVec2(0, 0),
-		ImVec4 bg_color = ImVec4(0.5, 0.5, 0.5, 0.2),
+		ImVec4 bg_color = ImVec4(0.5f, 0.5f, 0.5f, 0.2f),
 		ImVec4 text_color = ImVec4(1, 1, 1, 0.8f))
 		: DebugInfoLabel(labelName, pFont, true, size, bg_color, text_color)
 	{}
@@ -22,7 +21,7 @@ public:
 
 		DebugInfoLabel::Draw();
 		ImGui::DynamicTextButton("%.1d (%.1fms, avg %.1fms)", 0, size,
-			GET_EDITOR_INT("fps"), GET_EDITOR_FLOAT("frameTime"), GET_EDITOR_FLOAT("avgFrameTime"));
+			static_cast<int>(((1.0 / Time::deltaTime) * 1000.0)), Time::deltaTime, Time::GetAverageFrameTime());
 		ImGui::SameLine();
 		ImGui::TextUnformatted("|");
 

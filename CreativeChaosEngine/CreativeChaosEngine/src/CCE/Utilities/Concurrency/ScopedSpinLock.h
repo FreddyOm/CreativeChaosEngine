@@ -4,7 +4,7 @@
 
 namespace CCE 
 {
-	struct CCE_API ScopedSpinLock
+	struct ScopedSpinLock
 	{
 		ScopedSpinLock(SpinLock& _spinlock)
 		{

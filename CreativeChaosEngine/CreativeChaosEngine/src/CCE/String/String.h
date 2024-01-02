@@ -36,7 +36,7 @@ namespace CCE
 			return *this;
 		}
 
-		String& operator=(String&& other)
+		String& operator=(String&& other) noexcept
 		{
 			// check if both refs are the same instance
 			if (this == &other)

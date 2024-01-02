@@ -4,7 +4,7 @@
 
 namespace CCE
 {
-	struct CCE_API BaseManager
+	struct BaseManager
 	{
 	public:
 		BaseManager() noexcept {}

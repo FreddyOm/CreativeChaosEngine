@@ -1,5 +1,4 @@
 #include "ClientWindow.h"
-#include "../CCEditor/CCEditor.h"
 #include "../Manager/Application.h"
 #include <functional>
 
@@ -200,10 +199,6 @@ LRESULT CALLBACK ClientWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 		DestroyWindow(hwnd);
 		PostQuitMessage(0);
 		break;
-	}
-	case WM_PAINT:
-	{
-
 	}
 	}
 

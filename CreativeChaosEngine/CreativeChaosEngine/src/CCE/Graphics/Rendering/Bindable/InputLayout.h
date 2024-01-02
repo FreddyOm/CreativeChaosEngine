@@ -4,7 +4,7 @@
 
 namespace CCE::Graphics
 {
-	struct CCE_API InputLayout : public IBindable
+	struct InputLayout : public IBindable
 	{
 	public:
 		InputLayout(ID3DBlob* pVertexShaderBytecode);

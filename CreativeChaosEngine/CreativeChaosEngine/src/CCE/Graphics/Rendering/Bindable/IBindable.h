@@ -6,7 +6,7 @@ namespace CCE::Graphics
 {
 	class RenderPipeline;
 
-	struct CCE_API IBindable
+	struct IBindable
 	{
 	public:
 		IBindable() = default;

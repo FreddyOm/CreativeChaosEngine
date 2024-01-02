@@ -28,6 +28,7 @@ public:
 			new FrameTimeDebugInfoLabel("Game Update Time", inter_bold, ImVec2(130, labelHeight)),
 			new ImGuiDebugInfoLabel("ImGui Update Time", inter_bold, pImgui_process_time_ms, ImVec2(115, labelHeight)),
 			new ConsoleDebugInfoLabel("Console Info", inter_bold, GetGUIDrawablePtrs(), ImVec2(130, labelHeight)),
+			
 			// The filter is always the last one
 			new DebugLabelFilter("Filter", inter_bold, &labels, ImVec2(20, labelHeight)),
 		};

@@ -7,8 +7,8 @@ struct ConsoleDebugInfoLabel : public DebugInfoLabel
 public:
 	ConsoleDebugInfoLabel(CCE::String labelName,
 		ImFont* pFont, std::vector<IGUIDrawable*>* pDrawables, ImVec2 size = ImVec2(0, 0),
-		ImVec4 bg_color = ImVec4(0.5, 0.5, 0.1, 0.2),
-		ImVec4 text_color = ImVec4(1, 1, 0.2, 0.8f))
+		ImVec4 bg_color = ImVec4(0.5f, 0.5f, 0.1f, 0.2f),
+		ImVec4 text_color = ImVec4(1, 1, 0.2f, 0.8f))
 		: DebugInfoLabel(labelName, pFont, false, size, bg_color, text_color), 
 		pDrawables(pDrawables)
 	    {}
@@ -39,19 +39,19 @@ public:
 	{
 		if (Logger::logCount[2] > 0)
 		{
-			bg_color = ImVec4(0.5, 0.1, 0.1, 0.2);
-			text_color = ImVec4(1, 0.2, 0.2, 0.8f);
+			bg_color = ImVec4(0.5f, 0.1f, 0.1f, 0.2f);
+			text_color = ImVec4(1, 0.2f, 0.2f, 0.8f);
 			return;
 		}
 
 		if (Logger::logCount[1] > 0)
 		{
-			bg_color = ImVec4(0.5, 0.5, 0.1, 0.2);
-			text_color = ImVec4(1, 1, 0.2, 0.8f);
+			bg_color = ImVec4(0.5f, 0.5f, 0.1f, 0.2f);
+			text_color = ImVec4(1, 1, 0.2f, 0.8f);
 			return;
 		}
-
-		bg_color = ImVec4(0.5, 0.5, 0.5, 0.2);
+		
+		bg_color = ImVec4(0.5f, 0.5f, 0.5f, 0.2f);
 		text_color = ImVec4(1, 1, 1, 0.8f);
 	}
 

@@ -4,7 +4,7 @@
 
 namespace CCE
 {
-	struct CCE_API SpinLock
+	struct SpinLock
 	{
 		SpinLock() = default;
 		~SpinLock() = default;

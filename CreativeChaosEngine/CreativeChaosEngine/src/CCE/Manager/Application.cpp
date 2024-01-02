@@ -1,7 +1,7 @@
 #include "Application.h"
+#include "../Analysis/Time.h"
 #include "../Analysis/Debug.h"
 #include "../Analysis/Logger.h"
-#include "../Analysis/Time.h"
 #include "../Graphics/RenderPipeline.h"
 #include "../ClientWindow/ClientWindow.h"
 #include <functional>
@@ -66,7 +66,7 @@ namespace CCE
 	void Application::PreEditorUpdate(int& rValue, bool handleInput)
 	{
 		frameBegin = Time::Now();
-#if 1
+#if MULTITHREADED
 
 		if (handleInput)
 			mInputManager.FinalizeWinInput();
@@ -138,7 +138,6 @@ namespace CCE
 #else
 		window->GetRenderPipeline()->EndFrame();
 		mInputManager.ResetInputValues();
-		mMemoryManager.UpdateMemoryUsage();
 
 #endif
 
@@ -165,7 +164,7 @@ namespace CCE
 #error CCE is currently only supported for Windows
 #endif
 		mMemoryManager.StartUp();
-#if 1
+#if MULTITHREADED
 		mJobManager.StartUp();
 #endif
 		mPhysicsManager.StartUp();
@@ -182,7 +181,7 @@ namespace CCE
 	{
 		mInputManager.ShutDown();
 		mPhysicsManager.ShutDown();
-#if 1
+#if MULTITHREADED
 		mJobManager.ShutDown();
 #endif
 		mMemoryManager.ShutDown();

@@ -10,7 +10,7 @@ public:
 	{
 		if (source.empty()) return std::string();
 
-		char buf[2048];
+		char buf[2048] = {};
 		ZeroMemory(&buf[0], sizeof(buf));
 		char defaultChar = '?';
 		BOOL defaultCharUsed = false;
@@ -37,7 +37,7 @@ public:
 	{
 		if (source.empty()) return std::wstring();
 
-		wchar_t buf[2048];
+		wchar_t buf[2048] = {};
 		ZeroMemory(&buf[0], sizeof(buf));
 
 #ifdef CCE_PLATFORM_WINDOWS
@@ -45,7 +45,7 @@ public:
 		// Could be non-thread-safe function!
 		int convertResult = 
 			MultiByteToWideChar(CP_UTF8, 0, &source[0],
-			(int)source.size(), &buf[0], sizeof(buf));
+			static_cast<int>(source.size()), &buf[0], sizeof(buf));
 		
 		DASSERT(convertResult > 0, "Failed to convert string to wide string!");
 

@@ -8,7 +8,7 @@
 namespace CCE::Graphics
 {
 	struct RenderPipeline;
-	struct CCE_API IndexBuffer : public IBindable
+	struct IndexBuffer : public IBindable
 	{
 	public:
 		IndexBuffer(std::shared_ptr<std::vector<unsigned int>> indices);

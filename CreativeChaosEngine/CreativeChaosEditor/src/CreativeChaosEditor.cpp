@@ -24,13 +24,12 @@
 #include "CCE/Analysis/UnitTesting/UnitTestString.h"
 
 #endif
-#include <CCE/CCEditor/CCEditor.h>
 
 // -------------------------
 
 #define EDITOR_VERSION "Creative Chaos Engine - v0.1"
 
-#define MULTITHREADED 1
+#define MULTITHREADED 0
 
 using namespace CCE;
 
@@ -133,7 +132,7 @@ int main(int argc, char* argv[])
             //ImGui::ShowDemoWindow();
             IGUIDrawable::PostGUIUpdate();
            
-            auto end = CCE::Time::Now(); imgui_process_time_ms = CCE::Time::GetDurationInMilliSec(start, end);
+            auto end = CCE::Time::Now(); imgui_process_time_ms = static_cast<float>( CCE::Time::GetDurationInMilliSec( start, end ) );
             // ------------------------------------------------------------------------------
 
             mRuntimeManager.PostEditorUpdate();

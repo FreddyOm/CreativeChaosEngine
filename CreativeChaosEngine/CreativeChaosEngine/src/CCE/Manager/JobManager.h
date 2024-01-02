@@ -1,19 +1,21 @@
 #pragma once
 #include "BaseManager.h"
-#include "../String/String.h"
-#include "../Analysis/Logger.h"
-#include "../Memory/PoolAllocator.h"
-#include "../Utilities/Events/Delegate.h"
-#include "../Utilities/Concurrency/SpinLock.h"
 #include "../Utilities/Concurrency/ScopedSpinLock.h"
+#include "../Utilities/Concurrency/SpinLock.h"
+#include "../Memory/PoolAllocator.h"
+#include "../Analysis/Logger.h"
+#include "../String/String.h"
 #include <unordered_map>
 #include <emmintrin.h>
+#include <winternl.h>
+#include <functional>
 #include <winnt.h>
-#include <atomic>
 #include <thread>
-#include <array>
+#include <vector>
+#include <atomic>
 #include <queue>
 #include <mutex>
+#include <array>
 
 namespace CCE
 {
@@ -25,8 +27,6 @@ namespace CCE
 #define BIND_BASIC(func, obj, ...) std::bind(&func, obj, ##__VA_ARGS__)
 #define BIND(func, ...) [&](...){return func(##__VA_ARGS__);};
 #define JOB_ENTRY_POINT void
-
-using namespace Events;
 
 	struct CCE_API JobManager : public BaseManager
 	{
@@ -246,6 +246,6 @@ using namespace Events;
 		static std::atomic<unsigned int> fiberPoolPointer;
 
 		// TODO: Implement custom vector / list class
-		std::vector<std::thread*> worker_threads;
+		std::vector<std::thread*> worker_threads = {};
 	};
 }

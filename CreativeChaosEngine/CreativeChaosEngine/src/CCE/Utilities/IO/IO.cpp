@@ -36,11 +36,13 @@ namespace CCE
 	/// <returns>The created file.</returns>
 	File File::Create(const String& filePath)
 	{
+		FILE* fHandle = nullptr;
 		if (!File::Exists(filePath))
 		{
-			fopen(filePath.Value(), "w+");
+			fHandle = fopen(filePath.Value(), "w+");
 		}
 
+		if (nullptr != fHandle) { fclose(fHandle); }
 		return File(filePath);
 	}
 
@@ -70,7 +72,7 @@ namespace CCE
 		}
 		else 
 		{
-			DERROR("Failed to read file \"%s\"", filePath);
+			DERROR("Failed to read file.");
 		}
 		
 		openFileStream.close();
@@ -230,7 +232,7 @@ namespace CCE
 		if (SUCCEEDED(CreateDirectoryA(dirPath.Value(), NULL)))
 		{ return Directory(dirPath); }
 		else
-		{ DERROR("Failed creating a directory at path \"%s\".", dirPath.Value()); }
+		{ DERROR("Failed creating a directory!."); }
 #elif
 #error CCE is currently only supported for Windows
 #endif

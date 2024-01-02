@@ -6,13 +6,13 @@ namespace CCE::Graphics
 {
 	struct RenderPipeline;
 	template<typename C>
-	struct CCE_API ConstantBuffer : public IBindable
+	struct ConstantBuffer : public IBindable
 	{
 	public:
 		ConstantBuffer( const C& _constant, UINT _slot = 0u)
 			: slot(_slot)
 		{
-			D3D11_BUFFER_DESC constBufDescription;
+			D3D11_BUFFER_DESC constBufDescription = {};
 			constBufDescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 			constBufDescription.Usage = D3D11_USAGE_DYNAMIC;
 			constBufDescription.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -70,7 +70,7 @@ namespace CCE::Graphics
 	};
 	
 	template<typename C>
-	struct CCE_API VSConstantBuffer : public ConstantBuffer<C>
+	struct VSConstantBuffer : public ConstantBuffer<C>
 	{
 		using ConstantBuffer<C>::slot;
 		using ConstantBuffer<C>::pConstantBuffer;
