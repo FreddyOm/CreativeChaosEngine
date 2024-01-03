@@ -15,6 +15,10 @@
 
 #define MAX_ENTITIES 4096
 
+// Entity Component System inspired by the great Austin Morlan (https://austinmorlan.com/)
+// But changed up to work in a OOP way (although this might change in the future due 
+// to performance reasons!)
+
 namespace CCE::Resources
 {
 	class CCE_API EntityComponentSystem : public BaseManager
