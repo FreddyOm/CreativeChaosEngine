@@ -10,7 +10,7 @@ namespace CCE::Resources
 		Transform();
 		~Transform() = default;
 
-		Transform(const Transform& other) noexcept
+		Transform(const Transform& other)
 		{
 			position = other.position;
 			rotation = other.rotation;
@@ -24,7 +24,7 @@ namespace CCE::Resources
 			scale = other.scale;
 		}
 
-		Transform& operator=(const Transform& other) noexcept
+		Transform& operator=(const Transform& other)
 		{
 			position = other.position;
 			rotation = other.rotation;

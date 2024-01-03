@@ -50,6 +50,7 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\VertexBuffer.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\VertexShader.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Topology.cpp" />
+    <ClCompile Include="src\CCE\Resources\Components\Rigidbody.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\Resources\Component.h" />
@@ -204,6 +205,7 @@
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Topology.h" />
     <ClInclude Include="src\CCE\String\StringConverter.h" />
     <ClInclude Include="src\CCE\Resources\Components\Transform.h" />
+    <ClInclude Include="src\CCE\Resources\Components\Rigidbody.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="resources\sdk\assimp-vc143-mt.lib" />

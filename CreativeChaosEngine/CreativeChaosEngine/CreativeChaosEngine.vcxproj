@@ -16,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CCE\Resources\ComponentBuffer.cpp" />
+    <ClCompile Include="src\CCE\Resources\Components\Rigidbody.cpp" />
     <ClCompile Include="src\CCE\Resources\Components\Transform.cpp" />
     <ClCompile Include="src\CCE\Resources\Entity.cpp" />
     <ClCompile Include="src\CCE\Resources\EntityComponentSystem.cpp" />
@@ -65,6 +66,7 @@
     <ClInclude Include="src\CCE\Resources\Component.h" />
     <ClInclude Include="src\CCE\Resources\ComponentBuffer.h" />
     <ClInclude Include="src\CCE\Resources\Components\ComponentHeaders.h" />
+    <ClInclude Include="src\CCE\Resources\Components\Rigidbody.h" />
     <ClInclude Include="src\CCE\Resources\Components\Transform.h" />
     <ClInclude Include="src\CCE\Resources\Entity.h" />
     <ClInclude Include="src\CCE\Resources\EntityComponentSystem.h" />

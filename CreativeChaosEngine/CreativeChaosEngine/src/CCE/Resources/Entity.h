@@ -7,25 +7,25 @@ namespace CCE::Resources
 	struct Entity
 	{
 	public:
-		Entity() noexcept
+		Entity()
 		: Id(0)
 		{};
 
-		Entity(UINT64 id) noexcept
+		Entity(UINT64 id)
 			: Id(id)
 		{}
 
-		Entity(String name) noexcept
+		Entity(String name)
 			: Id(name.sId)
 		{}
 
-		Entity(String&& name) noexcept
+		Entity(String&& name)
 			: Id(name.sId)
 		{}
 
 		~Entity() {};
 
-		Entity(const Entity& other) noexcept
+		Entity(const Entity& other)
 		{
 			Id = other.Id;
 		}
@@ -36,7 +36,7 @@ namespace CCE::Resources
 			other.Id = 0;
 		}
 
-		Entity& operator=(const Entity& other) noexcept
+		Entity& operator=(const Entity& other)
 		{
 			Id = other.Id;
 			return *this;
@@ -49,7 +49,7 @@ namespace CCE::Resources
 			return *this;
 		}
 
-		bool operator==(const Entity& other) const noexcept
+		bool operator==(const Entity& other) const
 		{
 			return Id == other.Id;
 		}

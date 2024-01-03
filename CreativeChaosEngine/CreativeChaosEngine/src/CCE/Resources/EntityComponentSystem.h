@@ -124,10 +124,10 @@ namespace CCE::Resources
 			}
 
 			RegisterComponent<Transform>();
+			RegisterComponent<Rigidbody>();
 			//RegisterComponent<Mesh>();
 			//RegisterComponent<MeshRenderer>();
 			//RegisterComponent<Collider>();
-			//RegisterComponent<RigidBody>();
 			//RegisterComponent<Script>();
 		}
 
