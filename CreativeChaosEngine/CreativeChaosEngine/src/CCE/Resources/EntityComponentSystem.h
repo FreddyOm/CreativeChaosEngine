@@ -109,8 +109,10 @@ namespace CCE::Resources
 
 			// Add component to LUT
 			ComponentTypeLUT.insert({ typeIndex, (DWORD)1 << mRegisteredComponentIndex });
-
-			auto ptr = new ComponentBuffer<T>();
+			// Add components with key 'typename' to componentbuffer table
+			std::shared_ptr<IComponentBuffer> ptr = 
+				std::dynamic_pointer_cast<IComponentBuffer>(std::make_shared<ComponentBuffer<T>>());
+			mComponents.insert({ typeIndex, ptr });
 
 			++mRegisteredComponentIndex;
 		}
@@ -140,12 +142,6 @@ namespace CCE::Resources
 		/// </summary>
 		void Deinitialize()
 		{
-			// free the memory
-			for (auto& kvp : mComponents)
-			{
-				delete kvp.second;
-			}
-
 			initialized = false;
 			Instance = nullptr;
 		}
@@ -161,9 +157,8 @@ namespace CCE::Resources
 			std::type_index typeIndex(typeid(T));
 			DASSERT(ComponentTypeLUT.find(typeIndex) != ComponentTypeLUT.end(),
 				"Component not registered.");
-			ComponentBuffer<T>* iCompBuf = dynamic_cast<IComponentBuffer*>(mComponents[typeIndex]);
-			//std::shared_ptr<ComponentBuffer<T>> ret = std::static_pointer_cast<ComponentBuffer<T>>(iCompBuf);
-			return iCompBuf;
+
+			return std::static_pointer_cast<ComponentBuffer<T>>(mComponents[typeIndex]);
 		}
 
 	public:
@@ -173,9 +168,10 @@ namespace CCE::Resources
 		std::unordered_map<std::type_index, DWORD> ComponentTypeLUT = {};
 
 	private:
+
 		std::queue<Entity> mEntityPool = {};
 		std::array<DWORD, MAX_ENTITIES> mEntityComposition = {};
-		std::unordered_map<std::type_index, IComponentBuffer*> mComponents = {};
+		std::unordered_map<std::type_index, std::shared_ptr<IComponentBuffer>> mComponents = {};
 		unsigned int mEntityCount = 0;
 		unsigned int mRegisteredComponentIndex = 0; // Used to dynamically create bitmasks for checking the types
 	};

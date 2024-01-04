@@ -18,11 +18,11 @@ namespace CCE::Resources
 		UINT64 component = ECS::Instance->mEntityComposition.at(Id);
 
 		// Add component bit to this entity
-		component |= ECS::Instance->ComponentTypeLUT[typeid(Transform)];
+		component |= ECS::Instance->ComponentTypeLUT[typeid(T)];
 
 		// TODO: Add component to component list
 		//ECS::Instance->GetComponentBuffer().InsertData(*this);
-		ECS::Instance->GetComponentBuffer()->InsertData(*this, Transform());
+		ECS::Instance->GetComponentBuffer()->InsertData(*this, T);
 	}
 
 	/// <summary>
@@ -38,7 +38,7 @@ namespace CCE::Resources
 		UINT64 component = ECS::Instance->mEntityComposition.at(Id);
 
 		// Clear the components bit from this entity
-		component &= ~((UINT64)1 << ECS::Instance->ComponentTypeLUT[typeid(Transform)]);
+		component &= ~((UINT64)1 << ECS::Instance->ComponentTypeLUT[typeid(T)]);
 
 		// TODO: Remove component from component list
 		ECS::Instance->GetComponentBuffer()->RemoveData(*this);
@@ -53,7 +53,7 @@ namespace CCE::Resources
 	T& Entity::GetComponent()
 	{
 		using ECS = EntityComponentSystem;
-		ECS::Instance->GetComponentBuffer()->GetData(*this);
+		return ECS::Instance->GetComponentBuffer()->GetData(*this);
 	}
 
 	/// <summary>
@@ -66,8 +66,15 @@ namespace CCE::Resources
 	bool Entity::TryGetComponent(T& outRef)
 	{
 		using ECS = EntityComponentSystem;
-		//T& component = ECS::Instance->GetComponentBuffer<T>().GetData(*this);
-		//outRef = component;
+		
+		T& component = ECS::Instance->GetComponentBuffer<T>().GetData(*this);
+
+		if (nullptr != component)
+		{
+			outRef = component;
+			return true;
+		}
+
 		return false;
 	}
 	
