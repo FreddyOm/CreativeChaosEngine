@@ -56,7 +56,7 @@ namespace CCE::Resources
 	    /// Takes one of the entities and returns it as used.
 	    /// </summary>
 	    /// <returns>The fetched entity.</returns>
-		Entity CreateEntity()
+		Entity& CreateEntity()
 		{
 			DASSERT(mEntityCount < MAX_ENTITIES, "Can't create any more instances!");
 
@@ -150,9 +150,9 @@ namespace CCE::Resources
 		/// Get the component buffer from the ECS.
 		/// </summary>
 		/// <typeparam name="T">The type of the component.</typeparam>
-		/// <returns>A pointer reference to the component buffer.</returns>
+		/// <returns>A smart pointer reference to the component buffer.</returns>
 		template<typename T>
-		IComponentBuffer* GetComponentBuffer()
+		std::shared_ptr<ComponentBuffer<T>> GetComponentBuffer()
 		{
 			std::type_index typeIndex(typeid(T));
 			DASSERT(ComponentTypeLUT.find(typeIndex) != ComponentTypeLUT.end(),

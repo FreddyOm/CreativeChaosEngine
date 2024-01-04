@@ -1,13 +1,14 @@
 #pragma once
 #include "../Core.h"
+#include "JobManager.h"
 #include "BaseManager.h"
 #include "InputManager.h"
 #include "MemoryManager.h"
 #include "PhysicsManager.h"
 #include "ProfilingManager.h"
-#include "JobManager.h"
-#include "../Resources/EntityComponentSystem.h"
+#include "../Scene/Scene.h"
 #include "../Utilities/IO/IO.h"
+#include "../Resources/EntityComponentSystem.h"
 #include "../Utilities/Serialization/ISerializable.h"
 
 namespace CCE
@@ -51,9 +52,9 @@ namespace CCE
 		InputManager mInputManager = InputManager();
 		MemoryManager mMemoryManager = MemoryManager();
 		Resources::EntityComponentSystem mECS = Resources::EntityComponentSystem();
-		
-
-		ClientWindow *window = nullptr;
+	
+		ClientWindow* window = nullptr;
+		Scene::Scene* scene = nullptr;
 
 		std::chrono::steady_clock::time_point frameBegin;
 		std::chrono::steady_clock::time_point frameEnd;

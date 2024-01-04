@@ -21,7 +21,6 @@ namespace CCE::Resources
 		component |= ECS::Instance->ComponentTypeLUT[typeid(T)];
 
 		// TODO: Add component to component list
-		//ECS::Instance->GetComponentBuffer().InsertData(*this);
 		ECS::Instance->GetComponentBuffer()->InsertData(*this, T);
 	}
 

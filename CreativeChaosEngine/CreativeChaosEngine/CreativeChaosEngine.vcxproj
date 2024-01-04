@@ -30,6 +30,7 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IndexBuffer.cpp" />
     <ClCompile Include="src\CCE\Resources\MeshLoader.cpp" />
     <ClCompile Include="src\CCE\Resources\TextureLoader.cpp" />
+    <ClCompile Include="src\CCE\Scene\Scene.cpp" />
     <ClCompile Include="src\CCE\String\StringMemory.cpp" />
     <ClCompile Include="src\CCE\Utilities\IO\IO.cpp" />
     <ClCompile Include="src\CCE\Manager\MemoryManager.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="src\CCE\Input\Mouse.h" />
     <ClInclude Include="src\CCE\Resources\IComponentBuffer.h" />
     <ClInclude Include="src\CCE\Resources\Resource.h" />
+    <ClInclude Include="src\CCE\Scene\Scene.h" />
     <ClInclude Include="src\CCE\String\StringMemory.h" />
     <ClInclude Include="src\CCE\Utilities\FreeImg\FreeImage.h" />
     <ClInclude Include="src\CCE\Utilities\IO\IO.h" />

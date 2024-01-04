@@ -48,6 +48,7 @@ namespace CCE
 			window->GetRenderPipeline()->GetRenderPipelineConfig()->SerializeToString(true).c_str(), true),
 			"Failed writing engine config to file.");
 		
+		delete scene;
 		delete window;
 		// Show leak info
 		PRINT_LEAK_INFO;
@@ -115,6 +116,9 @@ namespace CCE
 
 		window->GetRenderPipeline()->BeginFrame(window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
 
+		//Update scene
+		scene->UpdateScene();
+
 		//mInputManager.HandleDirectInput();
 		mInputManager.HandleXInput();
 #endif
@@ -173,6 +177,8 @@ namespace CCE
 
 		window = new ClientWindow();
 		window->OpenWindow(GetModuleHandle(NULL));
+
+		scene = new Scene::Scene();
 	}
 
 	/// <summary>
