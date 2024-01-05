@@ -3,6 +3,7 @@
 #include <vector>
 #include "../Resources/Entity.h"
 #include "../Manager/ProfilingManager.h"
+#include "../Resources/EntityComponentSystem.h"
 
 namespace CCE::Scene
 {
@@ -20,7 +21,7 @@ namespace CCE::Scene
 		}
 
 		void UpdateScene();
-		CCE::Resources::Entity& AddEntity();
+		Resources::Entity& AddEntity();
 		void RemoveEntity(CCE::Resources::Entity& entity);
 		
 		/// <summary>
@@ -29,11 +30,11 @@ namespace CCE::Scene
 		/// <typeparam name="">The component type to look for in the entities.</typeparam>
 		/// <returns>A reference to the found entity.</returns>
 		template<typename T>
-		CCE::Resources::Entity& FindEntityOfType()
+		Resources::Entity& FindEntityOfType() const
 		{
-			for (auto& entity : entities)
+			for (auto& entity : entities) // TODO: This is slow because ít is a set!!
 			{
-				if(CCE::Resources::EntityComponentSystem::Instance->HasEntityComponent<T>(entity))
+				if(Resources::EntityComponentSystem::Instance->HasEntityComponent<T>(entity))
 				{
 					return entity;
 				}
@@ -46,13 +47,13 @@ namespace CCE::Scene
 		/// <typeparam name="">The component type to look for in the entities.</typeparam>
 		/// <returns>A list of one or more found entities.</returns>
 		template<typename T>
-		std::vector<CCE::Resources::Entity> FindEntitiesOfType()
+		std::vector<Resources::Entity> FindEntitiesOfType() const
 		{
-			std::vector<CCE::Resources::Entity> _entities;
+			std::vector<Resources::Entity> _entities;
 
-			for (auto& entity : entities)
+			for (auto& entity : entities) //TODO: This is slow because ít is a set!!
 			{
-				if (CCE::Resources::EntityComponentSystem::Instance->HasEntityComponent<T>(entity))
+				if (Resources::EntityComponentSystem::Instance->HasEntityComponent<T>(entity))
 				{
 					_entities.push_back(entity);
 				}
@@ -64,9 +65,9 @@ namespace CCE::Scene
 	private:
 		/// <summary>
 		/// The entities associated with this scene. Don't iterate over them,
-		/// use the ecs buffers for most of the work. Only use this when querying
+		/// use the ECS buffers for most of the work. Only use this when querying
 		/// entities in this scene specifically!
 		/// </summary>
-		std::set<CCE::Resources::Entity> entities;
+		std::set<Resources::Entity> entities;
 	};
 }

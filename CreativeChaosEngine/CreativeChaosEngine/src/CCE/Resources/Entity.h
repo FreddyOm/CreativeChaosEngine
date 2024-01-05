@@ -53,12 +53,12 @@ namespace CCE::Resources
 		{
 			return Id == other.Id;
 		}
-
+		
 		bool operator<(const Entity& other) const noexcept
 		{
 			return Id < other.Id;
 		}
-
+		
 		bool operator>(const Entity& other) const noexcept
 		{
 			return Id > other.Id;

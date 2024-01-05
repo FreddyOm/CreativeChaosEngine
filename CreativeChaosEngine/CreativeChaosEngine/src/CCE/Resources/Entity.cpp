@@ -15,13 +15,16 @@ namespace CCE::Resources
 		using ECS = EntityComponentSystem;
 
 		// TODO: Somehow enable multi adding of one component type (e.g. multiple box colliders)
-		UINT64 component = ECS::Instance->mEntityComposition.at(Id);
+		DWORD component = ECS::Instance->mEntityComposition.at(Id);
 
 		// Add component bit to this entity
 		component |= ECS::Instance->ComponentTypeLUT[typeid(T)];
 
-		// TODO: Add component to component list
+		// Add component to component list
 		ECS::Instance->GetComponentBuffer()->InsertData(*this, T);
+
+		// Notify the systems of the change
+		ECS::Instance->EntitySignatureChanged(*this, component);
 	}
 
 	/// <summary>
@@ -39,8 +42,11 @@ namespace CCE::Resources
 		// Clear the components bit from this entity
 		component &= ~((UINT64)1 << ECS::Instance->ComponentTypeLUT[typeid(T)]);
 
-		// TODO: Remove component from component list
+		// Remove component from component list
 		ECS::Instance->GetComponentBuffer()->RemoveData(*this);
+
+		// Notify the systems of the change
+		ECS::Instance->EntitySignatureChanged(*this, component);
 	}
 
 	/// <summary>
@@ -75,35 +81,5 @@ namespace CCE::Resources
 		}
 
 		return false;
-	}
-	
-	/// <summary>
-	/// Operator overloading for use in unordered map.
-	/// </summary>
-	/// <param name="lhs">The first entity.</param>
-	/// <param name="rhs">The other entity to compare to.</param>
-	/// <returns>True if this entity ID is equal to the others ID.</returns>
-	bool operator==(const Entity& lhs, const Entity& rhs) noexcept {
-		return rhs.Id == lhs.Id;
-	}
-
-	/// <summary>
-	/// Operator overloading for use in unordered map.
-	/// </summary>
-	/// <param name="lhs">The first entity.</param>
-	/// <param name="rhs">The other entity to compare to.</param>
-	/// <returns>True if this entity ID is greater than the others ID.</returns>
-	bool operator<(const Entity& lhs, const Entity& rhs) noexcept {
-		return rhs.Id < lhs.Id;
-	}
-
-	/// <summary>
-	/// Operator overloading for use in unordered map.
-	/// </summary>
-	/// <param name="lhs">The first entity.</param>
-	/// <param name="rhs">Theother entity to compare to.</param>
-	/// <returns></returns>
-	bool operator>(const Entity& lhs, const Entity& rhs) noexcept {
-		return rhs.Id > lhs.Id;
 	}
 }

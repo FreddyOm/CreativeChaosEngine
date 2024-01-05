@@ -5,6 +5,7 @@
 #include "../Analysis/Debug.h"
 #include "ComponentBuffer.h"
 #include <unordered_map>
+#include "ECSSystem.h"
 #include <typeindex>
 #include "../Core.h"
 #include "Entity.h"
@@ -93,6 +94,14 @@ namespace CCE::Resources
 				auto const& component = pair.second;
 				component->EntityDestroyed(entity);
 			}
+			
+			// Remove destroyed entity from system
+			for (auto const& pair : mSystems)
+			{
+				auto const& system = pair.second;
+
+				system->mEntities.erase(entity);
+			}
 		}
 
 		/// <summary>
@@ -111,7 +120,7 @@ namespace CCE::Resources
 			ComponentTypeLUT.insert({ typeIndex, (DWORD)1 << mRegisteredComponentIndex });
 			// Add components with key 'typename' to componentbuffer table
 			std::shared_ptr<IComponentBuffer> ptr = 
-				std::dynamic_pointer_cast<IComponentBuffer>(std::make_shared<ComponentBuffer<T>>());
+				std::dynamic_pointer_cast<IComponentBuffer>(std::make_shared<ComponentBuffer<T>>()); // TODO: Check if static_pointer_cast works
 			mComponents.insert({ typeIndex, ptr });
 
 			++mRegisteredComponentIndex;
@@ -166,7 +175,54 @@ namespace CCE::Resources
 
 			return std::static_pointer_cast<ComponentBuffer<T>>(mComponents[typeIndex]);
 		}
+		
+		/// <summary>
+		/// Registers a system in a hash map in order to be able to delete destroyed enemies.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		template<typename T>
+		std::shared_ptr<T> RegisterSystem()
+		{
+			const char* typeName = typeid(T).name();
 
+			DASSERT(mSystems.find(typeName) == mSystems.end(),
+				"Registering system more than once.");
+
+			// Create a pointer to the system and return it so it can be used externally
+			auto system = std::make_shared<T>();
+			mSystems.insert({ typeName, system });
+			return system;
+		}
+		
+		/// <summary>
+		/// Whenever an entity changes its components, make sure to remove 
+		/// it from the system / add it to the system in question.
+		/// </summary>
+		/// <param name="entity">The entity to change the signature of.</param>
+		/// <param name="signature">The new signature.</param>
+		void EntitySignatureChanged(Entity entity, DWORD signature)
+		{
+			// Change signature in every system
+			for (auto const& pair : mSystems)
+			{
+				auto const& type = pair.first;
+				auto const& system = pair.second;
+				auto const& systemSignature = mSignatures[type];
+
+				// Add signature to system where its not already contained in
+				if ((signature & systemSignature) == systemSignature)
+				{
+					system->mEntities.insert(entity);
+				}
+				// Remove signature from system where it is still apparent
+				else
+				{
+					system->mEntities.erase(entity);
+				}
+			}
+		}
+		
 	public:
 		static EntityComponentSystem* Instance;
 
@@ -174,11 +230,17 @@ namespace CCE::Resources
 		std::unordered_map<std::type_index, DWORD> ComponentTypeLUT = {};
 
 	private:
+		unsigned int mEntityCount = 0;
+		unsigned int mRegisteredComponentIndex = 0; // Used to dynamically create bitmasks for checking the types
 
 		std::queue<Entity> mEntityPool = {};
 		std::array<DWORD, MAX_ENTITIES> mEntityComposition = {};
 		std::unordered_map<std::type_index, std::shared_ptr<IComponentBuffer>> mComponents = {};
-		unsigned int mEntityCount = 0;
-		unsigned int mRegisteredComponentIndex = 0; // Used to dynamically create bitmasks for checking the types
+
+		// Map from system type string pointer to a signature
+		std::unordered_map<const char*, DWORD> mSignatures{};
+	
+		// Map from system type string pointer to a system pointer
+		std::unordered_map<const char*, std::shared_ptr<ECSSystem>> mSystems{};
 	};
 }

@@ -69,6 +69,7 @@
     <ClInclude Include="src\CCE\Resources\Components\ComponentHeaders.h" />
     <ClInclude Include="src\CCE\Resources\Components\Rigidbody.h" />
     <ClInclude Include="src\CCE\Resources\Components\Transform.h" />
+    <ClInclude Include="src\CCE\Resources\ECSSystem.h" />
     <ClInclude Include="src\CCE\Resources\Entity.h" />
     <ClInclude Include="src\CCE\Resources\EntityComponentSystem.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\ConstantBuffer.h" />
