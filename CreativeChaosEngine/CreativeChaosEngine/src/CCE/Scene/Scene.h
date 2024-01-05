@@ -8,9 +8,6 @@ namespace CCE::Scene
 {
 	class Scene
 	{
-	private:
-		std::set<CCE::Resources::Entity> entities;
-
 	public:
 		Scene()
 		{
@@ -34,7 +31,13 @@ namespace CCE::Scene
 		template<typename T>
 		CCE::Resources::Entity& FindEntityOfType()
 		{
-
+			for (auto& entity : entities)
+			{
+				if(CCE::Resources::EntityComponentSystem::Instance->HasEntityComponent<T>(entity))
+				{
+					return entity;
+				}
+			}
 		}
 
 		/// <summary>
@@ -45,7 +48,25 @@ namespace CCE::Scene
 		template<typename T>
 		std::vector<CCE::Resources::Entity> FindEntitiesOfType()
 		{
+			std::vector<CCE::Resources::Entity> _entities;
 
+			for (auto& entity : entities)
+			{
+				if (CCE::Resources::EntityComponentSystem::Instance->HasEntityComponent<T>(entity))
+				{
+					_entities.push_back(entity);
+				}
+			}
+
+			return _entities;
 		}
+
+	private:
+		/// <summary>
+		/// The entities associated with this scene. Don't iterate over them,
+		/// use the ecs buffers for most of the work. Only use this when querying
+		/// entities in this scene specifically!
+		/// </summary>
+		std::set<CCE::Resources::Entity> entities;
 	};
 }

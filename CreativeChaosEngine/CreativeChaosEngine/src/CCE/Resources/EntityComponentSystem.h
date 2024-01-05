@@ -117,6 +117,12 @@ namespace CCE::Resources
 			++mRegisteredComponentIndex;
 		}
 
+		template<typename T>
+		bool HasEntityComponent(Entity& entity) const
+		{
+			return mEntityComposition[entity.Id] & typeid(T);
+		}
+
 	private:
 		/// <summary>
 		/// Custom initialization process for ECS.
