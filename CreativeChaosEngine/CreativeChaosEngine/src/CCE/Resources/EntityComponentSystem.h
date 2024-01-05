@@ -126,10 +126,16 @@ namespace CCE::Resources
 			++mRegisteredComponentIndex;
 		}
 
+		/// <summary>
+		/// Checks if a given entity is composed of a specific component.
+		/// </summary>
+		/// <typeparam name="T">The component to check for.</typeparam>
+		/// <param name="entity">The entity to check on.</param>
+		/// <returns>True if the entity is composed of the given type, false if not.</returns>
 		template<typename T>
 		bool HasEntityComponent(Entity& entity) const
 		{
-			return mEntityComposition[entity.Id] & typeid(T);
+			return mEntityComposition[entity.Id] & ComponentTypeLUT(typeid(T));
 		}
 
 	private:
@@ -141,7 +147,7 @@ namespace CCE::Resources
 			// Create the maximum number of entities
 			for (int i = 0; i < MAX_ENTITIES; ++i)
 			{
-				mEntityPool.push(Entity(i));
+				mEntityPool.push(Entity(i)); // The id of an entity initially equals to its index
 			}
 
 			RegisterComponent<Transform>();
