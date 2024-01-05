@@ -72,7 +72,7 @@ namespace CCE
 	public:
 		bool multithreaded = false;
 
-		std::string SerializeToString(bool prettyPrint = false) override
+		std::string SerializeToString(bool prettyPrint = false) const override
 		{
 			JSON data;
 
@@ -81,7 +81,7 @@ namespace CCE
 			return out.c_str();
 		}
 
-		std::vector<uint8_t> SerializeToBinary() override
+		std::vector<uint8_t> SerializeToBinary() const override
 		{
 			JSON data;
 

@@ -273,7 +273,7 @@ namespace CCE_Testing
 
 		bool check4 = ta.GetFreeMem() == ta.GetTotalMem();
 		bool check5 = ta.GetNumFreePoolElements() == 80;
-		//TODO: Define if this should be set to numAllocs (memory leak detection)
+		// @TODO: Define if this should be set to numAllocs (memory leak detection)
 		bool check6 = ta.GetNumFrees() == 0;
 
 		return check1 && check2 && check3 && check4 && check5 && check6;

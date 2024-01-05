@@ -63,7 +63,7 @@ namespace CCE::Graphics
 	{
 		IDrawable::Draw();
 
-		// TODO: Only do this when necessary
+		// @TODO: Only do this when necessary
 		XMStoreFloat4x4(&modelMatrix, transform.GetTransformationMatrix());
 
 		pMeshConstBuf->UpdateConstantBuffer(modelMatrix);

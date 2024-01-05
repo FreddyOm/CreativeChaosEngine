@@ -131,7 +131,7 @@ namespace CCE
 	/// <returns>The new top buffer pointer.</returns>
 	char* StringMemory::DefragmentBuffer(const char* pos, size_t shift)
 	{
-		// TODO: Maybe do this every other frame generically instead of 
+		// @TODO: Maybe do this every other frame generically instead of 
 		// when a string is deconstructed
 	
 		++shift; // This is necessary in order to include the null terminator in the removal.
@@ -147,7 +147,7 @@ namespace CCE
 		unsigned int strBufIndex = (uintptr_t)pos - (uintptr_t)&stringBuf[0];
 		memmove((void*)pos, pos + shift, STRING_BUF_LEN - (strBufIndex + shift));
 
-		// TODO: Evaluate if this is necessary
+		// @TODO: Evaluate if this is necessary
 		ZeroMemory(&stringBuf[STRING_BUF_LEN - shift], shift);
 		return (bufPtr - shift);
 	}

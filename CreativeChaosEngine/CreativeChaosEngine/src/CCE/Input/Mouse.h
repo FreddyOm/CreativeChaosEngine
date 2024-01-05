@@ -4,8 +4,8 @@
 
 namespace CCE::Input
 {
-	// TODO: Keep left handed mouse layout in mind
-	// TODO: Store input values per bit in DWORD (or similar)
+	// @TODO: Keep left handed mouse layout in mind
+	// @TODO: Store input values per bit in DWORD (or similar)
 	struct CCE_API Mouse : public InputDevice  // 64 bytes
 	{
 		int xPos = 0;						// 4 bytes
@@ -27,4 +27,3 @@ namespace CCE::Input
 		byte padding[12] = { 0 };			// 12 bytes
 	};
 }
-

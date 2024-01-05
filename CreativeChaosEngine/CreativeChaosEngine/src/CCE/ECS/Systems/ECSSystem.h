@@ -1,8 +1,8 @@
 #pragma once
-#include "Entity.h"
+#include "../Entity.h"
 #include <set>
 
-namespace CCE::ECS
+namespace CCE::ECS::Systems
 {
 	class ECSSystem
 	{
@@ -12,6 +12,6 @@ namespace CCE::ECS
 		/// Since an entity is an 8 byte integer, it doesn't matter if we safe
 		/// pointers or directly the entity itself.
 		/// </summary>
-		std::set<Entity> mEntities;
+		std::set<CCE::ECS::Entity> mEntities;
 	};
 }

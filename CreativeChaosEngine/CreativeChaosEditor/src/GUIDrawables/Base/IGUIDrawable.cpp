@@ -63,7 +63,7 @@ void IGUIDrawable::UnInitializeGUI() const
 	}
 }
 
-// TODO: Fix runtime error in release config where font atlas is nullptr
+// @TODO: Fix runtime error in release config where font atlas is nullptr
 
 /// <summary>
 /// Initializes the gui context.
@@ -110,7 +110,7 @@ void IGUIDrawable::InitializeGUI()
 	DASSERT(ImGui_ImplDX11_Init(Graphics::RenderPipeline::Instance->GetDevicePtr(),
 		Graphics::RenderPipeline::Instance->GetDeviceContextPtr()), "Failed initializing GUI with D3D11.");
 
-	// TODO: Change GetActiveWindow for multi window support.
+	// @TODO: Change GetActiveWindow for multi window support.
 	DASSERT(ImGui_ImplWin32_Init(GetActiveWindow()),
 		"Failed initializing GUI with Editor Window.");
 }

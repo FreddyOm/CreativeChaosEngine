@@ -66,7 +66,7 @@ namespace CCE
 
 		//mouse.wheelDelta = 0;
 
-		// TODO: Do this only when values change
+		// @TODO: Do this only when values change
 		for (auto* handler : handlerList)
 		{
 			handler->InputCallback(&mouse, &keyboard, &controller[0]);
@@ -89,7 +89,7 @@ namespace CCE
 	/// <param name="lParam">The low word parameter.</param>
 	void InputManager::HandleWinInput(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
-		// TODO: Implement a callback or sth that allows to call here.
+		// @TODO: Implement a callback or sth that allows to call here.
 		// Also check with calling over dll and stuff
 		if (inputCallback != NULL && inputCallback(hWnd, msg, wParam, lParam))
 			return;
@@ -346,7 +346,7 @@ namespace CCE
 	/// </summary>
 	void InputManager::HandleDirectInput()
 	{
-		// TODO: Handle Direct Input ?
+		// @TODO: Handle Direct Input ?
 
 	}
 
@@ -357,7 +357,7 @@ namespace CCE
 	{
 		unsigned int dualSenseCount = 0;
 
-		//TODO: Maybe do this during update to get (re)connected devices
+		// @TODO: Maybe do this during update to get (re)connected devices
 		switch (DS5W::enumDevices(infos, (unsigned int)XUSER_MAX_COUNT,
 			&dualSenseCount))
 		{
@@ -383,7 +383,7 @@ namespace CCE
 		{
 			if (DS5W_SUCCESS(DS5W::getDeviceInputState(&con[controller_index], &inState[controller_index])))
 			{
-				// TODO: Handle Dual Sense Input
+				// @TODO: Handle Dual Sense Input
 			}
 		}
 		

@@ -2,7 +2,6 @@
 
 namespace CCE::ECS
 {
-
 	/// <summary>
 	/// Instance reference for this subsystem.
 	/// </summary>

@@ -71,10 +71,10 @@ namespace CCE::ECS
 		void RemoveComponent();
 
 		template<typename T>
-		T& GetComponent();
+		T& GetComponent() const;
 
 		template<typename T>
-		bool TryGetComponent(T& outRef);
+		bool TryGetComponent(T& outRef) const;
 
 	public:
 		UINT64 Id = 0;

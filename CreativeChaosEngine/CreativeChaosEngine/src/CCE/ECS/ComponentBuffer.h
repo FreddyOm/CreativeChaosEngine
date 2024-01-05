@@ -6,7 +6,7 @@
 namespace CCE::ECS
 {
 	template<typename T>
-	class ComponentBuffer : IComponentBuffer
+	class ComponentBuffer : public IComponentBuffer
 	{
 	public:
 		ComponentBuffer() : IComponentBuffer() {}

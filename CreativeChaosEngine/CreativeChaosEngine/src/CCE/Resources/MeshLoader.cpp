@@ -15,7 +15,7 @@ namespace CCE::Resources
 		delete importer;
 	}
 
-	// TODO: Load into central resource buffer and only load once of course!
+	// @TODO: Load into central resource buffer and only load once of course!
 	std::unique_ptr<MeshData> MeshLoader::LoadResource(String filePath)
 	{
 		// Load the data!

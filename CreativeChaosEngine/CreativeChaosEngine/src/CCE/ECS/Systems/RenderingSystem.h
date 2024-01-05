@@ -3,11 +3,10 @@
 
 namespace CCE::ECS::Systems
 {
-	struct PhysicsSystem : public ECSSystem
+	struct RenderingSystem : public ECSSystem
 	{
-	public:
-		PhysicsSystem();
-		~PhysicsSystem();
+		RenderingSystem();
+		~RenderingSystem();
 
 		void UpdateSystem();
 	};

@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 {
     // ------ HELLO ------
     LOGC("Starting %s", COLOR_BLUE, EDITOR_VERSION);
-    //TODO: Load config file
+    // @TODO: Load config file
 
     Application mRuntimeManager = CCE::Application();
 
@@ -62,8 +62,8 @@ int main(int argc, char* argv[])
     {
         if (unittesting)
         {
-            // TODO: Wrap in class / struct
-            // TODO: Add - test details to show which tests failed / suceeded
+            // @TODO: Wrap in class / struct
+            // @TODO: Add - test details to show which tests failed / suceeded
             // and normally show [30 / 30 tests suceeded!]
             // ------ UNIT TESTING 
             CCE::Logger::SetLogLvlMaks(0b00001001);
@@ -116,7 +116,7 @@ int main(int argc, char* argv[])
 
         // ----------------------------------------
 
-        // TODO: Multithread the editor loop as well
+        // @TODO: Multithread the editor loop as well
         while (rValue != (int)WM_QUIT)
         {
             mRuntimeManager.PreEditorUpdate(rValue, true);

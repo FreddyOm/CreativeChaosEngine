@@ -64,7 +64,7 @@ namespace CCE::Graphics
 		pCameraConstBuf = std::make_shared<VSConstantBuffer<CameraConstantBufs>>(cameraConstBufs, 1);
 	}
 
-	// TODO: Only do this when necessary!
+	// @TODO: Only do this when necessary!
 	void Camera::SetFovAndLookDir() noexcept
 	{
 		using namespace DirectX;
@@ -104,7 +104,7 @@ namespace CCE::Graphics
 		pCameraConstBuf->DynamicBind();
 	}
 
-	// TODO: Only do this on the viewport cam (create another class for the viewport cam or derive from it -> indirection[!])
+	// @TODO: Only do this on the viewport cam (create another class for the viewport cam or derive from it -> indirection[!])
 	// Also, keep in mind virtual functions are runtime performance critical!
 	void Camera::InputCallback(const Input::Mouse* mouse, const Input::Keyboard* keyboard, const Input::Controller* controller)
 	{

@@ -215,7 +215,7 @@ namespace CCE
 #error CCE is currently only supported for Windows
 #endif
 
-		// TODO: Fix this, this is awful...
+		// @TODO: Fix this, this is awful...
 		persDir = Directory(strdup(persDataPath.c_str()));
 		if (!Directory::Exists(persDataPath.c_str()))
 		{

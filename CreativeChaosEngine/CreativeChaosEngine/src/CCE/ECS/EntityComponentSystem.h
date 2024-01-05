@@ -5,7 +5,7 @@
 #include "../Analysis/Debug.h"
 #include "ComponentBuffer.h"
 #include <unordered_map>
-#include "ECSSystem.h"
+#include "Systems/ECSSystem.h"
 #include <typeindex>
 #include "../Core.h"
 #include "Entity.h"
@@ -32,113 +32,30 @@ namespace CCE::ECS
 		/// <summary>
 		/// General initialization for any manager.
 		/// </summary>
-		void StartUp() override
+		void StartUp()
 		{
 			DASSERT(Instance == nullptr, "ECS was instantiated more than once!");
 			Instance = this;
 
 			Initialize();
 
-			initialized = true;
+			initialized.store(true, std::memory_order_relaxed);
 
 			LOGC("ECS initialized!", COLOR_BLUE);
 		}
 
-		void ShutDown() override
+		/// <summary>
+		/// General deinitialization for any manager
+		/// </summary>
+		void ShutDown()
 		{
 			Deinitialize();
 
 			LOGC("Shutting down ECS...", COLOR_BLUE);
-			initialized = false;
+			initialized.store(false, std::memory_order_relaxed);
 			Instance = nullptr;
 		}
 
-		/// <summary>
-	    /// Takes one of the entities and returns it as used.
-	    /// </summary>
-	    /// <returns>The fetched entity.</returns>
-		Entity& CreateEntity()
-		{
-			DASSERT(mEntityCount < MAX_ENTITIES, "Can't create any more instances!");
-
-			Entity entity = mEntityPool.front();
-			mEntityPool.pop();
-			++mEntityCount;
-
-			return entity;
-		}
-
-		/// <summary>
-	    /// Returns the entity back to the entity pool.
-	    /// </summary>
-	    /// <param name="entity">The entity to destroy.</param>
-		void DestroyEntity(Entity entity)
-		{
-			DASSERT(entity.Id < MAX_ENTITIES, "Invalid entity.");
-
-			// Reset entity composition
-			mEntityComposition[entity.Id] = 0;
-			mEntityPool.push(entity);
-			--mEntityCount;
-		}
-
-		/// <summary>
-	    /// Calls the EntityDestroyed() function on every type buffer.
-	    /// </summary>
-	    /// <param name="entity">The entity to destroy.</param>
-		void EntityDestroyed(Entity entity)
-		{
-			// Remove destroyed entity from respective list
-			for (auto const& pair : mComponents)
-			{
-				auto const& component = pair.second;
-				component->EntityDestroyed(entity);
-			}
-			
-			// Remove destroyed entity from system
-			for (auto const& pair : mSystems)
-			{
-				auto const& system = pair.second;
-
-				system->mEntities.erase(entity);
-			}
-		}
-
-		/// <summary>
-	    /// Registers a type as a component. This process adds the type to the LUT and inserts the data in the component.
-	    /// </summary>
-	    /// <typeparam name="T">The component type to register.</typeparam>
-		template<typename T>
-		void RegisterComponent()
-		{
-			std::type_index typeIndex(typeid(T));
-
-			DASSERT(ComponentTypeLUT.find(typeIndex) == ComponentTypeLUT.end(),
-				"Component type already registered.");
-
-			// Add component to LUT
-			ComponentTypeLUT.insert({ typeIndex, (DWORD)1 << mRegisteredComponentIndex });
-			// Add components with key 'typename' to componentbuffer table
-			std::shared_ptr<IComponentBuffer> ptr = 
-				std::dynamic_pointer_cast<IComponentBuffer>(std::make_shared<ComponentBuffer<T>>()); // TODO: Check if static_pointer_cast works
-			mComponents.insert({ typeIndex, ptr });
-
-			++mRegisteredComponentIndex;
-		}
-
-		/// <summary>
-		/// Checks if a given entity is composed of a specific component.
-		/// </summary>
-		/// <typeparam name="T">The component to check for.</typeparam>
-		/// <param name="entity">The entity to check on.</param>
-		/// <returns>True if the entity is composed of the given type, false if not.</returns>
-		template<typename T>
-		bool HasEntityComponent(Entity& entity) const
-		{
-			return mEntityComposition[entity.Id] & ComponentTypeLUT(typeid(T));
-		}
-
-	private:
 		/// <summary>
 		/// Custom initialization process for ECS.
 		/// </summary>
@@ -152,10 +69,10 @@ namespace CCE::ECS
 
 			RegisterComponent<Components::Transform>();
 			RegisterComponent<Components::Rigidbody>();
+			RegisterComponent<Components::Behaviour>();
 			//RegisterComponent<Mesh>();
 			//RegisterComponent<MeshRenderer>();
 			//RegisterComponent<Collider>();
-			//RegisterComponent<Script>();
 		}
 
 		/// <summary>
@@ -168,39 +85,36 @@ namespace CCE::ECS
 		}
 
 		/// <summary>
-		/// Get the component buffer from the ECS.
+		/// Takes one of the entities and returns it as used.
 		/// </summary>
-		/// <typeparam name="T">The type of the component.</typeparam>
-		/// <returns>A smart pointer reference to the component buffer.</returns>
-		template<typename T>
-		std::shared_ptr<ComponentBuffer<T>> GetComponentBuffer()
+		/// <returns>The fetched entity.</returns>
+		Entity& CreateEntity()
 		{
-			std::type_index typeIndex(typeid(T));
-			DASSERT(ComponentTypeLUT.find(typeIndex) != ComponentTypeLUT.end(),
-				"Component not registered.");
+			DASSERT(mEntityCount < MAX_ENTITIES, "Can't create any more instances!");
 
-			return std::static_pointer_cast<ComponentBuffer<T>>(mComponents[typeIndex]);
+			Entity entity = mEntityPool.front();
+			mEntityPool.pop();
+			++mEntityCount;
+
+			return entity;
 		}
-		
+
 		/// <summary>
-		/// Registers a system in a hash map in order to be able to delete destroyed enemies.
+		/// Returns the entity back to the entity pool.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
-		template<typename T>
-		std::shared_ptr<T> RegisterSystem()
+		/// <param name="entity">The entity to destroy.</param>
+		void DestroyEntity(Entity entity)
 		{
-			const char* typeName = typeid(T).name();
+			DASSERT(entity.Id < MAX_ENTITIES, "Invalid entity.");
 
-			DASSERT(mSystems.find(typeName) == mSystems.end(),
-				"Registering system more than once.");
+			// Reset entity composition
+			mEntityComposition[entity.Id] = 0;
+			mEntityPool.push(entity);
+			--mEntityCount;
 
-			// Create a pointer to the system and return it so it can be used externally
-			auto system = std::make_shared<T>();
-			mSystems.insert({ typeName, system });
-			return system;
+			EntityDestroyed(entity);
 		}
-		
+
 		/// <summary>
 		/// Whenever an entity changes its components, make sure to remove 
 		/// it from the system / add it to the system in question.
@@ -228,6 +142,98 @@ namespace CCE::ECS
 				}
 			}
 		}
+
+		/// <summary>
+		/// Calls the EntityDestroyed() function on every type buffer.
+		/// </summary>
+		/// <param name="entity">The entity to destroy.</param>
+		void EntityDestroyed(Entity entity) const
+		{
+			// Remove destroyed entity from respective list
+			for (auto const& pair : mComponents)
+			{
+				auto const& component = pair.second;
+				component->EntityDestroyed(entity);
+			}
+
+			// Remove destroyed entity from system
+			for (auto const& pair : mSystems)
+			{
+				auto const& system = pair.second;
+
+				system->mEntities.erase(entity);
+			}
+		}
+
+		/// <summary>
+	    /// Registers a type as a component. This process adds the type to the LUT and inserts the data in the component.
+	    /// </summary>
+	    /// <typeparam name="T">The component type to register.</typeparam>
+		template<typename T>
+		void RegisterComponent()
+		{
+			std::type_index typeIndex(typeid(T));
+
+			DASSERT(ComponentTypeLUT.find(typeIndex) == ComponentTypeLUT.end(),
+				"Component type already registered.");
+
+			// Add component to LUT
+			ComponentTypeLUT.insert({ typeIndex, (DWORD)1 << mRegisteredComponentIndex });
+			// Add components with key 'typename' to componentbuffer table
+			std::shared_ptr<IComponentBuffer> ptr = 
+				std::static_pointer_cast<IComponentBuffer>(std::make_shared<ComponentBuffer<T>>()); // @TODO: Check if static_pointer_cast works
+			mComponents.insert({ typeIndex, ptr });
+
+			++mRegisteredComponentIndex;
+		}
+
+		/// <summary>
+		/// Registers a system in a hash map in order to be able to delete destroyed enemies.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		template<typename T>
+		std::shared_ptr<T> RegisterSystem()
+		{
+			const char* typeName = typeid(T).name();
+
+			DASSERT(mSystems.find(typeName) == mSystems.end(),
+				"Registering system more than once.");
+
+			// Create a pointer to the system and return it so it can be used externally
+			auto system = std::make_shared<T>();
+			mSystems.insert({ typeName, system });
+			return system;
+		}
+
+		/// <summary>
+		/// Checks if a given entity is composed of a specific component.
+		/// </summary>
+		/// <typeparam name="T">The component to check for.</typeparam>
+		/// <param name="entity">The entity to check on.</param>
+		/// <returns>True if the entity is composed of the given type, false if not.</returns>
+		template<typename T>
+		bool HasEntityComponent(Entity& entity) const
+		{
+			return mEntityComposition[entity.Id] & ComponentTypeLUT(typeid(T));
+		}
+
+	private:
+
+		/// <summary>
+		/// Get the component buffer from the ECS.
+		/// </summary>
+		/// <typeparam name="T">The type of the component.</typeparam>
+		/// <returns>A smart pointer reference to the component buffer.</returns>
+		template<typename T>
+		std::shared_ptr<ComponentBuffer<T>> GetComponentBuffer() const
+		{
+			std::type_index typeIndex(typeid(T));
+			DASSERT(ComponentTypeLUT.find(typeIndex) != ComponentTypeLUT.end(),
+				"Component not registered.");
+
+			return std::static_pointer_cast<ComponentBuffer<T>>(mComponents[typeIndex]);
+		}
 		
 	public:
 		static EntityComponentSystem* Instance;
@@ -247,6 +253,6 @@ namespace CCE::ECS
 		std::unordered_map<const char*, DWORD> mSignatures{};
 	
 		// Map from system type string pointer to a system pointer
-		std::unordered_map<const char*, std::shared_ptr<ECSSystem>> mSystems{};
+		std::unordered_map<const char*, std::shared_ptr<Systems::ECSSystem>> mSystems{};
 	};
 }

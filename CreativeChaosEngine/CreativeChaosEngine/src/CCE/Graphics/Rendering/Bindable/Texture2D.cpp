@@ -26,7 +26,7 @@ namespace CCE::Graphics
 		D3D11LoadImageResource(loader, GetDevice(), {filePath}, subresourceDataArr, pTexture2D, pResourceView, count);
 	}
 
-	// TODO: How can I load every image in parallel?
+	// @TODO: How can I load every image in parallel?
 	Texture2D::Texture2D(std::vector<String>& filePaths, unsigned short startSlot)
 		: count(filePaths.size()), startSlot(startSlot)
 	{
@@ -63,7 +63,7 @@ namespace CCE::Graphics
 		
 	}
 
-	// TODO: Kick more leaf jobs (parallelize creation of texDesc and srvd)
+	// @TODO: Kick more leaf jobs (parallelize creation of texDesc and srvd)
 	JOB_ENTRY_POINT D3D11LoadImageResource(CCE::Resources::TextureLoader& loader, ID3D11Device* device, std::vector<String> const& filePaths,
 		std::vector<D3D11_SUBRESOURCE_DATA>& subresourceDataArr, Microsoft::WRL::ComPtr<ID3D11Texture2D>& pTexture2D, 
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& pResourceView, unsigned short count)
@@ -84,7 +84,7 @@ namespace CCE::Graphics
 		srvd.Texture2D.MipLevels = texDesc.MipLevels;
 		srvd.Texture2D.MostDetailedMip = 0;
 
-		// TODO: Parallelize this for loop by scheduling every image as a job
+		// @TODO: Parallelize this for loop by scheduling every image as a job
 		for (unsigned short i = 0; i < count; ++i)
 		{
 			std::unique_ptr<CCE::Resources::TexData> tex = loader.LoadResource(filePaths.at(i));

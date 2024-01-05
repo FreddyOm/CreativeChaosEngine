@@ -14,7 +14,7 @@ namespace CCE::ECS
 	{
 		using ECS = EntityComponentSystem;
 
-		// TODO: Somehow enable multi adding of one component type (e.g. multiple box colliders)
+		// @TODO: Somehow enable multi adding of one component type (e.g. multiple box colliders)
 		DWORD component = ECS::Instance->mEntityComposition.at(Id);
 
 		// Add component bit to this entity
@@ -36,7 +36,7 @@ namespace CCE::ECS
 	{
 		using ECS = EntityComponentSystem;
 
-		// TODO: Check if there are multiple components of the same type
+		// @TODO: Check if there are multiple components of the same type
 		UINT64 component = ECS::Instance->mEntityComposition.at(Id);
 
 		// Clear the components bit from this entity
@@ -55,7 +55,7 @@ namespace CCE::ECS
 	/// <typeparam name="T">The type of the component.</typeparam>
 	/// <returns>A reference to the component data.</returns>
 	template<typename T>
-	T& Entity::GetComponent()
+	T& Entity::GetComponent() const
 	{
 		using ECS = EntityComponentSystem;
 		return ECS::Instance->GetComponentBuffer()->GetData(*this);
@@ -68,7 +68,7 @@ namespace CCE::ECS
 	/// <param name="outRef">A reference to an empty component object.</param>
 	/// <returns>True, if entity has this component, false if it doesnt.</returns>
 	template<typename T>
-	bool Entity::TryGetComponent(T& outRef)
+	bool Entity::TryGetComponent(T& outRef) const
 	{
 		using ECS = EntityComponentSystem;
 		

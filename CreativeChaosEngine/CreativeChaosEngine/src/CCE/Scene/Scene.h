@@ -31,7 +31,7 @@ namespace CCE::Scene
 		template<typename T>
 		ECS::Entity& FindEntityOfType() const
 		{
-			for (auto& entity : entities) // TODO: This is slow because ít is a set!!
+			for (auto& entity : entities) // @TODO: This is slow because ít is a set!!
 			{
 				if(ECS::EntityComponentSystem::Instance->HasEntityComponent<T>(entity))
 				{
@@ -50,7 +50,7 @@ namespace CCE::Scene
 		{
 			std::vector<ECS::Entity> _entities;
 
-			for (auto& entity : entities) //TODO: This is slow because ít is a set!!
+			for (auto& entity : entities) // @TODO: This is slow because ít is a set!!
 			{
 				if (ECS::EntityComponentSystem::Instance->HasEntityComponent<T>(entity))
 				{

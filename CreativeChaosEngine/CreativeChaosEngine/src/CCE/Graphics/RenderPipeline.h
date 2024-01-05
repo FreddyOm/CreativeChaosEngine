@@ -47,7 +47,7 @@ namespace CCE::Graphics
 			/// </summary>
 			/// <param name="prettyPrint"></param>
 			/// <returns></returns>
-			std::string SerializeToString(bool prettyPrint = false) override
+			std::string SerializeToString(bool prettyPrint = false) const override
 			{
 				JSON data;
 
@@ -64,7 +64,7 @@ namespace CCE::Graphics
 				return out;
 			}
 
-			std::vector<uint8_t>SerializeToBinary() override
+			std::vector<uint8_t>SerializeToBinary() const override
 			{
 				JSON data;
 
@@ -180,23 +180,22 @@ namespace CCE::Graphics
 			return p_DSV.Get();
 		}
 
-		int GetRenderTargetWidth()
+		int GetRenderTargetWidth() const
 		{
 			return clientRect->right - clientRect->left;
 		}
 
-		int GetRenderTargetHeight()
+		int GetRenderTargetHeight() const
 		{
 			return clientRect->bottom - clientRect->top;
 		}
 
 	public:
-		JOB_ENTRY_POINT ClearDepthStencilView() const;
 		JobManager::Counter cnt = JobManager::Counter(2);
 
 	private:
-		ComPtr<ID3D11Debug> pDebug;
-		RenderPipelineConfig pipelineConfig;
+		ComPtr<ID3D11Debug> pDebug{};
+		RenderPipelineConfig pipelineConfig{};
 
 	private:
 		ComPtr<ID3D11Device> p_device = nullptr;
@@ -207,7 +206,7 @@ namespace CCE::Graphics
 		ComPtr<ID3D11Resource> p_backBuffer = nullptr;
 		RECT* clientRect = { 0 };
 
-		// TODO: Load from config
+		// @TODO: Load from config
 		DXGI_SWAP_CHAIN_DESC* swapChainDesc = { 0 };
 		D3D11_DEPTH_STENCIL_DESC* dsDesc = { 0 };
 		D3D11_DEPTH_STENCIL_VIEW_DESC* descDSV = { };

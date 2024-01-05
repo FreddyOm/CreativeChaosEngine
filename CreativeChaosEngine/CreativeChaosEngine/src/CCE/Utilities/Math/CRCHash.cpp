@@ -6,7 +6,7 @@ namespace CCE::Math
 	{
 		UINT64 crc = 0;
 		 
-		// TODO: Check if this can be processed in parallel using SSE!
+		// @TODO: Check if this can be processed in parallel using SSE!
 		for (UINT64 i = 0; i < size; i++)
 			crc = CRC64_TABLE_REF[(crc ^ data[i]) & 0xFF] ^ (crc >> 8);
 
@@ -25,7 +25,7 @@ namespace CCE::Math
 	{
 		UINT64 rBits = 0;
 
-		// TODO: Check if anything right here can be processed in parallel using SSE
+		// @TODO: Check if anything right here can be processed in parallel using SSE
 		for (short i = 0; i < size; i++)
 		{
 			if ((bits & (1 << i)) != 0)

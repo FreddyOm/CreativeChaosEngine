@@ -52,6 +52,9 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Topology.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Rigidbody.cpp" />
     <ClCompile Include="src\CCE\Scene\Scene.cpp" />
+    <ClCompile Include="src\CCE\ECS\Systems\PhysicsSystem.cpp" />
+    <ClCompile Include="src\CCE\ECS\Systems\RenderingSystem.cpp" />
+    <ClCompile Include="src\CCE\ECS\Components\Behaviour.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\ECS\ComponentBuffer.h" />
@@ -207,8 +210,10 @@
     <ClInclude Include="src\CCE\ECS\Components\Transform.h" />
     <ClInclude Include="src\CCE\ECS\Components\Rigidbody.h" />
     <ClInclude Include="src\CCE\Scene\Scene.h" />
-    <ClInclude Include="src\CCE\ECS\ECSSystem.h" />
+    <ClInclude Include="src\CCE\ECS\Systems\ECSSystem.h" />
     <ClInclude Include="src\CCE\ECS\Systems\PhysicsSystem.h" />
+    <ClInclude Include="src\CCE\ECS\Systems\RenderingSystem.h" />
+    <ClInclude Include="src\CCE\ECS\Components\Behaviour.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="resources\sdk\assimp-vc143-mt.lib" />
