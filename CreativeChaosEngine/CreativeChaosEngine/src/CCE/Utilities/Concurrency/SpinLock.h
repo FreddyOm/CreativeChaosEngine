@@ -10,7 +10,7 @@ namespace CCE
 		SpinLock() = default;
 		~SpinLock() = default;
 
-		void Acquire()
+		__forceinline void Acquire() const
 		{
 			for (;;) {
 				// Returns false when it switched from true to false!
@@ -20,12 +20,12 @@ namespace CCE
 			}
 		}
 
-		void Release()
+		__forceinline void Release() const
 		{
 			lock.store(false, std::memory_order_release);
 		}
 
 	private:
-		std::atomic<bool> lock = {false};
+		mutable std::atomic<bool> lock = {false};
 	};
 }
