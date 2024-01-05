@@ -1,6 +1,6 @@
 #include "Transform.h"
 
-namespace CCE::Resources 
+namespace CCE::ECS::Components
 {
 	Transform::Transform()
 	{

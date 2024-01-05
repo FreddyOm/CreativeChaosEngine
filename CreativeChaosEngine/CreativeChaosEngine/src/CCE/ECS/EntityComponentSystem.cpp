@@ -1,6 +1,6 @@
 #include "EntityComponentSystem.h"
 
-namespace CCE::Resources
+namespace CCE::ECS
 {
 
 	/// <summary>

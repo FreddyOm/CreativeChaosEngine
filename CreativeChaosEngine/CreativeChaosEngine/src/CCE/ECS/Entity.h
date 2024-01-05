@@ -2,7 +2,7 @@
 #include "../Core.h"
 #include "../String/String.h"
 
-namespace CCE::Resources
+namespace CCE::ECS
 {
 	struct Entity
 	{

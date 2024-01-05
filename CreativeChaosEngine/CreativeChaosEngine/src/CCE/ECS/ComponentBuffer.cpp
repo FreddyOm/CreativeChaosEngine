@@ -2,7 +2,7 @@
 #include "../Analysis/Debug.h"
 #include "EntityComponentSystem.h"
 
-namespace CCE::Resources
+namespace CCE::ECS
 {
 	/// <summary>
 	/// Add new Component data to the component array.

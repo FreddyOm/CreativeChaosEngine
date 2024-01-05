@@ -2,7 +2,7 @@
 #include "Entity.h"
 #include <set>
 
-namespace CCE::Resources
+namespace CCE::ECS
 {
 	class ECSSystem
 	{

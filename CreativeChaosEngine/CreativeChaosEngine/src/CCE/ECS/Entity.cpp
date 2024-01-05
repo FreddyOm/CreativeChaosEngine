@@ -3,7 +3,7 @@
 #include "ComponentBuffer.h"
 #include <functional>
 
-namespace CCE::Resources
+namespace CCE::ECS
 {
 	/// <summary>
 	/// Adds a component to the entity.

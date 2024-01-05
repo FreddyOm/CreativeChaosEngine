@@ -3,7 +3,7 @@
 #include "../../../Manager/ProfilingManager.h"
 #include "../../../Utilities/IO/IO.h"
 #include "../../../Core.h"
-#include "../../../Resources/Components/Transform.h"    // <-- TODO: Remove later and use ECS for any given entity
+#include "../../../ECS/Components/Transform.h"    // <-- TODO: Remove later and use ECS for any given entity
 #include "../Vertex.h"
 #include "IDrawable.h"
 #include <memory>
@@ -33,7 +33,7 @@ namespace CCE::Graphics
 		void CreateConstBufs();
 
 	public:
-		CCE::Resources::Transform transform = {};
+		ECS::Components::Transform transform = {};
 
 		String pixelShader = {};
 		String vertexShader = {};

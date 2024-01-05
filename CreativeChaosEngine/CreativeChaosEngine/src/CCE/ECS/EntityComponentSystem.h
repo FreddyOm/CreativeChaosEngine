@@ -20,7 +20,7 @@
 // But changed up to work in a OOP way (although this might change in the future due 
 // to performance reasons!)
 
-namespace CCE::Resources
+namespace CCE::ECS
 {
 	class CCE_API EntityComponentSystem : public BaseManager
 	{
@@ -150,8 +150,8 @@ namespace CCE::Resources
 				mEntityPool.push(Entity(i)); // The id of an entity initially equals to its index
 			}
 
-			RegisterComponent<Transform>();
-			RegisterComponent<Rigidbody>();
+			RegisterComponent<Components::Transform>();
+			RegisterComponent<Components::Rigidbody>();
 			//RegisterComponent<Mesh>();
 			//RegisterComponent<MeshRenderer>();
 			//RegisterComponent<Collider>();

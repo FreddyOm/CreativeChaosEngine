@@ -8,7 +8,7 @@
 #include "ProfilingManager.h"
 #include "../Scene/Scene.h"
 #include "../Utilities/IO/IO.h"
-#include "../Resources/EntityComponentSystem.h"
+#include "../ECS/EntityComponentSystem.h"
 #include "../Utilities/Serialization/ISerializable.h"
 
 namespace CCE
@@ -51,7 +51,7 @@ namespace CCE
 		PhysicsManager mPhysicsManager = PhysicsManager();
 		InputManager mInputManager = InputManager();
 		MemoryManager mMemoryManager = MemoryManager();
-		Resources::EntityComponentSystem mECS = Resources::EntityComponentSystem();
+		ECS::EntityComponentSystem mECS = ECS::EntityComponentSystem();
 	
 		ClientWindow* window = nullptr;
 		Scene::Scene* scene = nullptr;

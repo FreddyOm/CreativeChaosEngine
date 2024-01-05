@@ -2,7 +2,7 @@
 #include "../../Graphics/Rendering/D3D11.h"
 #include "../../Core.h"
 
-namespace CCE::Resources 
+namespace CCE::ECS::Components
 {
 	class Transform
 	{

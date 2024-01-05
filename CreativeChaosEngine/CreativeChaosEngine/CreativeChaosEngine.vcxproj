@@ -15,11 +15,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\CCE\Resources\ComponentBuffer.cpp" />
-    <ClCompile Include="src\CCE\Resources\Components\Rigidbody.cpp" />
-    <ClCompile Include="src\CCE\Resources\Components\Transform.cpp" />
-    <ClCompile Include="src\CCE\Resources\Entity.cpp" />
-    <ClCompile Include="src\CCE\Resources\EntityComponentSystem.cpp" />
+    <ClCompile Include="src\CCE\ECS\ComponentBuffer.cpp" />
+    <ClCompile Include="src\CCE\ECS\Components\Rigidbody.cpp" />
+    <ClCompile Include="src\CCE\ECS\Components\Transform.cpp" />
+    <ClCompile Include="src\CCE\ECS\Entity.cpp" />
+    <ClCompile Include="src\CCE\ECS\EntityComponentSystem.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IBindable.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Sampler.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Texture2D.cpp" />
@@ -64,14 +64,13 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Topology.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\CCE\Resources\Component.h" />
-    <ClInclude Include="src\CCE\Resources\ComponentBuffer.h" />
-    <ClInclude Include="src\CCE\Resources\Components\ComponentHeaders.h" />
-    <ClInclude Include="src\CCE\Resources\Components\Rigidbody.h" />
-    <ClInclude Include="src\CCE\Resources\Components\Transform.h" />
-    <ClInclude Include="src\CCE\Resources\ECSSystem.h" />
-    <ClInclude Include="src\CCE\Resources\Entity.h" />
-    <ClInclude Include="src\CCE\Resources\EntityComponentSystem.h" />
+    <ClInclude Include="src\CCE\ECS\ComponentBuffer.h" />
+    <ClInclude Include="src\CCE\ECS\Components\ComponentHeaders.h" />
+    <ClInclude Include="src\CCE\ECS\Components\Rigidbody.h" />
+    <ClInclude Include="src\CCE\ECS\Components\Transform.h" />
+    <ClInclude Include="src\CCE\ECS\ECSSystem.h" />
+    <ClInclude Include="src\CCE\ECS\Entity.h" />
+    <ClInclude Include="src\CCE\ECS\EntityComponentSystem.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\ConstantBuffer.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Sampler.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Texture2D.h" />
@@ -170,12 +169,13 @@
     <ClInclude Include="src\CCE\include\json\json_fwd.hpp" />
     <ClInclude Include="src\CCE\Resources\MeshLoader.h" />
     <ClInclude Include="src\CCE\Resources\ResourceLoader.h" />
+    <ClInclude Include="src\CCE\ECS\Systems\PhysicsSystem.h" />
     <ClInclude Include="src\CCE\Resources\TextureLoader.h" />
     <ClInclude Include="src\CCE\Input\Controller.h" />
     <ClInclude Include="src\CCE\Input\IInputHandler.h" />
     <ClInclude Include="src\CCE\Input\Keyboard.h" />
     <ClInclude Include="src\CCE\Input\Mouse.h" />
-    <ClInclude Include="src\CCE\Resources\IComponentBuffer.h" />
+    <ClInclude Include="src\CCE\ECS\IComponentBuffer.h" />
     <ClInclude Include="src\CCE\Resources\Resource.h" />
     <ClInclude Include="src\CCE\Scene\Scene.h" />
     <ClInclude Include="src\CCE\String\StringMemory.h" />

@@ -2,7 +2,7 @@
 #include "../Core.h"
 #include "Entity.h"
 
-namespace CCE::Resources
+namespace CCE::ECS
 {
 	struct IComponentBuffer
 	{

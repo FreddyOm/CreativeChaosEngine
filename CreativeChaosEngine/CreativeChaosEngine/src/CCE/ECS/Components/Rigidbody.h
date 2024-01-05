@@ -1,7 +1,7 @@
 #pragma once
 #include "../../Graphics/Rendering/D3D11.h"
 
-namespace CCE::Resources
+namespace CCE::ECS::Components
 {
 	constexpr float GravitationalAccelarion()
 	{

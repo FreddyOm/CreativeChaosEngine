@@ -1,5 +1,4 @@
 #include "Scene.h"
-#include "../Resources/EntityComponentSystem.h"
 
 namespace CCE::Scene
 {
@@ -8,7 +7,12 @@ namespace CCE::Scene
 	/// </summary>
 	void Scene::UpdateScene()
 	{
-		// TODO: Update all components (NOT THE ENTITIES!!)
+		// @TODO: Update all components (NOT THE ENTITIES!!)
+		// Later this means updating the script behaviour for example
+
+		// @TODO: Maybe I don't even need a Scene as its own class
+		// The different systems aren't centralized and therefore also 
+		// cannot really be aggregated together!
 	}
 
 	/// <summary>
@@ -16,10 +20,10 @@ namespace CCE::Scene
 	/// It can therefore be associatedwith this scene.
 	/// </summary>
 	/// <returns>A reference to the added entity.</returns>
-	CCE::Resources::Entity& Scene::AddEntity()
+	ECS::Entity& Scene::AddEntity()
 	{
-		using namespace CCE::Resources;
-		auto& entity = EntityComponentSystem::Instance->CreateEntity();
+		using ECS = ECS::EntityComponentSystem;
+		auto& entity = ECS::Instance->CreateEntity();
 		entities.insert(entity);
 		return entity;
 	}
@@ -29,10 +33,10 @@ namespace CCE::Scene
 	/// This means all it's components are destroyed and given back to the ECS.
 	/// </summary>
 	/// <param name="entity">The entity to destroy.</param>
-	void Scene::RemoveEntity(CCE::Resources::Entity& entity)
+	void Scene::RemoveEntity(ECS::Entity& entity)
 	{
-		using namespace CCE::Resources;
-		EntityComponentSystem::Instance->DestroyEntity(entity);
+		using ECS = ECS::EntityComponentSystem;
+		ECS::Instance->DestroyEntity(entity);
 		entities.erase(entity);
 	}
 }

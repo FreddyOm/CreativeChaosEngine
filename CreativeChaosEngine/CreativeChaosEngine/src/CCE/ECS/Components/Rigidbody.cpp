@@ -1,7 +1,7 @@
 #include "Rigidbody.h"
 #include "../../Analysis/Debug.h"
 
-namespace CCE::Resources
+namespace CCE::ECS::Components
 {
 	void Rigidbody::AddForce(DirectX::XMVECTOR force)
 	{

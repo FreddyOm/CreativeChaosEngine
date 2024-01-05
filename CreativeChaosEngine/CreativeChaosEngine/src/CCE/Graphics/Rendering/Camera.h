@@ -2,7 +2,7 @@
 #include <memory>
 #include "D3D11.h"
 #include "../../Core.h"
-#include "..\..\Resources\Components\Transform.h"
+#include "..\..\ECS\Components\Transform.h"
 #include "../../Input/Mouse.h"
 #include "../../Input/Keyboard.h"
 #include "../../Input/Controller.h"
@@ -28,7 +28,7 @@ namespace CCE::Graphics
 		Camera();
 		~Camera();
 
-		CCE::Resources::Transform transform;
+		ECS::Components::Transform transform;
 
 		void SetProjectionData(float _near, float _far, float _fovV) noexcept;
 		void SetProjectionType(unsigned char type) noexcept;
@@ -71,6 +71,5 @@ namespace CCE::Graphics
 		void InputCallback(const Input::Mouse* mouse,
 			const Input::Keyboard* keyboard,
 			const Input::Controller* controller) override;
-
 	};
 }

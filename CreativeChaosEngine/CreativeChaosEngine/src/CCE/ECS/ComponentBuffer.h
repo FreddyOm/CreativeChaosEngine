@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <array>
 
-namespace CCE::Resources
+namespace CCE::ECS
 {
 	template<typename T>
 	class ComponentBuffer : IComponentBuffer
