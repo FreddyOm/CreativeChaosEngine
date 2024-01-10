@@ -19,6 +19,12 @@ namespace CCE::ECS::Systems
 	void PhysicsSystem::UpdateSystem()
 	{
 		// @TODO: Implement :)
+
+		// Do physics
+		for (auto& entity : mEntities)
+		{
+			//entity.GetComponent<Components::Rigidbody>().AddForce({ 0, -Components::GravitationalAccelarion(), 0 });
+		}
 	}
 }
 
