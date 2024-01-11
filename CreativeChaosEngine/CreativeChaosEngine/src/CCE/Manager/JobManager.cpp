@@ -13,7 +13,7 @@ namespace CCE
 	{
 		DASSERT(Instance == nullptr, "JobManager was instantiated more than once!");
 		JobManager::Instance = this;
-		initialized = true;
+		BaseManager::Init();
 
 		auto startTime = Time::CurrentTick();
 		PopulateFiberPool();
@@ -30,7 +30,7 @@ namespace CCE
 	void JobManager::ShutDown()
 	{
 		LOGC("Shutting down JobManager...", COLOR_BLUE);
-		initialized = false;
+		BaseManager::Deinit();
 
 		auto lock = ScopedSpinLock(fiberSpinLock);
 
@@ -392,7 +392,7 @@ namespace CCE
 			thread_fibers.insert({ GetThreadId(GetCurrentThread()), _fiber });
 		}		
 
-		while (JobManager::Instance->initialized)
+		while (JobManager::Instance->IsInitialized())
 		{
 			if (HasNextJob() || wait_list.size() != 0)
 			{
@@ -422,7 +422,7 @@ namespace CCE
 		// So in order to not delete and create new fibers all the time we let this run
 		// in a loop and make sure the entrance point (SwitchToFiber(GetThreadFiber());) 
 		// is at the beginning of the loop!
-		while (JobManager::Instance->initialized)
+		while (JobManager::Instance->IsInitialized())
 		{
 			// Pull the next job
 			JOBDECL decl = GetNextJob();

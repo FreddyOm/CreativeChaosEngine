@@ -3,6 +3,7 @@
 #include <vector>
 #include "../Manager/ProfilingManager.h"
 #include "../ECS/EntityComponentSystem.h"
+#include "../ECS/Entity.h"
 
 namespace CCE::Scene
 {

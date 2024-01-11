@@ -13,7 +13,7 @@ namespace CCE
 		auto startTime = Time::CurrentTick();
 		memLeakTable = new std::unordered_map<unsigned long long, int>();
 
-		initialized = true;
+		BaseManager::Init();
 		auto endTime = Time::CurrentTick();
 		double initDuration = Time::GetDurationInMicroSec(startTime, endTime);
 		LOGC("ProfilingManager initialized!", COLOR_BLUE);
@@ -22,7 +22,7 @@ namespace CCE
 	void ProfilingManager::ShutDown()
 	{
 		LOGC("Shutting down ProfilingManager...", COLOR_BLUE);
-		initialized = false;
+		BaseManager::Deinit();
 		delete memLeakTable;
 		Instance = nullptr;
 	}

@@ -1,17 +1,22 @@
 #pragma once
-#include "../Entity.h"
 #include <set>
 
 namespace CCE::ECS::Systems
 {
+	struct Entity;
 	class ECSSystem
 	{
+	private:
+		struct cmp {
+			bool operator() (int a, int b) const {
+				return a < b;
+			}
+		};
+
 	public:
 		/// <summary>
 		/// Each system has its own copy of all entites present in the system.
-		/// Since an entity is an 8 byte integer, it doesn't matter if we safe
-		/// pointers or directly the entity itself.
 		/// </summary>
-		std::set<CCE::ECS::Entity> mEntities;
+		std::set<long long> mEntities;
 	};
 }

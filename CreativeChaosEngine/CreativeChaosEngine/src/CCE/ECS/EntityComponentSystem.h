@@ -3,12 +3,10 @@
 #include "../Manager/BaseManager.h"
 #include "../Analysis/Logger.h"
 #include "../Analysis/Debug.h"
-#include "ComponentBuffer.h"
-#include <unordered_map>
 #include "Systems/ECSSystem.h"
+#include <unordered_map>
 #include <typeindex>
 #include "../Core.h"
-#include "Entity.h"
 #include <vector>
 #include <memory>
 #include <array>
@@ -22,6 +20,10 @@
 
 namespace CCE::ECS
 {
+	template<typename T>
+	class ComponentBuffer;
+	struct IComponentBuffer;
+	struct Entity;
 	class CCE_API EntityComponentSystem : public BaseManager
 	{
 		friend struct Entity;
@@ -29,141 +31,17 @@ namespace CCE::ECS
 		EntityComponentSystem() = default;
 		~EntityComponentSystem() = default;
 
-		/// <summary>
-		/// General initialization for any manager.
-		/// </summary>
-		void StartUp()
-		{
-			DASSERT(Instance == nullptr, "ECS was instantiated more than once!");
-			Instance = this;
+		void StartUp();
+		void ShutDown();
+				
+		void Initialize();
+		void Deinitialize();
 
-			Initialize();
-
-			initialized.store(true, std::memory_order_relaxed);
-
-			LOGC("ECS initialized!", COLOR_BLUE);
-		}
-
-		/// <summary>
-		/// General deinitialization for any manager
-		/// </summary>
-		void ShutDown()
-		{
-			Deinitialize();
-
-			LOGC("Shutting down ECS...", COLOR_BLUE);
-			initialized.store(false, std::memory_order_relaxed);
-			Instance = nullptr;
-		}
-
-		/// <summary>
-		/// Custom initialization process for ECS.
-		/// </summary>
-		void Initialize()
-		{
-			// Create the maximum number of entities
-			for (int i = 0; i < MAX_ENTITIES; ++i)
-			{
-				mEntityPool.push(Entity(i)); // The id of an entity initially equals to its index
-			}
-
-			RegisterComponent<Components::Transform>();
-			RegisterComponent<Components::Rigidbody>();
-			RegisterComponent<Components::Behaviour>();
-			//RegisterComponent<Mesh>();
-			//RegisterComponent<MeshRenderer>();
-			//RegisterComponent<Collider>();
-		}
-
-		/// <summary>
-		/// Custom deinitialization process for ECS.
-		/// </summary>
-		void Deinitialize()
-		{
-			initialized = false;
-			Instance = nullptr;
-		}
-
-		/// <summary>
-		/// Takes one of the entities and returns it as used.
-		/// </summary>
-		/// <returns>The fetched entity.</returns>
-		Entity& CreateEntity()
-		{
-			DASSERT(mEntityCount < MAX_ENTITIES, "Can't create any more instances!");
-
-			Entity entity = mEntityPool.front();
-			mEntityPool.pop();
-			++mEntityCount;
-
-			return entity;
-		}
-
-		/// <summary>
-		/// Returns the entity back to the entity pool.
-		/// </summary>
-		/// <param name="entity">The entity to destroy.</param>
-		void DestroyEntity(Entity entity)
-		{
-			DASSERT(entity.Id < MAX_ENTITIES, "Invalid entity.");
-
-			// Reset entity composition
-			mEntityComposition[entity.Id] = 0;
-			mEntityPool.push(entity);
-			--mEntityCount;
-
-			EntityDestroyed(entity);
-		}
-
-		/// <summary>
-		/// Whenever an entity changes its components, make sure to remove 
-		/// it from the system / add it to the system in question.
-		/// </summary>
-		/// <param name="entity">The entity to change the signature of.</param>
-		/// <param name="signature">The new signature.</param>
-		void EntitySignatureChanged(Entity entity, DWORD signature)
-		{
-			// Change signature in every system
-			for (auto const& pair : mSystems)
-			{
-				auto const& type = pair.first;
-				auto const& system = pair.second;
-				auto const& systemSignature = mSignatures[type];
-
-				// Add signature to system where its not already contained in
-				if ((signature & systemSignature) == systemSignature)
-				{
-					system->mEntities.insert(entity);
-				}
-				// Remove signature from system where it is still apparent
-				else
-				{
-					system->mEntities.erase(entity);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Calls the EntityDestroyed() function on every type buffer.
-		/// </summary>
-		/// <param name="entity">The entity to destroy.</param>
-		void EntityDestroyed(Entity entity) const
-		{
-			// Remove destroyed entity from respective list
-			for (auto const& pair : mComponents)
-			{
-				auto const& component = pair.second;
-				component->EntityDestroyed(entity);
-			}
-
-			// Remove destroyed entity from system
-			for (auto const& pair : mSystems)
-			{
-				auto const& system = pair.second;
-
-				system->mEntities.erase(entity);
-			}
-		}
+		Entity CreateEntity();
+		void DestroyEntity(Entity entity);
+		void EntitySignatureChanged(Entity& entity, DWORD signature);
+		void EntityDestroyed(Entity entity) const;
+		
 
 		/// <summary>
 	    /// Registers a type as a component. This process adds the type to the LUT and inserts the data in the component.
@@ -213,9 +91,9 @@ namespace CCE::ECS
 		/// <param name="entity">The entity to check on.</param>
 		/// <returns>True if the entity is composed of the given type, false if not.</returns>
 		template<typename T>
-		bool HasEntityComponent(Entity& entity) const
+		bool HasEntityComponent(UINT64 entityId) const
 		{
-			return mEntityComposition[entity.Id] & ComponentTypeLUT(typeid(T));
+			return mEntityComposition[entityId] & ComponentTypeLUT(typeid(T));
 		}
 
 	private:
@@ -245,7 +123,7 @@ namespace CCE::ECS
 		unsigned int mEntityCount = 0;
 		unsigned int mRegisteredComponentIndex = 0; // Used to dynamically create bitmasks for checking the types
 
-		std::queue<Entity> mEntityPool = {};
+		std::queue<UINT64> mEntityPool = {};
 		std::array<DWORD, MAX_ENTITIES> mEntityComposition = {};
 		std::unordered_map<std::type_index, std::shared_ptr<IComponentBuffer>> mComponents = {};
 

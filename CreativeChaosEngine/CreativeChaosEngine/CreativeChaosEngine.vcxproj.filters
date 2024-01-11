@@ -5,9 +5,7 @@
     <FxCompile Include="src\CCE\Graphics\Shader\DefaultVertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\CCE\ECS\ComponentBuffer.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Transform.cpp" />
-    <ClCompile Include="src\CCE\ECS\Entity.cpp" />
     <ClCompile Include="src\CCE\ECS\EntityComponentSystem.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IBindable.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Sampler.cpp" />

@@ -124,7 +124,7 @@ namespace CCE::Graphics
 			texture = FreeImage_ConvertTo32Bits(&tex->bitmap);
 			//FreeImage_Unload(&tex->bitmap);
 			break;
-		defaut:
+		default:
 			DERROR("Unknown file format!");
 			texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 			break;

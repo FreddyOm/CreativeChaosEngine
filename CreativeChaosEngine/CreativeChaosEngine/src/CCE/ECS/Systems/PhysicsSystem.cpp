@@ -1,6 +1,8 @@
 #include "PhysicsSystem.h"
+#include "../Entity.h"
 #include "../EntityComponentSystem.h"
 #include "../Components/ComponentHeaders.h"
+
 
 namespace CCE::ECS::Systems
 {
@@ -18,12 +20,15 @@ namespace CCE::ECS::Systems
 
 	void PhysicsSystem::UpdateSystem()
 	{
+		using Entity = CCE::ECS::Entity;
+		using namespace CCE::ECS::Components;
 		// @TODO: Implement :)
 
 		// Do physics
-		for (auto& entity : mEntities)
+		for (long long id : mEntities)
 		{
-			//entity.GetComponent<Components::Rigidbody>().AddForce({ 0, -Components::GravitationalAccelarion(), 0 });
+			Entity e = Entity(id);
+			// e.GetComponent<Rigidbody>()->AddForce({0, - GravitationalAccelarion(), 0 });
 		}
 	}
 }

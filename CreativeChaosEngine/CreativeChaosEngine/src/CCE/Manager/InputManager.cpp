@@ -24,7 +24,7 @@ namespace CCE
 			"Failed initializing COM on this thread!");
 
 		InitializeDualSense();
-		initialized = true;
+		BaseManager::Init();
 
 		auto endTime = Time::CurrentTick();
 		double initDuration = Time::GetDurationInMicroSec(startTime, endTime);
@@ -41,7 +41,7 @@ namespace CCE
 			DS5W::freeDeviceContext(&con[i]);
 
 		LOGC("Shutting down InputManager...", COLOR_BLUE);
-		initialized = false;
+		BaseManager::Deinit();
 		Instance = nullptr;
 	}
 

@@ -132,16 +132,16 @@ namespace CCE
 
 		struct WaitData
 		{
-			LPVOID fiber;
-			Counter* pCounter;
-			int desiredCount;
+			LPVOID fiber = {};
+			Counter* pCounter = nullptr;
+			int desiredCount = 0;
 
 			WaitData()
 				: fiber(0), pCounter(nullptr), desiredCount(0)
 			{ }
 
 			WaitData(const LPVOID _fiber, Counter* _counter, const unsigned int _desiredCount)
-				: fiber(_fiber), pCounter(_counter), desiredCount(desiredCount)
+				: fiber(_fiber), pCounter(_counter), desiredCount(_desiredCount)
 			{ }
 
 			// Copy instructions

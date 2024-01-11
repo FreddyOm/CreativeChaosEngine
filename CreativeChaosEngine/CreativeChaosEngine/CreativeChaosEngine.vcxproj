@@ -15,11 +15,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\CCE\ECS\ComponentBuffer.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Behaviour.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Rigidbody.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Transform.cpp" />
-    <ClCompile Include="src\CCE\ECS\Entity.cpp" />
     <ClCompile Include="src\CCE\ECS\EntityComponentSystem.cpp" />
     <ClCompile Include="src\CCE\ECS\Systems\PhysicsSystem.cpp" />
     <ClCompile Include="src\CCE\ECS\Systems\RenderingSystem.cpp" />

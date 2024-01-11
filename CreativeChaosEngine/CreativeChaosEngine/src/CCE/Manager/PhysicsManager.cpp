@@ -11,7 +11,7 @@ namespace CCE
 		Instance = this;
 
 		auto startTime = Time::CurrentTick();
-		initialized = true;
+		BaseManager::Init();
 
 		auto endTime = Time::CurrentTick();
 		double initDuration = Time::GetDurationInMicroSec(startTime, endTime);
@@ -21,7 +21,7 @@ namespace CCE
 	void PhysicsManager::ShutDown()
 	{
 		LOGC("Shutting down PhysicsManager...", COLOR_BLUE);
-		initialized = false;
+		BaseManager::Deinit();
 		Instance = nullptr;
 	}
 

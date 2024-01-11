@@ -23,7 +23,7 @@ namespace CCE::Scene
 	ECS::Entity& Scene::AddEntity()
 	{
 		using ECS = ECS::EntityComponentSystem;
-		auto& entity = ECS::Instance->CreateEntity();
+		auto entity = ECS::Instance->CreateEntity();
 		entities.insert(entity);
 		return entity;
 	}
