@@ -120,6 +120,8 @@ namespace CCE::Graphics
 			XMStoreFloat3( &transform.Position(), 
 				XMVectorAdd( XMLoadFloat3( &transform.Position() ), 
 				( transform.Up() * static_cast<float>(mouse->deltaY ) * camPanDelta * static_cast<float>(CCE::Time::deltaTime) ) ) );
+		
+			return;
 		}
 		else if (mouse->rightMouseButton == InputDevice::ButtonState::PRESSED)
 		{
@@ -175,7 +177,7 @@ namespace CCE::Graphics
 
 			return;
 		}
-		
+
 		#pragma region zoom
 
 		if (mouse->wheelDelta != 0)
@@ -184,5 +186,81 @@ namespace CCE::Graphics
 		}
 
 		#pragma endregion zoom
+
+		#pragma region controller
+
+		#pragma region pan
+
+		if (controller->LNorth == InputDevice::ButtonState::PRESSED)
+		{
+			XMStoreFloat3(&transform.Position(),
+				XMVectorAdd(XMLoadFloat3(&transform.Position()),
+					(transform.Up() * 0.2f * camPanDelta * static_cast<float>(CCE::Time::deltaTime))));
+		}
+		if (controller->LEast == InputDevice::ButtonState::PRESSED)
+		{
+			XMStoreFloat3(&transform.Position(),
+				XMVectorAdd(XMLoadFloat3(&transform.Position()),
+					(transform.Right() * 0.2f * camPanDelta * static_cast<float>(CCE::Time::deltaTime))));
+		}
+		if (controller->LSouth == InputDevice::ButtonState::PRESSED)
+		{
+			XMStoreFloat3(&transform.Position(),
+				XMVectorAdd(XMLoadFloat3(&transform.Position()),
+					(-transform.Up() * 0.2f * camPanDelta * static_cast<float>(CCE::Time::deltaTime))));
+		}
+		if (controller->LWest == InputDevice::ButtonState::PRESSED)
+		{
+			XMStoreFloat3(&transform.Position(),
+				XMVectorAdd(XMLoadFloat3(&transform.Position()),
+					(-transform.Right() * 0.2f * camPanDelta * static_cast<float>(CCE::Time::deltaTime))));
+		}
+		
+		#pragma endregion pan
+
+		#pragma region move
+		
+		camMovementDelta = controller->RTrigger.value > 0.5f ? fastCamMovementDelta : defaultCamMovementDelta;
+		
+		if (controller->LJoypad.y.state == InputDevice::AxisState::AXIS_MOVED)
+		{
+			XMVECTOR deltaPos = XMVectorAdd(XMLoadFloat3(&transform.Position()), 
+				(transform.Forward() * controller->LJoypad.y.value * camMovementDelta * (float)CCE::Time::deltaTime));
+			XMStoreFloat3(&transform.Position(), deltaPos);
+		}
+
+		if (controller->LJoypad.x.state == InputDevice::AxisState::AXIS_MOVED)
+		{
+			XMStoreFloat3(&transform.Position(), 
+				XMVectorAdd(XMLoadFloat3(&transform.Position()), 
+					(transform.Right() * controller->LJoypad.x.value * camMovementDelta* (float)CCE::Time::deltaTime)));
+		}
+
+		if (controller->LShoulder == InputDevice::ButtonState::PRESSED)
+		{
+			XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Up() * camMovementDelta * (float)CCE::Time::deltaTime)));
+		}
+
+		if (controller->RShoulder == InputDevice::ButtonState::PRESSED)
+		{
+			XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (-transform.Up() * camMovementDelta * (float)CCE::Time::deltaTime)));
+		}
+
+		#pragma endregion move
+
+		#pragma region rotate cam
+
+		float lookDeltaX = controller->RJoypad.x.value * camRotYDelta * (float)CCE::Time::deltaTime;
+		float lookDeltaY = -controller->RJoypad.y.value * camRotXDelta * (float)CCE::Time::deltaTime;
+		// Make sure, the global up vector still holds true in any case!!
+		if (transform.Rotation().x + lookDeltaY > -80.0f && transform.Rotation().x + lookDeltaY < 80.0f)
+		{
+			transform.SetRotation({ transform.Rotation().x + lookDeltaY,
+			transform.Rotation().y + lookDeltaX, transform.Rotation().z });
+		}
+
+		#pragma endregion rotate cam
+
+		#pragma endregion controller
 	}
 }
