@@ -21,13 +21,18 @@ namespace CCE::Graphics
 
 		std::vector<String> texturePaths = { normalTexFilePath, diffuseTexFilePath };
 
+
+		// Material
+		auto ps = std::make_shared<PixelShader>(StringConverter::StringToWString(pixelShaderPath.Value()));
+
 		auto albedoTex = std::make_shared<Texture2D>(diffuseTexFilePath);
 		auto normalTex = std::make_shared<Texture2D>(normalTexFilePath, 1);
 		auto splr = std::make_shared<Sampler>(D3D11_TEXTURE_ADDRESS_WRAP);
-		auto ps = std::make_shared<PixelShader>(StringConverter::StringToWString(pixelShaderPath.Value()));
-		auto vs = std::make_shared<VertexShader>(StringConverter::StringToWString(vertexShader.Value()));
+
+		// Mesh
 		auto ib = std::make_shared<IndexBuffer>(meshData->IndexBuffer);
 		auto vb = std::make_shared<VertexBuffer>(meshData->VertexData);
+		auto vs = std::make_shared<VertexShader>(StringConverter::StringToWString(vertexShader.Value()));
 		auto il = std::make_shared<InputLayout>(vs->GetBytecode());
 		auto to = std::make_shared<Topology>();
 

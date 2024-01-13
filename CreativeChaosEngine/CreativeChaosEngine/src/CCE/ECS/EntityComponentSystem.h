@@ -64,10 +64,10 @@ namespace CCE::ECS
 		}
 
 		/// <summary>
-		/// Registers a system in a hash map in order to be able to delete destroyed enemies.
+		/// Registers a system in a hash map in order to be able to delete destroyed entites.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
+		/// <typeparam name="T">The type of the system.</typeparam>
+		/// <returns>A shared pointer to the system.</returns>
 		template<typename T>
 		std::shared_ptr<T> RegisterSystem()
 		{

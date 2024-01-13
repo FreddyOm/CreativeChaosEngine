@@ -16,8 +16,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CCE\ECS\Components\Behaviour.cpp" />
+    <ClCompile Include="src\CCE\ecs\components\Material.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Mesh.cpp" />
-    <ClCompile Include="src\CCE\ECS\Components\MeshRenderer.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Rigidbody.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Transform.cpp" />
     <ClCompile Include="src\CCE\ECS\EntityComponentSystem.cpp" />
@@ -70,8 +70,8 @@
     <ClInclude Include="src\CCE\ECS\ComponentBuffer.h" />
     <ClInclude Include="src\CCE\ECS\Components\Behaviour.h" />
     <ClInclude Include="src\CCE\ECS\Components\ComponentHeaders.h" />
+    <ClInclude Include="src\CCE\ECS\Components\Material.h" />
     <ClInclude Include="src\CCE\ECS\Components\Mesh.h" />
-    <ClInclude Include="src\CCE\ECS\Components\MeshRenderer.h" />
     <ClInclude Include="src\CCE\ECS\Components\Rigidbody.h" />
     <ClInclude Include="src\CCE\ECS\Components\Transform.h" />
     <ClInclude Include="src\CCE\ECS\Systems\ECSSystem.h" />

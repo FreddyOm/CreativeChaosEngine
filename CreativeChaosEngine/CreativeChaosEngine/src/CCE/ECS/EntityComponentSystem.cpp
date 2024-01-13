@@ -44,8 +44,8 @@ namespace CCE::ECS
 		RegisterComponent<Components::Transform>();
 		RegisterComponent<Components::Rigidbody>();
 		RegisterComponent<Components::Behaviour>();
-		//RegisterComponent<Mesh>();
-		//RegisterComponent<MeshRenderer>();
+		RegisterComponent<Components::Mesh>();
+		RegisterComponent<Components::Material>();
 		//RegisterComponent<Collider>();
 	}
 
