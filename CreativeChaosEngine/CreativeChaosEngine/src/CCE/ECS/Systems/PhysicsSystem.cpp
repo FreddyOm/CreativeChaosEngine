@@ -2,20 +2,21 @@
 #include "../Entity.h"
 #include "../EntityComponentSystem.h"
 #include "../Components/ComponentHeaders.h"
-
+#include "../../Analysis/Logger.h"
 
 namespace CCE::ECS::Systems
 {
 	using ECS = EntityComponentSystem;
 
-	PhysicsSystem::PhysicsSystem()
+	void PhysicsSystem::StartUp()
 	{
 		ECS::Instance->RegisterSystem<PhysicsSystem>();
+		LOGC("PhysicsSystem initialized!", COLOR_BLUE);
 	}
 
-	PhysicsSystem::~PhysicsSystem()
+	void PhysicsSystem::ShutDown()
 	{
-		// Nothing yet
+		LOGC("PhysicsSystem uninitialized!", COLOR_BLUE);
 	}
 
 	void PhysicsSystem::UpdateSystem()
@@ -32,4 +33,3 @@ namespace CCE::ECS::Systems
 		}
 	}
 }
-

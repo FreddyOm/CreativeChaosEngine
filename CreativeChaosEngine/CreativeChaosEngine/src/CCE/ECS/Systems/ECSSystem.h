@@ -14,6 +14,7 @@ namespace CCE::ECS::Systems
 		};
 
 	public:
+
 		/// <summary>
 		/// Each system has its own copy of all entites present in the system.
 		/// </summary>

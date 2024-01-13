@@ -6,8 +6,11 @@ namespace CCE::ECS::Systems
 	struct PhysicsSystem : public ECSSystem
 	{
 	public:
-		PhysicsSystem();
-		~PhysicsSystem();
+		PhysicsSystem() = default;
+		~PhysicsSystem() = default;
+
+		void StartUp();
+		void ShutDown();
 
 		void UpdateSystem();
 	};

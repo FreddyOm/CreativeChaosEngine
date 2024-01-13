@@ -9,6 +9,8 @@
 #include "../Scene/Scene.h"
 #include "../Utilities/IO/IO.h"
 #include "../ECS/EntityComponentSystem.h"
+#include "../ECS/Systems/PhysicsSystem.h"
+#include "../ECS/Systems/RenderingSystem.h"
 #include "../Utilities/Serialization/ISerializable.h"
 
 namespace CCE
@@ -48,10 +50,10 @@ namespace CCE
 
 		JobManager mJobManager = CCE::JobManager();
 		ProfilingManager mProfilingManager = CCE::ProfilingManager();
-		PhysicsManager mPhysicsManager = PhysicsManager();
 		InputManager mInputManager = InputManager();
 		MemoryManager mMemoryManager = MemoryManager();
 		ECS::EntityComponentSystem mECS = ECS::EntityComponentSystem();
+		ECS::Systems::PhysicsSystem mPhysicsSystem = ECS::Systems::PhysicsSystem();
 	
 		ClientWindow* window = nullptr;
 		Scene::Scene* scene = nullptr;

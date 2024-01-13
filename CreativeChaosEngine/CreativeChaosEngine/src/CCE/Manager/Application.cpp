@@ -173,7 +173,8 @@ namespace CCE
 #endif
 		mInputManager.StartUp();
 		mECS.StartUp();
-		mPhysicsManager.StartUp();
+		mPhysicsSystem.StartUp();
+
 
 		window = new ClientWindow();
 		window->OpenWindow(GetModuleHandle(NULL));
@@ -186,7 +187,7 @@ namespace CCE
 	/// </summary>
 	void Application::Deinitialize()
 	{
-		mPhysicsManager.ShutDown();
+		mPhysicsSystem.ShutDown();
 		mECS.ShutDown();
 		mInputManager.ShutDown();
 #if MULTITHREADED
