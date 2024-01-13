@@ -4,10 +4,11 @@
 namespace CCE::Resources
 {
 	/// <summary>
-	/// 
+	/// Tries to get the handle to a mesh with a given path and 
+	/// loads the mesh if it doesn't exist already.
 	/// </summary>
-	/// <param name="meshPath"></param>
-	/// <returns>A uniqe-pointer to the mesh data.</returns>
+	/// <param name="meshPath">The path to a given mesh.</param>
+	/// <returns>A shared-pointer to the mesh data.</returns>
 	std::shared_ptr<MeshData> ResourceAllocator::GetMesh(String meshPath)
 	{
 		// Since the mesh is usually only queried on model creation, we don't need to 
