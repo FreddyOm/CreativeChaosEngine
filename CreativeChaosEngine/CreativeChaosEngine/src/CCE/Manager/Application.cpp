@@ -18,7 +18,6 @@ namespace CCE
 		Instance = this;
 		Initialize();
 
-
 #ifdef CCE_PLATFORM_WINDOWS
 		// Load engine config
 		if (File::Exists(engineConfig.Path().Value()))
@@ -62,7 +61,7 @@ namespace CCE
 	Application* Application::Instance = nullptr;
 
 	/// <summary>
-	/// Run one frame
+	/// Run one frame and execute logic before the editor is updated.
 	/// </summary>
 	void Application::PreEditorUpdate(int& rValue, bool handleInput)
 	{

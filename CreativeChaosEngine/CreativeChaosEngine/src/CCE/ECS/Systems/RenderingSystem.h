@@ -5,8 +5,11 @@ namespace CCE::ECS::Systems
 {
 	struct RenderingSystem : public ECSSystem
 	{
-		RenderingSystem();
-		~RenderingSystem();
+		RenderingSystem() = default;
+		~RenderingSystem() = default;
+
+		void StartUp();
+		void ShutDown();
 
 		void UpdateSystem();
 	};

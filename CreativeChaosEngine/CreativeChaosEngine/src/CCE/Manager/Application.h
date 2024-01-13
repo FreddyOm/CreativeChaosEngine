@@ -4,7 +4,6 @@
 #include "BaseManager.h"
 #include "InputManager.h"
 #include "MemoryManager.h"
-#include "PhysicsManager.h"
 #include "ProfilingManager.h"
 #include "../Scene/Scene.h"
 #include "../Utilities/IO/IO.h"
@@ -53,8 +52,11 @@ namespace CCE
 		InputManager mInputManager = InputManager();
 		MemoryManager mMemoryManager = MemoryManager();
 		ECS::EntityComponentSystem mECS = ECS::EntityComponentSystem();
+
+		// ECS Systems
 		ECS::Systems::PhysicsSystem mPhysicsSystem = ECS::Systems::PhysicsSystem();
-	
+		ECS::Systems::RenderingSystem mRenderingSystem = ECS::Systems::RenderingSystem();
+
 		ClientWindow* window = nullptr;
 		Scene::Scene* scene = nullptr;
 

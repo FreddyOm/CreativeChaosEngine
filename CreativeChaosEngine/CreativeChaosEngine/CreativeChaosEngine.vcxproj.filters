@@ -31,7 +31,6 @@
     <ClCompile Include="src\CCE\Memory\Allocator.cpp" />
     <ClCompile Include="src\CCE\Utilities\Math\CCMath.cpp" />
     <ClCompile Include="src\CCE\Manager\JobManager.cpp" />
-    <ClCompile Include="src\CCE\Manager\PhysicsManager.cpp" />
     <ClCompile Include="src\CCE\Manager\BaseManager.cpp" />
     <ClCompile Include="src\CCE\Analysis\Debug.cpp" />
     <ClCompile Include="src\CCE\Manager\ProfilingManager.cpp" />
@@ -53,6 +52,8 @@
     <ClCompile Include="src\CCE\ECS\Systems\PhysicsSystem.cpp" />
     <ClCompile Include="src\CCE\ECS\Systems\RenderingSystem.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Behaviour.cpp" />
+    <ClCompile Include="src\CCE\ECS\Components\Mesh.cpp" />
+    <ClCompile Include="src\CCE\ECS\Components\MeshRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\ECS\ComponentBuffer.h" />
@@ -183,7 +184,6 @@
     <ClInclude Include="src\CCE\Memory\Allocator.h" />
     <ClInclude Include="src\CCE\Utilities\Math\CCMath.h" />
     <ClInclude Include="src\CCE\Manager\JobManager.h" />
-    <ClInclude Include="src\CCE\Manager\PhysicsManager.h" />
     <ClInclude Include="src\CCE\Manager\BaseManager.h" />
     <ClInclude Include="src\CCE\Analysis\Debug.h" />
     <ClInclude Include="src\CCE\Manager\ProfilingManager.h" />
@@ -212,6 +212,8 @@
     <ClInclude Include="src\CCE\ECS\Systems\PhysicsSystem.h" />
     <ClInclude Include="src\CCE\ECS\Systems\RenderingSystem.h" />
     <ClInclude Include="src\CCE\ECS\Components\Behaviour.h" />
+    <ClInclude Include="src\CCE\ECS\Components\Mesh.h" />
+    <ClInclude Include="src\CCE\ECS\Components\MeshRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="resources\sdk\assimp-vc143-mt.lib" />
