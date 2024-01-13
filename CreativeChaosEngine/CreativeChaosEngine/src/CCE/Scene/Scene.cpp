@@ -25,7 +25,7 @@ namespace CCE::Scene
 		using ECS = ECS::EntityComponentSystem;
 		auto entity = ECS::Instance->CreateEntity();
 		entities.insert(entity);
-		return entity;
+		return entity;		// @TODO: Fix this, don't return a local...
 	}
 
 	/// <summary>

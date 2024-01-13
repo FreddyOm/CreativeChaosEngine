@@ -28,7 +28,7 @@ namespace CCE::ECS::Systems
 		for (long long id : mEntities)
 		{
 			Entity e = Entity(id);
-			// e.GetComponent<Rigidbody>()->AddForce({0, - GravitationalAccelarion(), 0 });
+			e.GetComponent<Rigidbody>()->AddForce({0, - GravitationalAccelarion(), 0 });
 		}
 	}
 }

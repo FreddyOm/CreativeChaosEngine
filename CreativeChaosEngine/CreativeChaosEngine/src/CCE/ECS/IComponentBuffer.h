@@ -1,6 +1,5 @@
 #pragma once
 #include "../Core.h"
-#include "Entity.h"
 
 namespace CCE::ECS
 {
@@ -9,6 +8,6 @@ namespace CCE::ECS
 	public:
 		IComponentBuffer() {}
 		virtual ~IComponentBuffer() {}
-		virtual void EntityDestroyed(Entity entity) {}
+		virtual void EntityDestroyed(UINT64 entity) {}
 	};
 }

@@ -118,7 +118,7 @@ namespace CCE::ECS
 		T* GetComponent() const
 		{
 			using ECS = EntityComponentSystem;
-			return ECS::Instance->GetComponentBuffer<T>()->GetData(*this);
+			return ECS::Instance->GetComponentBuffer<T>()->GetData(Id);
 		}
 
 		/// <summary>
@@ -131,7 +131,7 @@ namespace CCE::ECS
 		bool TryGetComponent(T& outRef) const
 		{
 			using ECS = EntityComponentSystem;
-			T* component = ECS::Instance->GetComponentBuffer<T>()->GetData(*this);
+			T* component = ECS::Instance->GetComponentBuffer<T>()->GetData(Id);
 
 			if (nullptr != component)
 			{

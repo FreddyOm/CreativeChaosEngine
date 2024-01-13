@@ -1,6 +1,7 @@
 #pragma once
 #include "./Components/ComponentHeaders.h"
 #include "../Manager/BaseManager.h"
+#include "ComponentBuffer.h"
 #include "../Analysis/Logger.h"
 #include "../Analysis/Debug.h"
 #include "Systems/ECSSystem.h"
@@ -20,9 +21,6 @@
 
 namespace CCE::ECS
 {
-	template<typename T>
-	class ComponentBuffer;
-	struct IComponentBuffer;
 	struct Entity;
 	class CCE_API EntityComponentSystem : public BaseManager
 	{
@@ -110,7 +108,7 @@ namespace CCE::ECS
 			DASSERT(ComponentTypeLUT.find(typeIndex) != ComponentTypeLUT.end(),
 				"Component not registered.");
 
-			return std::static_pointer_cast<ComponentBuffer<T>>(mComponents[typeIndex]);
+			return std::static_pointer_cast<ComponentBuffer<T>>(mComponents.at(typeIndex));
 		}
 		
 	public:
