@@ -11,7 +11,7 @@ namespace CCE::Graphics
 		std::vector<D3D11_SUBRESOURCE_DATA>& subresourceDataArr, Microsoft::WRL::ComPtr<ID3D11Texture2D>& pTexture2D, 
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& pResourceView, unsigned short count);
 
-	JOB_ENTRY_POINT D3D11SetImage(std::unique_ptr<CCE::Resources::TexData>& tex, D3D11_TEXTURE2D_DESC& texDesc,
+	JOB_ENTRY_POINT D3D11SetImage(std::shared_ptr<CCE::Resources::TexData> tex, D3D11_TEXTURE2D_DESC& texDesc,
 		FIBITMAP* texture, std::vector<D3D11_SUBRESOURCE_DATA>& subresourceDataArr, D3D11_SHADER_RESOURCE_VIEW_DESC& srvd);
 
 #pragma endregion job funcs declarations
@@ -87,7 +87,7 @@ namespace CCE::Graphics
 		// @TODO: Parallelize this for loop by scheduling every image as a job
 		for (unsigned short i = 0; i < count; ++i)
 		{
-			std::unique_ptr<CCE::Resources::TexData> tex = loader.LoadResource(filePaths.at(i));
+			std::shared_ptr<CCE::Resources::TexData> tex = loader.LoadResource(filePaths.at(i));
 			FIBITMAP* texture = &tex->bitmap;
 
 			DASSERT(texDesc.Width == 0 || texDesc.Width == tex->width && texDesc.Height == tex->height,
@@ -109,7 +109,7 @@ namespace CCE::Graphics
 	}
 
 	// Set the actual image data and 
-	JOB_ENTRY_POINT D3D11SetImage(std::unique_ptr<CCE::Resources::TexData>& tex, D3D11_TEXTURE2D_DESC& texDesc, 
+	JOB_ENTRY_POINT D3D11SetImage(std::shared_ptr<CCE::Resources::TexData> tex, D3D11_TEXTURE2D_DESC& texDesc, 
 		FIBITMAP* texture, std::vector<D3D11_SUBRESOURCE_DATA>& subresourceDataArr, D3D11_SHADER_RESOURCE_VIEW_DESC& srvd)
 	{
 		// Analyze image format

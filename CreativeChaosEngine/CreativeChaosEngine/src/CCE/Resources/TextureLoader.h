@@ -20,6 +20,6 @@ namespace CCE::Resources
 		TextureLoader() = default;
 		~TextureLoader() = default;
 
-		virtual std::unique_ptr<TexData> LoadResource(String filePath) override;
+		virtual std::shared_ptr<TexData> LoadResource(String filePath) override;
 	};
 }

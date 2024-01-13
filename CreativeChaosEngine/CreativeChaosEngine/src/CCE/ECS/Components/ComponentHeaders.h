@@ -1,6 +1,6 @@
 #pragma once
 #include "Behaviour.h"
-//#include "Mesh"
-//#include "MeshRenderer"
+#include "Mesh.h"
+#include "MeshRenderer.h"
 #include "Rigidbody.h"
 #include "Transform.h"

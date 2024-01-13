@@ -158,7 +158,7 @@ namespace CCE::Graphics
 				XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (-transform.Up() * camMovementDelta * (float)CCE::Time::deltaTime)));
 			}
 
-#pragma endregion wasd
+			#pragma endregion wasd
 
 			#pragma region rotate cam
 

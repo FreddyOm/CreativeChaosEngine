@@ -52,8 +52,9 @@
     <ClCompile Include="src\CCE\ECS\Systems\PhysicsSystem.cpp" />
     <ClCompile Include="src\CCE\ECS\Systems\RenderingSystem.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Behaviour.cpp" />
-    <ClCompile Include="src\CCE\ECS\Components\Mesh.cpp" />
+    <ClCompile Include="src\CCE\Resources\ResourceAllocator.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\MeshRenderer.cpp" />
+    <ClCompile Include="src\CCE\ECS\Components\Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\ECS\ComponentBuffer.h" />
@@ -212,8 +213,10 @@
     <ClInclude Include="src\CCE\ECS\Systems\PhysicsSystem.h" />
     <ClInclude Include="src\CCE\ECS\Systems\RenderingSystem.h" />
     <ClInclude Include="src\CCE\ECS\Components\Behaviour.h" />
-    <ClInclude Include="src\CCE\ECS\Components\Mesh.h" />
+    <ClInclude Include="src\CCE\Resources\ResourceAllocator.h" />
     <ClInclude Include="src\CCE\ECS\Components\MeshRenderer.h" />
+    <ClInclude Include="src\CCE\ECS\Components\Mesh.h" />
+    <ClInclude Include="src\CCE\Resources\MeshData.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="resources\sdk\assimp-vc143-mt.lib" />

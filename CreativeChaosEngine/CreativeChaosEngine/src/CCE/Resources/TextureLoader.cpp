@@ -4,10 +4,10 @@
 
 namespace CCE::Resources 
 {
-	std::unique_ptr<TexData> TextureLoader::LoadResource(String filePath)
+	std::shared_ptr<TexData> TextureLoader::LoadResource(String filePath)
 	{
 		TexData texData;
-		BYTE* bytes = new BYTE[41943040];
+		BYTE* bytes = new BYTE[41943040];	// @TODO: Is there any other way..?
 		ZeroMemory(bytes, 41943040);
 
 		DWORD fileSize = IO::ReadBytes(filePath, bytes);
@@ -36,6 +36,6 @@ namespace CCE::Resources
 		delete[] bytes;
 		
 		// Potentially convert to correct data format R8G8B8 -> R8G8B8A8
-		return std::make_unique<TexData>(std::move(texData));
+		return std::make_shared<TexData>(std::move(texData));
 	}
 }

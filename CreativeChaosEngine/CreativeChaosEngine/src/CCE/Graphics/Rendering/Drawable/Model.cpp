@@ -10,7 +10,7 @@ namespace CCE::Graphics
 	Model::Model(String path)
 	{
 		CCE::Resources::MeshLoader meshLoader;
-		std::unique_ptr<CCE::Resources::MeshData> meshData = meshLoader.LoadResource(path);
+		std::shared_ptr<Resources::MeshData> meshData = meshLoader.LoadResource(path);
 
 		std::vector<std::shared_ptr<IBindable>> bindPtrs;
 
@@ -31,22 +31,15 @@ namespace CCE::Graphics
 		auto il = std::make_shared<InputLayout>(vs->GetBytecode());
 		auto to = std::make_shared<Topology>();
 
-		bindPtrs.push_back(std::move(albedoTex));
-		bindPtrs.push_back(std::move(normalTex));
-		bindPtrs.push_back(std::move(splr));
-		bindPtrs.push_back(std::move(to));
-		bindPtrs.push_back(std::move(ib));
-		bindPtrs.push_back(std::move(vb));
-		bindPtrs.push_back(std::move(ps));
-		bindPtrs.push_back(std::move(vs));
-		bindPtrs.push_back(std::move(il));
-
-		// This is currently redundant but could later be used to assemble 
-		// all components of the mesh and add the bindables.
-		for (auto& bind : bindPtrs)
-		{
-			AddBind(std::move(bind));
-		}
+		AddBind(std::move(albedoTex));
+		AddBind(std::move(normalTex));
+		AddBind(std::move(splr));
+		AddBind(std::move(to));
+		AddBind(std::move(ib));
+		AddBind(std::move(vb));
+		AddBind(std::move(ps));
+		AddBind(std::move(vs));
+		AddBind(std::move(il));
 
 		CreateConstBufs();
 

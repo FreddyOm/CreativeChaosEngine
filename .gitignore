@@ -40,3 +40,4 @@ CreativeChaosEngine/bin/
 CreativeChaosEngine/bin-int/
 CreativeChaosEngine/x64/
 CreativeChaosEngine/CreativeChaosEditor/imgui.ini
+/CreativeChaosEngine/CreativeChaosEngine/src/CCE/String/String.h
