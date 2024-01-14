@@ -94,7 +94,7 @@ namespace CCE::ECS
 	/// </summary>
 	/// <param name="entity">The entity to change the signature of.</param>
 	/// <param name="signature">The new signature.</param>
-	void EntityComponentSystem::EntitySignatureChanged(Entity& entity, DWORD signature)
+	void EntityComponentSystem::EntitySignatureChanged(UINT64 entity, DWORD signature)
 	{
 		// Change signature in every system
 		for (auto const& pair : mSystems)
@@ -106,12 +106,12 @@ namespace CCE::ECS
 			// Add signature to system where its not already contained in
 			if ((signature & systemSignature) == systemSignature)
 			{
-				system->mEntities.insert(entity.Id);
+				system->mEntities.insert(entity);
 			}
 			// Remove signature from system where it is still apparent
 			else
 			{
-				system->mEntities.erase(entity.Id);
+				system->mEntities.erase(entity);
 			}
 		}
 	}

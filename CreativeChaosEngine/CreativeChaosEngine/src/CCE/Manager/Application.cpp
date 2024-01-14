@@ -113,6 +113,8 @@ namespace CCE
 		if(handleInput)
 			mInputManager.FinalizeWinInput();
 
+		mPhysicsSystem.UpdateSystem();
+
 		window->GetRenderPipeline()->BeginFrame(window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
 
 		//Update scene

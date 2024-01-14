@@ -19,6 +19,14 @@ namespace CCE::ECS::Systems
 		LOGC("PhysicsSystem uninitialized!", COLOR_BLUE);
 	}
 
+	void PhysicsSystem::RegisterEntity(long long entity)
+	{
+		using Entity = CCE::ECS::Entity;
+		using namespace CCE::ECS::Components;
+
+		mEntities.insert(entity);
+	}
+
 	void PhysicsSystem::UpdateSystem()
 	{
 		using Entity = CCE::ECS::Entity;
@@ -29,7 +37,18 @@ namespace CCE::ECS::Systems
 		for (long long id : mEntities)
 		{
 			Entity e = Entity(id);
-			e.GetComponent<Rigidbody>()->AddForce({0, - GravitationalAccelarion(), 0 });
+
+			Rigidbody* rb = e.GetComponent<Rigidbody>();
+			Transform* tf = e.GetComponent<Transform>();
+
+			rb->AddForce({0, - GravitationalAccelarion(), 0 });
+
+			auto pos = DirectX::XMLoadFloat3(&tf->Position());
+
+			DirectX::XMFLOAT3 newPos{};
+			DirectX::XMStoreFloat3(&newPos, DirectX::XMVectorAdd(pos, rb->Velocity()));
+			
+			tf->SetTranslation(std::move(newPos));
 		}
 	}
 }

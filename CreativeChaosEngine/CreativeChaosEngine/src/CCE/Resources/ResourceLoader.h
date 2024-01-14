@@ -3,6 +3,7 @@
 #include "../String/String.h"
 #include <vector>
 #include <memory>
+#include <unordered_map>
 
 namespace CCE::Resources
 {
@@ -10,5 +11,7 @@ namespace CCE::Resources
 	struct CCE_API ResourceLoader
 	{
 		virtual std::shared_ptr<T> LoadResource(String filePath) = 0;
+
+		std::unordered_map<UINT64, std::shared_ptr<T>> DataResourceMap = {};
 	};
 }

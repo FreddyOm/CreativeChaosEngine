@@ -7,6 +7,7 @@
 #include "../Memory/StackAllocator.h"
 #include "../Manager/ProfilingManager.h"
 #include "../Utilities/Serialization/ISerializable.h"
+#include "../ECS/Systems/RenderingSystem.h"
 
 namespace CCE::Graphics
 {
@@ -196,6 +197,8 @@ namespace CCE::Graphics
 	private:
 		ComPtr<ID3D11Debug> pDebug{};
 		RenderPipelineConfig pipelineConfig{};
+
+		ECS::Systems::RenderingSystem renderingSystem;
 
 	private:
 		ComPtr<ID3D11Device> p_device = nullptr;

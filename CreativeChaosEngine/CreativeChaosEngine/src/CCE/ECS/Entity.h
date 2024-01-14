@@ -70,7 +70,7 @@ namespace CCE::ECS
 		/// </summary>
 		/// <typeparam name="T">The type of the component to add.</typeparam>
 		template<typename T>
-		void AddComponent()
+		T& AddComponent()
 		{
 			using ECS = EntityComponentSystem;
 
@@ -80,11 +80,11 @@ namespace CCE::ECS
 			// Add component bit to this entity
 			component |= ECS::Instance->ComponentTypeLUT[typeid(T)];
 
-			// Add component to component list
-			ECS::Instance->GetComponentBuffer()->InsertData(*this, T);
-
 			// Notify the systems of the change
-			ECS::Instance->EntitySignatureChanged(*this, component);
+			ECS::Instance->EntitySignatureChanged(Id, component);
+
+			// Add component to component list
+			return ECS::Instance->GetComponentBuffer<T>()->InsertData(Id);
 		}
 
 		/// <summary>

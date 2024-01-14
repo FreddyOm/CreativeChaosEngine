@@ -18,7 +18,7 @@ namespace CCE::ECS
 		/// </summary>
 		/// <param name="entity">The entity to insert the data to.</param>
 		/// <param name="component">The component to add.</param>
-		void InsertData(UINT64 entity, T component)
+		T& InsertData(UINT64 entity)
 		{
 			DASSERT(mEntityToIndexMap.find(entity) == mEntityToIndexMap.end(),
 				"Component added to same entity more than once.");
@@ -26,8 +26,9 @@ namespace CCE::ECS
 			UINT64 newIndex = mSize;
 			mEntityToIndexMap[entity] = newIndex;
 			mIndexToEntityMap[newIndex] = entity;
-			mComponentArray[newIndex] = component;
+			mComponentArray[newIndex] = T();
 			++mSize;
+			return mComponentArray[newIndex];
 		}
 
 		/// <summary>
@@ -62,9 +63,9 @@ namespace CCE::ECS
 		/// <returns>The component data.</returns>
 		T* GetData(UINT64 entity)
 		{
-			if (UINT64 index = mEntityToIndexMap.find(entity) != mEntityToIndexMap.end())
+			if (mEntityToIndexMap.find(entity) != mEntityToIndexMap.end())
 			{
-				return &mComponentArray.at(index);
+				return &mComponentArray.at(mEntityToIndexMap.find(entity)->second);
 			}
 			return nullptr;
 		}

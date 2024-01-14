@@ -24,17 +24,18 @@ namespace CCE::ECS::Components
 		std::shared_ptr<Resources::MeshData> Data() const;
 
 		void StaticBind();
-		void DynamicBind(DirectX::XMMATRIX& modelMatrix);
+		void DynamicBind(DirectX::XMMATRIX modelMatrix);
 
 		void AddBind(const std::shared_ptr<Graphics::IBindable> bind) noexcept;
+		void CreateConstBufs(const DirectX::XMMATRIX& modelMatrix);
 
 	public:
 		std::shared_ptr<Graphics::VSConstantBuffer<DirectX::XMFLOAT4X4>> pMeshConstBuf = nullptr;
+		const Graphics::IndexBuffer* pIndexBuffer = nullptr;
 
 	private:
 		String meshPath = "";
 		std::shared_ptr<Resources::MeshData> meshData{};
 		std::vector<std::shared_ptr<Graphics::IBindable>> meshBindPtr = {};
-		const Graphics::IndexBuffer* pIndexBuffer = nullptr;
 	};
 }

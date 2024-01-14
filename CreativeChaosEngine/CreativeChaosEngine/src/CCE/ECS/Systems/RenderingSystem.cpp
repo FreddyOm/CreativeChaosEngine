@@ -4,6 +4,7 @@
 #include "../EntityComponentSystem.h"
 #include "../../Analysis/Logger.h"
 #include "../Entity.h"
+#include "../../Graphics/RenderPipeline.h"
 
 namespace CCE::ECS::Systems
 {
@@ -20,6 +21,14 @@ namespace CCE::ECS::Systems
 		LOGC("RenderingSystem uninitialized!", COLOR_BLUE);
 	}
 
+	void RenderingSystem::RegisterEntity(long long entity)
+	{
+		using Entity = CCE::ECS::Entity;
+		using namespace CCE::ECS::Components;
+		
+		mEntities.insert(entity);
+	}
+
 	void RenderingSystem::UpdateSystem()
 	{
 		using Entity = CCE::ECS::Entity;
@@ -33,6 +42,7 @@ namespace CCE::ECS::Systems
 			auto transform = e.GetComponent<Transform>();
 			auto material = e.GetComponent<Material>();
 			auto mesh = e.GetComponent<Mesh>();
+			
 
 			// Draw and update everything
 			DirectX::XMFLOAT4X4 modelMatrix;
@@ -40,6 +50,11 @@ namespace CCE::ECS::Systems
 
 			mesh->pMeshConstBuf->UpdateConstantBuffer(std::move(modelMatrix));
 			mesh->pMeshConstBuf->DynamicBind();
+
+			// Bind and draw indexed
+			mesh->DynamicBind(transform->GetTransformationMatrix());
+			material->DynamicBind();
+			Graphics::RenderPipeline::Instance->GetDeviceContextPtr()->DrawIndexed(mesh->pIndexBuffer->GetCount(), 0u, 0u);
 		}
 	}
 }

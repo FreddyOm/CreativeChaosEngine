@@ -37,7 +37,7 @@ namespace CCE::ECS
 
 		Entity CreateEntity();
 		void DestroyEntity(Entity entity);
-		void EntitySignatureChanged(Entity& entity, DWORD signature);
+		void EntitySignatureChanged(UINT64 entity, DWORD signature);
 		void EntityDestroyed(Entity entity) const;
 		
 

@@ -1,5 +1,6 @@
 #include "ResourceAllocator.h"
 #include "MeshLoader.h"
+#include "TextureLoader.h"
 
 namespace CCE::Resources
 {
@@ -21,10 +22,24 @@ namespace CCE::Resources
 			MeshLoader meshLoader;
 
 			// Currently map the resource to its unique path! May change later!
-			meshDataMap.at(meshPath.sId) = std::move(meshLoader.LoadResource(meshPath));
+			meshDataMap.insert({ meshPath.sId, std::move(meshLoader.LoadResource(meshPath)) });
 		}
 		
 		return meshDataMap.at(meshPath.sId);
+	}
+
+	std::shared_ptr<TexData> ResourceAllocator::GetTexture(String texturePath)
+	{
+		if (texDataMap.find(texturePath.sId) == texDataMap.end())
+		{
+			// Mesh not yet loaded! --> Load
+			TextureLoader texLoader;
+
+			// Currently map the resource to its unique path! May change later!
+			texDataMap.insert({ texturePath.sId, std::move(texLoader.LoadResource(texturePath)) });
+		}
+
+		return texDataMap.at(texturePath.sId);
 	}
 
 	ResourceAllocator* ResourceAllocator::Instance = nullptr;

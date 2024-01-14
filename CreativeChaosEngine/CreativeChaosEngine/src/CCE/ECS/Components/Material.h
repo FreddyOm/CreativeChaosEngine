@@ -9,6 +9,9 @@ namespace CCE::ECS::Components
 	{
 	public:
 
+		Material() = default;
+		~Material() = default;
+
 		void StaticBind();
 		void DynamicBind();
 

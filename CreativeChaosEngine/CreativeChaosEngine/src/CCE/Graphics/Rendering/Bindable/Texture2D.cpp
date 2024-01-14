@@ -2,6 +2,7 @@
 #include "../../../Utilities/FreeImg/FreeImage.h"
 #include "../../../Resources/TextureLoader.h"
 #include "../../../Analysis/Debug.h"
+#include "../../../Resources/ResourceAllocator.h"
 
 namespace CCE::Graphics
 {
@@ -87,7 +88,7 @@ namespace CCE::Graphics
 		// @TODO: Parallelize this for loop by scheduling every image as a job
 		for (unsigned short i = 0; i < count; ++i)
 		{
-			std::shared_ptr<CCE::Resources::TexData> tex = loader.LoadResource(filePaths.at(i));
+			std::shared_ptr<CCE::Resources::TexData> tex = CCE::Resources::ResourceAllocator::Instance->GetTexture(filePaths.at(i));
 			FIBITMAP* texture = &tex->bitmap;
 
 			DASSERT(texDesc.Width == 0 || texDesc.Width == tex->width && texDesc.Height == tex->height,

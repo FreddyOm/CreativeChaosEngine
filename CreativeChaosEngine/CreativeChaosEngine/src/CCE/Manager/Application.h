@@ -11,6 +11,7 @@
 #include "../ECS/Systems/PhysicsSystem.h"
 #include "../ECS/Systems/RenderingSystem.h"
 #include "../Utilities/Serialization/ISerializable.h"
+#include "../Resources/ResourceAllocator.h"
 
 namespace CCE
 {
@@ -45,7 +46,7 @@ namespace CCE
 		Directory GetPersistentDataPath() const;
 		Directory GetApplicationDataPath() const;
 
-	private:
+	public:
 
 		JobManager mJobManager = CCE::JobManager();
 		ProfilingManager mProfilingManager = CCE::ProfilingManager();
@@ -54,6 +55,7 @@ namespace CCE
 		ECS::EntityComponentSystem mECS = ECS::EntityComponentSystem();
 
 		// ECS Systems
+		Resources::ResourceAllocator allocator = Resources::ResourceAllocator();
 		ECS::Systems::PhysicsSystem mPhysicsSystem = ECS::Systems::PhysicsSystem();
 		ECS::Systems::RenderingSystem mRenderingSystem = ECS::Systems::RenderingSystem();
 

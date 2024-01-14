@@ -12,6 +12,8 @@ namespace CCE::ECS::Systems
 		void StartUp();
 		void ShutDown();
 
+		void RegisterEntity(long long entity);
+
 		void UpdateSystem();
 	};
 }

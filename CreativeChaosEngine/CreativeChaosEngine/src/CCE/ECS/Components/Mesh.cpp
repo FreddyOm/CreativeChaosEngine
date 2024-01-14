@@ -42,7 +42,7 @@ namespace CCE::ECS::Components
 
 	}
 
-	void Mesh::DynamicBind(DirectX::XMMATRIX& modelMatrix)
+	void Mesh::DynamicBind(DirectX::XMMATRIX modelMatrix)
 	{
 		for (auto& bind : meshBindPtr)
 		{
@@ -58,5 +58,12 @@ namespace CCE::ECS::Components
 			pIndexBuffer = &static_cast<Graphics::IndexBuffer&>(*bind);
 		}
 		meshBindPtr.push_back(std::move(bind));
+	}
+
+	void Mesh::CreateConstBufs(const DirectX::XMMATRIX& modelMatrix)
+	{
+		DirectX::XMFLOAT4X4 _modelMatrix;
+		XMStoreFloat4x4(&_modelMatrix, modelMatrix);
+		pMeshConstBuf = std::make_shared<Graphics::VSConstantBuffer<DirectX::XMFLOAT4X4>>(_modelMatrix, 0);
 	}
 }

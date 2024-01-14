@@ -4,6 +4,7 @@
 #include "../Manager/MemoryManager.h"
 #include "../ClientWindow/ClientWindow.h"
 #include "../Manager/Application.h"
+#include "../Resources/ResourceAllocator.h"
 #include <functional>
 
 namespace CCE::Graphics
@@ -68,12 +69,51 @@ namespace CCE::Graphics
 		// Create viewport
 		CreateViewport();
 
+		renderingSystem.StartUp();
+
 		pViewportCamera = new Camera();
 
-		testModels.push_back(new Model(Application::Instance->resourceDataPath.Path() + "/models/Stanford_Dragon.fbx"));
+		//testModels.push_back(new Model(Application::Instance->resourceDataPath.Path() + "/models/Stanford_Dragon.fbx"));
 
-		testModels.at(0)->transform.SetTranslation({ 0,0,0 });
-		testModels.at(0)->transform.SetScale({ 0.1,0.1,0.1 });
+		//testModels.at(0)->transform.SetTranslation({ 0,0,0 });
+		//testModels.at(0)->transform.SetScale({ 0.1,0.1,0.1 });
+
+
+		// Add entities here!
+
+		using namespace ECS::Components;
+
+		for (int x = 0; x < 20; ++x)
+		{
+			for (int z = 0; z < 20; ++z)
+			{
+				ECS::Entity entity = ECS::EntityComponentSystem::Instance->CreateEntity();
+				renderingSystem.RegisterEntity(static_cast<long long>(entity.Id));
+				Application::Instance->mPhysicsSystem.RegisterEntity(static_cast<long long>(entity.Id));
+
+				auto& rigidbody = entity.AddComponent<Rigidbody>();
+				auto& transform = entity.AddComponent<Transform>();
+				auto& mesh = entity.AddComponent<Mesh>();
+				auto& material = entity.AddComponent<Material>();
+
+				transform.SetTranslation({ (float)x , 0, (float)z });
+				transform.SetScale({ .3, .3, .3 });
+
+				mesh = Mesh(Application::Instance->resourceDataPath.Path() + "/models/cube.fbx");
+
+				String pixelShaderPath = Application::Instance->resourceDataPath.Path() + "/shader/DefaultPixelShader.cso";
+				String diffuseTexFilePath = Application::Instance->resourceDataPath.Path() + "/models/textures/DefaultMaterial_albedo.jpeg";
+				String normalTexFilePath = Application::Instance->resourceDataPath.Path() + "/models/textures/DefaultMaterial_normal.jpeg";
+
+				material.AddBind(std::make_shared<PixelShader>(StringConverter::StringToWString(pixelShaderPath.Value())));
+				//material.AddBind(std::make_shared<Texture2D>(diffuseTexFilePath));
+				//material.AddBind(std::make_shared<Texture2D>(normalTexFilePath, 1));
+				material.AddBind(std::make_shared<Sampler>(D3D11_TEXTURE_ADDRESS_WRAP));
+
+				// Initialize const buffer for each entity!
+				mesh.CreateConstBufs(std::move(transform.GetTransformationMatrix()));
+			}
+		}
 	}
 
 	/// <summary>
@@ -236,8 +276,10 @@ namespace CCE::Graphics
 		// Update scene - jobify this heavily!!
 		pViewportCamera->Update();
 
-		for(auto* mesh : testModels)
-			mesh->Draw();
+		/*for(auto* mesh : testModels)
+			mesh->Draw();*/
+
+		renderingSystem.UpdateSystem();
 	}
 
 	/// <summary>
@@ -344,6 +386,8 @@ namespace CCE::Graphics
 		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(D3D11_DEPTH_STENCIL_DESC));
 		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(DXGI_SWAP_CHAIN_DESC));
 		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(RECT));
+
+		renderingSystem.ShutDown();
 	}
 
 	/// <summary>
