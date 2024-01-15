@@ -164,8 +164,8 @@ namespace CCE::Graphics
 
 			#pragma region rotate cam
 
-			float deltaX = mouse->deltaX * camRotYDelta * (float)CCE::Time::deltaTime;
-			float deltaY = mouse->deltaY * camRotXDelta * (float)CCE::Time::deltaTime;
+			float deltaX = mouse->deltaX * camRotYDelta * 10 * (float)CCE::Time::deltaTime;
+			float deltaY = mouse->deltaY * camRotXDelta * 10 * (float)CCE::Time::deltaTime;
 			// Make sure, the global up vector still holds true in any case!!
 			if (transform.Rotation().x + deltaY > -80.0f && transform.Rotation().x + deltaY < 80.0f)
 			{
@@ -182,7 +182,7 @@ namespace CCE::Graphics
 
 		if (mouse->wheelDelta != 0)
 		{
-			XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Forward() * mouse->wheelDelta * camZoomDelta * (float)CCE::Time::deltaTime)));
+			XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Forward() * mouse->wheelDelta * 100 * camZoomDelta * (float)CCE::Time::deltaTime)));
 		}
 
 		#pragma endregion zoom

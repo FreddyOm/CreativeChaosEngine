@@ -14,5 +14,9 @@ namespace CCE::ECS::Systems
 		void RegisterEntity(long long entity);
 
 		void UpdateSystem();
+
+	private:
+
+		void UpdateECSBasic();
 	};
 }

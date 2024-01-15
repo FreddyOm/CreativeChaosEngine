@@ -217,6 +217,7 @@
     <ClInclude Include="src\CCE\ECS\Components\Mesh.h" />
     <ClInclude Include="src\CCE\Resources\MeshData.h" />
     <ClInclude Include="src\CCE\ECS\Components\Material.h" />
+    <ClInclude Include="src\CCE\ECS\Components\Collider.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="resources\sdk\assimp-vc143-mt.lib" />

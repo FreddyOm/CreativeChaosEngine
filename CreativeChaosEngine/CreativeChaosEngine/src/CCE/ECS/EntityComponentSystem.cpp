@@ -46,7 +46,8 @@ namespace CCE::ECS
 		RegisterComponent<Components::Behaviour>();
 		RegisterComponent<Components::Mesh>();
 		RegisterComponent<Components::Material>();
-		//RegisterComponent<Collider>();
+		RegisterComponent<Components::SphereCollider>();
+		RegisterComponent<Components::BoxCollider>();
 	}
 
 	/// <summary>

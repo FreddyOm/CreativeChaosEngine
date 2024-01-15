@@ -83,9 +83,9 @@ namespace CCE::Graphics
 
 		using namespace ECS::Components;
 
-		for (int x = 0; x < 20; ++x)
+		for (int x = 0; x < 1; ++x)
 		{
-			for (int z = 0; z < 20; ++z)
+			for (int z = 0; z < 1; ++z)
 			{
 				ECS::Entity entity = ECS::EntityComponentSystem::Instance->CreateEntity();
 				renderingSystem.RegisterEntity(static_cast<long long>(entity.Id));
@@ -95,11 +95,13 @@ namespace CCE::Graphics
 				auto& transform = entity.AddComponent<Transform>();
 				auto& mesh = entity.AddComponent<Mesh>();
 				auto& material = entity.AddComponent<Material>();
+				auto& collider = entity.AddComponent<SphereCollider>();
+				collider.Initialize(entity.Id);
 
 				transform.SetTranslation({ (float)x , 0, (float)z });
 				transform.SetScale({ .3, .3, .3 });
 
-				mesh = Mesh(Application::Instance->resourceDataPath.Path() + "/models/cube.fbx");
+				mesh = Mesh(Application::Instance->resourceDataPath.Path() + "/models/sphere.fbx");
 
 				String pixelShaderPath = Application::Instance->resourceDataPath.Path() + "/shader/DefaultPixelShader.cso";
 				String diffuseTexFilePath = Application::Instance->resourceDataPath.Path() + "/models/textures/DefaultMaterial_albedo.jpeg";
@@ -114,6 +116,37 @@ namespace CCE::Graphics
 				mesh.CreateConstBufs(std::move(transform.GetTransformationMatrix()));
 			}
 		}
+
+		// Create plane
+
+		ECS::Entity entity = ECS::EntityComponentSystem::Instance->CreateEntity();
+		renderingSystem.RegisterEntity(static_cast<long long>(entity.Id));
+		Application::Instance->mPhysicsSystem.RegisterEntity(static_cast<long long>(entity.Id));
+
+		auto& rigidbody = entity.AddComponent<Rigidbody>();
+		auto& transform = entity.AddComponent<Transform>();
+		auto& mesh = entity.AddComponent<Mesh>();
+		auto& material = entity.AddComponent<Material>();
+		auto& collider = entity.AddComponent<BoxCollider>();
+		rigidbody.useGravity = false;
+		collider.Initialize(entity.Id);
+
+		transform.SetTranslation({ 0, 0, 0 });
+		transform.SetScale({ 10, .05, 10 });
+
+		mesh = Mesh(Application::Instance->resourceDataPath.Path() + "/models/cube.fbx");
+
+		String pixelShaderPath = Application::Instance->resourceDataPath.Path() + "/shader/DefaultPixelShader.cso";
+		String diffuseTexFilePath = Application::Instance->resourceDataPath.Path() + "/models/textures/DefaultMaterial_albedo.jpeg";
+		String normalTexFilePath = Application::Instance->resourceDataPath.Path() + "/models/textures/DefaultMaterial_normal.jpeg";
+
+		material.AddBind(std::make_shared<PixelShader>(StringConverter::StringToWString(pixelShaderPath.Value())));
+		//material.AddBind(std::make_shared<Texture2D>(diffuseTexFilePath));
+		//material.AddBind(std::make_shared<Texture2D>(normalTexFilePath, 1));
+		material.AddBind(std::make_shared<Sampler>(D3D11_TEXTURE_ADDRESS_WRAP));
+
+		// Initialize const buffer for each entity!
+		mesh.CreateConstBufs(std::move(transform.GetTransformationMatrix()));
 	}
 
 	/// <summary>

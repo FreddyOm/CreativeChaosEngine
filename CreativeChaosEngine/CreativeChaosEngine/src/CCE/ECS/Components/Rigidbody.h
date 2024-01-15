@@ -12,7 +12,7 @@ namespace CCE::ECS::Components
 	{
 	public:
 
-		Rigidbody() : mass(1) {}
+		Rigidbody() : mass(1), useGravity(true) {}
 		
 		Rigidbody(double mass)
 		: mass(mass)
@@ -27,6 +27,7 @@ namespace CCE::ECS::Components
 	public:
 
 		void AddForce(DirectX::XMVECTOR force);
+		void UpdateRigidbody();
 		DirectX::XMVECTOR Velocity() const;
 		DirectX::XMVECTOR Acceleration() const;
 

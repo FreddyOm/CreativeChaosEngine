@@ -29,9 +29,13 @@ namespace CCE::ECS::Systems
 
 	void PhysicsSystem::UpdateSystem()
 	{
+		UpdateECSBasic();
+	}
+
+	void PhysicsSystem::UpdateECSBasic()
+	{
 		using Entity = CCE::ECS::Entity;
 		using namespace CCE::ECS::Components;
-		// @TODO: Implement :)
 
 		for (long long id : mEntities)
 		{
@@ -39,15 +43,53 @@ namespace CCE::ECS::Systems
 
 			auto* tf = e.GetComponent<Transform>();
 			auto* rb = e.GetComponent<Rigidbody>();
-			rb->AddForce({ 0, -(GravitationalAccelarion() * 0.01f), 0 });
 
-			DirectX::XMFLOAT3 newPos{};
-			auto _newPos = DirectX::XMVectorAdd({ tf->Position().x, tf->Position().y, tf->Position().z },
-				DirectX::XMVectorScale(rb->Velocity(), Time::deltaTime));
+			// Update rigidbody internal acceleration
+			
+			rb->UpdateRigidbody();
 
-			DirectX::XMStoreFloat3(&newPos, _newPos);
+			if (rb->useGravity)
+			{
+				// Take rigidbody velocity to update transform
+				DirectX::XMFLOAT3 newPos{};
+				auto _newPos = DirectX::XMVectorAdd({ tf->Position().x, tf->Position().y, tf->Position().z },
+					DirectX::XMVectorScale(rb->Velocity(), Time::deltaTime));
 
-			tf->SetTranslation(std::move(newPos));
-		}		
+				DirectX::XMStoreFloat3(&newPos, _newPos);
+				tf->SetTranslation(std::move(newPos));
+			}			
+
+			// @TODO: Now do collision testing...
+
+			BroadPhaseCollisionDetection();
+			MidPhaseCollisionDetection();
+			NarrowPhaseCollisionDetection();
+		}
 	}
+
+	/// <summary>
+	/// The broad phase of the collision system.
+	/// </summary>
+	void PhysicsSystem::BroadPhaseCollisionDetection() const
+	{
+
+	}
+
+	/// <summary>
+	/// The mid phase of the collision system.
+	/// </summary>
+	void PhysicsSystem::MidPhaseCollisionDetection() const
+	{
+
+	}
+
+	/// <summary>
+	/// The narrow phase of the collision system.
+	/// </summary>
+	void PhysicsSystem::NarrowPhaseCollisionDetection() const
+	{
+
+	}
+
+	std::vector<long long> PhysicsSystem::collisionSystem{};
 }

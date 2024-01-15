@@ -31,22 +31,27 @@ namespace CCE::ECS::Systems
 
 	void RenderingSystem::UpdateSystem()
 	{
+		UpdateECSBasic();
+	}
+
+	void RenderingSystem::UpdateECSBasic()
+	{
 		using Entity = CCE::ECS::Entity;
 		using namespace CCE::ECS::Components;
-		
+
 		for (long long id : mEntities)
 		{
 			Entity e(id);
 			// @TODO: Implement here!
 
-			auto transform = e.GetComponent<Transform>();
-			auto material = e.GetComponent<Material>();
-			auto mesh = e.GetComponent<Mesh>();
+			auto* transform = e.GetComponent<Transform>();
+			auto* material = e.GetComponent<Material>();
+			auto* mesh = e.GetComponent<Mesh>();
 
 			// Draw and update everything
 			DirectX::XMFLOAT4X4 modelMatrix;
 			XMStoreFloat4x4(&modelMatrix, transform->GetTransformationMatrix());
-			
+
 			mesh->pMeshConstBuf->UpdateConstantBuffer(std::move(modelMatrix));
 			mesh->pMeshConstBuf->DynamicBind();
 

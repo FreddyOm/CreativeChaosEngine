@@ -1,5 +1,6 @@
 #pragma once
 #include "ECSSystem.h"
+#include <vector>
 
 namespace CCE::ECS::Systems
 {
@@ -15,5 +16,13 @@ namespace CCE::ECS::Systems
 		void RegisterEntity(long long entity);
 
 		void UpdateSystem();
+
+		static std::vector<long long> collisionSystem;
+
+	private:
+		void UpdateECSBasic();
+		void BroadPhaseCollisionDetection() const;
+		void MidPhaseCollisionDetection() const;
+		void NarrowPhaseCollisionDetection() const;
 	};
 }
