@@ -28,7 +28,7 @@ namespace CCE
 #else
 #error CCE is currently only supported for Windows
 #endif
-
+		startTime = Time::Now();
 		initialized = true;
 		LOGC("RuntimeManager initialized!", COLOR_BLUE);
 	}

@@ -2,6 +2,12 @@ SamplerState splr : register(s0);
 Texture2D Texture : register(t0);
 Texture2D Normal : register(t1);
 
+struct Light
+{
+    float4 position;
+    float4 color;
+};
+
 struct PixelShaderInput
 {
     float4 position : SV_POSITION;
@@ -12,5 +18,5 @@ float4 main(PixelShaderInput input) : SV_TARGET
 {
     float4 _albedo = Texture.Sample(splr, input.uv_coordinates);
     //return Normal.Sample(splr, input.uv_coordinates);
-    return float4(.5f, .7f, .5f, 0);
+    return float4(.22f, .81f, .95f, 0);
 }

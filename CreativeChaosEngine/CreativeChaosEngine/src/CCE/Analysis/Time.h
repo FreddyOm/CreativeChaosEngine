@@ -13,6 +13,7 @@ namespace CCE
 		using time = cr::high_resolution_clock;
 		using mics = cr::duration<cr::microseconds>;
 		using time_point = cr::time_point<time, mics>;
+		using point = cr::steady_clock::time_point;
 
 		alignas(16) static double average[AVG_BUF_LEN];
 		static double deltaTime;
@@ -26,6 +27,8 @@ namespace CCE
 		static long GetDurationInMicroSec(const time::time_point start, const time::time_point end);
 		static double GetAverageFrameTime();
 		static void SetDeltaTime(const double millis);
+		static long long GetMillisSinceStart();
+		static double GetSecondsSinceStart();
 	};
 
 	struct CCE_API DateTime

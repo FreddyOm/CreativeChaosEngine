@@ -250,8 +250,8 @@ namespace CCE::Graphics
 
 		#pragma region rotate cam
 
-		float lookDeltaX = controller->RJoypad.x.value * camRotYDelta * (float)CCE::Time::deltaTime;
-		float lookDeltaY = -controller->RJoypad.y.value * camRotXDelta * (float)CCE::Time::deltaTime;
+		float lookDeltaX = controller->RJoypad.x.value * camRotYDelta * 10 * (float)CCE::Time::deltaTime;
+		float lookDeltaY = -controller->RJoypad.y.value * camRotXDelta * 10 * (float)CCE::Time::deltaTime;
 		// Make sure, the global up vector still holds true in any case!!
 		if (transform.Rotation().x + lookDeltaY > -80.0f && transform.Rotation().x + lookDeltaY < 80.0f)
 		{

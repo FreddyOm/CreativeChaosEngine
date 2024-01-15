@@ -1,5 +1,6 @@
 #include "Rigidbody.h"
 #include "../../Analysis/Debug.h"
+#include "../../Analysis/Time.h"
 
 namespace CCE::ECS::Components
 {
@@ -16,9 +17,9 @@ namespace CCE::ECS::Components
 			"Cannot add force to object with mass less or equal to 0!");
 
 		XMVECTOR newAcc = XMLoadFloat3(&acceleration) + XMVectorScale(force, 1.0 / mass);
-		XMStoreFloat3(&acceleration, newAcc);
+		XMStoreFloat3(&acceleration, XMVectorScale(newAcc, Time::deltaTime));
 
-		XMVectorAdd(Velocity(), Acceleration()); // @TODO: This doesn't work atm. Check GEA!!
+		XMStoreFloat3(&velocity, XMLoadFloat3(&velocity) + newAcc);
 	}
 
 	DirectX::XMVECTOR Rigidbody::Velocity() const

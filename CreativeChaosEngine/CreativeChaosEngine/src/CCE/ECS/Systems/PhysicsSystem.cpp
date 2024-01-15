@@ -33,22 +33,21 @@ namespace CCE::ECS::Systems
 		using namespace CCE::ECS::Components;
 		// @TODO: Implement :)
 
-		// Do physics
 		for (long long id : mEntities)
 		{
 			Entity e = Entity(id);
 
-			Rigidbody* rb = e.GetComponent<Rigidbody>();
-			Transform* tf = e.GetComponent<Transform>();
-
-			rb->AddForce({0, - GravitationalAccelarion(), 0 });
-
-			auto pos = DirectX::XMLoadFloat3(&tf->Position());
+			auto* tf = e.GetComponent<Transform>();
+			auto* rb = e.GetComponent<Rigidbody>();
+			rb->AddForce({ 0, -(GravitationalAccelarion() * 0.01f), 0 });
 
 			DirectX::XMFLOAT3 newPos{};
-			DirectX::XMStoreFloat3(&newPos, DirectX::XMVectorAdd(pos, rb->Velocity()));
-			
+			auto _newPos = DirectX::XMVectorAdd({ tf->Position().x, tf->Position().y, tf->Position().z },
+				DirectX::XMVectorScale(rb->Velocity(), Time::deltaTime));
+
+			DirectX::XMStoreFloat3(&newPos, _newPos);
+
 			tf->SetTranslation(std::move(newPos));
-		}
+		}		
 	}
 }

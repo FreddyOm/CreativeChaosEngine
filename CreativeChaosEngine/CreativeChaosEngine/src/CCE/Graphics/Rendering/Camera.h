@@ -48,13 +48,13 @@ namespace CCE::Graphics
 		float farPlane = 50.0f;
 
 		DirectX::XMFLOAT3 lookDir = {0, 0, 1};
-		float camMovementDelta = 0.003f;
-		float defaultCamMovementDelta = 0.003f;
-		float fastCamMovementDelta = 0.007f;
-		float camPanDelta = 0.05f;
-		float camZoomDelta = 0.5f;
-		float camRotXDelta = 0.10f;
-		float camRotYDelta = 0.10f;
+		float camMovementDelta = 3.f;
+		float defaultCamMovementDelta = 3.f;
+		float fastCamMovementDelta = 7.f;
+		float camPanDelta = 5.f;
+		float camZoomDelta = 5.f;
+		float camRotXDelta = 5.0f;
+		float camRotYDelta = 5.0f;
 
 		ProjectionType projType = ProjectionType::PERSPECTIVE;
 

@@ -79,17 +79,17 @@ namespace CCE::ECS::Components
 		return XMVector3Normalize(right);
 	}
 
-	DirectX::XMFLOAT3& Transform::Position()
+	DirectX::XMFLOAT3& Transform::Position()		// @TODO: Make const& and const func
 	{
 		return position;
 	}
 
-	DirectX::XMFLOAT3& Transform::Scale()
+	DirectX::XMFLOAT3& Transform::Scale()			// @TODO: Make const& and const func
 	{
 		return scale;
 	}
 
-	DirectX::XMFLOAT3& Transform::Rotation()
+	DirectX::XMFLOAT3& Transform::Rotation()		// @TODO: Make const& and const func
 	{
 		return rotation;
 	}

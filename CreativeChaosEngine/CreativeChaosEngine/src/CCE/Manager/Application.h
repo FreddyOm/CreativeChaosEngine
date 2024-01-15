@@ -39,6 +39,8 @@ namespace CCE
 		Directory resourceDataPath = {};
 		//...
 
+		Time::point startTime{};
+
 	private:
 
 		void Initialize();
