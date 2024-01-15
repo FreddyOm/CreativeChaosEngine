@@ -22,11 +22,18 @@ namespace CCE::ECS::Components
 		using namespace DirectX;
 		if (!useGravity) { return; }
 		
-		XMVECTOR force = { 0, -GravitationalAccelarion(), 0 };
-		XMVECTOR vel = XMLoadFloat3(&velocity);
+		XMVECTOR force = { 0, -GravitationalAccelarion() / 1000, 0 };
 		// Do gravity
-		XMStoreFloat3(&acceleration, XMVectorScale(force, Time::deltaTime));
-		XMStoreFloat3(&velocity, vel + XMLoadFloat3(&acceleration));
+		XMStoreFloat3(&acceleration, XMVectorAdd(XMLoadFloat3(&acceleration), XMVectorScale(force, Time::deltaTime)));
+		XMStoreFloat3(&velocity, XMLoadFloat3(&velocity) + XMLoadFloat3(&acceleration));
+	}
+
+	void Rigidbody::Reflect(const float frictionCoeff)
+	{
+		// @TODO: Reflect the velocity in order to make the object bounce. Later rflect on collision normal!
+		using namespace DirectX;
+		XMStoreFloat3(&velocity, XMVectorScale({ velocity.x, -velocity.y, velocity.z }, frictionCoeff));
+		XMStoreFloat3(&acceleration, XMVectorScale({ acceleration.x, -acceleration.y, acceleration.z }, frictionCoeff));
 	}
 
 	DirectX::XMVECTOR Rigidbody::Velocity() const

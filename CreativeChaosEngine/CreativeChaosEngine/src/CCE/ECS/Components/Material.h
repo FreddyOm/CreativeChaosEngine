@@ -17,6 +17,10 @@ namespace CCE::ECS::Components
 
 		void AddBind(std::shared_ptr<CCE::Graphics::IBindable> bind) noexcept;
 		
+	public:
+
+		DirectX::XMFLOAT3 BaseColor = { 1, 1, 1 };
+
 	private:
 		std::vector<std::shared_ptr<CCE::Graphics::IBindable>> materialBindPtrs = {};
 	};

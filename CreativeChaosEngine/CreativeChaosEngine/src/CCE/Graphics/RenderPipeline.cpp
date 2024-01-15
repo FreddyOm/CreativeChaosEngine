@@ -83,9 +83,9 @@ namespace CCE::Graphics
 
 		using namespace ECS::Components;
 
-		for (int x = 0; x < 1; ++x)
+		for (int x = 0; x < 3; ++x)
 		{
-			for (int z = 0; z < 1; ++z)
+			for (int z = 0; z < 3; ++z)
 			{
 				ECS::Entity entity = ECS::EntityComponentSystem::Instance->CreateEntity();
 				renderingSystem.RegisterEntity(static_cast<long long>(entity.Id));
@@ -95,11 +95,17 @@ namespace CCE::Graphics
 				auto& transform = entity.AddComponent<Transform>();
 				auto& mesh = entity.AddComponent<Mesh>();
 				auto& material = entity.AddComponent<Material>();
-				auto& collider = entity.AddComponent<SphereCollider>();
-				collider.Initialize(entity.Id);
+				auto& collider = entity.AddComponent<BoxCollider>();
 
-				transform.SetTranslation({ (float)x , 0, (float)z });
+				transform.SetTranslation({ (float)x , 5, (float)z });
 				transform.SetScale({ .3, .3, .3 });
+
+				material.BaseColor = {1, 0.2f, 0.2f};
+
+				collider.Initialize(entity.Id);
+				collider.Width = transform.Scale().x;
+				collider.Height = transform.Scale().y;
+				collider.Length = transform.Scale().z;
 
 				mesh = Mesh(Application::Instance->resourceDataPath.Path() + "/models/sphere.fbx");
 
@@ -113,7 +119,7 @@ namespace CCE::Graphics
 				material.AddBind(std::make_shared<Sampler>(D3D11_TEXTURE_ADDRESS_WRAP));
 
 				// Initialize const buffer for each entity!
-				mesh.CreateConstBufs(std::move(transform.GetTransformationMatrix()));
+				mesh.CreateConstBufs(std::move(VSConstBufData(transform.GetTransformationMatrix(), material.BaseColor)));
 			}
 		}
 
@@ -128,11 +134,19 @@ namespace CCE::Graphics
 		auto& mesh = entity.AddComponent<Mesh>();
 		auto& material = entity.AddComponent<Material>();
 		auto& collider = entity.AddComponent<BoxCollider>();
-		rigidbody.useGravity = false;
-		collider.Initialize(entity.Id);
 
 		transform.SetTranslation({ 0, 0, 0 });
-		transform.SetScale({ 10, .05, 10 });
+		transform.SetScale({ 1, .025, 1 });
+		
+		material.BaseColor = {1,1,1};
+		
+		rigidbody.useGravity = false;
+		
+		collider.Initialize(entity.Id);
+		collider.Width = transform.Scale().x;
+		collider.Height = transform.Scale().y;
+		collider.Length = transform.Scale().z;
+
 
 		mesh = Mesh(Application::Instance->resourceDataPath.Path() + "/models/cube.fbx");
 
@@ -146,7 +160,7 @@ namespace CCE::Graphics
 		material.AddBind(std::make_shared<Sampler>(D3D11_TEXTURE_ADDRESS_WRAP));
 
 		// Initialize const buffer for each entity!
-		mesh.CreateConstBufs(std::move(transform.GetTransformationMatrix()));
+		mesh.CreateConstBufs(std::move(VSConstBufData(transform.GetTransformationMatrix(), material.BaseColor)));
 	}
 
 	/// <summary>

@@ -9,7 +9,7 @@ namespace CCE::Graphics
 {
 	Camera::Camera()
 	{
-		transform.SetTranslation({0.0f, 0.0f, -10.0f});
+		transform.SetTranslation({0.0f, 2.0f, -10.0f});
 		SetFovAndLookDir();
 		CreateConstBufs();
 

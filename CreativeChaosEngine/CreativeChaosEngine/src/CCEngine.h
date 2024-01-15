@@ -22,6 +22,7 @@
 
 // -------- Manager ---------
 
+#include "CCE/ECS/Systems/PhysicsSystem.h"
 
 // -------------------------
 

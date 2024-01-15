@@ -146,5 +146,8 @@
     <ClInclude Include="src\GUIDrawables\Icons.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="src\GUIDrawables\DebugElements\PhysicsTimeDebugInfoLabel.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -16,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CCE\ECS\Components\Behaviour.cpp" />
+    <ClCompile Include="src\CCE\ECS\Components\Collider.cpp" />
     <ClCompile Include="src\CCE\ecs\components\Material.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Mesh.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Rigidbody.cpp" />
@@ -82,6 +83,7 @@
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\ConstantBuffer.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Sampler.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Texture2D.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\VSConstBufData.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Camera.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\BindableCommon.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\InputLayout.h" />

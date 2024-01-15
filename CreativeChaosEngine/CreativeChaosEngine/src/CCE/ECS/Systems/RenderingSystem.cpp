@@ -1,4 +1,5 @@
 #include "RenderingSystem.h"
+#include "../../Graphics/Rendering/Bindable/VSConstBufData.h"
 #include "../../Graphics/Rendering/Bindable/ConstantBuffer.h"
 #include "../Components/ComponentHeaders.h"
 #include "../EntityComponentSystem.h"
@@ -52,7 +53,7 @@ namespace CCE::ECS::Systems
 			DirectX::XMFLOAT4X4 modelMatrix;
 			XMStoreFloat4x4(&modelMatrix, transform->GetTransformationMatrix());
 
-			mesh->pMeshConstBuf->UpdateConstantBuffer(std::move(modelMatrix));
+			mesh->pMeshConstBuf->UpdateConstantBuffer(Graphics::VSConstBufData(modelMatrix, material->BaseColor));
 			mesh->pMeshConstBuf->DynamicBind();
 
 			// Bind and draw indexed

@@ -28,6 +28,7 @@ namespace CCE::ECS::Components
 
 		void AddForce(DirectX::XMVECTOR force);
 		void UpdateRigidbody();
+		void Reflect(const float frictionCoeff = 1.0f);
 		DirectX::XMVECTOR Velocity() const;
 		DirectX::XMVECTOR Acceleration() const;
 

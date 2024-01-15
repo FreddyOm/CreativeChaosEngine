@@ -55,6 +55,7 @@
     <ClCompile Include="src\CCE\Resources\ResourceAllocator.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Mesh.cpp" />
     <ClCompile Include="src\CCE\ecs\components\Material.cpp" />
+    <ClCompile Include="src\CCE\ECS\Components\Collider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\ECS\ComponentBuffer.h" />
@@ -218,6 +219,7 @@
     <ClInclude Include="src\CCE\Resources\MeshData.h" />
     <ClInclude Include="src\CCE\ECS\Components\Material.h" />
     <ClInclude Include="src\CCE\ECS\Components\Collider.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\VSConstBufData.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="resources\sdk\assimp-vc143-mt.lib" />

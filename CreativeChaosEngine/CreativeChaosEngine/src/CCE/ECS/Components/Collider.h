@@ -1,17 +1,19 @@
 #pragma once
 #include "../../Graphics/Rendering/D3D11.h"
 #include "../Systems/PhysicsSystem.h"
+#include "Transform.h"
 
 namespace CCE::ECS::Components
 {
 	struct SphereCollider
 	{
+		DirectX::XMFLOAT3 Center = { 0, 0, 0 };
 		float Radius = 1.0f;
 		bool IsSolid = true;
 
 		void Initialize(long long Id)
 		{
-			Systems::PhysicsSystem::collisionSystem.push_back(Id);
+			Systems::PhysicsSystem::CollisionSystem.push_back(Id);
 		}
 	};
 
@@ -25,7 +27,9 @@ namespace CCE::ECS::Components
 
 		void Initialize(long long Id)
 		{
-			Systems::PhysicsSystem::collisionSystem.push_back(Id);
+			Systems::PhysicsSystem::CollisionSystem.push_back(Id);
 		}
 	};
+
+	bool CollideAABB(Transform& at, BoxCollider& ac, Transform& bt, BoxCollider& bc);
 }

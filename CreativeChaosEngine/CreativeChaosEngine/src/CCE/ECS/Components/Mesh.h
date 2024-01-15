@@ -4,6 +4,7 @@
 #include "../../Resources/MeshData.h"
 #include "../../Graphics/Rendering/Bindable/BindableCommon.h"
 #include "../../Graphics/Rendering/D3D11.h"
+#include "../../Graphics/Rendering/Bindable/VSConstBufData.h"
 
 
 namespace CCE::ECS::Components
@@ -27,10 +28,10 @@ namespace CCE::ECS::Components
 		void DynamicBind(DirectX::XMMATRIX modelMatrix);
 
 		void AddBind(const std::shared_ptr<Graphics::IBindable> bind) noexcept;
-		void CreateConstBufs(const DirectX::XMMATRIX& modelMatrix);
+		void CreateConstBufs(const Graphics::VSConstBufData& constBufData);
 
 	public:
-		std::shared_ptr<Graphics::VSConstantBuffer<DirectX::XMFLOAT4X4>> pMeshConstBuf = nullptr;
+		std::shared_ptr<Graphics::VSConstantBuffer<Graphics::VSConstBufData>> pMeshConstBuf = nullptr;
 		const Graphics::IndexBuffer* pIndexBuffer = nullptr;
 
 	private:

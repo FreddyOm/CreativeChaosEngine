@@ -10,7 +10,7 @@ namespace CCE::ECS::Components
 {
 	Mesh::Mesh(String path)
 		: meshPath(path)
-		,meshData(CCE::Resources::ResourceAllocator::Instance->GetMesh(path))
+		,meshData(Resources::ResourceAllocator::Instance->GetMesh(path))
 	{
 		String vertexShader = Application::Instance->resourceDataPath.Path() + "/shader/DefaultVertexShader.cso";
 		auto vs = std::make_shared<Graphics::VertexShader>(StringConverter::StringToWString(vertexShader.Value()));
@@ -60,10 +60,8 @@ namespace CCE::ECS::Components
 		meshBindPtr.push_back(std::move(bind));
 	}
 
-	void Mesh::CreateConstBufs(const DirectX::XMMATRIX& modelMatrix)
+	void Mesh::CreateConstBufs(const Graphics::VSConstBufData& constBufData)
 	{
-		DirectX::XMFLOAT4X4 _modelMatrix;
-		XMStoreFloat4x4(&_modelMatrix, modelMatrix);
-		pMeshConstBuf = std::make_shared<Graphics::VSConstantBuffer<DirectX::XMFLOAT4X4>>(_modelMatrix, 0);
+		pMeshConstBuf = std::make_shared<Graphics::VSConstantBuffer<Graphics::VSConstBufData>>(constBufData, 0);
 	}
 }

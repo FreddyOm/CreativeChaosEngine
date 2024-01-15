@@ -29,7 +29,10 @@ namespace CCE::ECS::Systems
 
 	void PhysicsSystem::UpdateSystem()
 	{
+		auto start = Time::Now();
 		UpdateECSBasic();
+		auto end = Time::Now();
+		PhysicsCalcDuration = Time::GetDurationInMilliSec(start, end);
 	}
 
 	void PhysicsSystem::UpdateECSBasic()
@@ -63,7 +66,7 @@ namespace CCE::ECS::Systems
 
 			BroadPhaseCollisionDetection();
 			MidPhaseCollisionDetection();
-			NarrowPhaseCollisionDetection();
+			NarrowPhaseCollisionDetection(id);
 		}
 	}
 
@@ -86,10 +89,30 @@ namespace CCE::ECS::Systems
 	/// <summary>
 	/// The narrow phase of the collision system.
 	/// </summary>
-	void PhysicsSystem::NarrowPhaseCollisionDetection() const
+	void PhysicsSystem::NarrowPhaseCollisionDetection(long long id) const
 	{
+		using Entity = CCE::ECS::Entity;
+		using namespace CCE::ECS::Components;
 
+		Entity e = Entity(id);
+		for (auto& col : CollisionSystem)
+		{
+			if (col == id) { continue; }	// Do not check for self collision
+
+			Entity other = Entity(col);
+			
+			if (CollideAABB(*e.GetComponent<Transform>(), 
+				*e.GetComponent<BoxCollider>(),
+				*other.GetComponent<Transform>(), 
+				*other.GetComponent<BoxCollider>()))
+			{
+				e.GetComponent<Rigidbody>()->Reflect();
+				other.GetComponent<Rigidbody>()->Reflect();
+			}
+		}
+		
 	}
 
-	std::vector<long long> PhysicsSystem::collisionSystem{};
+	std::vector<long long> PhysicsSystem::CollisionSystem{};
+	double PhysicsSystem::PhysicsCalcDuration{};
 }

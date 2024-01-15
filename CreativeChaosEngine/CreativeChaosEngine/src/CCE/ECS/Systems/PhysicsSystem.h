@@ -1,10 +1,12 @@
 #pragma once
 #include "ECSSystem.h"
+#include "../../Core.h"
 #include <vector>
+#include "../../Analysis/Time.h"
 
 namespace CCE::ECS::Systems
 {
-	struct PhysicsSystem : public ECSSystem
+	struct CCE_API PhysicsSystem : public ECSSystem
 	{
 	public:
 		PhysicsSystem() = default;
@@ -17,12 +19,13 @@ namespace CCE::ECS::Systems
 
 		void UpdateSystem();
 
-		static std::vector<long long> collisionSystem;
+		static std::vector<long long> CollisionSystem;
+		static double PhysicsCalcDuration;
 
 	private:
 		void UpdateECSBasic();
 		void BroadPhaseCollisionDetection() const;
 		void MidPhaseCollisionDetection() const;
-		void NarrowPhaseCollisionDetection() const;
+		void NarrowPhaseCollisionDetection(long long id) const;
 	};
 }
