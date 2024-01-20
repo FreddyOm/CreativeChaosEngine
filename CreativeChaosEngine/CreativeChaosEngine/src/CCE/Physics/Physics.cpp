@@ -36,8 +36,8 @@ namespace CCE::Physics
 	/// <param name="secondTransform">The transform of the second object.</param>
 	/// <param name="secondCollider">The collider of the second object.</param>
 	/// <returns>True if collision was registered, false if not.</returns>
-	bool CollideAABB(ECS::Components::Transform* firstTransform, ECS::Components::Collider* firstCollider,
-		ECS::Components::Transform* secondTransform, ECS::Components::Collider* secondCollider)
+	bool CollideAABB(CCE::ECS::Components::Transform* firstTransform, CCE::ECS::Components::Collider* firstCollider,
+		CCE::ECS::Components::Transform* secondTransform, CCE::ECS::Components::Collider* secondCollider)
 	{
 		DASSERT(firstCollider->Shape == ECS::Components::Collider::Shape::Box &&
 			secondCollider->Shape == ECS::Components::Collider::Shape::Box,

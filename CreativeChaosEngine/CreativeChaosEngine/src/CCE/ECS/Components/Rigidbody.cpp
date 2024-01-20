@@ -20,11 +20,19 @@ namespace CCE::ECS::Components
 	void Rigidbody::UpdateRigidbody()
 	{
 		using namespace DirectX;
-		if (!useGravity) { return; }
 		
-		XMVECTOR force = { 0, -GravitationalAccelarion() / 1000, 0 };
-		// Do gravity
-		XMStoreFloat3(&acceleration, XMVectorAdd(XMLoadFloat3(&acceleration), XMVectorScale(force, Time::deltaTime)));
+		if (useGravity)
+		{
+			// Do gravity
+			XMVECTOR force = { 0, -GravitationalAccelarion() / 1000, 0 };
+			XMStoreFloat3(&acceleration, XMVectorAdd(XMLoadFloat3(&acceleration), XMVectorScale(force, Time::deltaTime)));
+		}
+		else 
+		{
+			XMStoreFloat3(&velocity, { 0,0,0 });
+			XMStoreFloat3(&acceleration, {0,0,0});
+		}
+				
 		XMStoreFloat3(&velocity, XMLoadFloat3(&velocity) + XMLoadFloat3(&acceleration));
 	}
 

@@ -26,6 +26,8 @@ namespace CCE::Physics
 	};
 
 
-	bool CollideAABB(const DirectX::XMFLOAT3& firstPosition, const DirectX::XMFLOAT3& firstSize, const DirectX::XMFLOAT3& secondPosition, DirectX::XMFLOAT3& secondSize);
-	bool CollideAABB(CCE::ECS::Components::Transform* at, CCE::ECS::Components::Collider* ac, CCE::ECS::Components::Transform* bt, CCE::ECS::Components::Collider* bc);
+	bool CollideAABB(const DirectX::XMFLOAT3& firstPosition, const DirectX::XMFLOAT3& firstSize, 
+		const DirectX::XMFLOAT3& secondPosition, const DirectX::XMFLOAT3& secondSize);
+	bool CollideAABB(CCE::ECS::Components::Transform* at, CCE::ECS::Components::Collider* ac, 
+		CCE::ECS::Components::Transform* bt, CCE::ECS::Components::Collider* bc);
 }

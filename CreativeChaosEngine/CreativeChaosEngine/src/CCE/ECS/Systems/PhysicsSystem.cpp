@@ -77,7 +77,7 @@ namespace CCE::ECS::Systems
 		using namespace CCE::Containers;
 		using namespace CCE::ECS::Components;
 		
-		Octree<Entity> bspTree({20,20,20});
+		Octree<Entity> bspTree({10,10,10});
 
 		// Add all collidable objects
 		for (long long id : mEntities)
@@ -97,10 +97,12 @@ namespace CCE::ECS::Systems
 			{
 				for (auto i = data.begin(); i != data.end(); ++i)
 				{
-					for (auto j = std::next(i); j != data.end(); ++j)
+					for (auto j = data.begin(); j != data.end(); ++j)
 					{
-						auto first = i->pObjRef->Id < j->pObjRef->Id ? i->pObjRef->Id : j->pObjRef->Id;
-						auto second = i->pObjRef->Id > j->pObjRef->Id ? j->pObjRef->Id : i->pObjRef->Id;
+						if (j->pObjRef.Id == i->pObjRef.Id) { continue; } // Disallow self collision!
+
+						auto first = i->pObjRef.Id < j->pObjRef.Id ? i->pObjRef.Id : j->pObjRef.Id;
+						auto second = i->pObjRef.Id < j->pObjRef.Id ? j->pObjRef.Id : i->pObjRef.Id;
 
 						FrameCollisions.insert(std::move(Physics::CollisionInfo(first, second)));
 					}
@@ -137,14 +139,17 @@ namespace CCE::ECS::Systems
 			DASSERT(first != second,
 				"Checking for self collision is invalid! Both colliders have the same pointer!");
 			
-			if (CollideAABB(first.GetComponent<Transform>(), first.GetComponent<Collider>(),
-				second.GetComponent<Transform>(), second.GetComponent<Collider>()))
+			if (CollideAABB(first.GetComponent<Transform>(), first.GetComponent<BoxCollider>(),
+				second.GetComponent<Transform>(), second.GetComponent<BoxCollider>()))
 			{
 				/*e.GetComponent<Rigidbody>()->Reflect();
 				other.GetComponent<Rigidbody>()->Reflect();*/
 
-				first.GetComponent<Rigidbody>()->useGravity = false;
-				second.GetComponent<Rigidbody>()->useGravity = false;
+				auto* rb1 = first.GetComponent<Rigidbody>();
+				rb1->useGravity = false;
+
+				auto* rb2 = second.GetComponent<Rigidbody>();
+				rb2->useGravity = false;
 			}
 		}		
 	}
