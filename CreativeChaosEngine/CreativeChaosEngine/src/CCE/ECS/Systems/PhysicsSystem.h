@@ -1,8 +1,10 @@
 #pragma once
 #include "ECSSystem.h"
 #include "../../Core.h"
-#include <vector>
 #include "../../Analysis/Time.h"
+#include "../../Physics/Physics.h"
+#include <vector>
+#include <set>
 
 namespace CCE::ECS::Systems
 {
@@ -19,13 +21,14 @@ namespace CCE::ECS::Systems
 
 		void UpdateSystem();
 
-		static std::vector<long long> CollisionSystem;
+		static std::vector<long long> PhysicsWorld;
+		static std::set<Physics::CollisionInfo> FrameCollisions;
 		static double PhysicsCalcDuration;
 
 	private:
 		void UpdateECSBasic();
 		void BroadPhaseCollisionDetection() const;
 		void MidPhaseCollisionDetection() const;
-		void NarrowPhaseCollisionDetection(long long id) const;
+		void NarrowPhaseCollisionDetection() const;
 	};
 }

@@ -107,7 +107,7 @@ namespace CCE::Graphics
 				collider.Height = transform.Scale().y;
 				collider.Length = transform.Scale().z;
 
-				mesh = Mesh(Application::Instance->resourceDataPath.Path() + "/models/sphere.fbx");
+				mesh = Mesh(Application::Instance->resourceDataPath.Path() + "/models/cube.fbx");
 
 				String pixelShaderPath = Application::Instance->resourceDataPath.Path() + "/shader/DefaultPixelShader.cso";
 				String diffuseTexFilePath = Application::Instance->resourceDataPath.Path() + "/models/textures/DefaultMaterial_albedo.jpeg";

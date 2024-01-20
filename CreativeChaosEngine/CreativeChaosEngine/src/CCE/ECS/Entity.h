@@ -54,6 +54,11 @@ namespace CCE::ECS
 		{
 			return Id == other.Id;
 		}
+
+		bool operator!=(const Entity& other) const
+		{
+			return Id != other.Id;
+		}
 		
 		bool operator<(const Entity& other) const noexcept
 		{

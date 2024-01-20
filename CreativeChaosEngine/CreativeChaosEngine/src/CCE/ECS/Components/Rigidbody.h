@@ -40,7 +40,12 @@ namespace CCE::ECS::Components
 
 	private:
 
+		// Linear dnyamics
 		DirectX::XMFLOAT3 velocity = { 0.0f, 0.0f, 0.0f };
 		DirectX::XMFLOAT3 acceleration = { 0.0f, 0.0f, 0.0f };
+		
+		// Angular dynamics
+		DirectX::XMFLOAT3 omega = { 0.0f, 0.0f, 0.0f };
+		DirectX::XMFLOAT3 angularMomentum = {};
 	};
 }

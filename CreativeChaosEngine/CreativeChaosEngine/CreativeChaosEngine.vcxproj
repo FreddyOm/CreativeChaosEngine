@@ -32,11 +32,13 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\InputLayout.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\PixelShader.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IndexBuffer.cpp" />
+    <ClCompile Include="src\CCE\Physics\Physics.cpp" />
     <ClCompile Include="src\CCE\Resources\MeshLoader.cpp" />
     <ClCompile Include="src\CCE\Resources\ResourceAllocator.cpp" />
     <ClCompile Include="src\CCE\Resources\TextureLoader.cpp" />
     <ClCompile Include="src\CCE\Scene\Scene.cpp" />
     <ClCompile Include="src\CCE\String\StringMemory.cpp" />
+    <ClCompile Include="src\CCE\Utilities\Containers\OctreeNode.cpp" />
     <ClCompile Include="src\CCE\Utilities\IO\IO.cpp" />
     <ClCompile Include="src\CCE\Manager\MemoryManager.cpp" />
     <ClCompile Include="src\CCE\ClientWindow\ClientWindow.cpp" />
@@ -177,6 +179,7 @@
     <ClInclude Include="src\CCE\include\assimp\ZipArchiveIOSystem.h" />
     <ClInclude Include="src\CCE\include\json\json.hpp" />
     <ClInclude Include="src\CCE\include\json\json_fwd.hpp" />
+    <ClInclude Include="src\CCE\Physics\Physics.h" />
     <ClInclude Include="src\CCE\Resources\MeshData.h" />
     <ClInclude Include="src\CCE\Resources\MeshLoader.h" />
     <ClInclude Include="src\CCE\Resources\ResourceAllocator.h" />
@@ -191,6 +194,7 @@
     <ClInclude Include="src\CCE\Resources\Resource.h" />
     <ClInclude Include="src\CCE\Scene\Scene.h" />
     <ClInclude Include="src\CCE\String\StringMemory.h" />
+    <ClInclude Include="src\CCE\Utilities\Containers\Octree.h" />
     <ClInclude Include="src\CCE\Utilities\FreeImg\FreeImage.h" />
     <ClInclude Include="src\CCE\Utilities\IO\IO.h" />
     <ClInclude Include="src\CCE\Manager\MemoryManager.h" />

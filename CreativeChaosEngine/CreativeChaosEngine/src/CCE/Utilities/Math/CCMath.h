@@ -18,5 +18,17 @@ namespace CCE::Math
 	
 		static float Clamp(const float value, const float min, const float max) noexcept;
 		static float Clamp01(const float value) noexcept;
+
+		template<typename T>
+		static T& Min(const T& first, const T& second)
+		{
+			return first > second ? second : first;
+		}
+
+		template<typename T>
+		static T& Max(const T& first, const T& second)
+		{
+			return first < second ? second : first;
+		}
 	};
 }

@@ -1,23 +1,30 @@
 #pragma once
 #include "../../Graphics/Rendering/D3D11.h"
-#include "../Systems/PhysicsSystem.h"
-#include "Transform.h"
 
 namespace CCE::ECS::Components
 {
-	struct SphereCollider
+	struct Collider
+	{
+		enum class Shape
+		{
+			Sphere,
+			Box,
+			Mesh
+		};
+
+		Shape Shape = Shape::Sphere;
+	};
+
+	struct SphereCollider : Collider
 	{
 		DirectX::XMFLOAT3 Center = { 0, 0, 0 };
 		float Radius = 1.0f;
 		bool IsSolid = true;
 
-		void Initialize(long long Id)
-		{
-			Systems::PhysicsSystem::CollisionSystem.push_back(Id);
-		}
+		void Initialize(long long Id);
 	};
 
-	struct BoxCollider
+	struct BoxCollider : Collider
 	{
 		DirectX::XMFLOAT3 Center = { 0, 0, 0 };
 		float Height = 1.f;
@@ -25,11 +32,6 @@ namespace CCE::ECS::Components
 		float Length = 1.f;
 		bool IsSolid = true;
 
-		void Initialize(long long Id)
-		{
-			Systems::PhysicsSystem::CollisionSystem.push_back(Id);
-		}
-	};
-
-	bool CollideAABB(Transform& at, BoxCollider& ac, Transform& bt, BoxCollider& bc);
+		void Initialize(long long Id);
+	};	
 }
