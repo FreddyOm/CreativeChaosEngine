@@ -55,7 +55,6 @@
     <ClCompile Include="src\CCE\Resources\ResourceAllocator.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Mesh.cpp" />
     <ClCompile Include="src\CCE\ecs\components\Material.cpp" />
-    <ClCompile Include="src\CCE\Utilities\Containers\OctreeNode.cpp" />
     <ClCompile Include="src\CCE\Physics\Physics.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Collider.cpp" />
   </ItemGroup>
