@@ -13,7 +13,7 @@ namespace CCE::Graphics
 		SetFovAndLookDir();
 		CreateConstBufs();
 
-		InputManager::Instance->RegisterInputCallback(*this);
+		REGISTER_INPUT_CALLBACK;
 
 		REGISTER_LEAK_DETECT;
 	}

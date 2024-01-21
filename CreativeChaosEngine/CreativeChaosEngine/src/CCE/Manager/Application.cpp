@@ -181,6 +181,7 @@ namespace CCE
 		window->OpenWindow(GetModuleHandle(NULL));
 
 		scene = new Scene::Scene();
+		scene->SetupScene();
 	}
 
 	/// <summary>

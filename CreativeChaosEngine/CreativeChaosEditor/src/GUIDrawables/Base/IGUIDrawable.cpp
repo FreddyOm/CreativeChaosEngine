@@ -107,12 +107,15 @@ void IGUIDrawable::InitializeGUI()
 	// Hook the editors input calls to the engines input
 	InputManager::Instance->inputCallback = &ImGui_ImplWin32_WndProcHandler;
 
-	DASSERT(ImGui_ImplDX11_Init(Graphics::RenderPipeline::Instance->GetDevicePtr(),
-		Graphics::RenderPipeline::Instance->GetDeviceContextPtr()), "Failed initializing GUI with D3D11.");
+	bool ImguiInitD3D11 = ImGui_ImplDX11_Init(Graphics::RenderPipeline::Instance->GetDevicePtr(),
+		Graphics::RenderPipeline::Instance->GetDeviceContextPtr());
+
+	DASSERT(ImguiInitD3D11, "Failed initializing GUI with D3D11.");
+
+	bool ImguiInitWin32 = ImGui_ImplWin32_Init(GetActiveWindow());
 
 	// @TODO: Change GetActiveWindow for multi window support.
-	DASSERT(ImGui_ImplWin32_Init(GetActiveWindow()),
-		"Failed initializing GUI with Editor Window.");
+	DASSERT(ImguiInitWin32, "Failed initializing GUI with Editor Window.");
 }
 
 /// <summary>

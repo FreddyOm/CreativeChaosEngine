@@ -26,11 +26,20 @@ namespace CCE::ECS::Components
 
 	public:
 
-		void AddForce(DirectX::XMVECTOR force);
+		void ApplyLinearImpulse(const DirectX::XMVECTOR& force);
+		void ApplyAngularImpulse(const DirectX::XMVECTOR& force);
+
 		void UpdateRigidbody();
-		void Reflect(const float frictionCoeff = 1.0f);
-		DirectX::XMVECTOR Velocity() const;
-		DirectX::XMVECTOR Acceleration() const;
+		constexpr float InverseMass() 
+		{
+			return mass <= 0.000001 && mass >= -0.000001 ? 0.0f : 1.0f / mass;
+		}
+
+		DirectX::XMFLOAT3 velocity = { 0.0f, 0.0f, 0.0f };
+		DirectX::XMFLOAT3 acceleration = { 0.0f, 0.0f, 0.0f };
+
+		DirectX::XMFLOAT3 angularVelocity = { 0.0f, 0.0f, 0.0f };
+		DirectX::XMFLOAT3 inertiaTensor = { 0.0f, 0.0f, 0.0f };
 
 	public:
 
@@ -39,10 +48,6 @@ namespace CCE::ECS::Components
 		// Shape and stuff ...
 
 	private:
-
-		// Linear dnyamics
-		DirectX::XMFLOAT3 velocity = { 0.0f, 0.0f, 0.0f };
-		DirectX::XMFLOAT3 acceleration = { 0.0f, 0.0f, 0.0f };
 		
 		// Angular dynamics
 		DirectX::XMFLOAT3 omega = { 0.0f, 0.0f, 0.0f };

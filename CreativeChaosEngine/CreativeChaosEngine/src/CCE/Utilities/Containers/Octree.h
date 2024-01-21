@@ -123,7 +123,7 @@ namespace CCE::Containers
 			{
 				contents.push_back(OctreeEntry<T>(objectRef, objectPos, objectSize));
 
-				// put contents in sub branches
+				// Put contents in sub branches
 				if (contents.size() > maxSize && depthThreshold > 0)
 				{
 					Split();
@@ -171,5 +171,7 @@ namespace CCE::Containers
 		OctreeNode<T>* root = nullptr;
 		int depthThreshold = 10;
 		int maxSize = 5;
+
+		int elementCount = 0;
 	};
 }

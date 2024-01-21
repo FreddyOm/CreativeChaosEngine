@@ -4,15 +4,17 @@
 #include "../Manager/ProfilingManager.h"
 #include "../ECS/EntityComponentSystem.h"
 #include "../ECS/Entity.h"
+#include "../Manager/InputManager.h"
 
 namespace CCE::Scene
 {
-	class Scene
+	class Scene : protected Input::IInputHandler
 	{
 	public:
 		Scene()
 		{
 			REGISTER_LEAK_DETECT;
+			REGISTER_INPUT_CALLBACK;
 		}
 
 		~Scene()
@@ -20,7 +22,10 @@ namespace CCE::Scene
 			UNREGISTER_LEAK_DETECT;
 		}
 
+		void SetupScene();
 		void UpdateScene();
+		void ResetScene();
+
 		ECS::Entity& AddEntity();
 		void RemoveEntity(ECS::Entity& entity);
 		
@@ -61,6 +66,13 @@ namespace CCE::Scene
 
 			return _entities;
 		}
+
+	private:
+
+		// Inherited via IInputHandler
+		void InputCallback(const Input::Mouse* mouse,
+			const Input::Keyboard* keyboard,
+			const Input::Controller* controller) override;
 
 	private:
 		/// <summary>

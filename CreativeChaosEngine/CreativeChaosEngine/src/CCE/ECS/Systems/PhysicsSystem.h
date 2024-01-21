@@ -1,14 +1,15 @@
 #pragma once
-#include "ECSSystem.h"
+#include <set>
+#include <vector>
 #include "../../Core.h"
+#include "ECSSystem.h"
 #include "../../Analysis/Time.h"
 #include "../../Physics/Physics.h"
-#include <vector>
-#include <set>
+#include "../../Manager/InputManager.h"
 
 namespace CCE::ECS::Systems
 {
-	struct CCE_API PhysicsSystem : public ECSSystem
+	struct CCE_API PhysicsSystem : public ECSSystem, protected Input::IInputHandler
 	{
 	public:
 		PhysicsSystem() = default;
@@ -20,15 +21,25 @@ namespace CCE::ECS::Systems
 		void RegisterEntity(long long entity);
 
 		void UpdateSystem();
+		void TogglePause();
 
 		static std::vector<long long> PhysicsWorld;
-		static std::set<Physics::CollisionInfo> FrameCollisions;
+		std::set<Physics::CollisionInfo> FrameCollisionCandidates;
+		std::set<CCE::Physics::CollisionInfo> FrameCollisions;
 		static double PhysicsCalcDuration;
 
 	private:
-		void UpdateECSBasic();
-		void BroadPhaseCollisionDetection() const;
-		void MidPhaseCollisionDetection() const;
+		void Step();
+		void BroadPhaseCollisionDetection();
+		void MidPhaseCollisionDetection();
 		void NarrowPhaseCollisionDetection() const;
+
+		// Inherited via IInputHandler
+		void InputCallback(const Input::Mouse* mouse,
+			const Input::Keyboard* keyboard,
+			const Input::Controller* controller) override;
+
+	private:
+		bool pause = false;
 	};
 }

@@ -1,7 +1,98 @@
 #include "Scene.h"
+#include "../Manager/Application.h"
+#include "../Graphics/RenderPipeline.h"
+#include "../Utilities/Math/CCMath.h"
 
 namespace CCE::Scene
 {
+	void Scene::SetupScene()
+	{
+		using namespace ECS::Components;
+		using namespace Graphics;
+		int y = 4;
+
+		for (int x = 0; x < 3; ++x)
+		{
+			for (int z = 0; z < 3; ++z)
+			{
+				ECS::Entity entity = AddEntity();
+				RenderPipeline::Instance->RenderingSystem.RegisterEntity(static_cast<long long>(entity.Id));
+				Application::Instance->mPhysicsSystem.RegisterEntity(static_cast<long long>(entity.Id));
+
+				auto& rigidbody = entity.AddComponent<Rigidbody>();
+				auto& transform = entity.AddComponent<Transform>();
+				auto& mesh = entity.AddComponent<Mesh>();
+				auto& material = entity.AddComponent<Material>();
+				auto& collider = entity.AddComponent<BoxCollider>();
+
+				transform.SetTranslation({(float)x * 2.0f , (float)y, (float)z * 2.0f });
+				transform.SetScale({ .3, .3, .3 });
+
+				material.BaseColor = { 0.8f, CCE::Math::CCMath::Clamp01(1.f / 16.f * (float)y), 0.2f};
+
+				collider.Initialize(entity.Id);
+				collider.Width = transform.Scale().x;
+				collider.Height = transform.Scale().y;
+				collider.Length = transform.Scale().z;
+
+				mesh = Mesh(Application::Instance->resourceDataPath.Path() + "/models/cube.fbx");
+
+				String pixelShaderPath = Application::Instance->resourceDataPath.Path() + "/shader/DefaultPixelShader.cso";
+				String diffuseTexFilePath = Application::Instance->resourceDataPath.Path() + "/models/textures/DefaultMaterial_albedo.jpeg";
+				String normalTexFilePath = Application::Instance->resourceDataPath.Path() + "/models/textures/DefaultMaterial_normal.jpeg";
+
+				material.AddBind(std::make_shared<PixelShader>(StringConverter::StringToWString(pixelShaderPath.Value())));
+				//material.AddBind(std::make_shared<Texture2D>(diffuseTexFilePath));
+				//material.AddBind(std::make_shared<Texture2D>(normalTexFilePath, 1));
+				material.AddBind(std::make_shared<Sampler>(D3D11_TEXTURE_ADDRESS_WRAP));
+
+				// Initialize const buffer for each entity!
+				mesh.CreateConstBufs(std::move(VSConstBufData(transform.GetTransformationMatrix(), material.BaseColor)));
+			}
+		}
+
+		// Create plane
+
+		ECS::Entity entity = ECS::EntityComponentSystem::Instance->CreateEntity();
+		RenderPipeline::Instance->RenderingSystem.RegisterEntity(static_cast<long long>(entity.Id));
+		Application::Instance->mPhysicsSystem.RegisterEntity(static_cast<long long>(entity.Id));
+
+		auto& rigidbody = entity.AddComponent<Rigidbody>();
+		auto& transform = entity.AddComponent<Transform>();
+		auto& mesh = entity.AddComponent<Mesh>();
+		auto& material = entity.AddComponent<Material>();
+		auto& collider = entity.AddComponent<BoxCollider>();
+
+		transform.SetTranslation({ 4, 0, 4 });
+		transform.SetScale({ 4, .1, 4 });
+
+		material.BaseColor = { 1,1,1 };
+
+		rigidbody.useGravity = false;
+		rigidbody.mass = 0;				// Non-movable objects have mass = 0
+
+		collider.Initialize(entity.Id);
+		collider.Width = transform.Scale().x;
+		collider.Height = transform.Scale().y;
+		collider.Length = transform.Scale().z;
+
+
+		mesh = Mesh(Application::Instance->resourceDataPath.Path() + "/models/cube.fbx");
+
+		String pixelShaderPath = Application::Instance->resourceDataPath.Path() + "/shader/DefaultPixelShader.cso";
+		String diffuseTexFilePath = Application::Instance->resourceDataPath.Path() + "/models/textures/DefaultMaterial_albedo.jpeg";
+		String normalTexFilePath = Application::Instance->resourceDataPath.Path() + "/models/textures/DefaultMaterial_normal.jpeg";
+
+		material.AddBind(std::make_shared<PixelShader>(StringConverter::StringToWString(pixelShaderPath.Value())));
+		//material.AddBind(std::make_shared<Texture2D>(diffuseTexFilePath));
+		//material.AddBind(std::make_shared<Texture2D>(normalTexFilePath, 1));
+		material.AddBind(std::make_shared<Sampler>(D3D11_TEXTURE_ADDRESS_WRAP));
+
+		// Initialize const buffer for each entity!
+		mesh.CreateConstBufs(std::move(VSConstBufData(transform.GetTransformationMatrix(), material.BaseColor)));
+	}
+
+
 	/// <summary>
 	/// Updates scene by referring to the ECS to update the registered components
 	/// </summary>
@@ -13,6 +104,24 @@ namespace CCE::Scene
 		// @TODO: Maybe I don't even need a Scene as its own class
 		// The different systems aren't centralized and therefore also 
 		// cannot really be aggregated together!
+	}
+
+	void Scene::ResetScene()
+	{
+		using namespace ECS::Components;
+		// Do reset here!
+		float y = 4.f;
+		float x = 0.0f;
+		float z = 0.0f;
+		for (auto& entity : entities)
+		{
+			entity.GetComponent<Rigidbody>()->useGravity = true;
+			entity.GetComponent<Rigidbody>()->angularVelocity = { 0, 0, 0 };
+			entity.GetComponent<Rigidbody>()->inertiaTensor = { 0, 0, 0 };
+			entity.GetComponent<Rigidbody>()->velocity = { 0, 0, 0 };
+			entity.GetComponent<Rigidbody>()->acceleration = { 0, 0, 0 };
+			entity.GetComponent<Transform>()->SetTranslation({x++, y, z++});
+		}
 	}
 
 	/// <summary>
@@ -38,5 +147,22 @@ namespace CCE::Scene
 		using ECS = ECS::EntityComponentSystem;
 		ECS::Instance->DestroyEntity(entity);
 		entities.erase(entity);
+	}
+
+	/// <summary
+	/// Is updated by the input system.
+	/// </summary>
+	/// <param name="mouse"></param>
+	/// <param name="keyboard"></param>
+	/// <param name="controller"></param>
+	void Scene::InputCallback(const Input::Mouse* mouse, const Input::Keyboard* keyboard, const Input::Controller* controller)
+	{
+		using namespace Input;
+		if (keyboard->keys[(int)InputDevice::Keycode::KEY_R] == Keyboard::ButtonState::PRESSED ||
+			controller->REast == InputDevice::ButtonState::JUST_PRESSED)
+		{
+			ResetScene();
+		}
+
 	}
 }

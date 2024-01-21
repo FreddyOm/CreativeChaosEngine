@@ -59,4 +59,118 @@ namespace CCE::Physics
 			firstTransform->Position().z + (fc->Length) >=
 			secondTransform->Position().z - (sc->Length);			// first.maxZ >= second.minZ
 	}
+
+	bool CollideInfoAABB(const DirectX::XMFLOAT3& firstPosition, const DirectX::XMFLOAT3& firstSize, 
+		const DirectX::XMFLOAT3& secondPosition, const DirectX::XMFLOAT3& secondSize, CollisionInfo& collisionInfo)
+	{
+		using namespace DirectX;
+
+		bool overlap = CollideAABB(firstPosition, firstSize, secondPosition, secondSize);
+
+		if (overlap)
+		{
+			static const XMFLOAT3 faces[6] =
+			{
+				{ -1, 0, 0 }
+				,{ 1, 0, 0 }
+				,{ 0, -1, 0 }
+				,{ 0, 1, 0 }
+				,{ 0, 0, -1 }
+				,{ 0, 0, 1 },
+			};
+
+			XMFLOAT3 maxFirst{}; XMStoreFloat3(&maxFirst, XMLoadFloat3(&firstPosition) + XMLoadFloat3(&firstSize));
+			XMFLOAT3 minFirst{}; XMStoreFloat3(&minFirst, XMLoadFloat3(&firstPosition) - XMLoadFloat3(&firstSize));
+			
+			XMFLOAT3 maxSecond{}; XMStoreFloat3(&maxSecond, XMLoadFloat3(&secondPosition) + XMLoadFloat3(&secondSize));
+			XMFLOAT3 minSecond{}; XMStoreFloat3(&minSecond, XMLoadFloat3(&secondPosition) - XMLoadFloat3(&secondSize));
+
+			float distances[6] =
+			{
+				(maxSecond.x - minFirst.x),		// distance of box ’b’ to ’left ’ of ’a ’.
+				(maxFirst.x - minSecond.x),		// distance of box ’b’ to ’right ’ of ’a ’.
+				(maxSecond.y - minFirst.y),		// distance of box ’b’ to ’bottom ’ of ’a ’.
+				(maxFirst.y - minSecond.y),		// distance of box ’b’ to ’top ’ of ’a ’.
+				(maxSecond.z - minFirst.z),		// distance of box ’b’ to ’far ’ of ’a ’.
+				(maxFirst.z - minSecond.z)		// distance of box ’b’ to ’near ’ of ’a ’.
+			};
+
+			float penetration = FLT_MAX;
+			XMFLOAT3 normal{};
+
+			for (int i = 0; i < 6; ++i)
+			{
+				if (distances[i] < penetration)
+				{
+					penetration = distances[i];
+					normal = faces[i];
+				}
+			}
+			collisionInfo.SetContactPoint({0,0,0}, {0,0,0}, std::move(normal), std::move(penetration));
+			return true;
+		}
+		return false;
+	}
+
+	bool CollideInfoAABB(CCE::ECS::Components::Transform* at, CCE::ECS::Components::Collider* ac, 
+		CCE::ECS::Components::Transform* bt, CCE::ECS::Components::Collider* bc, CollisionInfo& collisionInfo)
+	{
+		using namespace DirectX;
+		using namespace CCE::ECS::Components;
+
+		bool overlap = CollideAABB(at, ac, bt, bc);
+
+		BoxCollider* colA = reinterpret_cast<BoxCollider*>(ac);
+		BoxCollider* colB = reinterpret_cast<BoxCollider*>(bc);
+
+		if (overlap)
+		{
+			static const XMFLOAT3 faces[6] =
+			{
+				{ -1, 0, 0 }
+				,{ 1, 0, 0 }
+				,{ 0, -1, 0 }
+				,{ 0, 1, 0 }
+				,{ 0, 0, -1 }
+				,{ 0, 0, 1 },
+			};
+
+			XMFLOAT3 maxFirst{}; XMStoreFloat3(&maxFirst, XMLoadFloat3(&at->Position()) + XMVECTOR{ colA->Width,  colA->Height, colA->Length});
+			XMFLOAT3 minFirst{}; XMStoreFloat3(&minFirst, XMLoadFloat3(&at->Position()) - XMVECTOR{ colA->Width,  colA->Height, colA->Length });
+
+			XMFLOAT3 maxSecond{}; XMStoreFloat3(&maxSecond, XMLoadFloat3(&bt->Position()) + XMVECTOR{ colB->Width,  colB->Height, colB->Length });
+			XMFLOAT3 minSecond{}; XMStoreFloat3(&minSecond, XMLoadFloat3(&bt->Position()) - XMVECTOR{ colB->Width,  colB->Height, colB->Length });
+
+			float distances[6] =
+			{
+				(maxSecond.x - minFirst.x),		// distance of box ’b’ to ’left ’ of ’a ’.
+				(maxFirst.x - minSecond.x),		// distance of box ’b’ to ’right ’ of ’a ’.
+				(maxSecond.y - minFirst.y),		// distance of box ’b’ to ’bottom ’ of ’a ’.
+				(maxFirst.y - minSecond.y),		// distance of box ’b’ to ’top ’ of ’a ’.
+				(maxSecond.z - minFirst.z),		// distance of box ’b’ to ’far ’ of ’a ’.
+				(maxFirst.z - minSecond.z)		// distance of box ’b’ to ’near ’ of ’a ’.
+			};
+
+			float penetration = FLT_MAX;
+			XMFLOAT3 normal{};
+
+			for (int i = 0; i < 6; ++i)
+			{
+				if (distances[i] < penetration)
+				{
+					penetration = distances[i];
+					normal = faces[i];
+				}
+			}
+			collisionInfo.SetContactPoint({ 0,0,0 }, { 0,0,0 }, normal, penetration);
+			return true;
+		}
+		return false;
+	}
+
+	void ResolveCollision(std::set<CollisionInfo>& collisions, int maxIterations)
+	{
+
+	}
+
 }

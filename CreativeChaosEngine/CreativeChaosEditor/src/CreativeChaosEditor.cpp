@@ -99,7 +99,6 @@ int main(int argc, char* argv[])
         Console debugConsole = Console(String(ICON_FK_CHECK_CIRCLE_O) + " Debug Console");
         InputWindow input = InputWindow(String(ICON_FK_KEYBOARD_O) + " Input");
         Inspector inspector = Inspector("Inspector");
-        //MemoryWindow memEditorWin = MemoryWindow("Memory");
 
         // Editor viewport camera
         //CCE::Graphics::Camera viewportCamera = CCE::Graphics::Camera();

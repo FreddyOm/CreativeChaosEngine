@@ -4,19 +4,31 @@
 
 namespace CCE::ECS::Components
 {
-	void Rigidbody::AddForce(DirectX::XMVECTOR force)
+	/// <summary>
+	/// Adds a force to the rigidbody object.
+	/// </summary>
+	/// <param name="force">The force to apply to the rigidbody.</param>
+	void Rigidbody::ApplyLinearImpulse(const DirectX::XMVECTOR& force)
 	{
 		using namespace DirectX;
 
-		DASSERT(0 < mass,
-			"Cannot add force to object with mass less or equal to 0!");
+		if (mass == 0) { return; }
 
-		XMVECTOR newAcc = XMLoadFloat3(&acceleration) + XMVectorScale(force, 1.0 / mass);
-		
-		XMStoreFloat3(&acceleration, XMVectorScale(newAcc, Time::deltaTime));
-		XMStoreFloat3(&velocity, XMLoadFloat3(&velocity) + newAcc);
+		XMVECTOR newAcc = XMLoadFloat3(&velocity) + XMVectorScale(force, InverseMass());
+		XMStoreFloat3(&velocity, newAcc);
 	}
 
+
+	void Rigidbody::ApplyAngularImpulse(const DirectX::XMVECTOR& force)
+	{
+		using namespace DirectX;
+		/*XMStoreFloat3(&angularVelocity, 
+			XMVectorAdd( XMLoadFloat3(&angularVelocity), XMLoadFloat3(&inertiaTensor) / force));*/
+	}
+
+	/// <summary>
+	/// Updates the 
+	/// </summary>
 	void Rigidbody::UpdateRigidbody()
 	{
 		using namespace DirectX;
@@ -25,32 +37,7 @@ namespace CCE::ECS::Components
 		{
 			// Do gravity
 			XMVECTOR force = { 0, -GravitationalAccelarion() / 1000, 0 };
-			XMStoreFloat3(&acceleration, XMVectorAdd(XMLoadFloat3(&acceleration), XMVectorScale(force, Time::deltaTime)));
+			ApplyLinearImpulse(force);
 		}
-		else 
-		{
-			XMStoreFloat3(&velocity, { 0,0,0 });
-			XMStoreFloat3(&acceleration, {0,0,0});
-		}
-				
-		XMStoreFloat3(&velocity, XMLoadFloat3(&velocity) + XMLoadFloat3(&acceleration));
-	}
-
-	void Rigidbody::Reflect(const float frictionCoeff)
-	{
-		// @TODO: Reflect the velocity in order to make the object bounce. Later rflect on collision normal!
-		using namespace DirectX;
-		XMStoreFloat3(&velocity, XMVectorScale({ velocity.x, -velocity.y, velocity.z }, frictionCoeff));
-		XMStoreFloat3(&acceleration, XMVectorScale({ acceleration.x, -acceleration.y, acceleration.z }, frictionCoeff));
-	}
-
-	DirectX::XMVECTOR Rigidbody::Velocity() const
-	{
-		return DirectX::XMLoadFloat3(&velocity);
-	}
-
-	DirectX::XMVECTOR Rigidbody::Acceleration() const
-	{
-		return DirectX::XMLoadFloat3(&acceleration);
 	}
 }

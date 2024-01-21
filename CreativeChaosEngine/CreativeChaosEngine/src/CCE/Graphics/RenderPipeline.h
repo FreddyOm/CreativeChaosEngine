@@ -193,12 +193,12 @@ namespace CCE::Graphics
 
 	public:
 		JobManager::Counter cnt = JobManager::Counter(2);
+		ECS::Systems::RenderingSystem RenderingSystem;
 
 	private:
 		ComPtr<ID3D11Debug> pDebug{};
 		RenderPipelineConfig pipelineConfig{};
 
-		ECS::Systems::RenderingSystem renderingSystem;
 
 	private:
 		ComPtr<ID3D11Device> p_device = nullptr;

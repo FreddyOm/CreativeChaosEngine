@@ -118,7 +118,7 @@ namespace CCE::ECS
 		/// Retrieves the component data associated with this entity.
 		/// </summary>
 		/// <typeparam name="T">The type of the component.</typeparam>
-		/// <returns>A reference to the component data.</returns>
+		/// <returns>A pointer to the component data.</returns>
 		template<typename T>
 		T* GetComponent() const
 		{

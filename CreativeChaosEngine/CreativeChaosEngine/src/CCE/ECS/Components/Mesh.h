@@ -17,6 +17,12 @@ namespace CCE::ECS::Components
 	class Mesh
 	{
 	public:
+		enum class RenderMode
+		{
+			Solid,
+			Wireframe
+		};
+
 		Mesh() {};
 		Mesh(String path);
 		~Mesh();
@@ -31,6 +37,7 @@ namespace CCE::ECS::Components
 		void CreateConstBufs(const Graphics::VSConstBufData& constBufData);
 
 	public:
+		RenderMode RenderMode = RenderMode::Solid;
 		std::shared_ptr<Graphics::VSConstantBuffer<Graphics::VSConstBufData>> pMeshConstBuf = nullptr;
 		const Graphics::IndexBuffer* pIndexBuffer = nullptr;
 

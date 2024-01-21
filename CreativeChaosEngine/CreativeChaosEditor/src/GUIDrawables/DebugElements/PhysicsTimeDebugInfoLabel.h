@@ -21,7 +21,7 @@ public:
 		ImGui::PushStyleColor(ImGuiCol_Button, bg_color);
 
 		DebugInfoLabel::Draw();
-		ImGui::DynamicTextButton("Physics Update: %.1fms", 0, size,
+		ImGui::DynamicTextButton("Physics Update: %.2fms", 0, size,
 			CCE::ECS::Systems::PhysicsSystem::PhysicsCalcDuration);
 		ImGui::SameLine();
 		ImGui::TextUnformatted("|");
