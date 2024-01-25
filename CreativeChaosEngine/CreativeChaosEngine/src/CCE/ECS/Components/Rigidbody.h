@@ -1,5 +1,6 @@
 #pragma once
 #include "../../Graphics/Rendering/D3D11.h"
+#include "Collider.h"
 
 namespace CCE::ECS::Components
 {
@@ -35,11 +36,13 @@ namespace CCE::ECS::Components
 			return mass <= 0.000001f && mass >= -0.000001f ? 0.0f : 1.0f / mass;
 		}
 
+		DirectX::XMFLOAT3X3& InertiaTensor(Collider* collider);
+
 		DirectX::XMFLOAT3 velocity = { 0.0f, 0.0f, 0.0f };
 		DirectX::XMFLOAT3 acceleration = { 0.0f, 0.0f, 0.0f };
 
 		DirectX::XMFLOAT3 angularVelocity = { 0.0f, 0.0f, 0.0f };
-		DirectX::XMFLOAT3X3 inertiaTensor = {};
+		DirectX::XMFLOAT3X3* inertiaTensor = nullptr;
 		
 	public:
 

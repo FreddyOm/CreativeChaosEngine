@@ -204,10 +204,10 @@ namespace CCE::ECS::Systems
 
 			// Calculate inertia
 			XMVECTOR inertiaA = XMVector3Cross(XMVector3Transform(XMVector3Cross(distAB, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)),
-				XMLoadFloat3x3(&rbA->inertiaTensor)), distAB);
+				XMLoadFloat3x3(&rbA->InertiaTensor(colA))), distAB);
 
 			XMVECTOR inertiaB = XMVector3Cross(XMVector3Transform(XMVector3Cross(distBA, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)),
-				XMLoadFloat3x3(&rbB->inertiaTensor)), distBA);
+				XMLoadFloat3x3(&rbB->InertiaTensor(colB))), distBA);
 
 			XMFLOAT3 angularEffect{};
 			XMStoreFloat3(&angularEffect, XMVector3Dot(inertiaA + inertiaB, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)));
