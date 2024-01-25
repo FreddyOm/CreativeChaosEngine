@@ -185,19 +185,6 @@ namespace CCE::ECS::Systems
 
 			float totalInverseMass = 1.0f / (rbA->mass + rbB->mass);
 
-			// Separating objects linearly
-			XMFLOAT3 translationFirst{};
-			XMFLOAT3 translationSecond{};
-
-			XMStoreFloat3(&translationFirst, XMLoadFloat3(&tfA->Position()) - (XMVectorScale(XMLoadFloat3(&cInfo.contactPoint.collisionNormal),
-				cInfo.contactPoint.penetration * (rbA->InverseMass() / totalInverseMass))));
-
-			XMStoreFloat3(&translationSecond, XMLoadFloat3(&tfB->Position()) - (XMVectorScale(XMLoadFloat3(&cInfo.contactPoint.collisionNormal),
-				cInfo.contactPoint.penetration * (rbB->InverseMass() / totalInverseMass))));
-
-			tfA->SetTranslation(translationFirst);
-			tfB->SetTranslation(translationSecond);
-
 			// Set angular velocity and calc contact velocity
 
 			XMVECTOR distAB = XMLoadFloat3(&tfB->Position()) - XMLoadFloat3(&tfA->Position());
@@ -225,7 +212,7 @@ namespace CCE::ECS::Systems
 			XMFLOAT3 angularEffect{};
 			XMStoreFloat3(&angularEffect, XMVector3Dot(inertiaA + inertiaB, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)));
 
-			float damping = (rbA->bounciness + rbB->bounciness) / 2.0f;
+			float damping = CCE::Math::CCMath::Clamp01((rbA->bounciness + rbB->bounciness) / 2.0f);
 			float j = (-(1.0f + damping) * impulseForce.x) / (totalInverseMass + angularEffect.x);
 
 			XMVECTOR fullImpulse = XMLoadFloat3(&cInfo.contactPoint.collisionNormal) * j;
@@ -236,7 +223,41 @@ namespace CCE::ECS::Systems
 			
 			rbA->ApplyAngularImpulse(XMVector3Cross(distAB, -fullImpulse));
 			rbB->ApplyAngularImpulse(XMVector3Cross(distBA, fullImpulse));
+
+			ApplyTransformations(rbA, tfA, rbB, tfB, cInfo, totalInverseMass);
 		}
+	}
+
+	void PhysicsSystem::ApplyTransformations(CCE::ECS::Components::Rigidbody* rbA, CCE::ECS::Components::Transform* tfA, 
+		CCE::ECS::Components::Rigidbody* rbB, CCE::ECS::Components::Transform* tfB, CCE::Physics::CollisionInfo& cInfo,
+		float totalInverseMass) const
+	{
+		using Entity = CCE::ECS::Entity;
+		using namespace CCE::ECS::Components;
+		using namespace CCE::Physics;
+		using namespace DirectX;
+
+		// Separating objects linearly
+		XMFLOAT3 translationFirst{};
+		XMFLOAT3 translationSecond{};
+
+		XMStoreFloat3(&translationFirst, XMLoadFloat3(&tfA->Position()) - (XMVectorScale(XMLoadFloat3(&cInfo.contactPoint.collisionNormal),
+			cInfo.contactPoint.penetration * (rbA->InverseMass() / totalInverseMass))));
+
+		XMStoreFloat3(&translationSecond, XMLoadFloat3(&tfB->Position()) - (XMVectorScale(XMLoadFloat3(&cInfo.contactPoint.collisionNormal),
+			cInfo.contactPoint.penetration * (rbB->InverseMass() / totalInverseMass))));
+
+		tfA->SetTranslation(translationFirst);
+		tfB->SetTranslation(translationSecond);
+
+		XMFLOAT3 rotationFirst{};
+		XMFLOAT3 rotationSecond{};
+
+		XMStoreFloat3(&rotationFirst, XMVectorAdd(XMLoadFloat3(&tfA->Rotation()), XMLoadFloat3(&rbA->angularVelocity)));
+		XMStoreFloat3(&rotationSecond, XMVectorAdd(XMLoadFloat3(&tfB->Rotation()), XMLoadFloat3(&rbB->angularVelocity)));
+
+		tfA->SetRotation(rotationFirst);
+		tfB->SetRotation(rotationSecond);
 	}
 
 	void PhysicsSystem::InputCallback(const Input::Mouse* mouse, const Input::Keyboard* keyboard, const Input::Controller* controller)

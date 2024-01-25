@@ -6,6 +6,7 @@ namespace CCE::ECS::Components
 {
 	class Transform
 	{
+		friend class Rigidbody;
 	public:
 		Transform();
 		~Transform() = default;

@@ -126,7 +126,7 @@ namespace CCE::Scene
 			entity.GetComponent<Rigidbody>()->inertiaTensor = {};
 			entity.GetComponent<Rigidbody>()->velocity = { 0, 0, 0 };
 			entity.GetComponent<Rigidbody>()->acceleration = { 0, 0, 0 };
-			entity.GetComponent<Transform>()->SetTranslation({x++, y, 0});
+			entity.GetComponent<Transform>()->SetTranslation({x += .75f, y++, 0});
 			bounciness += 0.1f;
 		}
 	}

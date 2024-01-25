@@ -34,6 +34,10 @@ namespace CCE::ECS::Systems
 		void MidPhaseCollisionDetection();
 		void NarrowPhaseCollisionDetection() const;
 
+		void ApplyTransformations(CCE::ECS::Components::Rigidbody* rbA, CCE::ECS::Components::Transform* tfA,
+			CCE::ECS::Components::Rigidbody* rbB, CCE::ECS::Components::Transform* tfB, CCE::Physics::CollisionInfo& cInfo,
+			float totalInverseMass) const;
+
 		// Inherited via IInputHandler
 		void InputCallback(const Input::Mouse* mouse,
 			const Input::Keyboard* keyboard,
