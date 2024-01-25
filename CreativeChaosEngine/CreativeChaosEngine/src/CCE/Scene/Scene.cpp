@@ -10,6 +10,7 @@ namespace CCE::Scene
 		using namespace ECS::Components;
 		using namespace Graphics;
 		int y = 4;
+		float bounciness = 0.0f;
 
 		for (int x = 0; x < 3; ++x)
 		{
@@ -24,6 +25,8 @@ namespace CCE::Scene
 				auto& mesh = entity.AddComponent<Mesh>();
 				auto& material = entity.AddComponent<Material>();
 				auto& collider = entity.AddComponent<BoxCollider>();
+
+				rigidbody.bounciness = bounciness;
 
 				transform.SetTranslation({(float)x * 2.0f , (float)y, (float)z * 2.0f });
 				transform.SetScale({ .3, .3, .3 });
@@ -48,6 +51,7 @@ namespace CCE::Scene
 
 				// Initialize const buffer for each entity!
 				mesh.CreateConstBufs(std::move(VSConstBufData(transform.GetTransformationMatrix(), material.BaseColor)));
+				bounciness += 0.1f;
 			}
 		}
 
@@ -63,12 +67,13 @@ namespace CCE::Scene
 		auto& material = entity.AddComponent<Material>();
 		auto& collider = entity.AddComponent<BoxCollider>();
 
-		transform.SetTranslation({ 4, 0, 4 });
-		transform.SetScale({ 4, .1, 4 });
+		transform.SetTranslation({ 4, 0, 0 });
+		transform.SetScale({ 5, .1, 2 });
 
 		material.BaseColor = { 1,1,1 };
 
 		rigidbody.useGravity = false;
+		rigidbody.bounciness = 0.0f;
 		rigidbody.mass = 0;				// Non-movable objects have mass = 0
 
 		collider.Initialize(entity.Id);
@@ -112,15 +117,17 @@ namespace CCE::Scene
 		// Do reset here!
 		float y = 4.f;
 		float x = 0.0f;
-		float z = 0.0f;
+		float bounciness = 0.0f;
 		for (auto& entity : entities)
 		{
+			entity.GetComponent<Rigidbody>()->bounciness = bounciness;
 			entity.GetComponent<Rigidbody>()->useGravity = true;
 			entity.GetComponent<Rigidbody>()->angularVelocity = { 0, 0, 0 };
-			entity.GetComponent<Rigidbody>()->inertiaTensor = { 0, 0, 0 };
+			entity.GetComponent<Rigidbody>()->inertiaTensor = {};
 			entity.GetComponent<Rigidbody>()->velocity = { 0, 0, 0 };
 			entity.GetComponent<Rigidbody>()->acceleration = { 0, 0, 0 };
-			entity.GetComponent<Transform>()->SetTranslation({x++, y, z++});
+			entity.GetComponent<Transform>()->SetTranslation({x++, y, 0});
+			bounciness += 0.1f;
 		}
 	}
 

@@ -1,8 +1,8 @@
 #pragma once
 #include <set>
 #include <vector>
-#include "../../Core.h"
 #include "ECSSystem.h"
+#include "../../Core.h"
 #include "../../Analysis/Time.h"
 #include "../../Physics/Physics.h"
 #include "../../Manager/InputManager.h"

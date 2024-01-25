@@ -22,8 +22,12 @@ namespace CCE::ECS::Components
 	void Rigidbody::ApplyAngularImpulse(const DirectX::XMVECTOR& force)
 	{
 		using namespace DirectX;
-		/*XMStoreFloat3(&angularVelocity, 
-			XMVectorAdd( XMLoadFloat3(&angularVelocity), XMLoadFloat3(&inertiaTensor) / force));*/
+
+		XMVECTOR inverseForce = XMVectorDivide({1.0f, 1.0f, 1.0f}, force);
+		XMVECTOR scaledInertiaTensor = XMVector3Transform(force, XMLoadFloat3x3(&inertiaTensor));
+		XMVECTOR newAngVel = XMVectorAdd(XMLoadFloat3(&angularVelocity), scaledInertiaTensor);
+
+		XMStoreFloat3(&angularVelocity, newAngVel);
 	}
 
 	/// <summary>

@@ -216,16 +216,16 @@ namespace CCE::ECS::Systems
 			XMStoreFloat3(&impulseForce, XMVector3Dot(contactVelocity, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)));
 
 			// Calculate inertia
-			XMVECTOR inertiaA = XMVector3Cross(XMLoadFloat3(&rbA->inertiaTensor) *
-				XMVector3Cross(distAB, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)), distAB);
+			XMVECTOR inertiaA = XMVector3Cross(XMVector3Transform(XMVector3Cross(distAB, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)),
+				XMLoadFloat3x3(&rbA->inertiaTensor)), distAB);
 
-			XMVECTOR inertiaB = XMVector3Cross(XMLoadFloat3(&rbB->inertiaTensor) *
-				XMVector3Cross(distBA, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)), distBA);
+			XMVECTOR inertiaB = XMVector3Cross(XMVector3Transform(XMVector3Cross(distBA, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)),
+				XMLoadFloat3x3(&rbB->inertiaTensor)), distBA);
 
 			XMFLOAT3 angularEffect{};
 			XMStoreFloat3(&angularEffect, XMVector3Dot(inertiaA + inertiaB, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)));
 
-			float damping = 0.33f;
+			float damping = (rbA->bounciness + rbB->bounciness) / 2.0f;
 			float j = (-(1.0f + damping) * impulseForce.x) / (totalInverseMass + angularEffect.x);
 
 			XMVECTOR fullImpulse = XMLoadFloat3(&cInfo.contactPoint.collisionNormal) * j;

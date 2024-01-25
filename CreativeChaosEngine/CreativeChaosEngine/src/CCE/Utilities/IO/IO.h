@@ -130,7 +130,7 @@ namespace CCE
 			return *this;
 		}
 
-		Directory& operator=(Directory&& other)
+		Directory& operator=(Directory&& other) noexcept
 		{
 			if (&other == this)
 			{ return *this; }

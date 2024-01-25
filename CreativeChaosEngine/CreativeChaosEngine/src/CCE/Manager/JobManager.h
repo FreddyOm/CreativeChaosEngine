@@ -60,7 +60,7 @@ namespace CCE
 			unsigned int mDesiredCount = 0;			// 4 bytes
 			va_list m_param = NULL;					// 8 bytes
 
-			byte padding[32];						// 32 bytes
+			byte padding[32] = {};					// 32 bytes
 
 			JobDeclaration()
 			{
