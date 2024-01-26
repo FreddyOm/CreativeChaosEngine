@@ -183,54 +183,102 @@ namespace CCE::ECS::Systems
 				continue;
 			}
 
-			float totalInverseMass = 1.0f / (rbA->mass + rbB->mass);
+			float totalInverseMass = rbA->InverseMass() + rbB->InverseMass();
 
-			// Set angular velocity and calc contact velocity
 
-			XMVECTOR distAB = XMLoadFloat3(&tfB->Position()) - XMLoadFloat3(&tfA->Position());
-			XMVECTOR distBA = XMLoadFloat3(&tfA->Position()) - XMLoadFloat3(&tfB->Position());
+			ApplyLinearTransformations(rbA, tfA, rbB, tfB, cInfo, totalInverseMass);
 
-			// Calculate angular velocity
-			XMVECTOR angVelA = XMVector3Cross(XMLoadFloat3(&rbA->angularVelocity), distAB);
-			XMVECTOR angVelB = XMVector3Cross(XMLoadFloat3(&rbB->angularVelocity), distBA);
+			// Impulse-based collision resolution
+			ResolveCollisionImpulse(rbA, tfA, colA, rbB, tfB, colB, cInfo, totalInverseMass);
 
-			XMVECTOR fullVelocityA = XMLoadFloat3(&rbA->velocity) + angVelA;
-			XMVECTOR fullVelocityB = XMLoadFloat3(&rbB->velocity) + angVelB;
 
-			XMVECTOR contactVelocity = fullVelocityB - fullVelocityA;
-
-			XMFLOAT3 impulseForce{}; 
-			XMStoreFloat3(&impulseForce, XMVector3Dot(contactVelocity, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)));
-
-			// Calculate inertia
-			XMVECTOR inertiaA = XMVector3Cross(XMVector3Transform(XMVector3Cross(distAB, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)),
-				XMLoadFloat3x3(&rbA->InertiaTensor(colA))), distAB);
-
-			XMVECTOR inertiaB = XMVector3Cross(XMVector3Transform(XMVector3Cross(distBA, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)),
-				XMLoadFloat3x3(&rbB->InertiaTensor(colB))), distBA);
-
-			XMFLOAT3 angularEffect{};
-			XMStoreFloat3(&angularEffect, XMVector3Dot(inertiaA + inertiaB, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)));
-
-			float damping = CCE::Math::CCMath::Clamp01((rbA->bounciness + rbB->bounciness) / 2.0f);
-			float j = (-(1.0f + damping) * impulseForce.x) / (totalInverseMass + angularEffect.x);
-
-			XMVECTOR fullImpulse = XMLoadFloat3(&cInfo.contactPoint.collisionNormal) * j;
-
-			// Apply impulses
-			rbA->ApplyLinearImpulse(-fullImpulse);
-			rbB->ApplyLinearImpulse(fullImpulse);
-			
-			rbA->ApplyAngularImpulse(XMVector3Cross(distAB, -fullImpulse));
-			rbB->ApplyAngularImpulse(XMVector3Cross(distBA, fullImpulse));
-
-			ApplyTransformations(rbA, tfA, rbB, tfB, cInfo, totalInverseMass);
+			ApplyAngularTransformations(rbA, tfA, rbB, tfB);
 		}
 	}
 
-	void PhysicsSystem::ApplyTransformations(CCE::ECS::Components::Rigidbody* rbA, CCE::ECS::Components::Transform* tfA, 
-		CCE::ECS::Components::Rigidbody* rbB, CCE::ECS::Components::Transform* tfB, CCE::Physics::CollisionInfo& cInfo,
-		float totalInverseMass) const
+	void PhysicsSystem::ApplyAngularTransformations(CCE::ECS::Components::Rigidbody* rbA, CCE::ECS::Components::Transform* tfA, 
+		CCE::ECS::Components::Rigidbody* rbB, CCE::ECS::Components::Transform* tfB) const
+	{
+		using Entity = CCE::ECS::Entity;
+		using namespace CCE::ECS::Components;
+		using namespace CCE::Physics;
+		using namespace DirectX;
+		
+		if (applyAngularImpulse)
+		{
+			XMFLOAT3 rotationFirst{};
+			XMFLOAT3 rotationSecond{};
+
+			XMStoreFloat3(&rotationFirst, XMVectorAdd(XMLoadFloat3(&tfA->Rotation()), XMLoadFloat3(&rbA->angularVelocity)));
+			XMStoreFloat3(&rotationSecond, XMVectorAdd(XMLoadFloat3(&tfB->Rotation()), XMLoadFloat3(&rbB->angularVelocity)));
+
+			tfA->SetRotation(rotationFirst);
+			tfB->SetRotation(rotationSecond);
+		}
+	}
+
+	void PhysicsSystem::InputCallback(const Input::Mouse* mouse, const Input::Keyboard* keyboard, const Input::Controller* controller)
+	{
+		using namespace Input;
+		if (keyboard->keys[(int)InputDevice::Keycode::SPACE] == Keyboard::ButtonState::PRESSED ||
+			controller->RSouth == InputDevice::ButtonState::PRESSED)
+		{
+			TogglePause();
+		}
+
+	}
+
+	void PhysicsSystem::ResolveCollisionImpulse(CCE::ECS::Components::Rigidbody* rbA, CCE::ECS::Components::Transform* tfA,
+		CCE::ECS::Components::Collider* colA, CCE::ECS::Components::Rigidbody* rbB, CCE::ECS::Components::Transform* tfB, 
+		CCE::ECS::Components::Collider* colB, CCE::Physics::CollisionInfo& cInfo, float totalInverseMass) const
+	{
+		using Entity = CCE::ECS::Entity;
+		using namespace CCE::ECS::Components;
+		using namespace CCE::Physics;
+		using namespace DirectX;
+
+		// Set angular velocity and calc contact velocity
+		XMVECTOR distAB = XMLoadFloat3(&tfB->Position()) - XMLoadFloat3(&tfA->Position());
+		XMVECTOR distBA = XMLoadFloat3(&tfA->Position()) - XMLoadFloat3(&tfB->Position());
+
+		// Calculate angular velocity
+		XMVECTOR angVelA = XMVector3Cross(XMLoadFloat3(&rbA->angularVelocity), distAB);
+		XMVECTOR angVelB = XMVector3Cross(XMLoadFloat3(&rbB->angularVelocity), distBA);
+
+		XMVECTOR fullVelocityA = XMLoadFloat3(&rbA->velocity) + angVelA;
+		XMVECTOR fullVelocityB = XMLoadFloat3(&rbB->velocity) + angVelB;
+
+		XMVECTOR contactVelocity = fullVelocityB - fullVelocityA;
+
+		XMFLOAT3 impulseForce{};
+		XMStoreFloat3(&impulseForce, XMVector3Dot(contactVelocity, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)));
+
+		// Calculate inertia
+		XMVECTOR inertiaA = XMVector3Cross(XMVector3Transform(XMVector3Cross(distAB, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)),
+			XMLoadFloat3x3(&rbA->InertiaTensor(colA))), distAB);
+
+		XMVECTOR inertiaB = XMVector3Cross(XMVector3Transform(XMVector3Cross(distBA, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)),
+			XMLoadFloat3x3(&rbB->InertiaTensor(colB))), distBA);
+
+		XMFLOAT3 angularEffect{};
+		XMStoreFloat3(&angularEffect, XMVector3Dot(inertiaA + inertiaB, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)));
+
+		float damping = CCE::Math::CCMath::Clamp01((rbA->bounciness + rbB->bounciness) / 2.0f);
+		float j = (-(1.0f + damping) * impulseForce.x) / (totalInverseMass + angularEffect.x);
+
+		XMVECTOR fullImpulse = XMLoadFloat3(&cInfo.contactPoint.collisionNormal) * j;
+
+		// Apply impulses
+		rbA->ApplyLinearImpulse(-fullImpulse);
+		rbB->ApplyLinearImpulse(fullImpulse);
+
+		rbA->ApplyAngularImpulse(XMVector3Cross(distAB, -fullImpulse));
+		rbB->ApplyAngularImpulse(XMVector3Cross(distBA, fullImpulse));
+	}
+
+	void PhysicsSystem::ApplyLinearTransformations(CCE::ECS::Components::Rigidbody* rbA, 
+		CCE::ECS::Components::Transform* tfA, CCE::ECS::Components::Rigidbody* rbB, 
+		CCE::ECS::Components::Transform* tfB, CCE::Physics::CollisionInfo& cInfo, float totalInverseMass) const
 	{
 		using Entity = CCE::ECS::Entity;
 		using namespace CCE::ECS::Components;
@@ -249,30 +297,9 @@ namespace CCE::ECS::Systems
 
 		tfA->SetTranslation(translationFirst);
 		tfB->SetTranslation(translationSecond);
-
-		XMFLOAT3 rotationFirst{};
-		XMFLOAT3 rotationSecond{};
-
-		XMStoreFloat3(&rotationFirst, XMVectorAdd(XMLoadFloat3(&tfA->Rotation()), XMLoadFloat3(&rbA->angularVelocity)));
-		XMStoreFloat3(&rotationSecond, XMVectorAdd(XMLoadFloat3(&tfB->Rotation()), XMLoadFloat3(&rbB->angularVelocity)));
-
-		tfA->SetRotation(rotationFirst);
-		tfB->SetRotation(rotationSecond);
-	}
-
-	void PhysicsSystem::InputCallback(const Input::Mouse* mouse, const Input::Keyboard* keyboard, const Input::Controller* controller)
-	{
-		using namespace Input;
-		if (keyboard->keys[(int)InputDevice::Keycode::SPACE] == Keyboard::ButtonState::PRESSED ||
-			controller->RSouth == InputDevice::ButtonState::PRESSED)
-		{
-			TogglePause();
-		}
-
 	}
 
 	std::vector<long long> PhysicsSystem::PhysicsWorld{};
-	//std::set<CCE::Physics::CollisionInfo> PhysicsSystem::FrameCollisionCandidates{};
-	//std::set<CCE::Physics::CollisionInfo> PhysicsSystem::FrameCollisions{};
 	double PhysicsSystem::PhysicsCalcDuration = 0.0;
+	bool PhysicsSystem::applyAngularImpulse = false;
 }

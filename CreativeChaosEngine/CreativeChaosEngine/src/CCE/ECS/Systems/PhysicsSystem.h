@@ -27,6 +27,7 @@ namespace CCE::ECS::Systems
 		std::set<Physics::CollisionInfo> FrameCollisionCandidates;
 		std::set<CCE::Physics::CollisionInfo> FrameCollisions;
 		static double PhysicsCalcDuration;
+		static bool applyAngularImpulse;
 
 	private:
 		void Step();
@@ -34,9 +35,16 @@ namespace CCE::ECS::Systems
 		void MidPhaseCollisionDetection();
 		void NarrowPhaseCollisionDetection() const;
 
-		void ApplyTransformations(CCE::ECS::Components::Rigidbody* rbA, CCE::ECS::Components::Transform* tfA,
+		void ApplyAngularTransformations(CCE::ECS::Components::Rigidbody* rbA, CCE::ECS::Components::Transform* tfA,
+			CCE::ECS::Components::Rigidbody* rbB, CCE::ECS::Components::Transform* tfB) const;
+
+		void ApplyLinearTransformations(CCE::ECS::Components::Rigidbody* rbA, CCE::ECS::Components::Transform* tfA,
 			CCE::ECS::Components::Rigidbody* rbB, CCE::ECS::Components::Transform* tfB, CCE::Physics::CollisionInfo& cInfo,
 			float totalInverseMass) const;
+
+		void ResolveCollisionImpulse(CCE::ECS::Components::Rigidbody* rbA, CCE::ECS::Components::Transform* tfA,
+			CCE::ECS::Components::Collider* colA, CCE::ECS::Components::Rigidbody* rbB, CCE::ECS::Components::Transform* tfB, 
+			CCE::ECS::Components::Collider* colB, CCE::Physics::CollisionInfo& cInfo, float totalInverseMass) const;
 
 		// Inherited via IInputHandler
 		void InputCallback(const Input::Mouse* mouse,

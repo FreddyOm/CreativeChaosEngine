@@ -121,6 +121,7 @@ namespace CCE::Scene
 		for (auto& entity : entities)
 		{
 			entity.GetComponent<Rigidbody>()->bounciness = bounciness;
+			entity.GetComponent<Rigidbody>()->mass = 1.0f;
 			entity.GetComponent<Rigidbody>()->useGravity = true;
 			entity.GetComponent<Rigidbody>()->angularVelocity = { 0, 0, 0 };
 			entity.GetComponent<Rigidbody>()->inertiaTensor = {};

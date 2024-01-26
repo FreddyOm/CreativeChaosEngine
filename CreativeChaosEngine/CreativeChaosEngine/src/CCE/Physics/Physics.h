@@ -62,6 +62,10 @@ namespace CCE::Physics
 	bool CollideInfoAABB(CCE::ECS::Components::Transform* at, CCE::ECS::Components::Collider* ac,
 		CCE::ECS::Components::Transform* bt, CCE::ECS::Components::Collider* bc, CollisionInfo& collisionInfo);
 
+	bool CollideSpheres(CCE::ECS::Components::Transform* at, CCE::ECS::Components::SphereCollider* ac,
+		CCE::ECS::Components::Transform* bt, CCE::ECS::Components::SphereCollider* bc);
+	bool CollideInfoSpheres(CCE::ECS::Components::Transform* at, CCE::ECS::Components::SphereCollider* ac,
+		CCE::ECS::Components::Transform* bt, CCE::ECS::Components::SphereCollider* bc, CollisionInfo& collisionInfo);
 
 	void ResolveCollision(std::set<CollisionInfo>& collisions, int maxIterations = 5);
 }

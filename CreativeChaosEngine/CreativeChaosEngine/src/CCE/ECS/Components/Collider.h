@@ -22,6 +22,7 @@ namespace CCE::ECS::Components
 		bool IsSolid = true;
 
 		void Initialize(long long Id);
+		DirectX::XMFLOAT3 GetBoundingBox() const;
 	};
 
 	struct BoxCollider : Collider
@@ -33,5 +34,6 @@ namespace CCE::ECS::Components
 		bool IsSolid = true;
 
 		void Initialize(long long Id);
+		DirectX::XMFLOAT3 GetBoundingBox() const;
 	};	
 }

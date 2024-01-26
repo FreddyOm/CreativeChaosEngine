@@ -14,7 +14,8 @@ namespace CCE::ECS::Components
 
 		if (mass == 0) { return; }
 
-		XMVECTOR newAcc = XMLoadFloat3(&velocity) + XMVectorScale(force, InverseMass());
+		//XMVECTOR newAcc = XMLoadFloat3(&velocity) + XMVectorScale(force, InverseMass());
+		XMVECTOR newAcc = XMLoadFloat3(&velocity) + force;
 		XMStoreFloat3(&velocity, newAcc);
 	}
 
