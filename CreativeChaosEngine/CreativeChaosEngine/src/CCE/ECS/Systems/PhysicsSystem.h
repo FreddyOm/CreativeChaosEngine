@@ -25,7 +25,9 @@ namespace CCE::ECS::Systems
 
 		static std::vector<long long> PhysicsWorld;
 		std::set<Physics::CollisionInfo> FrameCollisionCandidates;
-		std::set<CCE::Physics::CollisionInfo> FrameCollisions;
+		std::set<CCE::Physics::CollisionInfo> AABBAABBFrameCollisions;
+		std::set<CCE::Physics::CollisionInfo> SphereAABBFrameCollisions;
+		std::set<CCE::Physics::CollisionInfo> SphereSphereFrameCollisions;
 		static double PhysicsCalcDuration;
 		static bool applyAngularImpulse;
 

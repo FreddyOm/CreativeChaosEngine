@@ -12,9 +12,9 @@ namespace CCE::Scene
 		int y = 2;
 		float bounciness = 0.0f;
 
-		for (int x = 0; x < 4; ++x)
+		for (int x = 0; x < 3; ++x)
 		{
-			for (int z = 0; z < 4; ++z)
+			for (int z = 0; z < 3; ++z)
 			{
 				ECS::Entity entity = AddEntity();
 				RenderPipeline::Instance->RenderingSystem.RegisterEntity(static_cast<long long>(entity.Id));
@@ -115,6 +115,7 @@ namespace CCE::Scene
 		// Do reset here!
 		float y = 4.f;
 		float x = 0.0f;
+		float z = -1.0f;
 		float bounciness = 0.9f;
 		for (auto& entity : entities)
 		{
@@ -125,7 +126,7 @@ namespace CCE::Scene
 			entity.GetComponent<Rigidbody>()->inertiaTensor = {};
 			entity.GetComponent<Rigidbody>()->velocity = { 0, 0, 0 };
 			entity.GetComponent<Rigidbody>()->acceleration = { 0, 0, 0 };
-			entity.GetComponent<Transform>()->SetTranslation({ x += .45f, y++, 0 });
+			entity.GetComponent<Transform>()->SetTranslation({ x += .25f, y++, z += .25f });
 			entity.GetComponent<Transform>()->SetRotation({0, 0, 0});
 		}
 	}

@@ -163,7 +163,7 @@ namespace CCE::ECS::Systems
 				if (CollideAABB(first.GetComponent<Transform>(), first.GetComponent<BoxCollider>(),
 					second.GetComponent<Transform>(), second.GetComponent<BoxCollider>()))
 				{
-					FrameCollisions.insert(collisionPair);
+					AABBAABBFrameCollisions.insert(collisionPair);
 				}
 			}
 			else if (first.TryGetComponent<BoxCollider>(firstBox) && second.TryGetComponent<SphereCollider>(secondSphere))
@@ -172,7 +172,7 @@ namespace CCE::ECS::Systems
 				if (CollideAABB(first.GetComponent<Transform>()->Position(), firstBox.GetBoundingBox(),
 					second.GetComponent<Transform>()->Position(), secondSphere.GetBoundingBox()))
 				{
-					FrameCollisions.insert(collisionPair);
+					SphereAABBFrameCollisions.insert(collisionPair);
 				}
 			}
 			else if (first.TryGetComponent<SphereCollider>(firstSphere) && second.TryGetComponent<BoxCollider>(secondBox))
@@ -181,7 +181,7 @@ namespace CCE::ECS::Systems
 				if (CollideAABB(first.GetComponent<Transform>()->Position(), firstSphere.GetBoundingBox(),
 					second.GetComponent<Transform>()->Position(), secondBox.GetBoundingBox()))
 				{
-					FrameCollisions.insert(collisionPair);
+					SphereAABBFrameCollisions.insert(collisionPair);
 				}
 			}
 			else if (first.TryGetComponent<SphereCollider>(firstSphere) && second.TryGetComponent<SphereCollider>(secondSphere))
@@ -190,7 +190,7 @@ namespace CCE::ECS::Systems
 				if (CollideSpheres(first.GetComponent<Transform>(), &firstSphere,
 					second.GetComponent<Transform>(), &secondSphere))
 				{
-					FrameCollisions.insert(collisionPair);
+					SphereSphereFrameCollisions.insert(collisionPair);
 				}
 			}
 		}
@@ -207,7 +207,40 @@ namespace CCE::ECS::Systems
 		using namespace CCE::Physics;
 		using namespace DirectX;
 
-		for (auto& collisionPair : FrameCollisions)
+		// AABB-AABB-Collisions
+		for (auto& collisionPair : AABBAABBFrameCollisions)
+		{
+			Entity a(collisionPair.first);
+			Entity b(collisionPair.second);
+
+			Rigidbody* rbA = a.GetComponent<Rigidbody>();
+			Rigidbody* rbB = b.GetComponent<Rigidbody>();
+
+			Transform* tfA = a.GetComponent<Transform>();
+			Transform* tfB = b.GetComponent<Transform>();
+
+			BoxCollider* colBoxA = a.GetComponent<BoxCollider>();
+			BoxCollider* colBoxB = b.GetComponent<BoxCollider>();
+
+			CollisionInfo cInfo = collisionPair;
+
+			if (!CollideInfoAABB(tfA, colBoxA, tfB, colBoxB, cInfo))
+			{
+				continue;
+			}
+
+			float totalInverseMass = rbA->InverseMass() + rbB->InverseMass();
+
+			ApplyLinearTransformations(rbA, tfA, rbB, tfB, cInfo, totalInverseMass);
+
+			// Impulse-based collision resolution
+			ResolveCollisionImpulse(rbA, tfA, colBoxA, rbB, tfB, colBoxB, cInfo, totalInverseMass);
+
+			ApplyAngularTransformations(rbA, tfA, rbB, tfB);
+		}
+
+		// Sphere-AABB-Collisions
+		for (auto& collisionPair : SphereAABBFrameCollisions)
 		{
 			Entity a(collisionPair.first);
 			Entity b(collisionPair.second);
@@ -226,58 +259,55 @@ namespace CCE::ECS::Systems
 
 			CollisionInfo cInfo = collisionPair;
 
-			if (colSphereA && colSphereB) 
+			// Mixed collision
+			auto* box = colBoxA == nullptr ? colBoxB : colBoxA;
+			auto* sphere = colSphereA == nullptr ? colSphereB : colSphereA;
+
+			if (!CollideInfoSphereAABB(tfB, box, tfA, sphere, cInfo))
 			{
-				if (!CollideInfoSpheres(tfA, colSphereA, tfB, colSphereB, cInfo)) 
-				{
-					continue;
-				}
-
-				float totalInverseMass = rbA->InverseMass() + rbB->InverseMass();
-
-				ApplyLinearTransformations(rbA, tfA, rbB, tfB, cInfo, totalInverseMass);
-
-				// Impulse-based collision resolution
-				ResolveCollisionImpulse(rbA, tfA, colSphereA, rbB, tfB, colSphereB, cInfo, totalInverseMass);
-
-				ApplyAngularTransformations(rbA, tfA, rbB, tfB);
+				continue;
 			}
-			else if (colBoxA && colBoxB)
+
+			float totalInverseMass = rbA->InverseMass() + rbB->InverseMass();
+
+			ApplyLinearTransformations(rbB, tfB, rbA, tfA, cInfo, totalInverseMass);
+
+			// Impulse-based collision resolution
+			ResolveCollisionImpulse(rbB, tfB, box, rbA, tfA, sphere, cInfo, totalInverseMass);
+
+			ApplyAngularTransformations(rbA, tfA, rbB, tfB);
+		}
+
+		// Sphere-Sphere-Collisions
+		for (auto& collisionPair : SphereSphereFrameCollisions)
+		{
+			Entity a(collisionPair.first);
+			Entity b(collisionPair.second);
+
+			Rigidbody* rbA = a.GetComponent<Rigidbody>();
+			Rigidbody* rbB = b.GetComponent<Rigidbody>();
+
+			Transform* tfA = a.GetComponent<Transform>();
+			Transform* tfB = b.GetComponent<Transform>();
+
+			SphereCollider* colSphereA = a.GetComponent<SphereCollider>();
+			SphereCollider* colSphereB = b.GetComponent<SphereCollider>();
+
+			CollisionInfo cInfo = collisionPair;
+
+			if (!CollideInfoSpheres(tfA, colSphereA, tfB, colSphereB, cInfo))
 			{
-				if (!CollideInfoAABB(tfA, colBoxA, tfB, colBoxB, cInfo))
-				{
-					continue;
-				}
-
-				float totalInverseMass = rbA->InverseMass() + rbB->InverseMass();
-
-				ApplyLinearTransformations(rbA, tfA, rbB, tfB, cInfo, totalInverseMass);
-
-				// Impulse-based collision resolution
-				ResolveCollisionImpulse(rbA, tfA, colBoxA, rbB, tfB, colBoxB, cInfo, totalInverseMass);
-
-				ApplyAngularTransformations(rbA, tfA, rbB, tfB);
+				continue;
 			}
-			else
-			{
-				// Mixed collision
-				auto* box = colBoxA == nullptr ? colBoxB : colBoxA;
-				auto* sphere = colSphereA == nullptr ? colSphereB : colSphereA;
 
-				if (!CollideInfoSphereAABB(tfB, box, tfA, sphere, cInfo))
-				{
-					continue;
-				}
-				
-				float totalInverseMass = rbA->InverseMass() + rbB->InverseMass();
+			float totalInverseMass = rbA->InverseMass() + rbB->InverseMass();
 
-				ApplyLinearTransformations(rbB, tfB, rbA, tfA, cInfo, totalInverseMass);
+			ApplyLinearTransformations(rbA, tfA, rbB, tfB, cInfo, totalInverseMass);
 
-				// Impulse-based collision resolution
-				ResolveCollisionImpulse(rbB, tfB, box, rbA, tfA, sphere, cInfo, totalInverseMass);
+			// Impulse-based collision resolution
+			ResolveCollisionImpulse(rbA, tfA, colSphereA, rbB, tfB, colSphereB, cInfo, totalInverseMass);
 
-				ApplyAngularTransformations(rbA, tfA, rbB, tfB);
-			}
+			ApplyAngularTransformations(rbA, tfA, rbB, tfB);
 		}
 	}
 
