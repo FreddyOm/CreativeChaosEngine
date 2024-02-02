@@ -109,6 +109,10 @@ int main(int argc, char* argv[])
 
         using namespace CCE;
 
+        // frame time measuring
+        std::chrono::steady_clock::time_point start{};
+        std::chrono::steady_clock::time_point end{};
+        
         // update window input
         int rValue = 0;
 
@@ -123,7 +127,7 @@ int main(int argc, char* argv[])
             
             // ------------------------------ RUNTIME DEBUGGER ------------------------------
 
-            auto start = CCE::Time::Now();
+            start = CCE::Time::Now();
 
             IGUIDrawable::PreGUIUpdate();
 
@@ -134,7 +138,7 @@ int main(int argc, char* argv[])
             //ImGui::ShowDemoWindow();
             IGUIDrawable::PostGUIUpdate();
            
-            auto end = CCE::Time::Now(); imgui_process_time_ms = static_cast<float>( CCE::Time::GetDurationInMilliSec( start, end ) );
+            end = CCE::Time::Now(); imgui_process_time_ms = static_cast<float>( CCE::Time::GetDurationInMilliSec( start, end ) );
             // ------------------------------------------------------------------------------
 
             mRuntimeManager.PostEditorUpdate();

@@ -54,6 +54,8 @@ namespace CCE::ECS::Systems
 			const Input::Controller* controller) override;
 
 	private:
+		std::chrono::steady_clock::time_point start{};
+		std::chrono::steady_clock::time_point end{};
 		bool pause = false;
 	};
 }
