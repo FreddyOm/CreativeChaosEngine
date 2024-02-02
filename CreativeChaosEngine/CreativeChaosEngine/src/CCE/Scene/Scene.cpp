@@ -9,12 +9,12 @@ namespace CCE::Scene
 	{
 		using namespace ECS::Components;
 		using namespace Graphics;
-		int y = 4;
+		int y = 2;
 		float bounciness = 0.0f;
 
-		for (int x = 0; x < 3; ++x)
+		for (int x = 0; x < 4; ++x)
 		{
-			for (int z = 0; z < 3; ++z)
+			for (int z = 0; z < 4; ++z)
 			{
 				ECS::Entity entity = AddEntity();
 				RenderPipeline::Instance->RenderingSystem.RegisterEntity(static_cast<long long>(entity.Id));
@@ -24,7 +24,7 @@ namespace CCE::Scene
 				auto& transform = entity.AddComponent<Transform>();
 				auto& mesh = entity.AddComponent<Mesh>();
 				auto& material = entity.AddComponent<Material>();
-				auto& collider = entity.AddComponent<BoxCollider>();
+				auto& collider = entity.AddComponent<SphereCollider>();
 
 				rigidbody.bounciness = bounciness;
 
@@ -34,11 +34,9 @@ namespace CCE::Scene
 				material.BaseColor = { 0.8f, CCE::Math::CCMath::Clamp01(1.f / 16.f * (float)y), 0.2f};
 
 				collider.Initialize(entity.Id);
-				collider.Width = transform.Scale().x;
-				collider.Height = transform.Scale().y;
-				collider.Length = transform.Scale().z;
+				collider.Radius = transform.Scale().x;
 
-				mesh = Mesh(Application::Instance->resourceDataPath.Path() + "/models/cube.fbx");
+				mesh = Mesh(Application::Instance->resourceDataPath.Path() + "/models/sphere.fbx");
 
 				String pixelShaderPath = Application::Instance->resourceDataPath.Path() + "/shader/DefaultPixelShader.cso";
 				String diffuseTexFilePath = Application::Instance->resourceDataPath.Path() + "/models/textures/DefaultMaterial_albedo.jpeg";
@@ -68,7 +66,7 @@ namespace CCE::Scene
 		auto& collider = entity.AddComponent<BoxCollider>();
 
 		transform.SetTranslation({ 4, 0, 0 });
-		transform.SetScale({ 5, .1, 2 });
+		transform.SetScale({ 5, .5, 2 });
 
 		material.BaseColor = { 1,1,1 };
 
@@ -117,7 +115,7 @@ namespace CCE::Scene
 		// Do reset here!
 		float y = 4.f;
 		float x = 0.0f;
-		float bounciness = 0.0f;
+		float bounciness = 0.9f;
 		for (auto& entity : entities)
 		{
 			entity.GetComponent<Rigidbody>()->bounciness = bounciness;
@@ -129,7 +127,6 @@ namespace CCE::Scene
 			entity.GetComponent<Rigidbody>()->acceleration = { 0, 0, 0 };
 			entity.GetComponent<Transform>()->SetTranslation({ x += .45f, y++, 0 });
 			entity.GetComponent<Transform>()->SetRotation({0, 0, 0});
-			bounciness += 0.1f;
 		}
 	}
 

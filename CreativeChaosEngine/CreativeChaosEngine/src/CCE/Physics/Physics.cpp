@@ -1,5 +1,7 @@
 #include "Physics.h"
 #include "../Analysis/Debug.h"
+#include "../Utilities/Math/CCMath.h"
+#include <DirectXMathVector.inl>
 
 namespace CCE::Physics
 {
@@ -93,7 +95,7 @@ namespace CCE::Physics
 	{
 		using namespace DirectX;
 
-		bool overlap = CollideAABB(firstPosition, firstSize, secondPosition, secondSize);
+		const bool overlap = CollideAABB(firstPosition, firstSize, secondPosition, secondSize);
 
 		if (overlap)
 		{
@@ -107,11 +109,11 @@ namespace CCE::Physics
 				,{ 0, 0, 1 },
 			};
 
-			XMFLOAT3 maxFirst{}; XMStoreFloat3(&maxFirst, XMLoadFloat3(&firstPosition) + XMLoadFloat3(&firstSize));
-			XMFLOAT3 minFirst{}; XMStoreFloat3(&minFirst, XMLoadFloat3(&firstPosition) - XMLoadFloat3(&firstSize));
+			XMFLOAT3 maxFirst{}; DirectX::XMStoreFloat3(&maxFirst, XMLoadFloat3(&firstPosition) + XMLoadFloat3(&firstSize));
+			XMFLOAT3 minFirst{}; DirectX::XMStoreFloat3(&minFirst, XMLoadFloat3(&firstPosition) - XMLoadFloat3(&firstSize));
 			
-			XMFLOAT3 maxSecond{}; XMStoreFloat3(&maxSecond, XMLoadFloat3(&secondPosition) + XMLoadFloat3(&secondSize));
-			XMFLOAT3 minSecond{}; XMStoreFloat3(&minSecond, XMLoadFloat3(&secondPosition) - XMLoadFloat3(&secondSize));
+			XMFLOAT3 maxSecond{}; DirectX::XMStoreFloat3(&maxSecond, XMLoadFloat3(&secondPosition) + XMLoadFloat3(&secondSize));
+			XMFLOAT3 minSecond{}; DirectX::XMStoreFloat3(&minSecond, XMLoadFloat3(&secondPosition) - XMLoadFloat3(&secondSize));
 
 			float distances[6] =
 			{
@@ -146,10 +148,10 @@ namespace CCE::Physics
 		using namespace DirectX;
 		using namespace CCE::ECS::Components;
 
-		bool overlap = CollideAABB(at, ac, bt, bc);
+		const bool overlap = CollideAABB(at, ac, bt, bc);
 
-		BoxCollider* colA = reinterpret_cast<BoxCollider*>(ac);
-		BoxCollider* colB = reinterpret_cast<BoxCollider*>(bc);
+		const BoxCollider* colA = reinterpret_cast<BoxCollider*>(ac);
+		const BoxCollider* colB = reinterpret_cast<BoxCollider*>(bc);
 
 		if (overlap)
 		{
@@ -163,11 +165,11 @@ namespace CCE::Physics
 				,{ 0, 0, 1 },
 			};
 
-			XMFLOAT3 maxFirst{}; XMStoreFloat3(&maxFirst, XMLoadFloat3(&at->Position()) + XMVECTOR{ colA->Width,  colA->Height, colA->Length});
-			XMFLOAT3 minFirst{}; XMStoreFloat3(&minFirst, XMLoadFloat3(&at->Position()) - XMVECTOR{ colA->Width,  colA->Height, colA->Length });
+			XMFLOAT3 maxFirst{}; DirectX::XMStoreFloat3(&maxFirst, XMLoadFloat3(&at->Position()) + XMVECTOR{ colA->Width,  colA->Height, colA->Length});
+			XMFLOAT3 minFirst{}; DirectX::XMStoreFloat3(&minFirst, XMLoadFloat3(&at->Position()) - XMVECTOR{ colA->Width,  colA->Height, colA->Length });
 
-			XMFLOAT3 maxSecond{}; XMStoreFloat3(&maxSecond, XMLoadFloat3(&bt->Position()) + XMVECTOR{ colB->Width,  colB->Height, colB->Length });
-			XMFLOAT3 minSecond{}; XMStoreFloat3(&minSecond, XMLoadFloat3(&bt->Position()) - XMVECTOR{ colB->Width,  colB->Height, colB->Length });
+			XMFLOAT3 maxSecond{}; DirectX::XMStoreFloat3(&maxSecond, XMLoadFloat3(&bt->Position()) + XMVECTOR{ colB->Width,  colB->Height, colB->Length });
+			XMFLOAT3 minSecond{}; DirectX::XMStoreFloat3(&minSecond, XMLoadFloat3(&bt->Position()) - XMVECTOR{ colB->Width,  colB->Height, colB->Length });
 
 			float distances[6] =
 			{
@@ -208,10 +210,10 @@ namespace CCE::Physics
 	{
 		using namespace DirectX;
 		
-		XMFLOAT3 vecAB; XMStoreFloat3(&vecAB, XMLoadFloat3(&bt->Position()) - XMLoadFloat3(&at->Position()));
-		float sqrdDist = (vecAB.x * vecAB.x) + (vecAB.y * vecAB.y) + (vecAB.y * vecAB.y);
-		float radiiSum = ac->Radius + bc->Radius;
-		float sqrdRadiiSum = radiiSum * radiiSum;
+		XMFLOAT3 vecAB; DirectX::XMStoreFloat3(&vecAB, XMLoadFloat3(&bt->Position()) - XMLoadFloat3(&at->Position()));
+		const float sqrdDist = (vecAB.x * vecAB.x) + (vecAB.y * vecAB.y) + (vecAB.y * vecAB.y);
+		const float radiiSum = ac->Radius + bc->Radius;
+		const float sqrdRadiiSum = radiiSum * radiiSum;
 
 		return sqrdDist <= sqrdRadiiSum;
 	}
@@ -221,23 +223,23 @@ namespace CCE::Physics
 		using namespace DirectX;
 		using namespace CCE::ECS::Components;
 
-		XMFLOAT3 vecAB; XMStoreFloat3(&vecAB, XMLoadFloat3(&bt->Position()) - XMLoadFloat3(&at->Position()));
-		float sqrdDist = (vecAB.x * vecAB.x) + (vecAB.y * vecAB.y) + (vecAB.y * vecAB.y);
-		float radiiSum = ac->Radius + bc->Radius;
-		float sqrdRadiiSum = radiiSum * radiiSum;
+		XMFLOAT3 vecAB; DirectX::XMStoreFloat3(&vecAB, XMLoadFloat3(&bt->Position()) - XMLoadFloat3(&at->Position()));
+		const float sqrdDist = (vecAB.x * vecAB.x) + (vecAB.y * vecAB.y) + (vecAB.z * vecAB.z);
+		const float radiiSum = ac->Radius + bc->Radius;
+		const float sqrdRadiiSum = radiiSum * radiiSum;
 
-		bool overlap = sqrdDist <= sqrdRadiiSum;
+		const bool overlap = sqrdDist <= sqrdRadiiSum;
 
 		if (overlap)
 		{
-			float penetration = sqrtf(sqrdRadiiSum) - sqrtf(sqrdDist);
-			XMFLOAT3 normal; XMStoreFloat3(&normal, XMVector3Normalize(XMLoadFloat3(&vecAB)));
+			const float penetration = sqrtf(sqrdRadiiSum) - sqrtf(sqrdDist);
+			XMFLOAT3 normal; DirectX::XMStoreFloat3(&normal, XMVector3Normalize(XMLoadFloat3(&vecAB)));
 			
 			XMVECTOR scaledVecFirst = XMVectorScale(XMLoadFloat3(&vecAB), ac->Radius);
 			XMVECTOR scaledVecSecond = XMVectorScale(XMLoadFloat3(&vecAB), -ac->Radius);
 
-			XMFLOAT3 firstContactPoint; XMStoreFloat3(&firstContactPoint, XMVectorAdd(XMLoadFloat3(&at->Position()), scaledVecFirst));
-			XMFLOAT3 secondContactPoint; XMStoreFloat3(&secondContactPoint, XMVectorAdd(XMLoadFloat3(&bt->Position()), scaledVecSecond));
+			XMFLOAT3 firstContactPoint; DirectX::XMStoreFloat3(&firstContactPoint, XMVectorAdd(XMLoadFloat3(&at->Position()), scaledVecFirst));
+			XMFLOAT3 secondContactPoint; DirectX::XMStoreFloat3(&secondContactPoint, XMVectorAdd(XMLoadFloat3(&bt->Position()), scaledVecSecond));
 
 			collisionInfo.SetContactPoint(firstContactPoint, secondContactPoint, normal, penetration);
 			return true;
@@ -246,9 +248,39 @@ namespace CCE::Physics
 		return false;
 	}
 
-	void ResolveCollision(std::set<CollisionInfo>& collisions, int maxIterations)
+	bool CollideInfoSphereAABB(CCE::ECS::Components::Transform* at, CCE::ECS::Components::BoxCollider* ac, 
+		CCE::ECS::Components::Transform* bt, CCE::ECS::Components::SphereCollider* bc, CollisionInfo& collisionInfo)
 	{
+		using namespace DirectX;
+		using namespace CCE::ECS::Components;
+		using namespace CCE::Math;
 
+		XMFLOAT3 vecAB{}; DirectX::XMStoreFloat3(&vecAB, XMLoadFloat3(&bt->Position()) - XMLoadFloat3(&at->Position()));
+
+		const XMFLOAT3 boxSize = { ac->Width, ac->Height, ac->Length };
+		const XMFLOAT3 negBoxSize = { -ac->Width, -ac->Height, -ac->Length };
+
+		const XMFLOAT3 closestPointOnBox = CCMath::Clamp(vecAB, negBoxSize, boxSize);
+		//const XMVECTOR distSphereBoxPoint = XMVectorAdd(XMLoadFloat3(&vecAB), -XMLoadFloat3(&closestPointOnBox));
+		const XMFLOAT3 distSphereBoxPoint = { vecAB.x - closestPointOnBox.x, vecAB.y - closestPointOnBox.y, vecAB.z - closestPointOnBox.z};
+		XMFLOAT3 distance{}; DirectX::XMStoreFloat3(&distance, XMVector3Length(XMLoadFloat3(&distSphereBoxPoint)));
+
+		const bool overlap = distance.x < bc->Radius;
+
+		if (overlap)
+		{
+			auto collisionNormal = DirectX::XMVector3Normalize(XMLoadFloat3(&distSphereBoxPoint));
+			XMFLOAT3 colNormal{}; DirectX::XMStoreFloat3(&colNormal, collisionNormal);
+
+			const float penetration = (bc->Radius - distance.x);
+
+			const XMFLOAT3 aabbContactPoint{0,0,0};
+			XMFLOAT3 sphereContactPoint{}; DirectX::XMStoreFloat3(&sphereContactPoint, -collisionNormal * bc->Radius);
+
+			collisionInfo.SetContactPoint(sphereContactPoint, aabbContactPoint, colNormal, penetration);
+			return true;
+		}
+
+		return false;
 	}
-
 }

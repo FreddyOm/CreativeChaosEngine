@@ -88,17 +88,27 @@ namespace CCE::ECS::Systems
 		using namespace CCE::Containers;
 		using namespace CCE::ECS::Components;
 		
-		Octree<Entity> bspTree({5,5,5}, 15, 10);
+		Octree<Entity> bspTree({8,8,8}, 15, 15);
+		DirectX::XMFLOAT3 boundingVolume;
 
 		// Add all collidable objects
 		for (long long id : mEntities)
 		{
 			Entity e = Entity(id);
-			BoxCollider* col = e.GetComponent<BoxCollider>();
-		
-			if (col != nullptr)
+
+			if(e.GetComponent<BoxCollider>() != nullptr)
 			{
-				bspTree.Insert(e, e.GetComponent<Transform>()->Position(), { col->Width, col->Height, col->Length });
+				auto* _col = e.GetComponent<BoxCollider>();
+				bspTree.Insert(e, e.GetComponent<Transform>()->Position(), _col->GetBoundingBox());
+			}
+			else if (e.GetComponent<SphereCollider>() != nullptr)
+			{
+				auto* _col = e.GetComponent<SphereCollider>();
+				bspTree.Insert(e, e.GetComponent<Transform>()->Position(), _col->GetBoundingBox());
+			}
+			else
+			{
+				DASSERT(false, "Invalid bounding volume type.");
 			}
 		}
 		
@@ -143,10 +153,45 @@ namespace CCE::ECS::Systems
 			DASSERT(first != second,
 				"Checking for self collision is invalid! Both colliders have the same pointer!");
 
-			if (CollideAABB(first.GetComponent<Transform>(), first.GetComponent<BoxCollider>(),
-				second.GetComponent<Transform>(), second.GetComponent<BoxCollider>()))
+			BoxCollider firstBox;
+			BoxCollider secondBox;
+			SphereCollider firstSphere;
+			SphereCollider secondSphere;
+			if (first.TryGetComponent<BoxCollider>(firstBox) && second.TryGetComponent<BoxCollider>(secondBox))
 			{
-				FrameCollisions.insert(collisionPair);
+				// First AABB check
+				if (CollideAABB(first.GetComponent<Transform>(), first.GetComponent<BoxCollider>(),
+					second.GetComponent<Transform>(), second.GetComponent<BoxCollider>()))
+				{
+					FrameCollisions.insert(collisionPair);
+				}
+			}
+			else if (first.TryGetComponent<BoxCollider>(firstBox) && second.TryGetComponent<SphereCollider>(secondSphere))
+			{
+				// First AABB check
+				if (CollideAABB(first.GetComponent<Transform>()->Position(), firstBox.GetBoundingBox(),
+					second.GetComponent<Transform>()->Position(), secondSphere.GetBoundingBox()))
+				{
+					FrameCollisions.insert(collisionPair);
+				}
+			}
+			else if (first.TryGetComponent<SphereCollider>(firstSphere) && second.TryGetComponent<BoxCollider>(secondBox))
+			{
+				// First AABB check
+				if (CollideAABB(first.GetComponent<Transform>()->Position(), firstSphere.GetBoundingBox(),
+					second.GetComponent<Transform>()->Position(), secondBox.GetBoundingBox()))
+				{
+					FrameCollisions.insert(collisionPair);
+				}
+			}
+			else if (first.TryGetComponent<SphereCollider>(firstSphere) && second.TryGetComponent<SphereCollider>(secondSphere))
+			{
+				// First AABB check
+				if (CollideSpheres(first.GetComponent<Transform>(), &firstSphere,
+					second.GetComponent<Transform>(), &secondSphere))
+				{
+					FrameCollisions.insert(collisionPair);
+				}
 			}
 		}
 	}
@@ -173,26 +218,66 @@ namespace CCE::ECS::Systems
 			Transform* tfA = a.GetComponent<Transform>();
 			Transform* tfB = b.GetComponent<Transform>();
 
-			Collider* colA = a.GetComponent<BoxCollider>();
-			Collider* colB = b.GetComponent<BoxCollider>();
+			SphereCollider* colSphereA = a.GetComponent<SphereCollider>();
+			SphereCollider* colSphereB = b.GetComponent<SphereCollider>();
+
+			BoxCollider* colBoxA = a.GetComponent<BoxCollider>();
+			BoxCollider* colBoxB = b.GetComponent<BoxCollider>();
 
 			CollisionInfo cInfo = collisionPair;
 
-			if (!CollideInfoAABB(tfA, colA,tfB, colB, cInfo))
+			if (colSphereA && colSphereB) 
 			{
-				continue;
+				if (!CollideInfoSpheres(tfA, colSphereA, tfB, colSphereB, cInfo)) 
+				{
+					continue;
+				}
+
+				float totalInverseMass = rbA->InverseMass() + rbB->InverseMass();
+
+				ApplyLinearTransformations(rbA, tfA, rbB, tfB, cInfo, totalInverseMass);
+
+				// Impulse-based collision resolution
+				ResolveCollisionImpulse(rbA, tfA, colSphereA, rbB, tfB, colSphereB, cInfo, totalInverseMass);
+
+				ApplyAngularTransformations(rbA, tfA, rbB, tfB);
 			}
+			else if (colBoxA && colBoxB)
+			{
+				if (!CollideInfoAABB(tfA, colBoxA, tfB, colBoxB, cInfo))
+				{
+					continue;
+				}
 
-			float totalInverseMass = rbA->InverseMass() + rbB->InverseMass();
+				float totalInverseMass = rbA->InverseMass() + rbB->InverseMass();
 
+				ApplyLinearTransformations(rbA, tfA, rbB, tfB, cInfo, totalInverseMass);
 
-			ApplyLinearTransformations(rbA, tfA, rbB, tfB, cInfo, totalInverseMass);
+				// Impulse-based collision resolution
+				ResolveCollisionImpulse(rbA, tfA, colBoxA, rbB, tfB, colBoxB, cInfo, totalInverseMass);
 
-			// Impulse-based collision resolution
-			ResolveCollisionImpulse(rbA, tfA, colA, rbB, tfB, colB, cInfo, totalInverseMass);
+				ApplyAngularTransformations(rbA, tfA, rbB, tfB);
+			}
+			else
+			{
+				// Mixed collision
+				auto* box = colBoxA == nullptr ? colBoxB : colBoxA;
+				auto* sphere = colSphereA == nullptr ? colSphereB : colSphereA;
 
+				if (!CollideInfoSphereAABB(tfB, box, tfA, sphere, cInfo))
+				{
+					continue;
+				}
+				
+				float totalInverseMass = rbA->InverseMass() + rbB->InverseMass();
 
-			ApplyAngularTransformations(rbA, tfA, rbB, tfB);
+				ApplyLinearTransformations(rbB, tfB, rbA, tfA, cInfo, totalInverseMass);
+
+				// Impulse-based collision resolution
+				ResolveCollisionImpulse(rbB, tfB, box, rbA, tfA, sphere, cInfo, totalInverseMass);
+
+				ApplyAngularTransformations(rbA, tfA, rbB, tfB);
+			}
 		}
 	}
 
@@ -238,12 +323,12 @@ namespace CCE::ECS::Systems
 		using namespace DirectX;
 
 		// Set angular velocity and calc contact velocity
-		XMVECTOR distAB = XMLoadFloat3(&tfB->Position()) - XMLoadFloat3(&tfA->Position());
-		XMVECTOR distBA = XMLoadFloat3(&tfA->Position()) - XMLoadFloat3(&tfB->Position());
+		XMVECTOR relativeA =  XMLoadFloat3(&cInfo.contactPoint.collisionPointFirst) - XMLoadFloat3(&tfA->Position());
+		XMVECTOR relativeB = XMLoadFloat3(&cInfo.contactPoint.collisionPointFirst) - XMLoadFloat3(&tfB->Position());
 
 		// Calculate angular velocity
-		XMVECTOR angVelA = XMVector3Cross(XMLoadFloat3(&rbA->angularVelocity), distAB);
-		XMVECTOR angVelB = XMVector3Cross(XMLoadFloat3(&rbB->angularVelocity), distBA);
+		XMVECTOR angVelA = XMVector3Cross(XMLoadFloat3(&rbA->angularVelocity), relativeA);
+		XMVECTOR angVelB = XMVector3Cross(XMLoadFloat3(&rbB->angularVelocity), relativeB);
 
 		XMVECTOR fullVelocityA = XMLoadFloat3(&rbA->velocity) + angVelA;
 		XMVECTOR fullVelocityB = XMLoadFloat3(&rbB->velocity) + angVelB;
@@ -254,11 +339,11 @@ namespace CCE::ECS::Systems
 		XMStoreFloat3(&impulseForce, XMVector3Dot(contactVelocity, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)));
 
 		// Calculate inertia
-		XMVECTOR inertiaA = XMVector3Cross(XMVector3Transform(XMVector3Cross(distAB, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)),
-			XMLoadFloat3x3(&rbA->InertiaTensor(colA))), distAB);
+		XMVECTOR inertiaA = XMVector3Cross(XMVector3Transform(XMVector3Cross(relativeA, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)),
+			XMLoadFloat3x3(&rbA->InertiaTensor(colA))), relativeA);
 
-		XMVECTOR inertiaB = XMVector3Cross(XMVector3Transform(XMVector3Cross(distBA, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)),
-			XMLoadFloat3x3(&rbB->InertiaTensor(colB))), distBA);
+		XMVECTOR inertiaB = XMVector3Cross(XMVector3Transform(XMVector3Cross(relativeB, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)),
+			XMLoadFloat3x3(&rbB->InertiaTensor(colB))), relativeB);
 
 		XMFLOAT3 angularEffect{};
 		XMStoreFloat3(&angularEffect, XMVector3Dot(inertiaA + inertiaB, XMLoadFloat3(&cInfo.contactPoint.collisionNormal)));
@@ -272,8 +357,8 @@ namespace CCE::ECS::Systems
 		rbA->ApplyLinearImpulse(-fullImpulse);
 		rbB->ApplyLinearImpulse(fullImpulse);
 
-		rbA->ApplyAngularImpulse(XMVector3Cross(distAB, -fullImpulse));
-		rbB->ApplyAngularImpulse(XMVector3Cross(distBA, fullImpulse));
+		rbA->ApplyAngularImpulse(XMVector3Cross(relativeA, -fullImpulse));
+		rbB->ApplyAngularImpulse(XMVector3Cross(relativeB, fullImpulse));
 	}
 
 	void PhysicsSystem::ApplyLinearTransformations(CCE::ECS::Components::Rigidbody* rbA, 
@@ -292,7 +377,7 @@ namespace CCE::ECS::Systems
 		XMStoreFloat3(&translationFirst, XMLoadFloat3(&tfA->Position()) - (XMVectorScale(XMLoadFloat3(&cInfo.contactPoint.collisionNormal),
 			cInfo.contactPoint.penetration * (rbA->InverseMass() / totalInverseMass))));
 
-		XMStoreFloat3(&translationSecond, XMLoadFloat3(&tfB->Position()) - (XMVectorScale(XMLoadFloat3(&cInfo.contactPoint.collisionNormal),
+		XMStoreFloat3(&translationSecond, XMLoadFloat3(&tfB->Position()) + (XMVectorScale(XMLoadFloat3(&cInfo.contactPoint.collisionNormal),
 			cInfo.contactPoint.penetration * (rbB->InverseMass() / totalInverseMass))));
 
 		tfA->SetTranslation(translationFirst);

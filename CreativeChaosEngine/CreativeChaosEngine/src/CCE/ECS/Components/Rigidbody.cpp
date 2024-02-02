@@ -41,8 +41,13 @@ namespace CCE::ECS::Components
 		if (useGravity)
 		{
 			// Do gravity
-			XMVECTOR force = { 0, -GravitationalAccelarion() / 1000, 0 };
-			ApplyLinearImpulse(force);
+			XMVECTOR force = { 0, -GravitationalAccelarion(), 0 };
+			ApplyLinearImpulse(force * Time::deltaTime);
+		}
+		else
+		{
+			acceleration = {0,0,0};
+			velocity = {0,0,0};
 		}
 	}
 
