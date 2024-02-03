@@ -274,6 +274,15 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)..\CreativeChaosEditor\resources\shader\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug_Profile|x64'">$(OutDir)..\CreativeChaosEditor\resources\shader\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+    <FxCompile Include="src\CCE\ComputeShader\CollisionDetectionResolve.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug_Profile|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug_Profile|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)..\CreativeChaosEditor\resources\compute-shader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -361,6 +370,7 @@
 xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"
+xcopy /d /y "$(ProjectDir)src\CCE\ComputeShader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\compute-shader\"
 xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
     </PostBuildEvent>

@@ -353,7 +353,7 @@ namespace CCE::ECS::Systems
 		using namespace DirectX;
 
 		// Set angular velocity and calc contact velocity
-		XMVECTOR relativeA =  XMLoadFloat3(&cInfo.contactPoint.collisionPointFirst) - XMLoadFloat3(&tfA->Position());
+		XMVECTOR relativeA = XMLoadFloat3(&cInfo.contactPoint.collisionPointFirst) - XMLoadFloat3(&tfA->Position());
 		XMVECTOR relativeB = XMLoadFloat3(&cInfo.contactPoint.collisionPointFirst) - XMLoadFloat3(&tfB->Position());
 
 		// Calculate angular velocity
