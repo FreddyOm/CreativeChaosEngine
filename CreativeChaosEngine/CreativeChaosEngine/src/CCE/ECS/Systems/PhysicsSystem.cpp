@@ -7,6 +7,8 @@
 #include "../../Utilities/Math/CCMath.h"
 #include "../Components/ComponentHeaders.h"
 #include "../../Utilities/Containers/Octree.h"
+#include "../../Graphics/RenderPipeline.h"
+
 
 namespace CCE::ECS::Systems
 {
@@ -207,6 +209,139 @@ namespace CCE::ECS::Systems
 		using namespace CCE::Physics;
 		using namespace DirectX;
 
+		// Create const buffers and somehow do that with respect to the amount of collisions!
+		using RP = Graphics::RenderPipeline;
+		using namespace Microsoft::WRL;
+
+		ComPtr<ID3D11Buffer> inputDataBuf{};
+		ComPtr<ID3D11Buffer> outputDataBuf{};
+		ComPtr<ID3D11Buffer> sharedOutputDataBuf{};
+		ComPtr<ID3D11ShaderResourceView> inputDataView{};
+		ComPtr<ID3D11UnorderedAccessView> outputDataView{};
+
+		CSInputData inData{};
+		// Fill data
+		FillConstantBuffer(inData);
+
+		if (inData.cpd.size() == 0)
+		{
+			return;
+		}
+
+		D3D11_BUFFER_DESC csInputDataDesc{};
+		csInputDataDesc.Usage = D3D11_USAGE_DYNAMIC;
+		csInputDataDesc.ByteWidth = sizeof(CollisionPairInData) * inData.cpd.size();
+		csInputDataDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		csInputDataDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		csInputDataDesc.StructureByteStride = sizeof(CollisionPairInData);
+		csInputDataDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+
+		D3D11_SUBRESOURCE_DATA initData{};
+		initData.pSysMem = inData.cpd.data();
+		initData.SysMemPitch = 0u;	// 2D & 3D Textures only
+		initData.SysMemSlicePitch = 0u; // 3D Textures only
+
+		HRESULT hr = RP::Instance->GetDevicePtr()->CreateBuffer(&csInputDataDesc, &initData, inputDataBuf.GetAddressOf());
+		DASSERT(hr == S_OK, "Failed creating compute shader shared input buffer description.");
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+		srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
+		srvDesc.BufferEx.FirstElement = 0;
+		srvDesc.BufferEx.Flags = 0;
+		srvDesc.BufferEx.NumElements = inData.cpd.size();
+
+		hr = RP::Instance->GetDevicePtr()->CreateShaderResourceView(inputDataBuf.Get(), &srvDesc, inputDataView.GetAddressOf());
+		DASSERT(hr == S_OK, "Failed creating compute shader shared input buffer.");
+
+		// RW Buffer for output
+		D3D11_BUFFER_DESC outputDesc{};
+		outputDesc.Usage = D3D11_USAGE_DEFAULT;
+		outputDesc.ByteWidth = sizeof(CollisionPairOutData) * inData.cpd.size();
+		outputDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS;
+		outputDesc.CPUAccessFlags = 0;
+		outputDesc.StructureByteStride = sizeof(CollisionPairOutData);
+		outputDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+
+		hr = (RP::Instance->GetDevicePtr()->CreateBuffer(&outputDesc, 0u, outputDataBuf.GetAddressOf()));
+		DASSERT(hr == S_OK, "Failed creating compute shader output buffer.");
+
+		D3D11_BUFFER_DESC sharedOutputDesc{};
+		sharedOutputDesc.Usage = D3D11_USAGE_STAGING;
+		sharedOutputDesc.ByteWidth = sizeof(CollisionPairOutData) * inData.cpd.size();
+		sharedOutputDesc.BindFlags = 0;
+		sharedOutputDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+		sharedOutputDesc.StructureByteStride = sizeof(CollisionPairOutData);
+		sharedOutputDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+
+		hr = (RP::Instance->GetDevicePtr()->CreateBuffer(&sharedOutputDesc, 0u, sharedOutputDataBuf.GetAddressOf()));
+		DASSERT(hr == S_OK, "Failed creating compute shader shared output buffer.");
+
+		D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
+		uavDesc.Buffer.FirstElement = 0u;
+		uavDesc.Buffer.Flags = 0u;
+		uavDesc.Buffer.NumElements = inData.cpd.size();
+		uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+		uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+
+		hr = RP::Instance->GetDevicePtr()->CreateUnorderedAccessView(outputDataBuf.Get(), &uavDesc, outputDataView.GetAddressOf());
+		DASSERT(hr == S_OK, "Failed creating compute shader unordered access view for output buffer.");
+
+		ComPtr<ID3DBlob> pBlob{};
+		hr = D3DReadFileToBlob(L"D:/Repos/CreativeChaosEngine/CreativeChaosEngine/bin/Debug-x64/CreativeChaosEditor/resources/compute-shader/CollisionDetectionResolve.cso", pBlob.GetAddressOf());
+		DASSERT(hr == S_OK, "Failed reading the compute shader.");
+		// Check shader version for older cpus / gpus (my laptop!! :O)
+		hr = RP::Instance->GetDevicePtr()->CreateComputeShader(
+			pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, pComputeShader.GetAddressOf());
+		DASSERT(hr == S_OK, "Failed creating the compute shader resource.");
+
+		RP::Instance->GetDeviceContextPtr()->CSSetShader(pComputeShader.Get(), nullptr, 0u);
+
+		RP::Instance->GetDeviceContextPtr()->CSSetShaderResources(0u, 1u, inputDataView.GetAddressOf());
+		RP::Instance->GetDeviceContextPtr()->CSSetUnorderedAccessViews(0u, 1u, outputDataView.GetAddressOf(), 0u);
+
+		RP::Instance->GetDeviceContextPtr()->Dispatch(1u, 1u, 1u);
+
+		// Unbind the input textures from the CS
+		ID3D11ShaderResourceView* nullSRV[] = { NULL };
+		RP::Instance->GetDeviceContextPtr()->CSSetShaderResources(0u, 1u, nullSRV);
+
+		// Unbind output from compute shader
+		ID3D11UnorderedAccessView* nullUAV[] = { NULL };
+		RP::Instance->GetDeviceContextPtr()->CSSetUnorderedAccessViews(0u, 1u, nullUAV, 0u);
+
+		// Disable Compute Shader
+		RP::Instance->GetDeviceContextPtr()->CSSetShader(nullptr, nullptr, 0u);
+
+		auto* sodb = sharedOutputDataBuf.Get();
+		auto* odb = outputDataBuf.Get();
+
+		//D3DX11SaveTextureToFile
+
+		RP::Instance->GetDeviceContextPtr()->CopyResource(sharedOutputDataBuf.Get(), outputDataBuf.Get());
+		
+		D3D11_MAPPED_SUBRESOURCE mappedResource{};
+		hr = RP::Instance->GetDeviceContextPtr()->Map(sharedOutputDataBuf.Get(), 0u, D3D11_MAP::D3D11_MAP_READ, 0u, &mappedResource);
+		DASSERT(hr == S_OK, "Failed mapping compute shader shared output buffer.");
+
+		if (SUCCEEDED(hr))
+		{
+			CSOutputData* dataView = reinterpret_cast<CSOutputData*>(mappedResource.pData);
+
+			if(dataView->cpd.size() > 0)
+				ApplyComputeShaderData(dataView);
+
+			RP::Instance->GetDeviceContextPtr()->Unmap(sharedOutputDataBuf.Get(), 0u);
+		}
+	}
+
+	void PhysicsSystem::FillConstantBuffer(CCE::ECS::Systems::PhysicsSystem::CSInputData& inData) const
+	{
+		using Entity = CCE::ECS::Entity;
+		using namespace CCE::ECS::Components;
+		using namespace CCE::Physics;
+		using namespace DirectX;
+
 		// AABB-AABB-Collisions
 		for (auto& collisionPair : AABBAABBFrameCollisions)
 		{
@@ -229,14 +364,32 @@ namespace CCE::ECS::Systems
 				continue;
 			}
 
-			float totalInverseMass = rbA->InverseMass() + rbB->InverseMass();
+			CollisionPairInData pairData{};
+			pairData.positionA = { tfA->Position().x, tfA->Position().y, tfA->Position().z , 1.0f };
+			pairData.positionB = { tfB->Position().x, tfB->Position().y, tfB->Position().z , 1.0f };
+			pairData.colliderDimA = { colBoxA->Width, colBoxA->Height, colBoxA->Length, 1.0f };
+			pairData.colliderDimB = { colBoxB->Width, colBoxB->Height, colBoxB->Length, 1.0f };
+			pairData.velocityA = { rbA->velocity.x, rbA->velocity.y, rbA->velocity.z,  1.0f };
+			pairData.velocityB = { rbB->velocity.x, rbB->velocity.y, rbB->velocity.z,  1.0f };
+			pairData.angularVelocityA = { rbA->angularVelocity.x, rbA->angularVelocity.y, rbA->angularVelocity.z, 1.0f };
+			pairData.angularVelocityB = { rbB->angularVelocity.x, rbB->angularVelocity.y, rbB->angularVelocity.z, 1.0f };
+			pairData.bouncinessA = { rbA->bounciness, rbA->bounciness, rbA->bounciness, rbA->bounciness };
+			pairData.bouncinessB = { rbB->bounciness, rbB->bounciness, rbB->bounciness, rbB->bounciness };
+			pairData.massA = { rbA->mass, rbA->mass, rbA->mass, rbA->mass };
+			pairData.massB = { rbB->mass, rbB->mass, rbB->mass, rbB->mass };
+			pairData.shapeA = { 0, 0, 0, 0 };
+			pairData.shapeB = { 0, 0, 0, 0 };
 
-			ApplyLinearTransformations(rbA, tfA, rbB, tfB, cInfo, totalInverseMass);
+			pairData.collisionPointA = { cInfo.contactPoint.collisionPointFirst.x,
+				cInfo.contactPoint.collisionPointFirst.y, cInfo.contactPoint.collisionPointFirst.z, 1.0f };
+			pairData.collisionPointB = { cInfo.contactPoint.collisionPointSecond.x,
+				cInfo.contactPoint.collisionPointSecond.y, cInfo.contactPoint.collisionPointSecond.z, 1.0f };
+			pairData.collisionNormal = { cInfo.contactPoint.collisionNormal.x,
+				cInfo.contactPoint.collisionNormal.y, cInfo.contactPoint.collisionNormal.z, 1.0f };
+			pairData.penetration = { cInfo.contactPoint.penetration, cInfo.contactPoint.penetration,
+				cInfo.contactPoint.penetration, cInfo.contactPoint.penetration };
 
-			// Impulse-based collision resolution
-			ResolveCollisionImpulse(rbA, tfA, colBoxA, rbB, tfB, colBoxB, cInfo, totalInverseMass);
-
-			ApplyAngularTransformations(rbA, tfA, rbB, tfB);
+			inData.cpd.push_back(std::move(pairData));
 		}
 
 		// Sphere-AABB-Collisions
@@ -268,14 +421,32 @@ namespace CCE::ECS::Systems
 				continue;
 			}
 
-			float totalInverseMass = rbA->InverseMass() + rbB->InverseMass();
+			CollisionPairInData pairData{};
+			pairData.positionA = { tfB->Position().x, tfB->Position().y, tfB->Position().z , 1.0f };
+			pairData.positionB = { tfA->Position().x, tfA->Position().y, tfA->Position().z , 1.0f };
+			pairData.colliderDimA = { box->Width, box->Height, box->Length, 1.0f };
+			pairData.colliderDimB = { sphere->Radius, sphere->Radius, sphere->Radius, 1.0f };
+			pairData.velocityA = { rbB->velocity.x, rbB->velocity.y, rbB->velocity.z,  1.0f };
+			pairData.velocityB = { rbA->velocity.x, rbA->velocity.y, rbA->velocity.z,  1.0f };
+			pairData.angularVelocityA = { rbB->angularVelocity.x, rbB->angularVelocity.y, rbB->angularVelocity.z, 1.0f };
+			pairData.angularVelocityB = { rbA->angularVelocity.x, rbA->angularVelocity.y, rbA->angularVelocity.z, 1.0f };
+			pairData.bouncinessA = { rbB->bounciness, rbB->bounciness, rbB->bounciness, rbB->bounciness };
+			pairData.bouncinessB = { rbA->bounciness, rbA->bounciness, rbA->bounciness, rbA->bounciness };
+			pairData.massB = { rbA->mass, rbA->mass, rbA->mass, rbA->mass };
+			pairData.massA = { rbB->mass, rbB->mass, rbB->mass, rbB->mass };
+			pairData.shapeA = { 0, 0, 0, 0 };
+			pairData.shapeB = { 1, 1, 1, 1 };
 
-			ApplyLinearTransformations(rbB, tfB, rbA, tfA, cInfo, totalInverseMass);
+			pairData.collisionPointA = { cInfo.contactPoint.collisionPointSecond.x,
+				cInfo.contactPoint.collisionPointSecond.y, cInfo.contactPoint.collisionPointSecond.z, 1.0f };
+			pairData.collisionPointB = { cInfo.contactPoint.collisionPointFirst.x,
+				cInfo.contactPoint.collisionPointFirst.y, cInfo.contactPoint.collisionPointFirst.z, 1.0f };
+			pairData.collisionNormal = { cInfo.contactPoint.collisionNormal.x,
+				cInfo.contactPoint.collisionNormal.y, cInfo.contactPoint.collisionNormal.z, 1.0f };
+			pairData.penetration = { cInfo.contactPoint.penetration, cInfo.contactPoint.penetration,
+				cInfo.contactPoint.penetration, cInfo.contactPoint.penetration };
 
-			// Impulse-based collision resolution
-			ResolveCollisionImpulse(rbB, tfB, box, rbA, tfA, sphere, cInfo, totalInverseMass);
-
-			ApplyAngularTransformations(rbA, tfA, rbB, tfB);
+			inData.cpd.push_back(std::move(pairData));
 		}
 
 		// Sphere-Sphere-Collisions
@@ -300,14 +471,234 @@ namespace CCE::ECS::Systems
 				continue;
 			}
 
-			float totalInverseMass = rbA->InverseMass() + rbB->InverseMass();
+			CollisionPairInData pairData{};
+			pairData.positionA = { tfA->Position().x, tfA->Position().y, tfA->Position().z , 1.0f };
+			pairData.positionB = { tfB->Position().x, tfB->Position().y, tfB->Position().z , 1.0f };
+			pairData.colliderDimA = { colSphereA->Radius, colSphereA->Radius, colSphereA->Radius, 1.0f };
+			pairData.colliderDimB = { colSphereB->Radius, colSphereB->Radius, colSphereB->Radius, 1.0f };
+			pairData.velocityA = { rbA->velocity.x, rbA->velocity.y, rbA->velocity.z,  1.0f };
+			pairData.velocityB = { rbB->velocity.x, rbB->velocity.y, rbB->velocity.z,  1.0f };
+			pairData.angularVelocityA = { rbA->angularVelocity.x, rbA->angularVelocity.y, rbA->angularVelocity.z, 1.0f };
+			pairData.angularVelocityB = { rbB->angularVelocity.x, rbB->angularVelocity.y, rbB->angularVelocity.z, 1.0f };
+			pairData.bouncinessA = { rbA->bounciness, rbA->bounciness, rbA->bounciness, rbA->bounciness };
+			pairData.bouncinessB = { rbB->bounciness, rbB->bounciness, rbB->bounciness, rbB->bounciness };
+			pairData.massA = { rbA->mass, rbA->mass, rbA->mass, rbA->mass };
+			pairData.massB = { rbB->mass, rbB->mass, rbB->mass, rbB->mass };
+			pairData.shapeA = { 1, 1, 1, 1 };
+			pairData.shapeB = { 1, 1, 1, 1 };
 
-			ApplyLinearTransformations(rbA, tfA, rbB, tfB, cInfo, totalInverseMass);
+			pairData.collisionPointA = { cInfo.contactPoint.collisionPointFirst.x,
+				cInfo.contactPoint.collisionPointFirst.y, cInfo.contactPoint.collisionPointFirst.z, 1.0f };
+			pairData.collisionPointB = { cInfo.contactPoint.collisionPointSecond.x,
+				cInfo.contactPoint.collisionPointSecond.y, cInfo.contactPoint.collisionPointSecond.z, 1.0f };
+			pairData.collisionNormal = { cInfo.contactPoint.collisionNormal.x,
+				cInfo.contactPoint.collisionNormal.y, cInfo.contactPoint.collisionNormal.z, 1.0f };
+			pairData.penetration = { cInfo.contactPoint.penetration, cInfo.contactPoint.penetration,
+				cInfo.contactPoint.penetration, cInfo.contactPoint.penetration };
 
-			// Impulse-based collision resolution
-			ResolveCollisionImpulse(rbA, tfA, colSphereA, rbB, tfB, colSphereB, cInfo, totalInverseMass);
+			inData.cpd.push_back(std::move(pairData));
+		}
+	}
 
-			ApplyAngularTransformations(rbA, tfA, rbB, tfB);
+	void PhysicsSystem::ApplyComputeShaderData(CCE::ECS::Systems::PhysicsSystem::CSOutputData* dataView) const
+	{
+		using Entity = CCE::ECS::Entity;
+		using namespace CCE::ECS::Components;
+		using namespace CCE::Physics;
+		using namespace DirectX;
+
+		// Update positions and velocities
+		size_t resultID = 0;
+		for (auto& collisionPair : AABBAABBFrameCollisions)
+		{
+			Entity a(collisionPair.first);
+			Entity b(collisionPair.second);
+
+			Transform* tfA = a.GetComponent<Transform>();
+			Transform* tfB = b.GetComponent<Transform>();
+
+			Rigidbody* rbA = a.GetComponent<Rigidbody>();
+			Rigidbody* rbB = b.GetComponent<Rigidbody>();
+
+			tfA->SetTranslation(
+				{
+					dataView->cpd[resultID].newPositionA.x,
+					dataView->cpd[resultID].newPositionA.y,
+					dataView->cpd[resultID].newPositionA.z
+				}
+			);
+
+			tfB->SetTranslation(
+				{
+					dataView->cpd[resultID].newPositionB.x,
+					dataView->cpd[resultID].newPositionB.y,
+					dataView->cpd[resultID].newPositionB.z
+				}
+			);
+
+			rbA->ApplyLinearImpulse(
+				{
+					dataView->cpd[resultID].linearImpulseA.x,
+					dataView->cpd[resultID].linearImpulseA.y,
+					dataView->cpd[resultID].linearImpulseA.z
+				}
+			);
+
+			rbB->ApplyLinearImpulse(
+				{
+					dataView->cpd[resultID].linearImpulseB.x,
+					dataView->cpd[resultID].linearImpulseB.y,
+					dataView->cpd[resultID].linearImpulseB.z
+				}
+			);
+
+			rbA->ApplyAngularImpulse(
+				{
+					dataView->cpd[resultID].angularImpulseA.x,
+					dataView->cpd[resultID].angularImpulseA.y,
+					dataView->cpd[resultID].angularImpulseA.z
+				}
+			);
+			rbB->ApplyAngularImpulse(
+				{
+					dataView->cpd[resultID].angularImpulseB.x,
+					dataView->cpd[resultID].angularImpulseB.y,
+					dataView->cpd[resultID].angularImpulseB.z
+				}
+			);
+
+			// @TODO: Update angular impulse
+			// Currently not necessary!
+
+			++resultID;
+		}
+
+		for (auto& collisionPair : SphereAABBFrameCollisions)
+		{
+			Entity a(collisionPair.first);
+			Entity b(collisionPair.second);
+
+			Transform* tfA = a.GetComponent<Transform>();
+			Transform* tfB = b.GetComponent<Transform>();
+
+			Rigidbody* rbA = a.GetComponent<Rigidbody>();
+			Rigidbody* rbB = b.GetComponent<Rigidbody>();
+
+			tfA->SetTranslation(
+				{
+					dataView->cpd[resultID].newPositionA.x,
+					dataView->cpd[resultID].newPositionA.y,
+					dataView->cpd[resultID].newPositionA.z
+				}
+			);
+
+			tfB->SetTranslation(
+				{
+					dataView->cpd[resultID].newPositionB.x,
+					dataView->cpd[resultID].newPositionB.y,
+					dataView->cpd[resultID].newPositionB.z
+				}
+			);
+
+			rbA->ApplyLinearImpulse(
+				{
+					dataView->cpd[resultID].linearImpulseA.x,
+					dataView->cpd[resultID].linearImpulseA.y,
+					dataView->cpd[resultID].linearImpulseA.z
+				}
+			);
+
+			rbB->ApplyLinearImpulse(
+				{
+					dataView->cpd[resultID].linearImpulseB.x,
+					dataView->cpd[resultID].linearImpulseB.y,
+					dataView->cpd[resultID].linearImpulseB.z
+				}
+			);
+
+			rbA->ApplyAngularImpulse(
+				{
+					dataView->cpd[resultID].angularImpulseA.x,
+					dataView->cpd[resultID].angularImpulseA.y,
+					dataView->cpd[resultID].angularImpulseA.z
+				}
+			);
+			rbB->ApplyAngularImpulse(
+				{
+					dataView->cpd[resultID].angularImpulseB.x,
+					dataView->cpd[resultID].angularImpulseB.y,
+					dataView->cpd[resultID].angularImpulseB.z
+				}
+			);
+
+			// @TODO: Update angular impulse
+			// Currently not necessary!
+
+			++resultID;
+		}
+
+		for (auto& collisionPair : SphereSphereFrameCollisions)
+		{
+			Entity a(collisionPair.first);
+			Entity b(collisionPair.second);
+
+			Transform* tfA = a.GetComponent<Transform>();
+			Transform* tfB = b.GetComponent<Transform>();
+
+			Rigidbody* rbA = a.GetComponent<Rigidbody>();
+			Rigidbody* rbB = b.GetComponent<Rigidbody>();
+
+			tfA->SetTranslation(
+				{
+					dataView->cpd[resultID].newPositionA.x,
+					dataView->cpd[resultID].newPositionA.y,
+					dataView->cpd[resultID].newPositionA.z
+				}
+			);
+
+			tfB->SetTranslation(
+				{
+					dataView->cpd[resultID].newPositionB.x,
+					dataView->cpd[resultID].newPositionB.y,
+					dataView->cpd[resultID].newPositionB.z
+				}
+			);
+
+			rbA->ApplyLinearImpulse(
+				{
+					dataView->cpd[resultID].linearImpulseA.x,
+					dataView->cpd[resultID].linearImpulseA.y,
+					dataView->cpd[resultID].linearImpulseA.z
+				}
+			);
+
+			rbB->ApplyLinearImpulse(
+				{
+					dataView->cpd[resultID].linearImpulseB.x,
+					dataView->cpd[resultID].linearImpulseB.y,
+					dataView->cpd[resultID].linearImpulseB.z
+				}
+			);
+
+			rbA->ApplyAngularImpulse(
+				{
+					dataView->cpd[resultID].angularImpulseA.x,
+					dataView->cpd[resultID].angularImpulseA.y,
+					dataView->cpd[resultID].angularImpulseA.z
+				}
+			);
+			rbB->ApplyAngularImpulse(
+				{
+					dataView->cpd[resultID].angularImpulseB.x,
+					dataView->cpd[resultID].angularImpulseB.y,
+					dataView->cpd[resultID].angularImpulseB.z
+				}
+			);
+
+			// @TODO: Update angular impulse
+			// Currently not necessary!
+
+			++resultID;
 		}
 	}
 

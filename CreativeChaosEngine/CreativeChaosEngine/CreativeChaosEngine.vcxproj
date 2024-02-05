@@ -15,6 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CCE\ComputeShader\ComputeShader.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Behaviour.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Collider.cpp" />
     <ClCompile Include="src\CCE\ecs\components\Material.cpp" />
@@ -69,6 +70,7 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Topology.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CCE\ComputeShader\ComputeShader.h" />
     <ClInclude Include="src\CCE\ECS\ComponentBuffer.h" />
     <ClInclude Include="src\CCE\ECS\Components\Behaviour.h" />
     <ClInclude Include="src\CCE\ECS\Components\Collider.h" />

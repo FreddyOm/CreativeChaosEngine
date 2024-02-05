@@ -203,7 +203,7 @@ namespace CCE::Graphics
 		// swap chain
 		swapChainDesc = MemoryManager::Instance->rendMemory.AllocAligned<DXGI_SWAP_CHAIN_DESC>();
 
-		swapChainDesc->BufferDesc.Width = clientRect->right;					// backbuffer settings
+		swapChainDesc->BufferDesc.Width = clientRect->right;				// backbuffer settings
 		swapChainDesc->BufferDesc.Height = clientRect->bottom;				// backbuffer settings
 		swapChainDesc->BufferDesc.RefreshRate = DXGI_RATIONAL{ 0,1 };		// backbuffer settings
 		swapChainDesc->BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;		// backbuffer settings

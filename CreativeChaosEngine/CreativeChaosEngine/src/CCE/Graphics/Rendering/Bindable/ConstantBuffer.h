@@ -9,14 +9,16 @@ namespace CCE::Graphics
 	struct ConstantBuffer : public IBindable
 	{
 	public:
-		ConstantBuffer( const C& _constant, UINT _slot = 0u)
+		ConstantBuffer( const C& _constant, UINT _slot = 0u, 
+			D3D11_BIND_FLAG bindFlags = D3D11_BIND_CONSTANT_BUFFER, 
+			D3D11_RESOURCE_MISC_FLAG miscFlags = (D3D11_RESOURCE_MISC_FLAG)0u)
 			: slot(_slot)
 		{
 			D3D11_BUFFER_DESC constBufDescription = {};
-			constBufDescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+			constBufDescription.BindFlags = bindFlags;
 			constBufDescription.Usage = D3D11_USAGE_DYNAMIC;
 			constBufDescription.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			constBufDescription.MiscFlags = 0u;
+			constBufDescription.MiscFlags = miscFlags;
 			constBufDescription.ByteWidth = sizeof(_constant);
 			constBufDescription.StructureByteStride = 0u;
 
@@ -82,6 +84,51 @@ namespace CCE::Graphics
 		void DynamicBind() override
 		{
 			IBindable::GetContext()->VSSetConstantBuffers(slot, 1u, pConstantBuffer.GetAddressOf());
+		}
+
+		void StaticBind() override
+		{
+
+		}
+	};
+
+	template<typename C>
+	struct CSInputBuffer : public ConstantBuffer<C>
+	{
+		using ConstantBuffer<C>::slot;
+		using ConstantBuffer<C>::pConstantBuffer;
+	public:
+		template<typename C>
+		CSInputBuffer(const C& consts, UINT slot)
+			: ConstantBuffer<C>(consts, slot, D3D11_USAGE_DYNAMIC)
+		{ }
+
+		void DynamicBind() override
+		{
+			IBindable::GetContext()->CSGetConstantBuffers(slot, 1u, pConstantBuffer.GetAddressOf());
+		}
+
+		void StaticBind() override
+		{
+
+		}
+	};
+
+	template<typename C>
+	struct CSOutputBuffer: public ConstantBuffer<C>
+	{
+		using ConstantBuffer<C>::slot;
+		using ConstantBuffer<C>::pConstantBuffer;
+	public:
+		template<typename C>
+		CSOutputBuffer(const C& consts, UINT slot)
+			: ConstantBuffer<C>(consts, slot, D3D11_BIND_UNORDERED_ACCESS,
+				D3D11_RESOURCE_MISC_BUFFER_STRUCTURED)
+		{ }
+
+		void DynamicBind() override
+		{
+			IBindable::GetContext()->CSGetConstantBuffers(slot, 1u, pConstantBuffer.GetAddressOf());
 		}
 
 		void StaticBind() override

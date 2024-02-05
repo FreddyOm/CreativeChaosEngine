@@ -58,6 +58,7 @@
     <ClCompile Include="src\CCE\ecs\components\Material.cpp" />
     <ClCompile Include="src\CCE\Physics\Physics.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Collider.cpp" />
+    <ClCompile Include="src\CCE\ComputeShader\ComputeShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\ECS\ComponentBuffer.h" />
@@ -224,6 +225,7 @@
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\VSConstBufData.h" />
     <ClInclude Include="src\CCE\Utilities\Containers\Octree.h" />
     <ClInclude Include="src\CCE\Physics\Physics.h" />
+    <ClInclude Include="src\CCE\ComputeShader\ComputeShader.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="resources\sdk\assimp-vc143-mt.lib" />

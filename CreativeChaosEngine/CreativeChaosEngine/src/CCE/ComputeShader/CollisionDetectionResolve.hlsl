@@ -12,8 +12,8 @@ struct CollisionPair
     float4 bouncinessB;
     float4 massA;
     float4 massB;
-    uint4 shapeA; // 0: AABB , 1: Sphere
-    uint4 shapeB; // 0: AABB , 1: Sphere
+    float4 shapeA; // 0: AABB , 1: Sphere
+    float4 shapeB; // 0: AABB , 1: Sphere
 
     float4 collisionPointA;
     float4 collisionPointB;
@@ -25,13 +25,10 @@ struct ResponseData
 {
     float4 newPositionA;
     float4 newPositionB;
-    float4 newVelocityA;
-    float4 newVelocityB;
     float4 linearImpulseA;
     float4 linearImpulseB;
     float4 angularImpulseA;
     float4 angularImpulseB;
-    
 };
 
 StructuredBuffer<CollisionPair> collisionPairs : register(t0);
@@ -44,7 +41,7 @@ float InverseMass(float mass)
 
 float3x3 InertiaTensor(uint shape, float mass, float3 dimensions)
 {
-    return shape == 0 ? 
+    return shape.x < 1 ? 
     float3x3((1.0f / 12.0f) * mass * (dimensions.y * dimensions.y + dimensions.z * dimensions.z), 0,0,
     0, (1.0f / 12.0f) * mass * (dimensions.x * dimensions.x + dimensions.z * dimensions.z), 0,
     0, 0, (1.0f / 12.0f) * mass * (dimensions.y * dimensions.y + dimensions.x * dimensions.x))
@@ -58,7 +55,7 @@ void ApplyLinearTransformations(CollisionPair cPair, ResponseData rData)
 {
     float totalInverseMass = InverseMass(cPair.massA.x) + InverseMass(cPair.massB.x);
     
-    // Set new position by linearlly transforming along the collision normal
+    // Set new position by linearly transforming along the collision normal
     rData.newPositionA = cPair.positionA - (cPair.collisionNormal * cPair.penetration * 
     (InverseMass(cPair.massA.x) / totalInverseMass));
     
