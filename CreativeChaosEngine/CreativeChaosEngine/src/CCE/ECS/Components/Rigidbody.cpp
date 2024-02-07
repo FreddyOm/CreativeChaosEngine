@@ -24,7 +24,7 @@ namespace CCE::ECS::Components
 	{
 		using namespace DirectX;
 
-		XMVECTOR inverseForce = XMVectorDivide({1.0f, 1.0f, 1.0f}, force / 1000.f);
+		XMVECTOR inverseForce = XMVectorDivide({1.0f, 1.0f, 1.0f}, force * Time::deltaTime);
 		XMVECTOR scaledInertiaTensor = XMVector3Transform(force, XMLoadFloat3x3(inertiaTensor));
 		XMVECTOR newAngVel = XMVectorAdd(XMLoadFloat3(&angularVelocity), scaledInertiaTensor);
 
