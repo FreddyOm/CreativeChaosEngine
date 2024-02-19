@@ -4,11 +4,12 @@
 #include "../Manager/MemoryManager.h"
 #include "../ClientWindow/ClientWindow.h"
 #include "../Manager/Application.h"
+#include "../Resources/ResourceAllocator.h"
 #include <functional>
 
 namespace CCE::Graphics
 {
-	// TODO: Jobify the initialization
+	// @TODO: Jobify the initialization
 
 	RenderPipeline* RenderPipeline::Instance = nullptr;
 
@@ -30,7 +31,7 @@ namespace CCE::Graphics
 		p_DSV.~ComPtr();
 		p_backBuffer.~ComPtr();
 
-		//TODO: Check this bug when deleting cnt
+		// @TODO: Check this bug when deleting cnt
 		//if (cnt != nullptr)
 			//delete cnt;
 
@@ -48,7 +49,7 @@ namespace CCE::Graphics
 	/// <param name="hWnd"></param>
 	void RenderPipeline::InitializeD3D11(const HWND hWnd, const int width, const int height)
 	{
-		// TODO: Load from config file
+		// @TODO: Load from config file
 		pipelineConfig.VSync = false;
 
 		//CompileAllShaders();
@@ -68,12 +69,14 @@ namespace CCE::Graphics
 		// Create viewport
 		CreateViewport();
 
+		RenderingSystem.StartUp();
+
 		pViewportCamera = new Camera();
 
-		testModels.push_back(new Model(Application::Instance->resourceDataPath.Path() + "/models/Stanford_Dragon.fbx"));
+		//testModels.push_back(new Model(Application::Instance->resourceDataPath.Path() + "/models/Stanford_Dragon.fbx"));
 
-		testModels.at(0)->transform.SetTranslation({ 0,0,0 });
-		testModels.at(0)->transform.SetScale({ 0.1,0.1,0.1 });
+		//testModels.at(0)->transform.SetTranslation({ 0,0,0 });
+		//testModels.at(0)->transform.SetScale({ 0.1,0.1,0.1 });
 	}
 
 	/// <summary>
@@ -228,16 +231,17 @@ namespace CCE::Graphics
 		// Clear render view and draw background color
 		p_Context->ClearRenderTargetView(p_renderTarget.Get(), col.RGBA());
 		p_Context->ClearDepthStencilView(p_DSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
-		
 
 		p_Context->OMSetRenderTargets(1u, p_renderTarget.GetAddressOf(), p_DSV.Get());
 
-		// TODO: Render triangles
+		// @TODO: Render triangles
 		// Update scene - jobify this heavily!!
 		pViewportCamera->Update();
 
-		for(auto* mesh : testModels)
-			mesh->Draw();
+		/*for(auto* mesh : testModels)
+			mesh->Draw();*/
+
+		RenderingSystem.UpdateSystem();
 	}
 
 	/// <summary>
@@ -334,16 +338,18 @@ namespace CCE::Graphics
 	/// </summary>
 	void RenderPipeline::UninitializeD3D11()
 	{
-		// TODO: Prevent this from being called twice (explicit destructor from runtime manager and automatic destructor)
+		// @TODO: Prevent this from being called twice (explicit destructor from runtime manager and automatic destructor)
 		if (MemoryManager::Instance == nullptr || p_Context == 0) { return; }
 		p_Context->OMSetRenderTargets(0, NULL, NULL);
 		p_Context->Flush();
 
-		// TODO: Check alloc and free order!!
+		// @TODO: Check alloc and free order!!
 		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
 		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(D3D11_DEPTH_STENCIL_DESC));
 		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(DXGI_SWAP_CHAIN_DESC));
 		MemoryManager::Instance->rendMemory.FreeAligned(sizeof(RECT));
+
+		RenderingSystem.ShutDown();
 	}
 
 	/// <summary>

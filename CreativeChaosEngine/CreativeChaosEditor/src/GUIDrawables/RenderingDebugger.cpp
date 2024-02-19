@@ -8,9 +8,9 @@ void RenderingDebugger::OnGui()
 {
 	if (ImGui::CollapsingHeader("Stats"))
 	{
-		ImGui::Text("FPS: %d", static_cast<int>(((1.0 / Time::deltaTime) * 1000.0)));
-		ImGui::Text("Frametime (ms): %f", Time::deltaTime);
-		ImGui::Text("Avg. Frametime (ms): %f", Time::GetAverageFrameTime());
+		ImGui::Text("FPS: %d", static_cast<int>((1.0 / Time::deltaTime)));
+		ImGui::Text("Frametime (ms): %f", Time::deltaTime * 1000.0);
+		ImGui::Text("Avg. Frametime (ms): %f", Time::GetAverageFrameTime() * 1000.0);
 
 		ImGui::Spacing();
 		ImGui::Separator();

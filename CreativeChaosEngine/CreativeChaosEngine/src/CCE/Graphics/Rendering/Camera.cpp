@@ -9,11 +9,11 @@ namespace CCE::Graphics
 {
 	Camera::Camera()
 	{
-		transform.SetTranslation({0.0f, 0.0f, -10.0f});
+		transform.SetTranslation({4.0f, 2.0f, -10.0f});
 		SetFovAndLookDir();
 		CreateConstBufs();
 
-		InputManager::Instance->RegisterInputCallback(*this);
+		REGISTER_INPUT_CALLBACK;
 
 		REGISTER_LEAK_DETECT;
 	}
@@ -64,7 +64,7 @@ namespace CCE::Graphics
 		pCameraConstBuf = std::make_shared<VSConstantBuffer<CameraConstantBufs>>(cameraConstBufs, 1);
 	}
 
-	// TODO: Only do this when necessary!
+	// @TODO: Only do this when necessary!
 	void Camera::SetFovAndLookDir() noexcept
 	{
 		using namespace DirectX;
@@ -104,7 +104,7 @@ namespace CCE::Graphics
 		pCameraConstBuf->DynamicBind();
 	}
 
-	// TODO: Only do this on the viewport cam (create another class for the viewport cam or derive from it -> indirection[!])
+	// @TODO: Only do this on the viewport cam (create another class for the viewport cam or derive from it -> indirection[!])
 	// Also, keep in mind virtual functions are runtime performance critical!
 	void Camera::InputCallback(const Input::Mouse* mouse, const Input::Keyboard* keyboard, const Input::Controller* controller)
 	{
@@ -160,12 +160,12 @@ namespace CCE::Graphics
 				XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (-transform.Up() * camMovementDelta * (float)CCE::Time::deltaTime)));
 			}
 
-#pragma endregion wasd
+			#pragma endregion wasd
 
 			#pragma region rotate cam
 
-			float deltaX = mouse->deltaX * camRotYDelta * (float)CCE::Time::deltaTime;
-			float deltaY = mouse->deltaY * camRotXDelta * (float)CCE::Time::deltaTime;
+			float deltaX = mouse->deltaX * camRotYDelta * 10 * (float)CCE::Time::deltaTime;
+			float deltaY = mouse->deltaY * camRotXDelta * 10 * (float)CCE::Time::deltaTime;
 			// Make sure, the global up vector still holds true in any case!!
 			if (transform.Rotation().x + deltaY > -80.0f && transform.Rotation().x + deltaY < 80.0f)
 			{
@@ -182,7 +182,7 @@ namespace CCE::Graphics
 
 		if (mouse->wheelDelta != 0)
 		{
-			XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Forward() * mouse->wheelDelta * camZoomDelta * (float)CCE::Time::deltaTime)));
+			XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Forward() * mouse->wheelDelta * 100 * camZoomDelta * (float)CCE::Time::deltaTime)));
 		}
 
 		#pragma endregion zoom
@@ -250,8 +250,8 @@ namespace CCE::Graphics
 
 		#pragma region rotate cam
 
-		float lookDeltaX = controller->RJoypad.x.value * camRotYDelta * (float)CCE::Time::deltaTime;
-		float lookDeltaY = -controller->RJoypad.y.value * camRotXDelta * (float)CCE::Time::deltaTime;
+		float lookDeltaX = controller->RJoypad.x.value * camRotYDelta * 10 * (float)CCE::Time::deltaTime;
+		float lookDeltaY = -controller->RJoypad.y.value * camRotXDelta * 10 * (float)CCE::Time::deltaTime;
 		// Make sure, the global up vector still holds true in any case!!
 		if (transform.Rotation().x + lookDeltaY > -80.0f && transform.Rotation().x + lookDeltaY < 80.0f)
 		{

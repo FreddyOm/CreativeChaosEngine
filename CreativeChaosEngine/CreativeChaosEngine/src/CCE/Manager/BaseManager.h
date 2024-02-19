@@ -14,6 +14,12 @@ namespace CCE
 		virtual void ShutDown() = 0;
 
 	protected:
-		std::atomic<bool> initialized = false;
+		void Init() const;
+		void Deinit() const;
+		
+		bool IsInitialized() const;
+
+	private:
+		mutable std::atomic<bool> initialized = false;
 	};
 }

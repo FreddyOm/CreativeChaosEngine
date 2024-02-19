@@ -1,13 +1,17 @@
 #pragma once
 #include "../Core.h"
+#include "JobManager.h"
 #include "BaseManager.h"
 #include "InputManager.h"
 #include "MemoryManager.h"
-#include "PhysicsManager.h"
 #include "ProfilingManager.h"
-#include "JobManager.h"
+#include "../Scene/Scene.h"
 #include "../Utilities/IO/IO.h"
+#include "../ECS/EntityComponentSystem.h"
+#include "../ECS/Systems/PhysicsSystem.h"
+#include "../ECS/Systems/RenderingSystem.h"
 #include "../Utilities/Serialization/ISerializable.h"
+#include "../Resources/ResourceAllocator.h"
 
 namespace CCE
 {
@@ -35,6 +39,8 @@ namespace CCE
 		Directory resourceDataPath = {};
 		//...
 
+		Time::point startTime{};
+
 	private:
 
 		void Initialize();
@@ -42,15 +48,21 @@ namespace CCE
 		Directory GetPersistentDataPath() const;
 		Directory GetApplicationDataPath() const;
 
-	private:
+	public:
 
 		JobManager mJobManager = CCE::JobManager();
 		ProfilingManager mProfilingManager = CCE::ProfilingManager();
-		PhysicsManager mPhysicsManager = PhysicsManager();
 		InputManager mInputManager = InputManager();
 		MemoryManager mMemoryManager = MemoryManager();
+		ECS::EntityComponentSystem mECS = ECS::EntityComponentSystem();
 
-		ClientWindow *window = nullptr;
+		// ECS Systems
+		Resources::ResourceAllocator allocator = Resources::ResourceAllocator();
+		ECS::Systems::PhysicsSystem mPhysicsSystem = ECS::Systems::PhysicsSystem();
+		ECS::Systems::RenderingSystem mRenderingSystem = ECS::Systems::RenderingSystem();
+
+		ClientWindow* window = nullptr;
+		Scene::Scene* scene = nullptr;
 
 		std::chrono::steady_clock::time_point frameBegin;
 		std::chrono::steady_clock::time_point frameEnd;
@@ -68,7 +80,7 @@ namespace CCE
 	public:
 		bool multithreaded = false;
 
-		std::string SerializeToString(bool prettyPrint = false) override
+		std::string SerializeToString(bool prettyPrint = false) const override
 		{
 			JSON data;
 
@@ -77,7 +89,7 @@ namespace CCE
 			return out.c_str();
 		}
 
-		std::vector<uint8_t> SerializeToBinary() override
+		std::vector<uint8_t> SerializeToBinary() const override
 		{
 			JSON data;
 

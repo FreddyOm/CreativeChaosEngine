@@ -2,6 +2,7 @@
 #include "../../../Utilities/FreeImg/FreeImage.h"
 #include "../../../Resources/TextureLoader.h"
 #include "../../../Analysis/Debug.h"
+#include "../../../Resources/ResourceAllocator.h"
 
 namespace CCE::Graphics
 {
@@ -11,7 +12,7 @@ namespace CCE::Graphics
 		std::vector<D3D11_SUBRESOURCE_DATA>& subresourceDataArr, Microsoft::WRL::ComPtr<ID3D11Texture2D>& pTexture2D, 
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& pResourceView, unsigned short count);
 
-	JOB_ENTRY_POINT D3D11SetImage(std::unique_ptr<CCE::Resources::TexData>& tex, D3D11_TEXTURE2D_DESC& texDesc,
+	JOB_ENTRY_POINT D3D11SetImage(std::shared_ptr<CCE::Resources::TexData> tex, D3D11_TEXTURE2D_DESC& texDesc,
 		FIBITMAP* texture, std::vector<D3D11_SUBRESOURCE_DATA>& subresourceDataArr, D3D11_SHADER_RESOURCE_VIEW_DESC& srvd);
 
 #pragma endregion job funcs declarations
@@ -26,7 +27,7 @@ namespace CCE::Graphics
 		D3D11LoadImageResource(loader, GetDevice(), {filePath}, subresourceDataArr, pTexture2D, pResourceView, count);
 	}
 
-	// TODO: How can I load every image in parallel?
+	// @TODO: How can I load every image in parallel?
 	Texture2D::Texture2D(std::vector<String>& filePaths, unsigned short startSlot)
 		: count(filePaths.size()), startSlot(startSlot)
 	{
@@ -63,7 +64,7 @@ namespace CCE::Graphics
 		
 	}
 
-	// TODO: Kick more leaf jobs (parallelize creation of texDesc and srvd)
+	// @TODO: Kick more leaf jobs (parallelize creation of texDesc and srvd)
 	JOB_ENTRY_POINT D3D11LoadImageResource(CCE::Resources::TextureLoader& loader, ID3D11Device* device, std::vector<String> const& filePaths,
 		std::vector<D3D11_SUBRESOURCE_DATA>& subresourceDataArr, Microsoft::WRL::ComPtr<ID3D11Texture2D>& pTexture2D, 
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& pResourceView, unsigned short count)
@@ -84,10 +85,10 @@ namespace CCE::Graphics
 		srvd.Texture2D.MipLevels = texDesc.MipLevels;
 		srvd.Texture2D.MostDetailedMip = 0;
 
-		// TODO: Parallelize this for loop by scheduling every image as a job
+		// @TODO: Parallelize this for loop by scheduling every image as a job
 		for (unsigned short i = 0; i < count; ++i)
 		{
-			std::unique_ptr<CCE::Resources::TexData> tex = loader.LoadResource(filePaths.at(i));
+			std::shared_ptr<CCE::Resources::TexData> tex = CCE::Resources::ResourceAllocator::Instance->GetTexture(filePaths.at(i));
 			FIBITMAP* texture = &tex->bitmap;
 
 			DASSERT(texDesc.Width == 0 || texDesc.Width == tex->width && texDesc.Height == tex->height,
@@ -109,7 +110,7 @@ namespace CCE::Graphics
 	}
 
 	// Set the actual image data and 
-	JOB_ENTRY_POINT D3D11SetImage(std::unique_ptr<CCE::Resources::TexData>& tex, D3D11_TEXTURE2D_DESC& texDesc, 
+	JOB_ENTRY_POINT D3D11SetImage(std::shared_ptr<CCE::Resources::TexData> tex, D3D11_TEXTURE2D_DESC& texDesc, 
 		FIBITMAP* texture, std::vector<D3D11_SUBRESOURCE_DATA>& subresourceDataArr, D3D11_SHADER_RESOURCE_VIEW_DESC& srvd)
 	{
 		// Analyze image format
@@ -124,7 +125,7 @@ namespace CCE::Graphics
 			texture = FreeImage_ConvertTo32Bits(&tex->bitmap);
 			//FreeImage_Unload(&tex->bitmap);
 			break;
-		defaut:
+		default:
 			DERROR("Unknown file format!");
 			texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 			break;

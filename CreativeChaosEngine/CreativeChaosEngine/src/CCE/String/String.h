@@ -101,6 +101,11 @@ namespace CCE
 			return String(&buf[0]);
 		}
 
+		bool operator<(const String& other)
+		{
+			return this->sId < other.sId;
+		}
+
 		UINT64 Length() const;
 		const char* Value() const;
 		static bool IsEmpty(String& str);

@@ -4,10 +4,10 @@
 
 namespace CCE
 {
-	//TODO: Make this concurrently accessible
-	//TODO: Fix file mode to work properly!
-	//TODO: Add impl for read/write bytes
-	//TODO: Impl Directory.IsEmpty(String dirPath)
+	// @TODO: Make this concurrently accessible
+	// @TODO: Fix file mode to work properly!
+	// @TODO: Add impl for read/write bytes
+	// @TODO: Impl Directory.IsEmpty(String dirPath)
 
 	/// <summary>
 	/// Checks if a specific file exists or not.
@@ -48,7 +48,7 @@ namespace CCE
 
 	String IO::ReadText(const String filePath, const FileMode fileMode)
 	{
-		// TODO: Append the flags according to the fileMode input(s)
+		// @TODO: Append the flags according to the fileMode input(s)
 		//DASSERT(!String::IsEmpty(filePath), "The filepath must not be empty!");
 		
 		if (!File::Exists(filePath)) { return CCE::String(""); }
@@ -90,7 +90,7 @@ namespace CCE
 		HANDLE fHndl = CreateFileA(filePath.Value(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		DWORD bytesRead = 0;
 
-		//TODO: Check maximum buffer size
+		// @TODO: Check maximum buffer size
 		return ReadFile(fHndl, (LPVOID) destination, 41943040, &bytesRead, NULL) && bytesRead != 41943040 ? bytesRead : 0;
 	}
 
@@ -113,7 +113,7 @@ namespace CCE
 			openFileStream.close();
 		}
 
-		//TODO: Check if this is a memory leak (memblock might not be deleted here!)
+		// @TODO: Check if this is a memory leak (memblock might not be deleted here!)
 		output = std::make_shared<char>(memblock);
 
 		return output;

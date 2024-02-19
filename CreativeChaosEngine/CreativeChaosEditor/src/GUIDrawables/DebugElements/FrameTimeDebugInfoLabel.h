@@ -21,7 +21,7 @@ public:
 
 		DebugInfoLabel::Draw();
 		ImGui::DynamicTextButton("%.1d (%.1fms, avg %.1fms)", 0, size,
-			static_cast<int>(((1.0 / Time::deltaTime) * 1000.0)), Time::deltaTime, Time::GetAverageFrameTime());
+			static_cast<int>((1.0 / Time::deltaTime)), Time::deltaTime * 1000.0, Time::GetAverageFrameTime() * 1000.0);
 		ImGui::SameLine();
 		ImGui::TextUnformatted("|");
 

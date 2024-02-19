@@ -6,7 +6,7 @@ namespace CCE::Graphics
 {
 	InputLayout::InputLayout(ID3DBlob* pVertexShaderBytecode)
 	{
-		// Create Input Layout
+		// Create Input Layout for vertex shader
 
 		D3D11_INPUT_ELEMENT_DESC layout[] =
 		{

@@ -23,7 +23,7 @@ namespace CCE
 #define MAX_JOBS 500
 #define WAIT_CNTR_LOOPS 200
 #define JOBDECL CCE::JobManager::JobDeclaration
-	// TODO: Override an operator to make the binding even more easy to use
+	// @TODO: Override an operator to make the binding even more easy to use
 #define BIND_BASIC(func, obj, ...) std::bind(&func, obj, ##__VA_ARGS__)
 #define BIND(func, ...) [&](...){return func(##__VA_ARGS__);};
 #define JOB_ENTRY_POINT void
@@ -60,7 +60,7 @@ namespace CCE
 			unsigned int mDesiredCount = 0;			// 4 bytes
 			va_list m_param = NULL;					// 8 bytes
 
-			byte padding[32];						// 32 bytes
+			byte padding[32] = {};					// 32 bytes
 
 			JobDeclaration()
 			{
@@ -132,16 +132,16 @@ namespace CCE
 
 		struct WaitData
 		{
-			LPVOID fiber;
-			Counter* pCounter;
-			int desiredCount;
+			LPVOID fiber = {};
+			Counter* pCounter = nullptr;
+			int desiredCount = 0;
 
 			WaitData()
 				: fiber(0), pCounter(nullptr), desiredCount(0)
 			{ }
 
 			WaitData(const LPVOID _fiber, Counter* _counter, const unsigned int _desiredCount)
-				: fiber(_fiber), pCounter(_counter), desiredCount(desiredCount)
+				: fiber(_fiber), pCounter(_counter), desiredCount(_desiredCount)
 			{ }
 
 			// Copy instructions
@@ -233,8 +233,8 @@ namespace CCE
 		alignas(128) static std::array<WaitData, NUM_FIBERS> wait_list;
 		static std::atomic<int> waitListPointer;
 		
-		// TODO: Implement custom queue class
-		// TODO allocate in customly in pool alloc
+		// @TODO: Implement custom queue class
+		// @TODO allocate in customly in pool alloc
 		alignas(128) static std::queue<JobDeclaration> jobQueue_High;
 		alignas(128) static std::queue<JobDeclaration> jobQueue_Normal;
 		alignas(128) static std::queue<JobDeclaration> jobQueue_Low;
@@ -245,7 +245,7 @@ namespace CCE
 
 		static std::atomic<unsigned int> fiberPoolPointer;
 
-		// TODO: Implement custom vector / list class
+		// @TODO: Implement custom vector / list class
 		std::vector<std::thread*> worker_threads = {};
 	};
 }

@@ -32,7 +32,7 @@ namespace CCMemory
 		return freePoolElements;
 	}
 
-	//TODO: Add size into alignment buffer (?) or remove it so that
+	// @TODO: Add size into alignment buffer (?) or remove it so that
 	// it's not nessecary to give the explicit size of the object to
 	// free. This is still error prone since you might give arbitrary
 	// values to the function which in consequence breaks the memory

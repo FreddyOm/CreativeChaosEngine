@@ -65,7 +65,7 @@ namespace CCE
 		DebugBreak();
 		//exit(-1);
 
-		//TODO: Write all asserts to an assert file on disk so one can
+		// @TODO: Write all asserts to an assert file on disk so one can
 		// easily track where the assertion ocurred even after the program
 		// was closed
 	}

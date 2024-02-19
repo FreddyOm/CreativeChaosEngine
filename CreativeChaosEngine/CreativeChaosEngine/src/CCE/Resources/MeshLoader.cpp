@@ -2,6 +2,7 @@
 #include "../Analysis/Debug.h"
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "MeshData.h"
 
 namespace CCE::Resources
 {
@@ -15,8 +16,8 @@ namespace CCE::Resources
 		delete importer;
 	}
 
-	// TODO: Load into central resource buffer and only load once of course!
-	std::unique_ptr<MeshData> MeshLoader::LoadResource(String filePath)
+	// @TODO: Load into central resource buffer and only load once of course!
+	std::shared_ptr<MeshData> MeshLoader::LoadResource(String filePath)
 	{
 		// Load the data!
 		unsigned int flags = aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_ConvertToLeftHanded |
@@ -58,6 +59,6 @@ namespace CCE::Resources
 			}
 		}
 		
-		return std::make_unique<MeshData>(std::move(data));
+		return std::make_shared<MeshData>(std::move(data));
 	}
 }

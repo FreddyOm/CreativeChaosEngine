@@ -2,7 +2,7 @@
 #include <winternl.h>
 #include "MemoryManager.h"
 
-// TODO: Currently the threads fight for the next job. Fix that to make it more efficient.
+// @TODO: Currently the threads fight for the next job. Fix that to make it more efficient.
 
 namespace CCE
 {
@@ -13,7 +13,7 @@ namespace CCE
 	{
 		DASSERT(Instance == nullptr, "JobManager was instantiated more than once!");
 		JobManager::Instance = this;
-		initialized = true;
+		BaseManager::Init();
 
 		auto startTime = Time::CurrentTick();
 		PopulateFiberPool();
@@ -30,13 +30,13 @@ namespace CCE
 	void JobManager::ShutDown()
 	{
 		LOGC("Shutting down JobManager...", COLOR_BLUE);
-		initialized = false;
+		BaseManager::Deinit();
 
 		auto lock = ScopedSpinLock(fiberSpinLock);
 
-		// TODO: Find a better solution (CancellationToken or similar) to 
+		// @TODO: Find a better solution (CancellationToken or similar) to 
 		// wait for completion of last jobs.
-		// Jobs are only run while the JobManager is initialized. When it's 
+		// Jobs are only runnig while the JobManager is initialized. When it's 
 		// being dinitialized, we have to wait until the last jobs finished running
 		Sleep(2); // Currently used to make sure, no job is running anymore
 
@@ -154,7 +154,7 @@ namespace CCE
 		return true;
 	}
 
-	//TODO: Check how KickJobAndWait should be implemented
+	// @TODO: Check how KickJobAndWait should be implemented
 
 	/// <summary>
 	/// Waits for another job to be kicked and kicks a job then.
@@ -207,7 +207,7 @@ namespace CCE
 		return success;
 	}
 
-	//TODO: Check how the counters should be implemented
+	// @TODO: Check how the counters should be implemented
 
 	/// <summary>
 	/// Waits for the counter to become equal to or less than the desired count.
@@ -335,7 +335,7 @@ namespace CCE
 			// Spawn threads
 			std::thread* workerThread = 
 				MemoryManager::Instance->jobMemory.AllocAligned<std::thread>();
-			// TODO: Change this so it works without new!!
+			// @TODO: Change this so it works without new!!
 			new (workerThread)std::thread(JobManager::RunThread);
 			auto hndl = workerThread->native_handle();
 
@@ -392,7 +392,7 @@ namespace CCE
 			thread_fibers.insert({ GetThreadId(GetCurrentThread()), _fiber });
 		}		
 
-		while (JobManager::Instance->initialized)
+		while (JobManager::Instance->IsInitialized())
 		{
 			if (HasNextJob() || wait_list.size() != 0)
 			{
@@ -411,7 +411,7 @@ namespace CCE
 		DeleteFiber(_fiber);
 	}
 
-	// TODO: Implement job wait list functionality so jobs can be put to sleep and woke up later
+	// @TODO: Implement job wait list functionality so jobs can be put to sleep and woke up later
 	/// <summary>
 	/// The main execution routine for work.
 	/// </summary>
@@ -422,7 +422,7 @@ namespace CCE
 		// So in order to not delete and create new fibers all the time we let this run
 		// in a loop and make sure the entrance point (SwitchToFiber(GetThreadFiber());) 
 		// is at the beginning of the loop!
-		while (JobManager::Instance->initialized)
+		while (JobManager::Instance->IsInitialized())
 		{
 			// Pull the next job
 			JOBDECL decl = GetNextJob();
@@ -457,7 +457,7 @@ namespace CCE
 		DWORD threadId = GetThreadId(GetCurrentThread());
 
 		auto lock = ScopedSpinLock(threadIdSpinLock);
-		LPVOID fiber = thread_fibers.at(threadId); // TODO: Can't find main thread in thread_fibers!!
+		LPVOID fiber = thread_fibers.at(threadId); // @TODO: Can't find main thread in thread_fibers!!
 
 		DASSERT(0 != fiber, "The thread was not found!");
 		return fiber;
@@ -488,7 +488,7 @@ namespace CCE
 	/// <returns>The next jobs declearation or null if there is none left.</returns>
 	JobManager::JobDeclaration JobManager::GetNextJob()
 	{
-		// TODO: Change this to intelligent spin lock (GEA: p. 555)
+		// @TODO: Change this to intelligent spin lock (GEA: p. 555)
 		// mutex lock for thread safety
 
 		JobDeclaration decl = {nullptr, Priority::NORMAL};

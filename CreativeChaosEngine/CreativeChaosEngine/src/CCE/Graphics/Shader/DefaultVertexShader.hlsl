@@ -1,6 +1,7 @@
 cbuffer ModelConstantBuffer : register(b0)
 {
     row_major float4x4 modelMatrix; // world matrix for object
+    float3 color;
 };
 
 cbuffer ViewProjectionBuffer : register(b1)
@@ -13,12 +14,14 @@ struct VertexShaderInput
 {
     float3 position_local : POSITION;
     float2 uv_coordinates : TEXCOORD;
+    float3 normal : NORMAL;
 };
 
 struct VertexShaderOutput
 {
     float4 position_clip : SV_POSITION; // required output of VS
     float2 uv_coordinates : TEXCOORD;
+    float3 color : COLOR;
 };
 
 VertexShaderOutput main(VertexShaderInput vsInput)
@@ -33,6 +36,7 @@ VertexShaderOutput main(VertexShaderInput vsInput)
     pos = mul(pos, projMatrix);
     output.position_clip = pos;
     output.uv_coordinates = vsInput.uv_coordinates;
+    output.color = color;
     
     return output;
 }

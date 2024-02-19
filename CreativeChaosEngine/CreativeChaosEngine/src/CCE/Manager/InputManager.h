@@ -15,6 +15,8 @@
 
 #include "../include/ds5w/ds5w.h"
 
+#define REGISTER_INPUT_CALLBACK CCE::InputManager::Instance->RegisterInputCallback(this)
+
 namespace CCE
 {
 	struct CCE_API InputManager : public BaseManager
@@ -32,9 +34,20 @@ namespace CCE
 		void StartUp() override;
 		void ShutDown() override;
 
-		void RegisterInputCallback(Input::IInputHandler& handler)
+		void RegisterInputCallback(Input::IInputHandler* handler)
 		{
-			handlerList.push_back(&handler);
+			handlerList.push_back(handler);
+		}
+
+		void UnregisterInputCallback(Input::IInputHandler* handler)
+		{
+			for (auto it = handlerList.begin(); it != handlerList.end(); ++it)
+			{
+				if (*it == handler)
+				{
+					handlerList.erase(it);
+				}
+			}
 		}
 
 		static InputManager* Instance;

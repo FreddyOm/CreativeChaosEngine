@@ -3,7 +3,7 @@
 
 namespace CCMemory
 {
-	//TODO: Mal schauen, ob die Allocators mit exportiert werden müssen
+	// @TODO: Mal schauen, ob die Allocators mit exportiert werden müssen
 	struct CCE_API Allocator
 	{
 		Allocator() = default;

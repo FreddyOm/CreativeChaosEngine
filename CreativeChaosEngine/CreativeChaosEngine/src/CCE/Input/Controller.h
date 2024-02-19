@@ -4,7 +4,7 @@
 
 namespace CCE::Input
 {
-	// TODO: Store input values per bit in DWORD (or similar)
+	// @TODO: Store input values per bit in DWORD (or similar)
 	struct CCE_API Controller : public InputDevice // 128 bytes
 	{
 		ButtonState RNorth = {};		// 4 bytes

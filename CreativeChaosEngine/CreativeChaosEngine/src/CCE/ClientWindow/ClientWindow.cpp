@@ -168,8 +168,8 @@ using namespace CCE;
 /// <returns>Result code.</returns>
 LRESULT CALLBACK ClientWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	// TODO: Handle input in one place & make explicit code platform independent
-	// TODO: Create possibility to set values to 0 again
+	// @TODO: Handle input in one place & make explicit code platform independent
+	// @TODO: Create possibility to set values to 0 again
 	InputManager::Instance->HandleWinInput(hwnd, uMsg, wParam, lParam);
 
 	switch (uMsg)

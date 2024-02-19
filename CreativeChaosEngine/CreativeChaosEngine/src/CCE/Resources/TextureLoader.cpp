@@ -4,23 +4,23 @@
 
 namespace CCE::Resources 
 {
-	std::unique_ptr<TexData> TextureLoader::LoadResource(String filePath)
+	std::shared_ptr<TexData> TextureLoader::LoadResource(String filePath)
 	{
 		TexData texData;
-		BYTE* bytes = new BYTE[41943040];
+		BYTE* bytes = new BYTE[41943040];	// @TODO: Is there any other way..?
 		ZeroMemory(bytes, 41943040);
 
 		DWORD fileSize = IO::ReadBytes(filePath, bytes);
-		DASSERT(fileSize > 0, 
+		DASSERT(fileSize > 0,
 			"Failed reading the resource file!");
 
 		FIMEMORY* mem = FreeImage_OpenMemory(bytes, fileSize);
-		DASSERT(nullptr != mem, 
+		DASSERT(nullptr != mem,
 			"Couldn't read file stream!");
 
 		auto format = FreeImage_GetFileTypeFromMemory(mem);
 
-		DASSERT(format != FIF_UNKNOWN, 
+		DASSERT(format != FIF_UNKNOWN,
 			"Couldn't resolve the resources format!");
 
 		auto data = FreeImage_LoadFromMemory(format, mem);
@@ -32,10 +32,10 @@ namespace CCE::Resources
 		texData.height = FreeImage_GetHeight(data);
 		texData.format = format;
 		texData.bitmap = std::move(*data);
-		
+
 		delete[] bytes;
-		
+
 		// Potentially convert to correct data format R8G8B8 -> R8G8B8A8
-		return std::make_unique<TexData>(std::move(texData));
+		return std::make_shared<TexData>(std::move(texData));
 	}
 }

@@ -18,7 +18,6 @@ namespace CCE
 		Instance = this;
 		Initialize();
 
-
 #ifdef CCE_PLATFORM_WINDOWS
 		// Load engine config
 		if (File::Exists(engineConfig.Path().Value()))
@@ -29,7 +28,7 @@ namespace CCE
 #else
 #error CCE is currently only supported for Windows
 #endif
-
+		startTime = Time::Now();
 		initialized = true;
 		LOGC("RuntimeManager initialized!", COLOR_BLUE);
 	}
@@ -48,6 +47,7 @@ namespace CCE
 			window->GetRenderPipeline()->GetRenderPipelineConfig()->SerializeToString(true).c_str(), true),
 			"Failed writing engine config to file.");
 		
+		delete scene;
 		delete window;
 		// Show leak info
 		PRINT_LEAK_INFO;
@@ -61,7 +61,7 @@ namespace CCE
 	Application* Application::Instance = nullptr;
 
 	/// <summary>
-	/// Run one frame
+	/// Run one frame and execute logic before the editor is updated.
 	/// </summary>
 	void Application::PreEditorUpdate(int& rValue, bool handleInput)
 	{
@@ -113,7 +113,12 @@ namespace CCE
 		if(handleInput)
 			mInputManager.FinalizeWinInput();
 
+		mPhysicsSystem.UpdateSystem();
+
 		window->GetRenderPipeline()->BeginFrame(window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
+
+		//Update scene
+		scene->UpdateScene();
 
 		//mInputManager.HandleDirectInput();
 		mInputManager.HandleXInput();
@@ -167,11 +172,16 @@ namespace CCE
 #if MULTITHREADED
 		mJobManager.StartUp();
 #endif
-		mPhysicsManager.StartUp();
 		mInputManager.StartUp();
+		mECS.StartUp();
+		mPhysicsSystem.StartUp();
+
 
 		window = new ClientWindow();
 		window->OpenWindow(GetModuleHandle(NULL));
+
+		scene = new Scene::Scene();
+		scene->SetupScene();
 	}
 
 	/// <summary>
@@ -179,8 +189,9 @@ namespace CCE
 	/// </summary>
 	void Application::Deinitialize()
 	{
+		mPhysicsSystem.ShutDown();
+		mECS.ShutDown();
 		mInputManager.ShutDown();
-		mPhysicsManager.ShutDown();
 #if MULTITHREADED
 		mJobManager.ShutDown();
 #endif
@@ -207,7 +218,7 @@ namespace CCE
 #error CCE is currently only supported for Windows
 #endif
 
-		// TODO: Fix this, this is awful...
+		// @TODO: Fix this, this is awful...
 		persDir = Directory(strdup(persDataPath.c_str()));
 		if (!Directory::Exists(persDataPath.c_str()))
 		{
