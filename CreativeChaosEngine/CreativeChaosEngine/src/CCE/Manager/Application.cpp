@@ -65,61 +65,68 @@ namespace CCE
 	/// </summary>
 	void Application::PreEditorUpdate(int& rValue, bool handleInput)
 	{
-		frameBegin = Time::Now();
+		if (!m_pause)
+		{
+			frameBegin = Time::Now();
 #if MULTITHREADED
 
+			if (handleInput)
+				mInputManager.FinalizeWinInput();
+
+			window->UpdateClientWindow(rValue);
+
+			cnt = 1;
+
+			JobManager::EntryPoint epRPBF = std::bind(&Graphics::BeginFrame,
+				Graphics::RenderPipeline::Instance->GetDeviceContextPtr(),
+				Graphics::RenderPipeline::Instance->GetRenderTargetComPtr(),
+				Graphics::RenderPipeline::Instance->GetDepthStencilViewPtr(),
+				Graphics::RenderPipeline::Instance->pViewportCamera,
+				Graphics::RenderPipeline::Instance->testModels,
+				window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
+
+			JOBDECL declBeginFrame = JOBDECL(epRPBF, JobManager::Priority::LOW);
+
+			mJobManager.KickJob(declBeginFrame, &cnt);
+
+			// Make sure not to busy wait on main thread!
+			// Otherwise, the main thread waits for execution and 
+			// puts the main fiber onto the waitlist infinitely!!
+			while (cnt != 0)
+			{
+				continue;
+			}
+
+			/*
+			JobManager::EntryPoint epHXI = BIND(mInputManager.HandleXInput);
+			JOBDECL declHandleInput = JOBDECL(epHXI, JobManager::Priority::LOW);
+
+
+			mJobManager.KickJobAndFreeDecl(declBeginFrame, &cnt);
+			mJobManager.KickJobAndFreeDecl(declHandleInput, &cnt);
+
+			window->UpdateClientWindow(rValue);
+
+			mJobManager.BusyWaitForCounter(cnt, 2);
+			*/
+#else
+		}
+
+		window->UpdateClientWindow(rValue);
 		if (handleInput)
 			mInputManager.FinalizeWinInput();
 
-		window->UpdateClientWindow(rValue);
-
-		cnt = 1;
-
-		JobManager::EntryPoint epRPBF = std::bind(&Graphics::BeginFrame,
-			Graphics::RenderPipeline::Instance->GetDeviceContextPtr(),
-			Graphics::RenderPipeline::Instance->GetRenderTargetComPtr(),
-			Graphics::RenderPipeline::Instance->GetDepthStencilViewPtr(),
-			Graphics::RenderPipeline::Instance->pViewportCamera,
-			Graphics::RenderPipeline::Instance->testModels,
-			window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
-
-		JOBDECL declBeginFrame = JOBDECL(epRPBF, JobManager::Priority::LOW);
-
-		mJobManager.KickJob(declBeginFrame, &cnt);
-
-		// Make sure not to busy wait on main thread!
-		// Otherwise, the main thread waits for execution and 
-		// puts the main fiber onto the waitlist infinitely!!
-		while (cnt != 0)
+		if(!m_pause)
 		{
-			continue;
+
+			mPhysicsSystem.UpdateSystem();
+
+			window->GetRenderPipeline()->BeginFrame(window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
+
+			//Update scene
+			scene->UpdateScene();
 		}
-
-		/*
-		JobManager::EntryPoint epHXI = BIND(mInputManager.HandleXInput);
-		JOBDECL declHandleInput = JOBDECL(epHXI, JobManager::Priority::LOW);
-
-
-		mJobManager.KickJobAndFreeDecl(declBeginFrame, &cnt);
-		mJobManager.KickJobAndFreeDecl(declHandleInput, &cnt);
-
-		window->UpdateClientWindow(rValue);
-
-		mJobManager.BusyWaitForCounter(cnt, 2);
-		*/
-#else
-		window->UpdateClientWindow(rValue);
-
-		if(handleInput)
-			mInputManager.FinalizeWinInput();
-
-		mPhysicsSystem.UpdateSystem();
-
-		window->GetRenderPipeline()->BeginFrame(window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
-
-		//Update scene
-		scene->UpdateScene();
-
+		
 		//mInputManager.HandleDirectInput();
 		mInputManager.HandleXInput();
 #endif
@@ -127,27 +134,45 @@ namespace CCE
 
 	void Application::PostEditorUpdate()
 	{
+		if (!m_pause)
+		{
 #if MULTITHREADED
-		JobManager::EntryPoint epRPEF = BIND(window.GetRenderPipeline()->EndFrame);
-		JOBDECL declEndFrame = JOBDECL(epRPEF, JobManager::Priority::LOW);
+			JobManager::EntryPoint epRPEF = BIND(window.GetRenderPipeline()->EndFrame);
+			JOBDECL declEndFrame = JOBDECL(epRPEF, JobManager::Priority::LOW);
 
-		JobManager::EntryPoint epUMU = BIND(mMemoryManager.UpdateMemoryUsage);
-		JOBDECL declUpdateMemUsage = JOBDECL(epUMU, JobManager::Priority::LOW);
+			JobManager::EntryPoint epUMU = BIND(mMemoryManager.UpdateMemoryUsage);
+			JOBDECL declUpdateMemUsage = JOBDECL(epUMU, JobManager::Priority::LOW);
 
 
-		mJobManager.KickJobAndFreeDecl(declEndFrame, &cnt);
-		mJobManager.KickJobAndFreeDecl(declUpdateMemUsage, &cnt);
+			mJobManager.KickJobAndFreeDecl(declEndFrame, &cnt);
+			mJobManager.KickJobAndFreeDecl(declUpdateMemUsage, &cnt);
 
-		mJobManager.BusyWaitForCounter(cnt, 0);
+			mJobManager.BusyWaitForCounter(cnt, 0);
 
 #else
-		window->GetRenderPipeline()->EndFrame();
-		mInputManager.ResetInputValues();
+			window->GetRenderPipeline()->EndFrame();
+			mInputManager.ResetInputValues();
 
 #endif
 
-		frameEnd = Time::Now();
-		Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));
+			frameEnd = Time::Now();
+			Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));
+		}
+	}
+
+	bool Application::IsPaused() const
+	{
+		return m_pause;
+	}
+
+	void Application::Pause()
+	{
+		m_pause = true;
+	}
+
+	void Application::Resume()
+	{
+		m_pause = false;
 	}
 
 	/// <summary>

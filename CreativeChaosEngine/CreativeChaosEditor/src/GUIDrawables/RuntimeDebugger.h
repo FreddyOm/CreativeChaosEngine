@@ -8,6 +8,7 @@
 #include "DebugElements\ImGuiDebugInfoLabel.h"
 #include "DebugElements\DebugLabelFilter.h"
 #include "DebugElements\ConsoleDebugInfoLabel.h"
+#include "DebugElements\RuntimePauseLabel.h"
 
 class RuntimeDebugger : private IGUIDrawable 
 {
@@ -26,6 +27,7 @@ public:
 		// Add more individual metrics here (e.g. GPU time, vertex count, mesh count, ...)
 		labels =
 		{
+			new RuntimePauseLabel("Runtime Pause Label", inter_bold, ImVec2(labelHeight, labelHeight)),
 			new FrameTimeDebugInfoLabel("Game Update Time", inter_bold, ImVec2(130, labelHeight)),
 			new ImGuiDebugInfoLabel("ImGui Update Time", inter_bold, pImgui_process_time_ms, ImVec2(115, labelHeight)),
 			new PhysicsTimeDebugInfoLabel("Physics Update Time", inter_bold, ImVec2(115, labelHeight)),

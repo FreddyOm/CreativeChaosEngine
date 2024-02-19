@@ -19,7 +19,7 @@ namespace CCE::ECS::Components
 		
 	public:
 
-		DirectX::XMFLOAT3 BaseColor = { 1, 1, 1 };
+		DirectX::XMFLOAT4 BaseColor = { 1, 1, 1, 1};
 
 	private:
 		std::vector<std::shared_ptr<CCE::Graphics::IBindable>> materialBindPtrs = {};

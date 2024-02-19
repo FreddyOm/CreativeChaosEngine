@@ -12,6 +12,7 @@ namespace CCE
 
 		auto startTime = Time::CurrentTick();
 		memLeakTable = new std::unordered_map<unsigned long long, int>();
+		m_profileData.reserve(300);
 
 		BaseManager::Init();
 		auto endTime = Time::CurrentTick();

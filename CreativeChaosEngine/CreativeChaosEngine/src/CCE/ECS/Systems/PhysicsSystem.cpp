@@ -37,7 +37,7 @@ namespace CCE::ECS::Systems
 		if (pause) { return; }	// Pause simulation
 
 		start = Time::Now();
-		Step();
+		//Step();
 		end = Time::Now();
 		PhysicsCalcDuration = Time::GetDurationInMilliSec(start, end);
 	}

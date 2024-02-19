@@ -12,12 +12,12 @@ struct PixelShaderInput
 {
     float4 position : SV_POSITION;
     float2 uv_coordinates : TEXCOORD;
-    float3 color : COLOR;
+    float4 color : COLOR;
 };
 
 float4 main(PixelShaderInput input) : SV_TARGET
 {
     float4 _albedo = Texture.Sample(splr, input.uv_coordinates);
     //return Normal.Sample(splr, input.uv_coordinates);
-    return float4(input.color, 0);
+    return _albedo;
 }
