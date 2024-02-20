@@ -48,7 +48,17 @@ void FrameProfiler::OnGui()
     if (ImGui::Button("Reset", ImVec2(120, 30)))
     {
         collectingData = false;
+        sampleCount = 0;
         items.clear();
+    }
+
+    if(collectingData)
+        sampleCount = ProfilingManager::Instance->sampleCount;
+
+    if (sampleCount > 0)
+    {
+        ImGui::Text("Samples: %d", sampleCount + 1);
+        ImGui::Spacing();
     }
 
 
@@ -83,6 +93,8 @@ void FrameProfiler::OnGui()
                 sortSpecs = sorts_specs; // Store in variable accessible by the sort function.
                 if (items.Size > 1)
                     //qsort(items.begin(), items.size(), sizeof(items[0]), (_CoreCrtNonSecureSearchSortCompareFunction)SortItems);
+                // @TODO:: Implement sorting up here!
+
                 sortSpecs = NULL;
                 sorts_specs->SpecsDirty = false;
             }

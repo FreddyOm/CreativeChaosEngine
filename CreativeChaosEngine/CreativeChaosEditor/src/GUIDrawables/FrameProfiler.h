@@ -17,6 +17,7 @@ private:
 
 private:
     bool collectingData = false;
+    int sampleCount = 0;
     ImGuiTableSortSpecs* sortSpecs = nullptr;
     ImVector<ProfilingManager::ProfilingData> items{};
 };

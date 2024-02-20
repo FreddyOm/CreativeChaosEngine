@@ -50,6 +50,7 @@ namespace CCE
 
 		void StartFrameDebuggerFrame()
 		{
+			++sampleCount;
 			for (auto& kvp : m_profileData)
 				kvp.second.Reset();
 		}
@@ -57,6 +58,7 @@ namespace CCE
 		void ResetFrameDebugger()
 		{
 			m_profileData.clear();
+			sampleCount = 0;
 		}
 
 		struct ProfilingData
@@ -117,5 +119,6 @@ namespace CCE
 		};
 
 		std::unordered_map<std::string, ProfilingData> m_profileData{};
+		int sampleCount = 0;
 	};
 }
