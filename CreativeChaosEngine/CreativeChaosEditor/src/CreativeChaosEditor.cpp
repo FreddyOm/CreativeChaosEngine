@@ -13,6 +13,7 @@
 #include "GUIDrawables/Inspector.h"
 #include "GUIDrawables/InputWindow.h"
 #include "GUIDrawables/Console.h"
+#include "GUIDrawables/FrameProfiler.h"
 #include "GUIDrawables\Icons.h"
 
 #pragma endregion drawables
@@ -98,6 +99,7 @@ int main(int argc, char* argv[])
         RenderingDebugger rendEditorWin = RenderingDebugger(String(ICON_FK_VIDEO_CAMERA) + " Rendering");
         Console debugConsole = Console(String(ICON_FK_CHECK_CIRCLE_O) + " Debug Console");
         InputWindow input = InputWindow(String(ICON_FK_KEYBOARD_O) + " Input");
+        FrameProfiler profiler = FrameProfiler(String(ICON_FK_CLOCK_O) + " Frame Profiler");
         Inspector inspector = Inspector("Inspector");
 
         // Editor viewport camera

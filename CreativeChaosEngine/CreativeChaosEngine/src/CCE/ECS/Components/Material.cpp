@@ -1,6 +1,6 @@
 #include "Material.h"
 #include "../../Analysis/Debug.h"
-
+#include "../Manager/ProfilingManager.h"
 
 namespace CCE::ECS::Components
 {
@@ -17,6 +17,7 @@ namespace CCE::ECS::Components
 	/// </summary>
 	void Material::DynamicBind()
 	{
+		PROFILE_FUNCTION;
 		for (auto& bind : materialBindPtrs)
 		{
 			bind->DynamicBind();
@@ -29,6 +30,7 @@ namespace CCE::ECS::Components
 	/// <param name="bind"></param>
 	void Material::AddBind(std::shared_ptr<CCE::Graphics::IBindable> bind) noexcept
 	{
+		PROFILE_FUNCTION;
 		materialBindPtrs.push_back(std::move(bind));
 	}
 }

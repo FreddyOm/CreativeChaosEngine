@@ -69,6 +69,9 @@
     <ClCompile Include="src\GUIDrawables\Console.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\GUIDrawables\FrameProfiler.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CreativeChaosEditor.h">
@@ -147,6 +150,12 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\GUIDrawables\DebugElements\PhysicsTimeDebugInfoLabel.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUIDrawables\DebugElements\RuntimePauseLabel.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUIDrawables\FrameProfiler.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

@@ -31,6 +31,10 @@ namespace CCE
 		void PreEditorUpdate(int& rValue, bool handleInput);
 		void PostEditorUpdate();
 
+		bool IsPaused() const;
+		void Pause();
+		void Resume();
+
 	public:
 
 		String companyName = "CreativeChaosEngine";
@@ -73,6 +77,10 @@ namespace CCE
 
 		UINT64 maxUsedFibersPerFrame = 0;
 		bool initialized = false;
+
+	private:
+
+		bool m_pause = false;
 	};
 
 	struct CCE_API EngineConfig : private ISerializable<EngineConfig>
