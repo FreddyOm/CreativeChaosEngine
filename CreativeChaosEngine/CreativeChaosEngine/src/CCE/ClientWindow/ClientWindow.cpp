@@ -20,6 +20,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 /// <returns>A return code that indicates whether or not the window opened correctly.</returns>
 bool CCE::ClientWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 {
+	PROFILE_FUNCTION;
 	// Set window name	
 	windowName = winName;
 	// Create and register win class
@@ -63,6 +64,7 @@ bool CCE::ClientWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 /// </summary>
 void CCE::ClientWindow::UpdateClientWindow(int& _returnVal)
 {
+	PROFILE_FUNCTION;
 	_returnVal = 0;
 	MSG msg;
 	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -83,6 +85,7 @@ void CCE::ClientWindow::UpdateClientWindow(int& _returnVal)
 /// <returns>Return code for more detailed info.</returns>
 int CCE::ClientWindow::CloseClientWindow()
 {
+	PROFILE_FUNCTION;
 	windowRunning = false;
 	DASSERT(DestroyWindow(hWnd) != 0, "Failed destroying the editor window!");
 	LOG("Window was implicitly closed.");
@@ -96,6 +99,7 @@ int CCE::ClientWindow::CloseClientWindow()
 /// <returns></returns>
 int CCE::ClientWindow::GetClientWindowWidth() const
 {
+	PROFILE_FUNCTION;
 	RECT rect = {};
 	GetWindowRect(hWnd,&rect);
 
@@ -108,6 +112,7 @@ int CCE::ClientWindow::GetClientWindowWidth() const
 /// <returns></returns>
 int CCE::ClientWindow::GetClientWindowHeight() const
 {
+	PROFILE_FUNCTION;
 	RECT rect = {};
 	GetWindowRect(hWnd, &rect);
 
@@ -120,6 +125,7 @@ int CCE::ClientWindow::GetClientWindowHeight() const
 /// <returns>Window handle.</returns>
 HWND CCE::ClientWindow::GetClientWindowHandle() const
 {
+	PROFILE_FUNCTION;
 	return hWnd;
 }
 
@@ -129,6 +135,7 @@ HWND CCE::ClientWindow::GetClientWindowHandle() const
 /// <returns>Window class.</returns>
 WNDCLASS CCE::ClientWindow::GetClientWindowClass() const
 {
+	PROFILE_FUNCTION;
 	return wndClass;
 }
 
@@ -138,6 +145,7 @@ WNDCLASS CCE::ClientWindow::GetClientWindowClass() const
 /// <returns>Window name.</returns>
 CCE::String CCE::ClientWindow::GetClientWindowName() const
 {
+	PROFILE_FUNCTION;
 	return windowName;
 }
 
@@ -147,12 +155,14 @@ CCE::String CCE::ClientWindow::GetClientWindowName() const
 /// <param name="">Window name.</param>
 void CCE::ClientWindow::SetClientWindowName(CCE::String name)
 {
+	PROFILE_FUNCTION;
 	windowName = name;
 	SetWindowTextA(GetClientWindowHandle(), windowName.Value());
 }
 
 CCE::Graphics::RenderPipeline* CCE::ClientWindow::GetRenderPipeline()
 {
+	PROFILE_FUNCTION;
 	return &renderPipeline;
 }
 
@@ -168,6 +178,7 @@ using namespace CCE;
 /// <returns>Result code.</returns>
 LRESULT CALLBACK ClientWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	PROFILE_FUNCTION;
 	// @TODO: Handle input in one place & make explicit code platform independent
 	// @TODO: Create possibility to set values to 0 again
 	InputManager::Instance->HandleWinInput(hwnd, uMsg, wParam, lParam);

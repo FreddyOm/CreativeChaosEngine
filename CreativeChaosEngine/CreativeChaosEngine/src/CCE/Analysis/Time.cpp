@@ -26,10 +26,10 @@ namespace CCE
 		return (double)duration.count() / 1000.0;
 	}
 
-	long Time::GetDurationInMicroSec(const cr::high_resolution_clock::time_point start, const cr::high_resolution_clock::time_point end)
+	long long Time::GetDurationInMicroSec(const cr::high_resolution_clock::time_point start, const cr::high_resolution_clock::time_point end)
 	{
 		auto duration = cr::duration_cast<cr::microseconds>(end - start);
-		return (long) duration.count();
+		return (long long) duration.count();
 	}
 
 	void Time::SetDeltaTime(const double millis)

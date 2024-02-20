@@ -2,7 +2,8 @@
 #include "BaseManager.h"
 #include "../Analysis/Logger.h"
 #include "../Analysis/Time.h"
-#include <vector>
+#include <unordered_map>
+#include <string>
 
 namespace CCE
 {
@@ -10,8 +11,11 @@ namespace CCE
 #define REGISTER_LEAK_DETECT CCE::ProfilingManager::Instance->RegisterInstance(typeid(*this).name())
 #define UNREGISTER_LEAK_DETECT CCE::ProfilingManager::Instance->UnregisterInstance(typeid(*this).name())
 #define PRINT_LEAK_INFO CCE::ProfilingManager::Instance->PrintLeakInfo()
-#define PROFILE_FUNCTION CCE::ProfilingManager::ScopedDataCollector col(__FUNCTION__)
-
+#if 1
+#define PROFILE_FUNCTION CCE::ProfilingManager::ScopedDataCollector prfCollector(__FUNCTION__)
+#else
+#define PROFILE_FUNCTION
+#endif
 #else
 
 #define REGISTER_LEAK_DETECT
@@ -44,20 +48,36 @@ namespace CCE
 
 		void PrintLeakInfo() const noexcept;
 
-	private:
-
-		struct ProfileData
+		void StartFrameDebuggerFrame()
 		{
-			String functionName;
-			long executionTime;
+			for (auto& kvp : m_profileData)
+				kvp.second.Reset();
+		}
+
+		void ResetFrameDebugger()
+		{
+			m_profileData.clear();
+		}
+
+		struct ProfilingData
+		{
+			String funcName;
+			long minExecTime = 0;
+			long maxExecTime = 0;
+			long callsPerFrame = 0;
+			long totalCalls = 0;
+
+			void Reset()
+			{
+				callsPerFrame = 0;
+			}
 		};
 
-	public:
-
-		struct ScopedDataCollector
+		class ScopedDataCollector
 		{
-			ScopedDataCollector(String funcName)
-				: data({funcName, -1})
+		public:
+			ScopedDataCollector(std::string funcName)
+				: funcName(funcName)
 			{
 				start = Time::Now();
 			}
@@ -65,17 +85,37 @@ namespace CCE
 			~ScopedDataCollector()
 			{
 				end = Time::Now();
-				data.executionTime = Time::GetDurationInMicroSec(start, end);
-				CCE::ProfilingManager::Instance->m_profileData.push_back(data);
+				long execTime = Time::GetDurationInMicroSec(start, end);
+
+				if (CCE::ProfilingManager::Instance->m_profileData.find(funcName) == CCE::ProfilingManager::Instance->m_profileData.end())
+				{
+					CCE::ProfilingManager::Instance->m_profileData.emplace(
+						funcName, 
+						ProfilingData{ funcName.c_str(), execTime, execTime, 1, 1}
+					);
+				}
+				else 
+				{
+					CCE::ProfilingManager::Instance->m_profileData[funcName].minExecTime =
+						CCE::ProfilingManager::Instance->m_profileData[funcName].minExecTime > execTime ?
+						execTime : CCE::ProfilingManager::Instance->m_profileData[funcName].minExecTime;
+
+					CCE::ProfilingManager::Instance->m_profileData[funcName].maxExecTime =
+						CCE::ProfilingManager::Instance->m_profileData[funcName].maxExecTime < execTime ?
+						execTime : CCE::ProfilingManager::Instance->m_profileData[funcName].maxExecTime;
+
+					++CCE::ProfilingManager::Instance->m_profileData[funcName].callsPerFrame;
+					++CCE::ProfilingManager::Instance->m_profileData[funcName].totalCalls;
+				}
 			}
 
 		private:
 
 			std::chrono::steady_clock::time_point start{};
 			std::chrono::steady_clock::time_point end{};
-			ProfileData data;
+			std::string funcName;
 		};
 
-		std::vector<ProfileData> m_profileData{};
+		std::unordered_map<std::string, ProfilingData> m_profileData{};
 	};
 }

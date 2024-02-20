@@ -19,5 +19,5 @@ float4 main(PixelShaderInput input) : SV_TARGET
 {
     float4 _albedo = Texture.Sample(splr, input.uv_coordinates);
     //return Normal.Sample(splr, input.uv_coordinates);
-    return _albedo;
+    return float4(_albedo.x * input.color.x, _albedo.y * input.color.y, _albedo.z * input.color.z, _albedo.w * input.color.w);
 }

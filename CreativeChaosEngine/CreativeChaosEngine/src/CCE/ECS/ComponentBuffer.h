@@ -3,6 +3,7 @@
 #include "../Analysis/Debug.h"
 #include <unordered_map>
 #include <array>
+#include "../Manager/ProfilingManager.h"
 
 namespace CCE::ECS
 {
@@ -20,6 +21,7 @@ namespace CCE::ECS
 		/// <param name="component">The component to add.</param>
 		T& InsertData(UINT64 entity)
 		{
+			PROFILE_FUNCTION;
 			DASSERT(mEntityToIndexMap.find(entity) == mEntityToIndexMap.end(),
 				"Component added to same entity more than once.");
 
@@ -37,6 +39,7 @@ namespace CCE::ECS
 		/// <param name="entity">The entity associated with the component.</param>
 		void RemoveData(UINT64 entity)
 		{
+			PROFILE_FUNCTION;
 			DASSERT(mEntityToIndexMap.find(entity) != mEntityToIndexMap.end(),
 				"Removing non-existent component.");
 
@@ -63,6 +66,7 @@ namespace CCE::ECS
 		/// <returns>The component data.</returns>
 		T* GetData(UINT64 entity)
 		{
+			PROFILE_FUNCTION;
 			if (mEntityToIndexMap.find(entity) != mEntityToIndexMap.end())
 			{
 				return &mComponentArray.at(mEntityToIndexMap.find(entity)->second);
@@ -76,6 +80,7 @@ namespace CCE::ECS
 		/// <param name="entity">The entity which was destroyed.</param>
 		virtual void EntityDestroyed(UINT64 entity) override
 		{
+			PROFILE_FUNCTION;
 			if (mEntityToIndexMap.find(entity) != mEntityToIndexMap.end())
 			{
 				RemoveData(entity);

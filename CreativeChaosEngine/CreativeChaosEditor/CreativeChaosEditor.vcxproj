@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClCompile Include="src\GUIDrawables\Console.cpp" />
     <ClCompile Include="src\GUIDrawables\DebugElements\DebugCategoryButton.cpp" />
+    <ClCompile Include="src\GUIDrawables\FrameProfiler.cpp" />
     <ClCompile Include="src\GUIDrawables\RuntimeDebugger.cpp" />
     <ClCompile Include="src\GUIDrawables\InputWindow.cpp" />
     <ClCompile Include="src\GUIDrawables\Inspector.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="src\GUIDrawables\DebugElements\ImGuiDebugInfoLabel.h" />
     <ClInclude Include="src\GUIDrawables\DebugElements\PhysicsTimeDebugInfoLabel.h" />
     <ClInclude Include="src\GUIDrawables\DebugElements\RuntimePauseLabel.h" />
+    <ClInclude Include="src\GUIDrawables\FrameProfiler.h" />
     <ClInclude Include="src\GUIDrawables\Icons.h" />
     <ClInclude Include="src\GUIDrawables\RuntimeDebugger.h" />
     <ClInclude Include="src\GUIDrawables\InputWindow.h" />

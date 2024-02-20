@@ -6,6 +6,7 @@
 #include "../../Analysis/Logger.h"
 #include "../Entity.h"
 #include "../../Graphics/RenderPipeline.h"
+#include "../Manager/ProfilingManager.h"
 
 namespace CCE::ECS::Systems
 {
@@ -24,6 +25,7 @@ namespace CCE::ECS::Systems
 
 	void RenderingSystem::RegisterEntity(long long entity)
 	{
+		PROFILE_FUNCTION;
 		using Entity = CCE::ECS::Entity;
 		using namespace CCE::ECS::Components;
 		
@@ -32,19 +34,21 @@ namespace CCE::ECS::Systems
 
 	void RenderingSystem::UpdateSystem()
 	{
+		PROFILE_FUNCTION;
 		UpdateECSBasic();
 	}
 
 	void RenderingSystem::UpdateECSBasic()
 	{
+		PROFILE_FUNCTION;
 		using Entity = CCE::ECS::Entity;
 		using namespace CCE::ECS::Components;
 
 		for (long long id : mEntities)
 		{
 			Entity e(id);
-			// @TODO: Implement here!
 
+			// @TODO: Check how to update each component buffer most effectively
 			auto* transform = e.GetComponent<Transform>();
 			auto* material = e.GetComponent<Material>();
 			auto* mesh = e.GetComponent<Mesh>();

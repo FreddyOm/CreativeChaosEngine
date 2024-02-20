@@ -24,7 +24,7 @@ namespace CCE
 		static time::time_point Now();
 		static time::time_point CurrentTick();
 		static double GetDurationInMilliSec(const time::time_point start, const time::time_point end);
-		static long GetDurationInMicroSec(const time::time_point start, const time::time_point end);
+		static long long GetDurationInMicroSec(const time::time_point start, const time::time_point end);
 		static double GetAverageFrameTime();
 		static void SetDeltaTime(const double millis);
 		static long long GetMillisSinceStart();

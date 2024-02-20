@@ -3,6 +3,7 @@
 #include "../Analysis/Debug.h"
 #include "../Analysis/Logger.h"
 #include "../Graphics/RenderPipeline.h"
+#include "../Manager/ProfilingManager.h"
 #include "../ClientWindow/ClientWindow.h"
 #include <functional>
 
@@ -65,6 +66,9 @@ namespace CCE
 	/// </summary>
 	void Application::PreEditorUpdate(int& rValue, bool handleInput)
 	{
+		CCE::ProfilingManager::Instance->StartFrameDebuggerFrame(); // Resets frame debugger for new frame
+		PROFILE_FUNCTION;
+
 		if (!m_pause)
 		{
 			frameBegin = Time::Now();
@@ -116,16 +120,12 @@ namespace CCE
 		if (handleInput)
 			mInputManager.FinalizeWinInput();
 
-		if(!m_pause)
-		{
+		mPhysicsSystem.UpdateSystem();
 
-			mPhysicsSystem.UpdateSystem();
+		window->GetRenderPipeline()->BeginFrame(window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
 
-			window->GetRenderPipeline()->BeginFrame(window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
-
-			//Update scene
-			scene->UpdateScene();
-		}
+		//Update scene
+		scene->UpdateScene();
 		
 		//mInputManager.HandleDirectInput();
 		mInputManager.HandleXInput();
@@ -134,8 +134,8 @@ namespace CCE
 
 	void Application::PostEditorUpdate()
 	{
-		if (!m_pause)
-		{
+		PROFILE_FUNCTION;
+		
 #if MULTITHREADED
 			JobManager::EntryPoint epRPEF = BIND(window.GetRenderPipeline()->EndFrame);
 			JOBDECL declEndFrame = JOBDECL(epRPEF, JobManager::Priority::LOW);
@@ -150,14 +150,14 @@ namespace CCE
 			mJobManager.BusyWaitForCounter(cnt, 0);
 
 #else
-			window->GetRenderPipeline()->EndFrame();
-			mInputManager.ResetInputValues();
+		window->GetRenderPipeline()->EndFrame();
+		mInputManager.ResetInputValues();
 
 #endif
 
-			frameEnd = Time::Now();
-			Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));
-		}
+		frameEnd = Time::Now();
+		Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));
+		ProfilingManager::Instance->m_profileData;
 	}
 
 	bool Application::IsPaused() const
@@ -180,6 +180,8 @@ namespace CCE
 	/// </summary>
 	void Application::Initialize() 
 	{
+		PROFILE_FUNCTION;
+
 #ifdef CCE_PLATFORM_WINDOWS
 
 		persistentDataPath = GetPersistentDataPath();
@@ -214,6 +216,8 @@ namespace CCE
 	/// </summary>
 	void Application::Deinitialize()
 	{
+		PROFILE_FUNCTION;
+
 		mPhysicsSystem.ShutDown();
 		mECS.ShutDown();
 		mInputManager.ShutDown();
@@ -225,6 +229,8 @@ namespace CCE
 
 	Directory Application::GetPersistentDataPath() const
 	{
+		PROFILE_FUNCTION;
+
 		std::string persDataPath;
 		Directory persDir;
 #ifdef CCE_PLATFORM_WINDOWS
