@@ -60,9 +60,6 @@ void FrameProfiler::OnGui()
         ImGui::Text("Samples: %d", sampleCount + 1);
         ImGui::Spacing();
     }
-
-
-    // Options
     static ImGuiTableFlags flags =
         ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable | ImGuiTableFlags_Sortable | ImGuiTableFlags_SortMulti
         | ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_NoBordersInBody
@@ -70,13 +67,6 @@ void FrameProfiler::OnGui()
 
     if (ImGui::BeginTable("Functions", 5, flags, ImVec2(0.0f, ImGui::GetTextLineHeightWithSpacing() * 25), 0.0f))
     {
-        // Declare columns
-        // We use the "user_id" parameter of TableSetupColumn() to specify a user id that will be stored in the sort specifications.
-        // This is so our sort function can identify a column given our own identifier. We could also identify them based on their index!
-        // Demonstrate using a mixture of flags among available sort-related flags:
-        // - ImGuiTableColumnFlags_DefaultSort
-        // - ImGuiTableColumnFlags_NoSort / ImGuiTableColumnFlags_NoSortAscending / ImGuiTableColumnFlags_NoSortDescending
-        // - ImGuiTableColumnFlags_PreferSortAscending / ImGuiTableColumnFlags_PreferSortDescending
         ImGui::TableSetupColumn("Function Name", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f, 0);
         ImGui::TableSetupColumn("Min Execution Time", ImGuiTableColumnFlags_PreferSortDescending | ImGuiTableColumnFlags_WidthFixed, 0.0f, 1);
         ImGui::TableSetupColumn("Max Execution Time", ImGuiTableColumnFlags_PreferSortDescending | ImGuiTableColumnFlags_WidthFixed, 0.0f, 2);
@@ -90,12 +80,35 @@ void FrameProfiler::OnGui()
         if (ImGuiTableSortSpecs* sorts_specs = ImGui::TableGetSortSpecs())
             if (sorts_specs->SpecsDirty)
             {
-                sortSpecs = sorts_specs; // Store in variable accessible by the sort function.
                 if (items.Size > 1)
-                    //qsort(items.begin(), items.size(), sizeof(items[0]), (_CoreCrtNonSecureSearchSortCompareFunction)SortItems);
-                // @TODO:: Implement sorting up here!
+                    std::sort(items.begin(), items.end(), [sorts_specs](const ProfilingManager::ProfilingData& lhs, const ProfilingManager::ProfilingData& rhs) {
 
-                sortSpecs = NULL;
+                    for (int n = 0; n < sorts_specs->SpecsCount; ++n)
+                    {
+                        // Here we identify columns using the ColumnUserID value that we ourselves passed to TableSetupColumn()
+                        // We could also choose to identify columns based on their index (sort_spec->ColumnIndex), which is simpler!
+                        const ImGuiTableColumnSortSpecs* sort_spec = &sorts_specs->Specs[n];
+                        int delta = 0;
+                        switch (sort_spec->ColumnUserID)
+                        {
+                        case 0:     delta = (lhs.funcName.sId - rhs.funcName.sId);   break;
+                        case 1:     delta = (lhs.minExecTime - rhs.minExecTime);     break;
+                        case 2:     delta = (lhs.maxExecTime - rhs.maxExecTime);     break;
+                        case 3:     delta = (lhs.callsPerFrame - rhs.callsPerFrame); break;
+                        case 4:     delta = (lhs.totalCalls - rhs.totalCalls);       break;
+                        default: IM_ASSERT(0); break;
+                        }
+                        if (delta > 0)
+                            return (sort_spec->SortDirection == ImGuiSortDirection_Ascending) ? true : false;
+                        if (delta < 0)
+                            return (sort_spec->SortDirection == ImGuiSortDirection_Descending) ? true : false;
+                    }
+
+                    // qsort() is instable so always return a way to differenciate items.
+                    // Your own compare function may want to avoid fallback on implicit sort specs e.g. a Name compare if it wasn't already part of the sort specs.
+                    return lhs.funcName.sId > rhs.funcName.sId;
+                });
+
                 sorts_specs->SpecsDirty = false;
             }
 
@@ -123,37 +136,4 @@ void FrameProfiler::OnGui()
         }
         ImGui::EndTable();
     }
-}
-
-int FrameProfiler::SortItems(const void* lhs, const void* rhs) const
-{
-    const ProfilingManager::ProfilingData* first = (const ProfilingManager::ProfilingData*)lhs;
-    const ProfilingManager::ProfilingData* second = (const ProfilingManager::ProfilingData*)rhs;
-
-    for (int n = 0; n < sortSpecs->SpecsCount; ++n)
-    {
-        // Here we identify columns using the ColumnUserID value that we ourselves passed to TableSetupColumn()
-        // We could also choose to identify columns based on their index (sort_spec->ColumnIndex), which is simpler!
-        const ImGuiTableColumnSortSpecs* sort_spec = &sortSpecs->Specs[n];
-        int delta = 0;
-        switch (sort_spec->ColumnUserID)
-        {
-        case 0:     delta = (first->funcName.sId - second->funcName.sId);   break;
-        case 1:     delta = (first->minExecTime - second->minExecTime);     break;
-        case 2:     delta = (first->maxExecTime - second->maxExecTime);     break;
-        case 3:     delta = (first->callsPerFrame - second->callsPerFrame); break;
-        case 4:     delta = (first->totalCalls - second->totalCalls);       break;
-        default: IM_ASSERT(0); break;
-        }
-        if (delta > 0)
-            return (sort_spec->SortDirection == ImGuiSortDirection_Ascending) ? +1 : -1;
-        if (delta < 0)
-            return (sort_spec->SortDirection == ImGuiSortDirection_Ascending) ? -1 : +1;
-    }
-
-    // qsort() is instable so always return a way to differenciate items.
-    // Your own compare function may want to avoid fallback on implicit sort specs e.g. a Name compare if it wasn't already part of the sort specs.
-    return (first->funcName.sId - second->funcName.sId);
-
-    return 0;
 }
