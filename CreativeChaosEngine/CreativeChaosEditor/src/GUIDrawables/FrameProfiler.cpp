@@ -69,9 +69,9 @@ void FrameProfiler::OnGui()
         // - ImGuiTableColumnFlags_PreferSortAscending / ImGuiTableColumnFlags_PreferSortDescending
         ImGui::TableSetupColumn("Function Name", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f, 0);
         ImGui::TableSetupColumn("Min Execution Time", ImGuiTableColumnFlags_PreferSortDescending | ImGuiTableColumnFlags_WidthFixed, 0.0f, 1);
-        ImGui::TableSetupColumn("Max Execution Time", ImGuiTableColumnFlags_DefaultSort | ImGuiTableColumnFlags_WidthFixed, 0.0f, 2);
-        ImGui::TableSetupColumn("Calls / Frame", ImGuiTableColumnFlags_DefaultSort | ImGuiTableColumnFlags_WidthFixed, 0.0f, 3);
-        ImGui::TableSetupColumn("Total Calls", ImGuiTableColumnFlags_DefaultSort | ImGuiTableColumnFlags_WidthFixed, 0.0f, 4);
+        ImGui::TableSetupColumn("Max Execution Time", ImGuiTableColumnFlags_PreferSortDescending | ImGuiTableColumnFlags_WidthFixed, 0.0f, 2);
+        ImGui::TableSetupColumn("Calls / Frame", ImGuiTableColumnFlags_WidthFixed, 0.0f, 3);
+        ImGui::TableSetupColumn("Total Calls", ImGuiTableColumnFlags_WidthFixed, 0.0f, 4);
 
         ImGui::TableSetupScrollFreeze(0, 1); // Make row always visible
         ImGui::TableHeadersRow();
