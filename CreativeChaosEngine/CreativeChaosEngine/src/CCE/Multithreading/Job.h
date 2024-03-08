@@ -19,4 +19,3 @@ struct Job
 	unsigned int mDesiredCount = 0;
 
 };
-

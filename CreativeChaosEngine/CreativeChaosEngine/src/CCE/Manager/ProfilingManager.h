@@ -13,7 +13,7 @@ namespace CCE
 #define UNREGISTER_LEAK_DETECT CCE::ProfilingManager::Instance->UnregisterInstance(typeid(*this).name())
 #define PRINT_LEAK_INFO CCE::ProfilingManager::Instance->PrintLeakInfo()
 
-
+#else
 #define REGISTER_LEAK_DETECT
 #define UNREGISTER_LEAK_DETECT
 #define PRINT_LEAK_INFO
