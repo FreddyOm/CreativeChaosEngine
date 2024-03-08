@@ -21,6 +21,7 @@ namespace CCE::Graphics
 	Texture2D::Texture2D(String& filePath, unsigned short startSlot)
 		: count(1), startSlot(startSlot)
 	{
+		OPTICK_EVENT();
 		subresourceDataArr.reserve(count);
 		CCE::Resources::TextureLoader loader;
 
@@ -31,6 +32,7 @@ namespace CCE::Graphics
 	Texture2D::Texture2D(std::vector<String>& filePaths, unsigned short startSlot)
 		: count(filePaths.size()), startSlot(startSlot)
 	{
+		OPTICK_EVENT();
 		subresourceDataArr.reserve(count);
 		CCE::Resources::TextureLoader loader;
 
@@ -42,6 +44,7 @@ namespace CCE::Graphics
 	/// </summary>
 	Texture2D::~Texture2D()
 	{
+		OPTICK_EVENT();
 		pTexture2D.Reset();
 		subresourceDataArr.clear();
 	}
@@ -51,6 +54,7 @@ namespace CCE::Graphics
 	/// </summary>
 	void Texture2D::DynamicBind()
 	{
+		OPTICK_EVENT();
 		// Bind to pipeline
 		//for(unsigned short s = 0; s < count; ++s)
 		GetContext()->PSSetShaderResources(startSlot, count, pResourceView.GetAddressOf());
@@ -61,7 +65,7 @@ namespace CCE::Graphics
 	/// </summary>
 	void Texture2D::StaticBind()
 	{
-		
+		OPTICK_EVENT();		
 	}
 
 	// @TODO: Kick more leaf jobs (parallelize creation of texDesc and srvd)
@@ -69,6 +73,7 @@ namespace CCE::Graphics
 		std::vector<D3D11_SUBRESOURCE_DATA>& subresourceDataArr, Microsoft::WRL::ComPtr<ID3D11Texture2D>& pTexture2D, 
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& pResourceView, unsigned short count)
 	{
+		OPTICK_EVENT();
 		D3D11_TEXTURE2D_DESC texDesc = {};
 
 		texDesc.ArraySize = count;
@@ -113,6 +118,7 @@ namespace CCE::Graphics
 	JOB_ENTRY_POINT D3D11SetImage(std::shared_ptr<CCE::Resources::TexData> tex, D3D11_TEXTURE2D_DESC& texDesc, 
 		FIBITMAP* texture, std::vector<D3D11_SUBRESOURCE_DATA>& subresourceDataArr, D3D11_SHADER_RESOURCE_VIEW_DESC& srvd)
 	{
+		OPTICK_EVENT();
 		// Analyze image format
 		switch (tex->format)
 		{

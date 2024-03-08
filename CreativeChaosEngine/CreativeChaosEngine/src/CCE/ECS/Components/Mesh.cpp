@@ -12,6 +12,7 @@ namespace CCE::ECS::Components
 		: meshPath(path)
 		,meshData(Resources::ResourceAllocator::Instance->GetMesh(path))
 	{
+		OPTICK_EVENT();
 		String vertexShader = Application::Instance->resourceDataPath.Path() + "/shader/DefaultVertexShader.cso";
 		auto vs = std::make_shared<Graphics::VertexShader>(StringConverter::StringToWString(vertexShader.Value()));
 
@@ -29,21 +30,24 @@ namespace CCE::ECS::Components
 
 	String Mesh::Path() const
 	{
+		OPTICK_EVENT();
 		return meshPath;
 	}
 
 	std::shared_ptr<Resources::MeshData> Mesh::Data() const
 	{
+		OPTICK_EVENT();
 		return meshData;
 	}
 
 	void Mesh::StaticBind()
 	{
-
+		OPTICK_EVENT();
 	}
 
 	void Mesh::DynamicBind(DirectX::XMMATRIX modelMatrix)
 	{
+		OPTICK_EVENT();
 		for (auto& bind : meshBindPtr)
 		{
 			bind->DynamicBind();
@@ -52,6 +56,7 @@ namespace CCE::ECS::Components
 
 	void Mesh::AddBind(std::shared_ptr<Graphics::IBindable> bind) noexcept
 	{
+		OPTICK_EVENT();
 		if (typeid(*bind) == typeid(Graphics::IndexBuffer))
 		{
 			DASSERT(pIndexBuffer == nullptr, "Binding multiple index buffers is not allowed!");
@@ -62,6 +67,7 @@ namespace CCE::ECS::Components
 
 	void Mesh::CreateConstBufs(const Graphics::VSConstBufData& constBufData)
 	{
+		OPTICK_EVENT();
 		pMeshConstBuf = std::make_shared<Graphics::VSConstantBuffer<Graphics::VSConstBufData>>(constBufData, 0);
 	}
 }

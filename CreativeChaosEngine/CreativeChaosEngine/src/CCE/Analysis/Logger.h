@@ -2,8 +2,8 @@
 #include <mutex>
 #include "../Core.h"
 #include "../String/String.h"
-#include "../Utilities/Concurrency/ScopedSpinLock.h"
-#include "../Utilities/Concurrency/SpinLock.h"
+#include "../Multithreading/ScopedSpinLock.h"
+#include "../Multithreading/SpinLock.h"
 #include "Time.h"
 
 #ifdef DEBUG

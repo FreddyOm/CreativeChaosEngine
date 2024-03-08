@@ -50,7 +50,7 @@ namespace CCE::Graphics
 	/// <param name="hWnd"></param>
 	void RenderPipeline::InitializeD3D11(const HWND hWnd, const int width, const int height)
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		// @TODO: Load from config file
 		pipelineConfig.VSync = false;
 
@@ -86,7 +86,7 @@ namespace CCE::Graphics
 	/// </summary>
 	void RenderPipeline::CreateViewport()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		// configure viewport
 
 		D3D11_VIEWPORT vp = { 0 };
@@ -104,7 +104,7 @@ namespace CCE::Graphics
 	/// </summary>
 	void RenderPipeline::CreateDepthStencil()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		dsDesc =
 			MemoryManager::Instance->rendMemory.AllocAligned<D3D11_DEPTH_STENCIL_DESC>();
 		dsDesc->DepthEnable = TRUE;
@@ -152,7 +152,7 @@ namespace CCE::Graphics
 	/// </summary>
 	void RenderPipeline::CreateRenderTargetView()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		HRESULT crtv = p_device->CreateRenderTargetView(p_backBuffer.Get(), nullptr, p_renderTarget.GetAddressOf());
 		DERROR((HRESULT)crtv);
 		DASSERT(SUCCEEDED(crtv), "Creating render target view was unsuccessful!");
@@ -163,7 +163,7 @@ namespace CCE::Graphics
 	/// </summary>
 	void RenderPipeline::CreateDeviceAndSwapChain()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		// create device and swapchain
 		UINT swapCreateFlags = 0u;
 #ifdef DEBUG
@@ -203,7 +203,7 @@ namespace CCE::Graphics
 	/// <param name="hWnd">The host windows handle.</param>
 	void RenderPipeline::CreateSwapChainDesc(const HWND& hWnd)
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		clientRect = MemoryManager::Instance->rendMemory.AllocAligned<RECT>();
 		GetClientRect(hWnd, clientRect);
 
@@ -234,7 +234,7 @@ namespace CCE::Graphics
 	void RenderPipeline::BeginFrame(const Color col)
 	{
 		if ( ClientWindow::Instance->minimized) { return; }
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		// Clear render view and draw background color
 		p_Context->ClearRenderTargetView(p_renderTarget.Get(), col.RGBA());
 		p_Context->ClearDepthStencilView(p_DSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
@@ -257,7 +257,7 @@ namespace CCE::Graphics
 	void RenderPipeline::EndFrame()
 	{
 		if (ClientWindow::Instance->minimized) { return; }
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		// Render buffer
 		HRESULT pres = pSwapChain->Present(pipelineConfig.VSync ? 1 : 0, 0);
 		if (pres == DXGI_ERROR_DEVICE_REMOVED)
@@ -276,7 +276,7 @@ namespace CCE::Graphics
 	/// <param name="height">The new height.</param>
 	void RenderPipeline::OnResize(const HWND hWnd, const UINT wParam, const int width, const int height)
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		GetClientRect(hWnd, clientRect);
 
 		// Unbind render target and reset resources
@@ -344,6 +344,7 @@ namespace CCE::Graphics
 	/// </summary>
 	void RenderPipeline::UninitializeD3D11()
 	{
+		OPTICK_EVENT();
 		// @TODO: Prevent this from being called twice (explicit destructor from runtime manager and automatic destructor)
 		if (MemoryManager::Instance == nullptr || p_Context == 0) { return; }
 		p_Context->OMSetRenderTargets(0, NULL, NULL);
@@ -364,7 +365,7 @@ namespace CCE::Graphics
 	/// <returns>True if successful.</returns>
 	bool RenderPipeline::CompileAllShaders() noexcept
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 #define D3D_COMPILE_STANDARD_FILE_INCLUDE ((ID3DInclude*)(UINT_PTR)1)
 
 		UINT flags = D3DCOMPILE_ENABLE_STRICTNESS;
@@ -423,6 +424,7 @@ namespace CCE::Graphics
 	JOB_ENTRY_POINT ClearRenderTargetView(ID3D11DeviceContext* pContext, 
 		ComPtr<ID3D11RenderTargetView>& p_renderTarget, Color col)
 	{
+		OPTICK_EVENT();
 		pContext->ClearRenderTargetView(p_renderTarget.Get(), col.RGBA());
 	}
 
@@ -432,6 +434,7 @@ namespace CCE::Graphics
 	JOB_ENTRY_POINT ClearDepthStencilView(ID3D11DeviceContext* pContext,
 		ID3D11DepthStencilView* pDSV)
 	{
+		OPTICK_EVENT();
 		pContext->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.0f, 0u);
 	}
 
@@ -447,6 +450,7 @@ namespace CCE::Graphics
 		const CCE::Graphics::Color col)
 	{
 		if (CCE::ClientWindow::Instance->minimized) { return; }
+		OPTICK_EVENT();
 
 		JobManager::Counter cnt = JobManager::Counter(2);
 

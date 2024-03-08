@@ -1,6 +1,7 @@
 #include "ResourceAllocator.h"
 #include "MeshLoader.h"
 #include "TextureLoader.h"
+#include "../../Thirdparty/src/optick.h"
 
 namespace CCE::Resources
 {
@@ -12,6 +13,7 @@ namespace CCE::Resources
 	/// <returns>A shared-pointer to the mesh data.</returns>
 	std::shared_ptr<MeshData> ResourceAllocator::GetMesh(String meshPath)
 	{
+		OPTICK_EVENT();
 		// Since the mesh is usually only queried on model creation, we don't need to 
 		// change the mesh data very often. We can use a hash map here in order to find
 		// the data quickly.
@@ -30,6 +32,7 @@ namespace CCE::Resources
 
 	std::shared_ptr<TexData> ResourceAllocator::GetTexture(String texturePath)
 	{
+		OPTICK_EVENT();
 		if (texDataMap.find(texturePath.sId) == texDataMap.end())
 		{
 			// Mesh not yet loaded! --> Load

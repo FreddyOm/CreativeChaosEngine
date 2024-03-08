@@ -2,6 +2,7 @@
 #include "../../../Core.h"
 #include <vector>
 #include <memory>
+#include "../../Thirdparty/src/optick.h"
 
 namespace CCE::Graphics
 {

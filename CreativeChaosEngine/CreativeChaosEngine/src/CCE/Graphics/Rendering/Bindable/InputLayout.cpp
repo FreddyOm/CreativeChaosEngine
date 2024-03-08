@@ -6,6 +6,7 @@ namespace CCE::Graphics
 {
 	InputLayout::InputLayout(ID3DBlob* pVertexShaderBytecode)
 	{
+		OPTICK_EVENT();
 		// Create Input Layout for vertex shader
 
 		D3D11_INPUT_ELEMENT_DESC layout[] =
@@ -24,16 +25,18 @@ namespace CCE::Graphics
 
 	InputLayout::~InputLayout()
 	{
+		OPTICK_EVENT();
 		pInputLayout.Reset();
 	}
 
 	void InputLayout::DynamicBind()
 	{
+		OPTICK_EVENT();
 		GetContext()->IASetInputLayout(pInputLayout.Get());
 	}
 
 	void InputLayout::StaticBind()
 	{
-
+		OPTICK_EVENT();
 	}
 }

@@ -9,6 +9,7 @@ namespace CCE::Graphics
 {
 	Model::Model(String path)
 	{
+		OPTICK_EVENT();
 		CCE::Resources::MeshLoader meshLoader;
 		std::shared_ptr<Resources::MeshData> meshData = meshLoader.LoadResource(path);
 
@@ -59,6 +60,7 @@ namespace CCE::Graphics
 	/// </summary>
 	void Model::Draw()
 	{
+		OPTICK_EVENT();
 		IDrawable::Draw();
 
 		// @TODO: Only do this when necessary
@@ -70,6 +72,7 @@ namespace CCE::Graphics
 
 	void Model::CreateConstBufs()
 	{
+		OPTICK_EVENT();
 		XMStoreFloat4x4(&modelMatrix, transform.GetTransformationMatrix());
 		pMeshConstBuf = std::make_shared<VSConstantBuffer<DirectX::XMFLOAT4X4>>(modelMatrix, 0);
 	}

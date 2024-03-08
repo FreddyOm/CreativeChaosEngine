@@ -1,6 +1,7 @@
 #pragma once
 #include "../../../Core.h"
 #include "../D3D11.h"
+#include "../../Thirdparty/src/optick.h"
 
 namespace CCE::Graphics
 {

@@ -7,7 +7,7 @@ namespace CCE::Scene
 {
 	void Scene::SetupScene()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		using namespace ECS::Components;
 		using namespace Graphics;
 		
@@ -46,7 +46,7 @@ namespace CCE::Scene
 	/// </summary>
 	void Scene::UpdateScene()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		// @TODO: Update all components (NOT THE ENTITIES!!)
 		// Later this means updating the script behaviour for example
 
@@ -67,7 +67,7 @@ namespace CCE::Scene
 	/// <returns>A reference to the added entity.</returns>
 	ECS::Entity& Scene::AddEntity()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		using ECS = ECS::EntityComponentSystem;
 		auto entity = ECS::Instance->CreateEntity();
 		entities.insert(entity);
@@ -81,7 +81,7 @@ namespace CCE::Scene
 	/// <param name="entity">The entity to destroy.</param>
 	void Scene::RemoveEntity(ECS::Entity& entity)
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		using ECS = ECS::EntityComponentSystem;
 		ECS::Instance->DestroyEntity(entity);
 		entities.erase(entity);
@@ -95,6 +95,7 @@ namespace CCE::Scene
 	/// <param name="controller"></param>
 	void Scene::InputCallback(const Input::Mouse* mouse, const Input::Keyboard* keyboard, const Input::Controller* controller)
 	{
+		OPTICK_EVENT();
 		using namespace Input;
 		if (keyboard->keys[(int)InputDevice::Keycode::KEY_R] == Keyboard::ButtonState::PRESSED ||
 			controller->REast == InputDevice::ButtonState::JUST_PRESSED)

@@ -77,6 +77,7 @@ namespace CCE::ECS
 		template<typename T>
 		T& AddComponent()
 		{
+			OPTICK_EVENT();
 			using ECS = EntityComponentSystem;
 
 			// @TODO: Somehow enable multi adding of one component type (e.g. multiple box colliders)
@@ -99,6 +100,7 @@ namespace CCE::ECS
 		template<typename T>
 		void RemoveComponent()
 		{
+			OPTICK_EVENT();
 			using ECS = EntityComponentSystem;
 
 			// @TODO: Check if there are multiple components of the same type
@@ -122,6 +124,7 @@ namespace CCE::ECS
 		template<typename T>
 		T* GetComponent() const
 		{
+			OPTICK_EVENT();
 			using ECS = EntityComponentSystem;
 			return ECS::Instance->GetComponentBuffer<T>()->GetData(Id);
 		}
@@ -135,6 +138,7 @@ namespace CCE::ECS
 		template<typename T>
 		bool TryGetComponent(T& outRef) const
 		{
+			OPTICK_EVENT();
 			using ECS = EntityComponentSystem;
 			T* component = ECS::Instance->GetComponentBuffer<T>()->GetData(Id);
 

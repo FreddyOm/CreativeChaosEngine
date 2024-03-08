@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseManager.h"
-#include "../Utilities/Concurrency/ScopedSpinLock.h"
-#include "../Utilities/Concurrency/SpinLock.h"
+#include "../Multithreading/ScopedSpinLock.h"
+#include "../Multithreading/SpinLock.h"
 #include "../Memory/PoolAllocator.h"
 #include "../Analysis/Logger.h"
 #include "../String/String.h"

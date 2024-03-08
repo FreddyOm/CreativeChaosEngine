@@ -5,6 +5,7 @@ namespace CCE::Graphics
 {
 	PixelShader::PixelShader(const std::wstring resourcePath)
 	{
+		OPTICK_EVENT();
 		// Create PS resource from file
 		ComPtr<ID3DBlob> pBlob;
 		HRESULT hr = D3DReadFileToBlob(resourcePath.c_str(), &pBlob);
@@ -17,16 +18,18 @@ namespace CCE::Graphics
 
 	PixelShader::~PixelShader()
 	{
+		OPTICK_EVENT();
 		pPixelShader.Reset();
 	}
 
 	void PixelShader::DynamicBind()
 	{
+		OPTICK_EVENT();
 		GetContext()->PSSetShader(pPixelShader.Get(), nullptr, 0u);
 	}
 
 	void PixelShader::StaticBind()
 	{
-
+		OPTICK_EVENT();
 	}
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "../D3D11.h"
+#include "../../Thirdparty/src/optick.h"
 
 namespace CCE::Graphics
 {
@@ -7,6 +8,7 @@ namespace CCE::Graphics
 	{
 		VSConstBufData(const DirectX::XMMATRIX matrix, const DirectX::XMFLOAT4 color)
 		{
+			OPTICK_EVENT();
 			using namespace DirectX;
 			XMStoreFloat4x4(&modelMatrix, matrix);
 			baseColor = color;
@@ -14,6 +16,7 @@ namespace CCE::Graphics
 
 		VSConstBufData(const DirectX::XMFLOAT4X4 matrix, const DirectX::XMFLOAT4 color)
 		{
+			OPTICK_EVENT();
 			using namespace DirectX;
 			modelMatrix = matrix;
 			baseColor = color;
@@ -21,6 +24,7 @@ namespace CCE::Graphics
 
 		VSConstBufData(VSConstBufData&& other) noexcept
 		{
+			OPTICK_EVENT();
 			modelMatrix = other.modelMatrix;
 			baseColor = other.baseColor;
 		}

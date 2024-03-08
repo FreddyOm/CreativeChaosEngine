@@ -35,6 +35,7 @@ namespace CCE::ECS
 	/// </summary>
 	void EntityComponentSystem::Initialize()
 	{
+		OPTICK_EVENT();
 		// Create the maximum number of entities
 		for (int i = 0; i < MAX_ENTITIES; ++i)
 		{
@@ -64,6 +65,7 @@ namespace CCE::ECS
 	/// <returns>The fetched entity.</returns>
 	Entity EntityComponentSystem::CreateEntity()
 	{
+		OPTICK_EVENT();
 		DASSERT(mEntityCount < MAX_ENTITIES, "Can't create any more instances!");
 
 		Entity entity(mEntityPool.front());
@@ -79,6 +81,7 @@ namespace CCE::ECS
 	/// <param name="entity">The entity to destroy.</param>
 	void EntityComponentSystem::DestroyEntity(Entity entity)
 	{
+		OPTICK_EVENT();
 		DASSERT(entity.Id < MAX_ENTITIES, "Invalid entity.");
 
 		// Reset entity composition
@@ -97,6 +100,7 @@ namespace CCE::ECS
 	/// <param name="signature">The new signature.</param>
 	void EntityComponentSystem::EntitySignatureChanged(UINT64 entity, DWORD signature)
 	{
+		OPTICK_EVENT();
 		// Change signature in every system
 		for (auto const& pair : mSystems)
 		{
@@ -123,6 +127,7 @@ namespace CCE::ECS
 	/// <param name="entity">The entity to destroy.</param>
 	void EntityComponentSystem::EntityDestroyed(Entity entity) const
 	{
+		OPTICK_EVENT();
 		// Remove destroyed entity from respective list
 		for (auto const& pair : mComponents)
 		{

@@ -59,14 +59,20 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IncludePath>$(SolutionDir)/CreativeChaosEditor/src/include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)/../CreativeChaosEngine/resources/sdk;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Profile|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IncludePath>$(SolutionDir)/CreativeChaosEditor/src/include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)/../CreativeChaosEngine/resources/sdk;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IncludePath>$(SolutionDir)/CreativeChaosEditor/src/include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)/../CreativeChaosEngine/resources/sdk;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -75,7 +81,7 @@
       <PreprocessorDefinitions>CCE_PLATFORM_WINDOWS;DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)CreativeChaosEngine\src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CreativeChaosEngine\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -95,7 +101,7 @@
       <PreprocessorDefinitions>CCE_PLATFORM_WINDOWS;DEBUG_PROFILE;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)CreativeChaosEngine\src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CreativeChaosEngine\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -117,7 +123,7 @@
       <PreprocessorDefinitions>CCE_PLATFORM_WINDOWS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)CreativeChaosEngine\src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CreativeChaosEngine\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,7 +141,6 @@
   <ItemGroup>
     <ClCompile Include="src\GUIDrawables\Console.cpp" />
     <ClCompile Include="src\GUIDrawables\DebugElements\DebugCategoryButton.cpp" />
-    <ClCompile Include="src\GUIDrawables\FrameProfiler.cpp" />
     <ClCompile Include="src\GUIDrawables\RuntimeDebugger.cpp" />
     <ClCompile Include="src\GUIDrawables\InputWindow.cpp" />
     <ClCompile Include="src\GUIDrawables\Inspector.cpp" />
@@ -168,7 +173,6 @@
     <ClInclude Include="src\GUIDrawables\DebugElements\ImGuiDebugInfoLabel.h" />
     <ClInclude Include="src\GUIDrawables\DebugElements\PhysicsTimeDebugInfoLabel.h" />
     <ClInclude Include="src\GUIDrawables\DebugElements\RuntimePauseLabel.h" />
-    <ClInclude Include="src\GUIDrawables\FrameProfiler.h" />
     <ClInclude Include="src\GUIDrawables\Icons.h" />
     <ClInclude Include="src\GUIDrawables\RuntimeDebugger.h" />
     <ClInclude Include="src\GUIDrawables\InputWindow.h" />

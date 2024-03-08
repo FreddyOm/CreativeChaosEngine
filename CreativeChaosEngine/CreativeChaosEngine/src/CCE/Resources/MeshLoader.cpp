@@ -3,22 +3,26 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include "MeshData.h"
+#include "../../Thirdparty/src/optick.h"
 
 namespace CCE::Resources
 {
 	MeshLoader::MeshLoader()
 	{
+		OPTICK_EVENT();
 		importer = new Assimp::Importer();
 	}
 
 	MeshLoader::~MeshLoader()
 	{
+		OPTICK_EVENT();
 		delete importer;
 	}
 
 	// @TODO: Load into central resource buffer and only load once of course!
 	std::shared_ptr<MeshData> MeshLoader::LoadResource(String filePath)
 	{
+		OPTICK_EVENT();
 		// Load the data!
 		unsigned int flags = aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_ConvertToLeftHanded |
 			aiProcess_JoinIdenticalVertices | aiProcess_SortByPType;
