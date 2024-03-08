@@ -5,7 +5,7 @@
 namespace CCE::Graphics 
 {
 	using namespace DirectX;
-	// TODO: Setup as proposed in RTR
+	// @TODO: Setup as proposed in RTR
 	struct CCE_API Vertex
 	{
 		XMFLOAT3 Position;

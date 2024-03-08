@@ -1,12 +1,13 @@
 #pragma once
 #include "../../../Core.h"
 #include "../D3D11.h"
+#include "../../Thirdparty/src/optick.h"
 
 namespace CCE::Graphics
 {
 	class RenderPipeline;
 
-	struct CCE_API IBindable
+	struct IBindable
 	{
 	public:
 		IBindable() = default;

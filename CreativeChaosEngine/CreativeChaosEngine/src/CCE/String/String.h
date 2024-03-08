@@ -36,7 +36,7 @@ namespace CCE
 			return *this;
 		}
 
-		String& operator=(String&& other)
+		String& operator=(String&& other) noexcept
 		{
 			// check if both refs are the same instance
 			if (this == &other)
@@ -99,6 +99,11 @@ namespace CCE
 			memcpy(&buf[this->Length()], other.Value(), other.Length());
 
 			return String(&buf[0]);
+		}
+
+		bool operator<(const String& other)
+		{
+			return this->sId < other.sId;
 		}
 
 		UINT64 Length() const;

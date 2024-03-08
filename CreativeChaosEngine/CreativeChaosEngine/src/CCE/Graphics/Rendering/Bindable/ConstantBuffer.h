@@ -1,18 +1,18 @@
 #pragma once
 #include "IBindable.h"
 #include "../D3D11.h"
+#include "../../../Analysis/Debug.h"
 
 namespace CCE::Graphics
 {
-	struct RenderPipeline;
 	template<typename C>
-	struct CCE_API ConstantBuffer : public IBindable
+	struct ConstantBuffer : public IBindable
 	{
 	public:
 		ConstantBuffer( const C& _constant, UINT _slot = 0u)
 			: slot(_slot)
 		{
-			D3D11_BUFFER_DESC constBufDescription;
+			D3D11_BUFFER_DESC constBufDescription = {};
 			constBufDescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 			constBufDescription.Usage = D3D11_USAGE_DYNAMIC;
 			constBufDescription.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -23,21 +23,19 @@ namespace CCE::Graphics
 			D3D11_SUBRESOURCE_DATA subresourceData = {};
 			subresourceData.pSysMem = &_constant;
 
-			RenderPipeline::Instance->GetDevicePtr()->CreateBuffer(
-				&constBufDescription, &subresourceData, &pConstantBuffer);
+			IBindable::GetDevice()->CreateBuffer(&constBufDescription, &subresourceData, &pConstantBuffer);
 		}
 
 		virtual void UpdateConstantBuffer(const C& _constant)
 		{
 			D3D11_MAPPED_SUBRESOURCE mappedResource;
-			HRESULT hr = RenderPipeline::Instance->GetDeviceContextPtr()->Map(
+			HRESULT hr = IBindable::GetContext()->Map(
 				pConstantBuffer.Get(), 0, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 
 			DASSERT(hr == S_OK, "Failed updating the constant buffer!");
 
 			memcpy(mappedResource.pData, &_constant, sizeof(C));
-			RenderPipeline::Instance->GetDeviceContextPtr()->Unmap(
-				pConstantBuffer.Get(), 0);
+			IBindable::GetContext()->Unmap(pConstantBuffer.Get(), 0);
 		}
 
 	protected:
@@ -60,7 +58,7 @@ namespace CCE::Graphics
 		// Inherited by IBindable
 		void DynamicBind() override
 		{
-			RenderPipeline::Instance->GetDeviceContextPtr()->PSSetConstantBuffers(slot, 1u, pConstantBuffer.GetAddressOf());
+			IBindable::GetContext()->PSSetConstantBuffers(slot, 1u, pConstantBuffer.GetAddressOf());
 		}
 
 		void StaticBind() override
@@ -70,7 +68,7 @@ namespace CCE::Graphics
 	};
 	
 	template<typename C>
-	struct CCE_API VSConstantBuffer : public ConstantBuffer<C>
+	struct VSConstantBuffer : public ConstantBuffer<C>
 	{
 		using ConstantBuffer<C>::slot;
 		using ConstantBuffer<C>::pConstantBuffer;
@@ -83,7 +81,7 @@ namespace CCE::Graphics
 		// Inherited by IBindable
 		void DynamicBind() override
 		{
-			 RenderPipeline::Instance->GetDeviceContextPtr()->VSSetConstantBuffers(slot, 1u, pConstantBuffer.GetAddressOf());
+			IBindable::GetContext()->VSSetConstantBuffers(slot, 1u, pConstantBuffer.GetAddressOf());
 		}
 
 		void StaticBind() override

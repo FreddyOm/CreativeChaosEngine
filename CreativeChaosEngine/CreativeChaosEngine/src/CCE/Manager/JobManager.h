@@ -1,19 +1,21 @@
 #pragma once
 #include "BaseManager.h"
-#include "../String/String.h"
-#include "../Analysis/Logger.h"
+#include "../Multithreading/ScopedSpinLock.h"
+#include "../Multithreading/SpinLock.h"
 #include "../Memory/PoolAllocator.h"
-#include "../Utilities/Events/Delegate.h"
-#include "../Utilities/Concurrency/SpinLock.h"
-#include "../Utilities/Concurrency/ScopedSpinLock.h"
+#include "../Analysis/Logger.h"
+#include "../String/String.h"
 #include <unordered_map>
 #include <emmintrin.h>
+#include <winternl.h>
+#include <functional>
 #include <winnt.h>
-#include <atomic>
 #include <thread>
-#include <array>
+#include <vector>
+#include <atomic>
 #include <queue>
 #include <mutex>
+#include <array>
 
 namespace CCE::Jobs
 {
@@ -60,7 +62,7 @@ using namespace Events;
 			unsigned int mDesiredCount = 0;			// 4 bytes
 			va_list m_param = NULL;					// 8 bytes
 
-			byte padding[32];						// 32 bytes
+			byte padding[32] = {};					// 32 bytes
 
 			JobDeclaration()
 				: m_pEntryPoint(nullptr)
@@ -137,7 +139,7 @@ using namespace Events;
 			{ }
 
 			WaitData(const LPVOID _fiber, Counter* _counter, const unsigned int _desiredCount)
-				: fiber(_fiber), pCounter(_counter), desiredCount(desiredCount)
+				: fiber(_fiber), pCounter(_counter), desiredCount(_desiredCount)
 			{ }
 
 			// Copy instructions
@@ -226,8 +228,8 @@ using namespace Events;
 		alignas(128) static std::array<WaitData, NUM_FIBERS> waitList;
 		static std::atomic<int> waitListPointer;
 		
-		// TODO: Implement custom queue class
-		// TODO allocate in customly in pool alloc
+		// @TODO: Implement custom queue class
+		// @TODO allocate in customly in pool alloc
 		alignas(128) static std::queue<JobDeclaration> jobQueue_High;
 		alignas(128) static std::queue<JobDeclaration> jobQueue_Normal;
 		alignas(128) static std::queue<JobDeclaration> jobQueue_Low;
@@ -238,7 +240,7 @@ using namespace Events;
 
 		static std::atomic<unsigned int> fiberPoolPointer;
 
-		// TODO: Implement custom vector / list class
-		std::vector<std::thread*> workerThreadPtrs;
+		// @TODO: Implement custom vector / list class
+		std::vector<std::thread*> worker_threads = {};
 	};
 }

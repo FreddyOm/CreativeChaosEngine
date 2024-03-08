@@ -1,8 +1,8 @@
 #pragma once
 #include <memory>
 #include "D3D11.h"
-#include "Transform.h"
 #include "../../Core.h"
+#include "..\..\ECS\Components\Transform.h"
 #include "../../Input/Mouse.h"
 #include "../../Input/Keyboard.h"
 #include "../../Input/Controller.h"
@@ -28,7 +28,7 @@ namespace CCE::Graphics
 		Camera();
 		~Camera();
 
-		Transform transform;
+		ECS::Components::Transform transform;
 
 		void SetProjectionData(float _near, float _far, float _fovV) noexcept;
 		void SetProjectionType(unsigned char type) noexcept;
@@ -48,13 +48,13 @@ namespace CCE::Graphics
 		float farPlane = 50.0f;
 
 		DirectX::XMFLOAT3 lookDir = {0, 0, 1};
-		float camMovementDelta = 0.003f;
-		float defaultCamMovementDelta = 0.003f;
-		float fastCamMovementDelta = 0.007f;
-		float camPanDelta = 0.05f;
-		float camZoomDelta = 0.5f;
-		float camRotXDelta = 0.10f;
-		float camRotYDelta = 0.10f;
+		float camMovementDelta = 3.f;
+		float defaultCamMovementDelta = 3.f;
+		float fastCamMovementDelta = 7.f;
+		float camPanDelta = 5.f;
+		float camZoomDelta = 5.f;
+		float camRotXDelta = 5.0f;
+		float camRotYDelta = 5.0f;
 
 		ProjectionType projType = ProjectionType::PERSPECTIVE;
 
@@ -71,6 +71,5 @@ namespace CCE::Graphics
 		void InputCallback(const Input::Mouse* mouse,
 			const Input::Keyboard* keyboard,
 			const Input::Controller* controller) override;
-
 	};
 }

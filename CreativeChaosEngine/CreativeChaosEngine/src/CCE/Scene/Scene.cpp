@@ -1,0 +1,106 @@
+#include "Scene.h"
+#include "../Manager/Application.h"
+#include "../Graphics/RenderPipeline.h"
+#include "../Utilities/Math/CCMath.h"
+
+namespace CCE::Scene
+{
+	void Scene::SetupScene()
+	{
+		OPTICK_EVENT();
+		using namespace ECS::Components;
+		using namespace Graphics;
+		
+		// Create plane
+
+		ECS::Entity entity = ECS::EntityComponentSystem::Instance->CreateEntity();
+		RenderPipeline::Instance->RenderingSystem.RegisterEntity(static_cast<long long>(entity.Id));
+		Application::Instance->mPhysicsSystem.RegisterEntity(static_cast<long long>(entity.Id));
+
+		auto& transform = entity.AddComponent<Transform>();
+		auto& mesh = entity.AddComponent<Mesh>();
+		auto& material = entity.AddComponent<Material>();
+
+		transform.SetScale({ .1, .1, .1 });
+
+		material.BaseColor = { 1,1,1, 1 };
+
+		mesh = Mesh(Application::Instance->resourceDataPath.Path() + "/models/Stanford_Dragon.fbx");
+
+		String pixelShaderPath = Application::Instance->resourceDataPath.Path() + "/shader/DefaultPixelShader.cso";
+		String diffuseTexFilePath = Application::Instance->resourceDataPath.Path() + "/models/textures/DefaultMaterial_albedo.jpeg";
+		String normalTexFilePath = Application::Instance->resourceDataPath.Path() + "/models/textures/DefaultMaterial_normal.jpeg";
+
+		material.AddBind(std::make_shared<PixelShader>(StringConverter::StringToWString(pixelShaderPath.Value())));
+		material.AddBind(std::make_shared<Texture2D>(diffuseTexFilePath));
+		material.AddBind(std::make_shared<Texture2D>(normalTexFilePath, 1));
+		material.AddBind(std::make_shared<Sampler>(D3D11_TEXTURE_ADDRESS_WRAP));
+
+		// Initialize const buffer for each entity!
+		mesh.CreateConstBufs(std::move(VSConstBufData(transform.GetTransformationMatrix(), material.BaseColor)));
+	}
+
+
+	/// <summary>
+	/// Updates scene by referring to the ECS to update the registered components
+	/// </summary>
+	void Scene::UpdateScene()
+	{
+		OPTICK_EVENT();
+		// @TODO: Update all components (NOT THE ENTITIES!!)
+		// Later this means updating the script behaviour for example
+
+		// @TODO: Maybe I don't even need a Scene as its own class
+		// The different systems aren't centralized and therefore also 
+		// cannot really be aggregated together!
+	}
+
+	void Scene::ResetScene()
+	{
+		using namespace ECS::Components;
+	}
+
+	/// <summary>
+	/// Adds a new entity to the scene by inserting it in the scene entity set.
+	/// It can therefore be associatedwith this scene.
+	/// </summary>
+	/// <returns>A reference to the added entity.</returns>
+	ECS::Entity& Scene::AddEntity()
+	{
+		OPTICK_EVENT();
+		using ECS = ECS::EntityComponentSystem;
+		auto entity = ECS::Instance->CreateEntity();
+		entities.insert(entity);
+		return entity;		// @TODO: Fix this, don't return a local...
+	}
+
+	/// <summary>
+	/// Removes the referenced entity from the scene and the whole ECS.
+	/// This means all it's components are destroyed and given back to the ECS.
+	/// </summary>
+	/// <param name="entity">The entity to destroy.</param>
+	void Scene::RemoveEntity(ECS::Entity& entity)
+	{
+		OPTICK_EVENT();
+		using ECS = ECS::EntityComponentSystem;
+		ECS::Instance->DestroyEntity(entity);
+		entities.erase(entity);
+	}
+
+	/// <summary
+	/// Is updated by the input system.
+	/// </summary>
+	/// <param name="mouse"></param>
+	/// <param name="keyboard"></param>
+	/// <param name="controller"></param>
+	void Scene::InputCallback(const Input::Mouse* mouse, const Input::Keyboard* keyboard, const Input::Controller* controller)
+	{
+		OPTICK_EVENT();
+		using namespace Input;
+		if (keyboard->keys[(int)InputDevice::Keycode::KEY_R] == Keyboard::ButtonState::PRESSED ||
+			controller->REast == InputDevice::ButtonState::JUST_PRESSED)
+		{
+			ResetScene();
+		}
+	}
+}

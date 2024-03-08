@@ -1,12 +1,12 @@
 #include "Time.h"
 #include "time.h"
-#include "../CCEditor/CCEditor.h"
+#include "../Manager/Application.h"
 
 namespace CCE
 {
-	alignas(16) double Time::average[AVG_BUF_LEN] = { 16.6, 16.6, 16.6, 16.6, 16.6, 16.6,
-		16.6, 16.6, 16.6, 16.6, 16.6, 16.6, 16.6, 16.6};
-	double Time::deltaTime = 16.6;
+	alignas(16) double Time::average[AVG_BUF_LEN] = { 0.016, 0.016, 0.016, 0.016, 0.016, 0.016,
+		0.016, 0.016, 0.016, 0.016, 0.016, 0.016, 0.016, 0.016 };
+	double Time::deltaTime = 0.016;
 	short Time::averageIndex = 0;
 
 	Time::time::time_point Time::Now()
@@ -26,19 +26,20 @@ namespace CCE
 		return (double)duration.count() / 1000.0;
 	}
 
-	long Time::GetDurationInMicroSec(const cr::high_resolution_clock::time_point start, const cr::high_resolution_clock::time_point end)
+	long long Time::GetDurationInMicroSec(const cr::high_resolution_clock::time_point start, const cr::high_resolution_clock::time_point end)
 	{
 		auto duration = cr::duration_cast<cr::microseconds>(end - start);
-		return (long) duration.count();
+		return (long long) duration.count();
 	}
 
 	void Time::SetDeltaTime(const double millis)
 	{
-		deltaTime = millis;
+		OPTICK_EVENT();
+		deltaTime = millis / 1000.0;
 
 		if (millis > 1000)
 		{
-			deltaTime = 16.6;
+			deltaTime = 0.016;
 		}
 
 		average[averageIndex] = deltaTime;
@@ -51,10 +52,16 @@ namespace CCE
 		{
 			averageIndex = 0;
 		}
+	}
 
-		PUSH_EDITOR_FLOAT("frameTime", (float)deltaTime);
-		PUSH_EDITOR_FLOAT("avgFrameTime", (float)GetAverageFrameTime());
-		PUSH_EDITOR_INT("fps", (int)(1000/deltaTime));
+	long long Time::GetMillisSinceStart()
+	{
+		return cr::duration_cast<cr::milliseconds>(Now() - Application::Instance->startTime).count();
+	}
+
+	double Time::GetSecondsSinceStart()
+	{
+		return static_cast<double>(GetMillisSinceStart() / 1000.0);
 	}
 
 	double Time::GetAverageFrameTime()

@@ -2,11 +2,8 @@
 #include <winternl.h>
 #include <windows.h>
 #include "MemoryManager.h"
-#include "../Analysis/Time.h"
-#include "../Analysis/Debug.h"
-#include "../CCEditor/CCEditor.h"
 
-// TODO: Currently the threads fight for the next job. Fix that to make it more efficient.
+// @TODO: Currently the threads fight for the next job. Fix that to make it more efficient.
 
 namespace CCE::Jobs
 {
@@ -17,7 +14,7 @@ namespace CCE::Jobs
 	{
 		DASSERT(Instance == nullptr, "JobManager was instantiated more than once!");
 		JobManager::Instance = this;
-		initialized = true;
+		BaseManager::Init();
 
 		auto startTime = Time::CurrentTick();
 		PopulateFiberPool();
@@ -34,13 +31,13 @@ namespace CCE::Jobs
 	void JobManager::ShutDown()
 	{
 		LOGC("Shutting down JobManager...", COLOR_BLUE);
-		initialized = false;
+		BaseManager::Deinit();
 
 		auto lock = ScopedSpinLock(fiberSpinLock);
 
-		// TODO: Find a better solution (CancellationToken or similar) to 
+		// @TODO: Find a better solution (CancellationToken or similar) to 
 		// wait for completion of last jobs.
-		// Jobs are only run while the JobManager is initialized. When it's 
+		// Jobs are only runnig while the JobManager is initialized. When it's 
 		// being dinitialized, we have to wait until the last jobs finished running
 		Sleep(2); // Currently used to make sure, no job is running anymore
 
@@ -123,10 +120,11 @@ namespace CCE::Jobs
 			jobQueue_Normal.push(std::move(decl)); break;
 		}
 		}
+
 		return true;
 	}
 
-	//TODO: Check how KickJobAndWait should be implemented
+	// @TODO: Check how KickJobAndWait should be implemented
 
 	/// <summary>
 	/// Waits for another job to be kicked and kicks a job then.
@@ -302,7 +300,7 @@ namespace CCE::Jobs
 			thread_fibers.insert({ GetThreadId(GetCurrentThread()), _fiber });
 		}		
 
-		while (JobManager::Instance->initialized)
+		while (JobManager::Instance->IsInitialized())
 		{
 			if (HasNextJob() || waitListPointer.load(std::memory_order_consume) > 0)
 			{
@@ -325,7 +323,7 @@ namespace CCE::Jobs
 		DeleteFiber(_fiber);
 	}
 
-	// TODO: Implement job wait list functionality so jobs can be put to sleep and woke up later
+	// @TODO: Implement job wait list functionality so jobs can be put to sleep and woke up later
 	/// <summary>
 	/// The main execution routine for work.
 	/// </summary>
@@ -336,7 +334,7 @@ namespace CCE::Jobs
 		// So in order to not delete and create new fibers all the time we let this run
 		// in a loop and make sure the entrance point (SwitchToFiber(GetThreadFiber());) 
 		// is at the beginning of the loop!
-		while (JobManager::Instance->initialized)
+		while (JobManager::Instance->IsInitialized())
 		{
 			// Pull the next job
 			JOBDECL decl = GetNextJob();
@@ -377,7 +375,7 @@ namespace CCE::Jobs
 		DWORD threadId = GetThreadId(GetCurrentThread());
 
 		auto lock = ScopedSpinLock(threadIdSpinLock);
-		LPVOID fiber = thread_fibers.at(threadId); // TODO: Can't find main thread in thread_fibers!!
+		LPVOID fiber = thread_fibers.at(threadId); // @TODO: Can't find main thread in thread_fibers!!
 
 		DASSERT(0 != fiber, "The thread was not found!");
 		return fiber;

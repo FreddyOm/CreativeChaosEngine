@@ -14,11 +14,11 @@ namespace CCMemory
 			DASSERT(elements >= 0, "The element length must be at least 1!");
 			DASSERT(_poolSize >= 0, "The pool must be at least 1!");
 
-			totalSpace = (intptr_t)(_poolSize * elements);
+			totalSpace = static_cast<intptr_t>(_poolSize * elements);
 			freeSpace = totalSpace;
 			
-			// malloc [ poolIndices | pe0 |  pe1 | pe2 | ... | peN ]
-			bottom = (intptr_t) malloc((sizeof(bool) * elements) + totalSpace);
+			// malloc [ poolIndices | pe0 |  pe1 | pe2 | ... | pen ]
+			bottom = reinterpret_cast<intptr_t>(malloc((sizeof(bool) * elements) + totalSpace));
 			pool = new (reinterpret_cast<bool*>(bottom)) bool[elements];
 			memset(pool, FALSE, elements);
 			allocatableMemBottom = bottom + ((sizeof(bool) * numPoolElements));
@@ -58,7 +58,7 @@ namespace CCMemory
 				{
 					// element not used yet
 					intptr_t adress = (allocatableMemBottom +
-						(intptr_t)poolSize * elementIndex);
+						static_cast<intptr_t>(poolSize * elementIndex));
 					ptr = new (reinterpret_cast<T*> (adress)) T();
 					*(bool*)elementStatus = true;
 					break;
@@ -107,13 +107,13 @@ namespace CCMemory
 			// allocate
 			unsigned int elementIndex = 0;
 			T* ptr = 0;
-			for (intptr_t elementStatus = (intptr_t)pool; elementStatus < (intptr_t)pool + numPoolElements; elementStatus += sizeof(bool))
+			for (intptr_t elementStatus = reinterpret_cast<intptr_t>(pool); elementStatus < reinterpret_cast<intptr_t>(pool) + numPoolElements; elementStatus += sizeof(bool))
 			{
 				if (*(bool*)elementStatus == false)
 				{
 					// element not used yet
 					intptr_t adress = (allocatableMemBottom +
-						(intptr_t)poolSize * elementIndex);
+						static_cast<intptr_t>(poolSize * elementIndex));
 
 					// calc offset
 
@@ -159,8 +159,8 @@ namespace CCMemory
 				"Trying to free a memory adress which is not part of the allocated memory!");
 
 			// calc actual start adress
-			AllocOffset* pOffset = reinterpret_cast<AllocOffset*> ((intptr_t)adr - 1);
-			intptr_t poolStartAdress = (intptr_t)adr - *pOffset;
+			AllocOffset* pOffset = reinterpret_cast<AllocOffset*> (reinterpret_cast<intptr_t>(adr - 1));
+			intptr_t poolStartAdress = reinterpret_cast<intptr_t>(adr - *pOffset);
 
 			// free
 			intptr_t poolIndex = (poolStartAdress - allocatableMemBottom) / poolSize;

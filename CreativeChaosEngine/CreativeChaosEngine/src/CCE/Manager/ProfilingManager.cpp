@@ -13,7 +13,7 @@ namespace CCE
 		auto startTime = Time::CurrentTick();
 		memLeakTable = new std::unordered_map<unsigned long long, int>();
 
-		initialized = true;
+		BaseManager::Init();
 		auto endTime = Time::CurrentTick();
 		double initDuration = Time::GetDurationInMicroSec(startTime, endTime);
 		LOGC("ProfilingManager initialized!", COLOR_BLUE);
@@ -22,7 +22,7 @@ namespace CCE
 	void ProfilingManager::ShutDown()
 	{
 		LOGC("Shutting down ProfilingManager...", COLOR_BLUE);
-		initialized = false;
+		BaseManager::Deinit();
 		delete memLeakTable;
 		Instance = nullptr;
 	}
@@ -53,7 +53,7 @@ namespace CCE
 	void ProfilingManager::UnregisterInstance(String name) noexcept
 	{
 		DASSERT(memLeakTable->find(name.sId) != memLeakTable->end(),
-			"The instance %s you try to unregister was never reigstered!", name.Value());
+			"The instance you try to unregister was never reigstered!");
 		
 		// Increase the instance count for this name
 		memLeakTable->insert_or_assign(name.sId, memLeakTable->at(name.sId) - 1);

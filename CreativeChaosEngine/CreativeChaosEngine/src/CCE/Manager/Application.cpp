@@ -1,10 +1,13 @@
 #include "Application.h"
+#include "../Analysis/Time.h"
 #include "../Analysis/Debug.h"
 #include "../Analysis/Logger.h"
-#include "../Analysis/Time.h"
 #include "../Graphics/RenderPipeline.h"
 #include "../ClientWindow/ClientWindow.h"
 #include <functional>
+#include "../Multithreading/JobSystem.h"
+
+#include "../../Thirdparty/src/optick.h"
 
 namespace CCE
 {
@@ -18,7 +21,6 @@ namespace CCE
 		Instance = this;
 		Initialize();
 
-
 #ifdef CCE_PLATFORM_WINDOWS
 		// Load engine config
 		if (File::Exists(engineConfig.Path().Value()))
@@ -29,7 +31,7 @@ namespace CCE
 #else
 #error CCE is currently only supported for Windows
 #endif
-
+		startTime = Time::Now();
 		initialized = true;
 		LOGC("RuntimeManager initialized!", COLOR_BLUE);
 	}
@@ -48,6 +50,7 @@ namespace CCE
 			window->GetRenderPipeline()->GetRenderPipelineConfig()->SerializeToString(true).c_str(), true),
 			"Failed writing engine config to file.");
 		
+		delete scene;
 		delete window;
 		// Show leak info
 		PRINT_LEAK_INFO;
@@ -61,19 +64,23 @@ namespace CCE
 	Application* Application::Instance = nullptr;
 
 	/// <summary>
-	/// Run one frame
+	/// Run one frame and execute logic before the editor is updated.
 	/// </summary>
 	void Application::PreEditorUpdate(int& rValue, bool handleInput)
 	{
-		frameBegin = Time::Now();
-#if 1
+		OPTICK_FRAME("MainThread");
 
-		if (handleInput)
-			mInputManager.FinalizeWinInput();
+		if (!m_pause)
+		{
+			frameBegin = Time::Now();
+#if MULTITHREADED
 
-		window->UpdateClientWindow(rValue);
+			if (handleInput)
+				mInputManager.FinalizeWinInput();
 
-		cnt = 1;
+			window->UpdateClientWindow(rValue);
+
+			cnt = 1;
 
 		Jobs::JobManager::EntryPoint epRPBF = std::bind(&Graphics::BeginFrame,
 			Graphics::RenderPipeline::Instance->GetDeviceContextPtr(),
@@ -85,36 +92,42 @@ namespace CCE
 
 		JOBDECL declBeginFrame = JOBDECL(epRPBF, Jobs::Priority::LOW);
 
-		mJobManager.KickJob(declBeginFrame, &cnt);
+			mJobManager.KickJob(declBeginFrame, &cnt);
 
-		// Make sure not to busy wait on main thread!
-		// Otherwise, the main thread waits for execution and 
-		// puts the main fiber onto the waitlist infinitely!!
-		while (cnt != 0)
-		{
-			continue;
+			// Make sure not to busy wait on main thread!
+			// Otherwise, the main thread waits for execution and 
+			// puts the main fiber onto the waitlist infinitely!!
+			while (cnt != 0)
+			{
+				continue;
+			}
+
+			/*
+			JobManager::EntryPoint epHXI = BIND(mInputManager.HandleXInput);
+			JOBDECL declHandleInput = JOBDECL(epHXI, JobManager::Priority::LOW);
+
+
+			mJobManager.KickJobAndFreeDecl(declBeginFrame, &cnt);
+			mJobManager.KickJobAndFreeDecl(declHandleInput, &cnt);
+
+			window->UpdateClientWindow(rValue);
+
+			mJobManager.BusyWaitForCounter(cnt, 2);
+			*/
+#else
 		}
 
-		/*
-		JobManager::EntryPoint epHXI = BIND(mInputManager.HandleXInput);
-		JOBDECL declHandleInput = JOBDECL(epHXI, JobManager::Priority::LOW);
-
-
-		mJobManager.KickJobAndFreeDecl(declBeginFrame, &cnt);
-		mJobManager.KickJobAndFreeDecl(declHandleInput, &cnt);
-
 		window->UpdateClientWindow(rValue);
-
-		mJobManager.BusyWaitForCounter(cnt, 2);
-		*/
-#else
-		window->UpdateClientWindow(rValue);
-
-		if(handleInput)
+		if (handleInput)
 			mInputManager.FinalizeWinInput();
+
+		mPhysicsSystem.UpdateSystem();
 
 		window->GetRenderPipeline()->BeginFrame(window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
 
+		//Update scene
+		scene->UpdateScene();
+		
 		//mInputManager.HandleDirectInput();
 		mInputManager.HandleXInput();
 #endif
@@ -122,23 +135,24 @@ namespace CCE
 
 	void Application::PostEditorUpdate()
 	{
+		OPTICK_EVENT();
+		
 #if MULTITHREADED
-		JobManager::EntryPoint epRPEF = BIND(window.GetRenderPipeline()->EndFrame);
-		JOBDECL declEndFrame = JOBDECL(epRPEF, JobManager::Priority::LOW);
+			JobManager::EntryPoint epRPEF = BIND(window.GetRenderPipeline()->EndFrame);
+			JOBDECL declEndFrame = JOBDECL(epRPEF, JobManager::Priority::LOW);
 
-		JobManager::EntryPoint epUMU = BIND(mMemoryManager.UpdateMemoryUsage);
-		JOBDECL declUpdateMemUsage = JOBDECL(epUMU, JobManager::Priority::LOW);
+			JobManager::EntryPoint epUMU = BIND(mMemoryManager.UpdateMemoryUsage);
+			JOBDECL declUpdateMemUsage = JOBDECL(epUMU, JobManager::Priority::LOW);
 
 
-		mJobManager.KickJobAndFreeDecl(declEndFrame, &cnt);
-		mJobManager.KickJobAndFreeDecl(declUpdateMemUsage, &cnt);
+			mJobManager.KickJobAndFreeDecl(declEndFrame, &cnt);
+			mJobManager.KickJobAndFreeDecl(declUpdateMemUsage, &cnt);
 
-		mJobManager.BusyWaitForCounter(cnt, 0);
+			mJobManager.BusyWaitForCounter(cnt, 0);
 
 #else
 		window->GetRenderPipeline()->EndFrame();
 		mInputManager.ResetInputValues();
-		mMemoryManager.UpdateMemoryUsage();
 
 #endif
 
@@ -146,11 +160,28 @@ namespace CCE
 		Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));
 	}
 
+	bool Application::IsPaused() const
+	{
+		return m_pause;
+	}
+
+	void Application::Pause()
+	{
+		m_pause = true;
+	}
+
+	void Application::Resume()
+	{
+		m_pause = false;
+	}
+
 	/// <summary>
 	/// Initialize all engine subsystems.
 	/// </summary>
 	void Application::Initialize() 
 	{
+		OPTICK_EVENT();
+
 #ifdef CCE_PLATFORM_WINDOWS
 
 		persistentDataPath = GetPersistentDataPath();
@@ -165,14 +196,20 @@ namespace CCE
 #error CCE is currently only supported for Windows
 #endif
 		mMemoryManager.StartUp();
-#if 1
-		mJobManager.StartUp();
+#if MULTITHREADED
+		//mJobManager.StartUp();
 #endif
-		mPhysicsManager.StartUp();
+		Jobs::InitializeThreadpool();
 		mInputManager.StartUp();
+		mECS.StartUp();
+		mPhysicsSystem.StartUp();
+
 
 		window = new ClientWindow();
 		window->OpenWindow(GetModuleHandle(NULL));
+
+		scene = new Scene::Scene();
+		scene->SetupScene();
 	}
 
 	/// <summary>
@@ -180,16 +217,23 @@ namespace CCE
 	/// </summary>
 	void Application::Deinitialize()
 	{
+		OPTICK_EVENT();
+
+		mPhysicsSystem.ShutDown();
+		mECS.ShutDown();
 		mInputManager.ShutDown();
-		mPhysicsManager.ShutDown();
-#if 1
-		mJobManager.ShutDown();
+#if MULTITHREADED
+		//mJobManager.ShutDown();
 #endif
+		Jobs::DeinitializeThreadpool();
+
 		mMemoryManager.ShutDown();
 	}
 
 	Directory Application::GetPersistentDataPath() const
 	{
+		OPTICK_EVENT();
+
 		std::string persDataPath;
 		Directory persDir;
 #ifdef CCE_PLATFORM_WINDOWS
@@ -208,7 +252,7 @@ namespace CCE
 #error CCE is currently only supported for Windows
 #endif
 
-		// TODO: Fix this, this is awful...
+		// @TODO: Fix this, this is awful...
 		persDir = Directory(strdup(persDataPath.c_str()));
 		if (!Directory::Exists(persDataPath.c_str()))
 		{
@@ -220,6 +264,7 @@ namespace CCE
 
 	Directory Application::GetApplicationDataPath() const
 	{
+		OPTICK_EVENT();
 #ifdef CCE_PLATFORM_WINDOWS
 		char pBuf[256] = {};
 		ZeroMemory(&pBuf[0], sizeof(pBuf));

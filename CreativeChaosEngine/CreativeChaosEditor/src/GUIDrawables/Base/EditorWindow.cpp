@@ -1,7 +1,7 @@
 #include "EditorWindow.h"
 #include <CCEngine.h>
 
-// TODO: Check if the update can be called collectively by using an event
+// @TODO: Check if the update can be called collectively by using an event
 
 void EditorWindow::UpdateDrawable(ImFont* font = inter_light)
 {

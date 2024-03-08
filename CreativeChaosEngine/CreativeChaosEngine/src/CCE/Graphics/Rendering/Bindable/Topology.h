@@ -4,7 +4,7 @@
 
 namespace CCE::Graphics
 {
-	struct CCE_API Topology : public IBindable
+	struct Topology : public IBindable
 	{
 	public:
 		Topology(D3D11_PRIMITIVE_TOPOLOGY topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

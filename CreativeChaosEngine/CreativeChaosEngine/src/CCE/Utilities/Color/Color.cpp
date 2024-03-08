@@ -45,7 +45,13 @@ namespace CCE
 	{
 		DASSERT(strlen(hex) >= 6 && strlen(hex) <= 9 , "Hex-Code is invalid!");
 
-		unsigned short buf[4] = { 0.0f, 0.0f, 0.0f, 255.0f };
+		unsigned short buf[4] = { 
+			static_cast<unsigned short>(0.0f), 
+			static_cast<unsigned short>(0.0f), 
+			static_cast<unsigned short>(0.0f), 
+			static_cast<unsigned short>(255.0f) 
+		};
+
 		int bufIndex = 0;
 
 		while (*hex != '\0') {

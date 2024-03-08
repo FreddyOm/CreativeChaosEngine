@@ -7,16 +7,16 @@ namespace CCE
 	
 	void MemoryManager::StartUp()
 	{
-		if (initialized) { return; }
-		initialized = true;
+		if (BaseManager::IsInitialized()) { return; }
+		BaseManager::Init();
 		Instance = this;
 		LOGC("MemoryManager initialized!", COLOR_BLUE);
 	}
 
 	void MemoryManager::ShutDown()
 	{
-		if (!initialized) { return; }
-		initialized = false;
+		if (!BaseManager::IsInitialized()) { return; }
+		BaseManager::Deinit();
 		jobMemory.Clear();
 		debugMemory.Clear();
 		rendMemory.ClearAll();

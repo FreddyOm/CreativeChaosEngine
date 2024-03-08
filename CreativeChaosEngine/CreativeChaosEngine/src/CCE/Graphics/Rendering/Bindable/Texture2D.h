@@ -7,7 +7,7 @@
 
 namespace CCE::Graphics
 {
-	struct CCE_API Texture2D : public IBindable
+	struct Texture2D : public IBindable
 	{
 	public:
 		Texture2D(String& filePath, unsigned short startSlot = 0);

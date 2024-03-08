@@ -15,25 +15,25 @@ namespace CCE
 	/// </summary>
 	/// <typeparam name="T">The class to be (de-) serialized.</typeparam>
 	template<typename T>
-	struct CCE_API ISerializable
+	struct ISerializable
 	{
 	public:
 
 #define JSON nlohmann::json
 
-		//TODO: Change std::string to CCE::String -> Fix problem with parsed string to CCE::String
+		// @TODO: Change std::string to CCE::String -> Fix problem with parsed string to CCE::String
 
 		/// <summary>
 		/// Serializes the object into a string format.
 		/// </summary>
 		/// <param name="prettyPrint">Wether or not to indent the strings with newlines.</param>
 		/// <returns>The serialized string</returns>
-		virtual std::string SerializeToString(bool prettyPrint = false) = 0;
+		virtual std::string SerializeToString(bool prettyPrint = false) const = 0;
 
 		/// <summary>
 		/// Serializes the object into a binary format.
 		/// </summary>
-		virtual std::vector<uint8_t> SerializeToBinary() = 0;
+		virtual std::vector<uint8_t> SerializeToBinary() const = 0;
 
 		/// <summary>
 		/// Deserializes a string object into the respective object.

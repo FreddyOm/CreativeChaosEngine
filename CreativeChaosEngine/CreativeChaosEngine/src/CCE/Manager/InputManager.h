@@ -10,10 +10,12 @@
 
 #include <Xinput.h>
 #pragma comment(lib, "XInput.lib")
-#pragma comment(lib, "D:/Repos/CreativeChaosEngine/CreativeChaosEngine/CreativeChaosEngine/resources/sdk/ds5w_x64.lib")
+//#pragma comment(lib, "D:/Repositories/CreativeChaosEngine/CreativeChaosEngine/CreativeChaosEngine/resources/sdk/ds5w_x64.lib")
 //#pragma comment(lib, "ds5w_x64.lib")
 
 #include "../include/ds5w/ds5w.h"
+
+#define REGISTER_INPUT_CALLBACK CCE::InputManager::Instance->RegisterInputCallback(this)
 
 namespace CCE
 {
@@ -32,10 +34,20 @@ namespace CCE
 		void StartUp() override;
 		void ShutDown() override;
 
-		
-		void RegisterInputCallback(Input::IInputHandler& handler)
+		void RegisterInputCallback(Input::IInputHandler* handler)
 		{
-			handlerList.push_back(&handler);
+			handlerList.push_back(handler);
+		}
+
+		void UnregisterInputCallback(Input::IInputHandler* handler)
+		{
+			for (auto it = handlerList.begin(); it != handlerList.end(); ++it)
+			{
+				if (*it == handler)
+				{
+					handlerList.erase(it);
+				}
+			}
 		}
 
 		static InputManager* Instance;

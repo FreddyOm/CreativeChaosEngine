@@ -6,6 +6,7 @@ namespace CCE::Graphics
 	VertexBuffer::VertexBuffer(std::shared_ptr<std::vector<Vertex>> vertexBuffer)
 		: count(vertexBuffer->size())
 	{
+		OPTICK_EVENT();
 		// Create buffer description
 
 		D3D11_BUFFER_DESC bufferDesc;
@@ -26,11 +27,13 @@ namespace CCE::Graphics
 
 	VertexBuffer::~VertexBuffer()
 	{
+		OPTICK_EVENT();
 		pVertexBuffer.Reset();
 	}
 
 	void VertexBuffer::DynamicBind()
 	{
+		OPTICK_EVENT();
 		const UINT offset = 0u;
 		const UINT stride = sizeof(Vertex);
 		GetContext()->IASetVertexBuffers(
@@ -39,6 +42,6 @@ namespace CCE::Graphics
 
 	void VertexBuffer::StaticBind()
 	{
-
+		OPTICK_EVENT();
 	}
 }

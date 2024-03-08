@@ -6,6 +6,7 @@ namespace CCE::Graphics
 	IndexBuffer::IndexBuffer(std::shared_ptr<std::vector<unsigned int>> indices)
 		: count(indices->size())
 	{
+		OPTICK_EVENT();
 		// Create buffer description
 		D3D11_BUFFER_DESC ibd = {};
 		ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -24,16 +25,19 @@ namespace CCE::Graphics
 
 	IndexBuffer::~IndexBuffer()
 	{
+		OPTICK_EVENT();
 		pIndexBuffer.Reset();
 	}
 
 	UINT IndexBuffer::GetCount() const noexcept
 	{
+		OPTICK_EVENT();
 		return count;
 	}
 
 	void IndexBuffer::DynamicBind()
 	{
+		OPTICK_EVENT();
 		// Bind to pipeline
 		GetContext()->IASetIndexBuffer(
 			pIndexBuffer.Get(), 
@@ -43,6 +47,6 @@ namespace CCE::Graphics
 
 	void IndexBuffer::StaticBind()
 	{
-
+		OPTICK_EVENT();
 	}
 }

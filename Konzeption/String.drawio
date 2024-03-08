@@ -1,0 +1,65 @@
+<mxfile host="app.diagrams.net" modified="2023-12-03T15:56:28.604Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" etag="0xI5tjaXAeOqpFcTq5Ty" version="22.1.5" type="device">
+  <diagram name="Seite-1" id="O2lilfcsC2uk14WlE_Va">
+    <mxGraphModel dx="1592" dy="1557" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ttYau6DbndozzQaX4aNd-22" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-270" y="-360" width="1370" height="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="ttYau6DbndozzQaX4aNd-12" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;STRING TABLE[]&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="80" y="80" width="710" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="ttYau6DbndozzQaX4aNd-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ttYau6DbndozzQaX4aNd-1" target="ttYau6DbndozzQaX4aNd-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ttYau6DbndozzQaX4aNd-1" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;String&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="90" y="10" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ttYau6DbndozzQaX4aNd-2" value="&lt;font face=&quot;Lexend&quot;&gt;STRING DATA[]&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="80" y="280" width="710" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ttYau6DbndozzQaX4aNd-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="ttYau6DbndozzQaX4aNd-3" target="ttYau6DbndozzQaX4aNd-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ttYau6DbndozzQaX4aNd-3" value="&lt;font face=&quot;Lexend&quot;&gt;Handle&lt;br&gt;RefCount&lt;br&gt;Pointer&lt;br&gt;Length&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="90" y="90" width="90" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="ttYau6DbndozzQaX4aNd-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="ttYau6DbndozzQaX4aNd-5" target="ttYau6DbndozzQaX4aNd-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ttYau6DbndozzQaX4aNd-5" value="&lt;font face=&quot;Lexend&quot;&gt;Handle&lt;br&gt;RefCount&lt;br&gt;Pointer&lt;br&gt;Length&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="190" y="90" width="90" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="ttYau6DbndozzQaX4aNd-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="ttYau6DbndozzQaX4aNd-8" target="ttYau6DbndozzQaX4aNd-3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="255" y="60" />
+              <mxPoint x="135" y="60" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ttYau6DbndozzQaX4aNd-8" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;String&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="210" y="10" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ttYau6DbndozzQaX4aNd-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ttYau6DbndozzQaX4aNd-10" target="ttYau6DbndozzQaX4aNd-5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="385" y="70" />
+              <mxPoint x="235" y="70" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ttYau6DbndozzQaX4aNd-10" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;String&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="340" y="10" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ttYau6DbndozzQaX4aNd-13" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;&quot;Hello&quot;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="290" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ttYau6DbndozzQaX4aNd-14" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend&quot; face=&quot;Lexend&quot;&gt;&quot;World&quot;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="290" width="60" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

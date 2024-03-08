@@ -2,8 +2,8 @@
 #include <mutex>
 #include "../Core.h"
 #include "../String/String.h"
-#include "../Utilities/Concurrency/ScopedSpinLock.h"
-#include "../Utilities/Concurrency/SpinLock.h"
+#include "../Multithreading/ScopedSpinLock.h"
+#include "../Multithreading/SpinLock.h"
 #include "Time.h"
 
 #ifdef DEBUG
@@ -121,7 +121,7 @@ namespace CCE
 			logLvLFilterMask = mask;
 		}
 
-		// TODO: Probably move this out of logger and combine this with some other 
+		// @TODO: Probably move this out of logger and combine this with some other 
 		// system to hook into an event.
 		static std::vector<DebugInfoDesc> logBuffer;
 		static void ClearDebugBuffer();
@@ -141,4 +141,4 @@ namespace CCE
 	};
 }
 
-// TODO: Maybe log everything into a file ..?
+// @TODO: Maybe log everything into a file ..?

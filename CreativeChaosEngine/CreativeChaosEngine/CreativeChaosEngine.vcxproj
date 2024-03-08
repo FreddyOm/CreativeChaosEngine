@@ -15,6 +15,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CCE\ECS\Components\Behaviour.cpp" />
+    <ClCompile Include="src\CCE\ECS\Components\Collider.cpp" />
+    <ClCompile Include="src\CCE\ecs\components\Material.cpp" />
+    <ClCompile Include="src\CCE\ECS\Components\Mesh.cpp" />
+    <ClCompile Include="src\CCE\ECS\Components\Rigidbody.cpp" />
+    <ClCompile Include="src\CCE\ECS\Components\Transform.cpp" />
+    <ClCompile Include="src\CCE\ECS\EntityComponentSystem.cpp" />
+    <ClCompile Include="src\CCE\ECS\Systems\PhysicsSystem.cpp" />
+    <ClCompile Include="src\CCE\ECS\Systems\RenderingSystem.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IBindable.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Sampler.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Texture2D.cpp" />
@@ -23,16 +32,19 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\InputLayout.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\PixelShader.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IndexBuffer.cpp" />
+    <ClCompile Include="src\CCE\Manager\ProfilingManager.cpp" />
+    <ClCompile Include="src\CCE\Multithreading\JobSystem.cpp" />
+    <ClCompile Include="src\CCE\Physics\Physics.cpp" />
     <ClCompile Include="src\CCE\Resources\MeshLoader.cpp" />
+    <ClCompile Include="src\CCE\Resources\ResourceAllocator.cpp" />
     <ClCompile Include="src\CCE\Resources\TextureLoader.cpp" />
+    <ClCompile Include="src\CCE\Scene\Scene.cpp" />
     <ClCompile Include="src\CCE\String\StringMemory.cpp" />
     <ClCompile Include="src\CCE\Utilities\IO\IO.cpp" />
     <ClCompile Include="src\CCE\Manager\MemoryManager.cpp" />
     <ClCompile Include="src\CCE\ClientWindow\ClientWindow.cpp" />
-    <ClCompile Include="src\CCE\CCEditor\CCEditor.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Drawable\Model.cpp" />
     <ClCompile Include="src\CCE\Manager\Application.cpp" />
-    <ClCompile Include="src\CCE\Utilities\Events\Delegate.cpp" />
     <ClCompile Include="src\CCE\Utilities\Color\Color.cpp" />
     <ClCompile Include="src\CCE\Graphics\RenderPipeline.cpp" />
     <ClCompile Include="src\CCE\Manager\InputManager.cpp" />
@@ -41,10 +53,8 @@
     <ClCompile Include="src\CCE\Memory\Allocator.cpp" />
     <ClCompile Include="src\CCE\Utilities\Math\CCMath.cpp" />
     <ClCompile Include="src\CCE\Manager\JobManager.cpp" />
-    <ClCompile Include="src\CCE\Manager\PhysicsManager.cpp" />
     <ClCompile Include="src\CCE\Manager\BaseManager.cpp" />
     <ClCompile Include="src\CCE\Analysis\Debug.cpp" />
-    <ClCompile Include="src\CCE\Manager\ProfilingManager.cpp" />
     <ClCompile Include="src\CCE\Analysis\Logger.cpp" />
     <ClCompile Include="src\CCE\Core.cpp" />
     <ClCompile Include="src\CCE\Analysis\Time.cpp" />
@@ -58,11 +68,33 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\VertexBuffer.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\VertexShader.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Topology.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_capi.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_core.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_gpu.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_gpu.d3d12.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_gpu.vulkan.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_message.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_miniz.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_serialization.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CCE\ECS\ComponentBuffer.h" />
+    <ClInclude Include="src\CCE\ECS\Components\Behaviour.h" />
+    <ClInclude Include="src\CCE\ECS\Components\Collider.h" />
+    <ClInclude Include="src\CCE\ECS\Components\ComponentHeaders.h" />
+    <ClInclude Include="src\CCE\ECS\Components\Material.h" />
+    <ClInclude Include="src\CCE\ECS\Components\Mesh.h" />
+    <ClInclude Include="src\CCE\ECS\Components\Rigidbody.h" />
+    <ClInclude Include="src\CCE\ECS\Components\Transform.h" />
+    <ClInclude Include="src\CCE\ECS\Systems\ECSSystem.h" />
+    <ClInclude Include="src\CCE\ECS\Entity.h" />
+    <ClInclude Include="src\CCE\ECS\EntityComponentSystem.h" />
+    <ClInclude Include="src\CCE\ECS\Systems\RenderingSystem.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\ConstantBuffer.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Sampler.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Texture2D.h" />
+    <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\VSConstBufData.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Camera.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\BindableCommon.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\InputLayout.h" />
@@ -156,26 +188,35 @@
     <ClInclude Include="src\CCE\include\assimp\ZipArchiveIOSystem.h" />
     <ClInclude Include="src\CCE\include\json\json.hpp" />
     <ClInclude Include="src\CCE\include\json\json_fwd.hpp" />
+    <ClInclude Include="src\CCE\Manager\ProfilingManager.h" />
+    <ClInclude Include="src\CCE\Multithreading\Job.h" />
+    <ClInclude Include="src\CCE\Multithreading\JobSystem.h" />
+    <ClInclude Include="src\CCE\Multithreading\ScopedSpinLock.h" />
+    <ClInclude Include="src\CCE\Multithreading\SpinLock.h" />
+    <ClInclude Include="src\CCE\Physics\Physics.h" />
+    <ClInclude Include="src\CCE\Resources\MeshData.h" />
     <ClInclude Include="src\CCE\Resources\MeshLoader.h" />
+    <ClInclude Include="src\CCE\Resources\ResourceAllocator.h" />
     <ClInclude Include="src\CCE\Resources\ResourceLoader.h" />
+    <ClInclude Include="src\CCE\ECS\Systems\PhysicsSystem.h" />
     <ClInclude Include="src\CCE\Resources\TextureLoader.h" />
-    <ClInclude Include="src\CCE\Graphics\Rendering\Transform.h" />
     <ClInclude Include="src\CCE\Input\Controller.h" />
     <ClInclude Include="src\CCE\Input\IInputHandler.h" />
     <ClInclude Include="src\CCE\Input\Keyboard.h" />
     <ClInclude Include="src\CCE\Input\Mouse.h" />
+    <ClInclude Include="src\CCE\ECS\IComponentBuffer.h" />
     <ClInclude Include="src\CCE\Resources\Resource.h" />
+    <ClInclude Include="src\CCE\Scene\Scene.h" />
     <ClInclude Include="src\CCE\String\StringMemory.h" />
+    <ClInclude Include="src\CCE\Utilities\Containers\Octree.h" />
     <ClInclude Include="src\CCE\Utilities\FreeImg\FreeImage.h" />
     <ClInclude Include="src\CCE\Utilities\IO\IO.h" />
     <ClInclude Include="src\CCE\Manager\MemoryManager.h" />
     <ClInclude Include="src\CCE\ClientWindow\ClientWindow.h" />
-    <ClInclude Include="src\CCE\CCEditor\CCEditor.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Drawable\Model.h" />
     <ClInclude Include="src\CCE\Manager\Application.h" />
     <ClInclude Include="src\CCE\Utilities\Concurrency\ScopedSpinLock.h" />
     <ClInclude Include="src\CCE\Utilities\Concurrency\SpinLock.h" />
-    <ClInclude Include="src\CCE\Utilities\Events\Delegate.h" />
     <ClInclude Include="src\CCE\include\ds5w\ds5w.h" />
     <ClInclude Include="src\CCE\Utilities\Color\Color.h" />
     <ClInclude Include="src\CCE\Graphics\RenderPipeline.h" />
@@ -186,10 +227,8 @@
     <ClInclude Include="src\CCE\Memory\Allocator.h" />
     <ClInclude Include="src\CCE\Utilities\Math\CCMath.h" />
     <ClInclude Include="src\CCE\Manager\JobManager.h" />
-    <ClInclude Include="src\CCE\Manager\PhysicsManager.h" />
     <ClInclude Include="src\CCE\Manager\BaseManager.h" />
     <ClInclude Include="src\CCE\Analysis\Debug.h" />
-    <ClInclude Include="src\CCE\Manager\ProfilingManager.h" />
     <ClInclude Include="src\CCE\Analysis\Logger.h" />
     <ClInclude Include="src\CCEngine.h" />
     <ClInclude Include="src\CCE\Core.h" />
@@ -208,11 +247,28 @@
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\VertexShader.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Topology.h" />
     <ClInclude Include="src\CCE\String\StringConverter.h" />
+    <ClInclude Include="src\Thirdparty\src\optick.config.h" />
+    <ClInclude Include="src\Thirdparty\src\optick.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_capi.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_common.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.freebsd.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.linux.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.macos.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.platform.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.win.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_gpu.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_memory.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_message.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_miniz.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_serialization.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_server.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\sdk\assimp-vc143-mt.dll" />
     <None Include="resources\sdk\ds5w_x64.dll" />
     <None Include="resources\sdk\FreeImage.dll" />
+    <None Include="resources\sdk\OptickCore.dll" />
     <None Include="src\CCE\include\assimp\.editorconfig" />
     <None Include="src\CCE\include\assimp\color4.inl" />
     <None Include="src\CCE\include\assimp\config.h.in" />
@@ -228,6 +284,7 @@
     <Library Include="resources\sdk\assimp-vc143-mt.lib" />
     <Library Include="resources\sdk\ds5w_x64.lib" />
     <Library Include="resources\sdk\FreeImage.lib" />
+    <Library Include="resources\sdk\OptickCore.lib" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CreativeChaosEngineCore.rc" />
@@ -248,6 +305,15 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)..\CreativeChaosEditor\resources\shader\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)..\CreativeChaosEditor\resources\shader\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug_Profile|x64'">$(OutDir)..\CreativeChaosEditor\resources\shader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="src\CCE\ComputeShader\CollisionDetectionResolve.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug_Profile|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug_Profile|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)..\CreativeChaosEditor\resources\compute-shader\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -320,7 +386,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include</AdditionalIncludeDirectories>
       <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
     </ClCompile>
     <Link>
@@ -328,15 +394,17 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(SolutionDir)CreativeChaosEngine\resources\sdk;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ds5w_x64.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ds5w_x64.lib;assimp-vc143-mt.lib;OptickCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\ mkdir $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\
 xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"
+xcopy /d /y "$(ProjectDir)src\CCE\ComputeShader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\compute-shader\"
 xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
-xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
+xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"
+xcopy /d /y "$(ProjectDir)resources\sdk\OptickCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying DLLs into Editor Folder</Message>
@@ -357,23 +425,25 @@ xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bi
       <LanguageStandard>stdcpp17</LanguageStandard>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <TranslateIncludes>false</TranslateIncludes>
+      <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(SolutionDir)CreativeChaosEngine\resources\sdk;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ds5w_x64.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ds5w_x64.lib;assimp-vc143-mt.lib;OptickCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\ mkdir $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\
 xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"
+xcopy /d /y "$(ProjectDir)src\CCE\ComputeShader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\compute-shader\"
 xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
-xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
+xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"
+xcopy /d /y "$(ProjectDir)resources\sdk\OptickCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying DLLs into Editor Folder</Message>
@@ -396,7 +466,7 @@ xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bi
       <LanguageStandard>stdcpp17</LanguageStandard>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include</AdditionalIncludeDirectories>
       <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
     </ClCompile>
     <Link>
@@ -406,15 +476,17 @@ xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bi
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(SolutionDir)CreativeChaosEngine\resources\sdk;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ds5w_x64.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ds5w_x64.lib;assimp-vc143-mt.lib;OptickCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\ mkdir $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\
 xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"
+xcopy /d /y "$(ProjectDir)src\CCE\ComputeShader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\compute-shader\"
 xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
-xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
+xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"
+xcopy /d /y "$(ProjectDir)resources\sdk\OptickCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying DLLs into Editor Folder</Message>

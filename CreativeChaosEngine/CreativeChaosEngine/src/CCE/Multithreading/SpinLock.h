@@ -1,11 +1,10 @@
 #pragma once
-#include "../../Core.h"
-#include "../../Analysis/Logger.h"
+#include "../Core.h"
 #include <atomic>
 
 namespace CCE
 {
-	struct CCE_API SpinLock
+	struct SpinLock
 	{
 		SpinLock() = default;
 		~SpinLock() = default;

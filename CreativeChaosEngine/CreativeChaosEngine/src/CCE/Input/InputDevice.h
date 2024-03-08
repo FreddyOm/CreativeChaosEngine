@@ -5,7 +5,7 @@ namespace CCE::Input
 {
 	struct CCE_API InputDevice
 	{
-		// TODO: Evaluate whether or not it makes sense to use union here
+		// @TODO: Evaluate whether or not it makes sense to use union here
 		enum class AxisState // 2 bytes
 		{
 			AXIS_RELEASED,
@@ -22,14 +22,14 @@ namespace CCE::Input
 			JUST_RELEASED = 3,
 		};
 
-		//TODO: Check alignment again
+		// @TODO: Check alignment again
 		struct Axis // 8 bytes
 		{
 			alignas (8) float value;
 			alignas (8) AxisState state;
 		};
 
-		// TODO: Check alignment again
+		// @TODO: Check alignment again
 		struct Axis2D // 16 bytes
 		{
 			alignas (16) Axis x;

@@ -2,6 +2,8 @@
 #include "CCE/ClientWindow/ClientWindow.h"
 #include <functional>
 
+#pragma region drawables
+
 #include "GUIDrawables/Base/IGUIDrawable.h"
 #include "GUIDrawables/Base/EditorWindow.h"
 #include "GUIDrawables/RuntimeDebugger.h"
@@ -12,6 +14,8 @@
 #include "GUIDrawables/InputWindow.h"
 #include "GUIDrawables/Console.h"
 #include "GUIDrawables\Icons.h"
+
+#pragma endregion drawables
 
 // -------- Testing ---------
 
@@ -24,13 +28,12 @@
 #include "CCE/Analysis/UnitTesting/UnitTestString.h"
 
 #endif
-#include <CCE/CCEditor/CCEditor.h>
 
 // -------------------------
 
 #define EDITOR_VERSION "Creative Chaos Engine - v0.1"
 
-#define MULTITHREADED 1
+#define MULTITHREADED 0
 
 using namespace CCE;
 
@@ -38,7 +41,7 @@ int main(int argc, char* argv[])
 {
     // ------ HELLO ------
     LOGC("Starting %s", COLOR_BLUE, EDITOR_VERSION);
-    //TODO: Load config file
+    // @TODO: Load config file
 
     Application mRuntimeManager = CCE::Application();
 
@@ -59,8 +62,8 @@ int main(int argc, char* argv[])
     {
         if (unittesting)
         {
-            // TODO: Wrap in class / struct
-            // TODO: Add - test details to show which tests failed / suceeded
+            // @TODO: Wrap in class / struct
+            // @TODO: Add - test details to show which tests failed / suceeded
             // and normally show [30 / 30 tests suceeded!]
             // ------ UNIT TESTING  ------
             
@@ -97,7 +100,6 @@ int main(int argc, char* argv[])
         Console debugConsole = Console(String(ICON_FK_CHECK_CIRCLE_O) + " Debug Console");
         InputWindow input = InputWindow(String(ICON_FK_KEYBOARD_O) + " Input");
         Inspector inspector = Inspector("Inspector");
-        //MemoryWindow memEditorWin = MemoryWindow("Memory");
 
         // Editor viewport camera
         //CCE::Graphics::Camera viewportCamera = CCE::Graphics::Camera();
@@ -108,12 +110,15 @@ int main(int argc, char* argv[])
 
         using namespace CCE;
 
+        // frame time measuring
+        std::chrono::steady_clock::time_point start{};
+        std::chrono::steady_clock::time_point end{};
+        
         // update window input
         int rValue = 0;
-
         // ----------------------------------------
 
-        // TODO: Multithread the editor loop as well
+        // @TODO: Multithread the editor loop as well
         while (rValue != (int)WM_QUIT)
         {
             mRuntimeManager.PreEditorUpdate(rValue, true);
@@ -122,7 +127,7 @@ int main(int argc, char* argv[])
             
             // ------------------------------ RUNTIME DEBUGGER ------------------------------
 
-            auto start = CCE::Time::Now();
+            start = CCE::Time::Now();
 
             IGUIDrawable::PreGUIUpdate();
 
@@ -133,7 +138,7 @@ int main(int argc, char* argv[])
             //ImGui::ShowDemoWindow();
             IGUIDrawable::PostGUIUpdate();
            
-            auto end = CCE::Time::Now(); imgui_process_time_ms = CCE::Time::GetDurationInMilliSec(start, end);
+            end = CCE::Time::Now(); imgui_process_time_ms = static_cast<float>( CCE::Time::GetDurationInMilliSec( start, end ) );
             // ------------------------------------------------------------------------------
 
             mRuntimeManager.PostEditorUpdate();

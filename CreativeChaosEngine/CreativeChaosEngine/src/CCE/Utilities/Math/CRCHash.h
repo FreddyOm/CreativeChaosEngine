@@ -38,7 +38,7 @@ namespace CCE::Math
     0xDCD7181E300F9E5E, 0x6FF954A033A8C131, 0x28532E49984F3E05, 0x9B7D62F79BE8616A, 0xA707DB9ACF80C06D, 0x14299724CC279F02, 0x5383EDCD67C06036, 0xE0ADA17364673F59
     };
 
-    //TODO: Implement Unit tests for CRC Hashing
+    // @TODO: Implement Unit tests for CRC Hashing
 	struct CCE_API CRCHash
 	{
 		static UINT64 HashValue(const char* data, size_t size = 64);

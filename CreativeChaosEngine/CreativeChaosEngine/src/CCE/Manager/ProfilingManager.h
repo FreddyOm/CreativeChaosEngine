@@ -1,6 +1,10 @@
 #pragma once
 #include "BaseManager.h"
 #include "../Analysis/Logger.h"
+#include "../Analysis/Time.h"
+#include <unordered_map>
+#include <string>
+#include "../../Thirdparty/src/optick.h"
 
 namespace CCE
 {
@@ -10,7 +14,6 @@ namespace CCE
 #define PRINT_LEAK_INFO CCE::ProfilingManager::Instance->PrintLeakInfo()
 
 #else
-
 #define REGISTER_LEAK_DETECT
 #define UNREGISTER_LEAK_DETECT
 #define PRINT_LEAK_INFO

@@ -16,7 +16,7 @@ String Memory:                      v
 
 namespace CCE
 {
-	struct CCE_API StringMemory
+	struct StringMemory
 	{	
 		/// <summary>
 		/// Description of the string memory buffer.

@@ -3,7 +3,7 @@
 #include "../../../Manager/ProfilingManager.h"
 #include "../../../Utilities/IO/IO.h"
 #include "../../../Core.h"
-#include "../Transform.h"
+#include "../../../ECS/Components/Transform.h"    // <-- @TODO: Remove later and use ECS for any given entity
 #include "../Vertex.h"
 #include "IDrawable.h"
 #include <memory>
@@ -27,13 +27,13 @@ namespace CCE::Graphics
 		// From IDrawable
 		void Draw();
 
-		// TODO: Somehow implement a GUID for identification
+		// @TODO: Somehow implement a GUID for identification
 		
 	private:
 		void CreateConstBufs();
 
 	public:
-		Transform transform = {};
+		ECS::Components::Transform transform = {};
 
 		String pixelShader = {};
 		String vertexShader = {};

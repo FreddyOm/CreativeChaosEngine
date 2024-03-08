@@ -7,7 +7,7 @@
 
 namespace CCE::Graphics
 {
-	struct CCE_API VertexBuffer : public IBindable
+	struct VertexBuffer : public IBindable
 	{
 	public:
 		VertexBuffer(std::shared_ptr<std::vector<Vertex>> vertexBuffer);

@@ -6,6 +6,7 @@ namespace CCE::Graphics
 {
 	void IDrawable::Draw() const noexcept
 	{
+		OPTICK_EVENT();
 		for (auto& b : binds)
 		{
 			b->DynamicBind();
@@ -15,6 +16,7 @@ namespace CCE::Graphics
 
 	void IDrawable::AddBind(std::shared_ptr<IBindable> bind) noexcept
 	{
+		OPTICK_EVENT();
 		if (typeid(*bind) == typeid(IndexBuffer))
 		{
 			DASSERT(pIndexBuffer == nullptr, "Binding multiple index buffers is not allowed!");

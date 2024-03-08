@@ -8,7 +8,7 @@
 #include "../Graphics/RenderPipeline.h"
 #include "../Manager/ProfilingManager.h"
 
-// TODO: Refactor static manager pointers to work in a defined way
+// @TODO: Refactor static manager pointers to work in a defined way
 namespace CCE
 {
 	class CCE_API ClientWindow
@@ -50,7 +50,7 @@ namespace CCE
 		String windowName = "";
 	private:
 		static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-		WNDCLASS wndClass = {}; // TODO: Make this a reference to a style class
+		WNDCLASS wndClass = {}; // @TODO: Make this a reference to a style class
 		HWND hWnd = {};
 		Graphics::RenderPipeline renderPipeline = Graphics::RenderPipeline();
 	};

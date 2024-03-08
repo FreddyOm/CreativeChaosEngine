@@ -5,7 +5,7 @@
 
 namespace CCE::Graphics
 {
-	struct CCE_API PixelShader : public IBindable
+	struct PixelShader : public IBindable
 	{
 	public:
 		PixelShader(const std::wstring resourcePath);

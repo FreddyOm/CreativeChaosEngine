@@ -9,7 +9,7 @@ void RuntimeDebugger::UpdateDrawable(ImFont* font)
 	}
 }
 
-// TODO: Put labels into list and add bitmask in order to dynamically (de-)activate labels / buttons
+// @TODO: Put labels into list and add bitmask in order to dynamically (de-)activate labels / buttons
 // -> Use ImGui Popup
 
 void RuntimeDebugger::OnGui()

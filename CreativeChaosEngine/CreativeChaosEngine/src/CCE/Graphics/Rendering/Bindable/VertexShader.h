@@ -5,7 +5,7 @@
 
 namespace CCE::Graphics
 {
-	struct CCE_API VertexShader : public IBindable
+	struct VertexShader : public IBindable
 	{
 	public:
 		VertexShader(const std::wstring resourcePath);
