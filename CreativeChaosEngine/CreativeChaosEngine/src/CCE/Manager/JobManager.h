@@ -28,8 +28,6 @@ namespace CCE::Jobs
 #define BIND(func, ...) [&](...){return func(##__VA_ARGS__);};
 #define JOB_ENTRY_POINT void
 
-using namespace Events;
-
 	enum class alignas(4) Priority
 	{
 		HIGH,
