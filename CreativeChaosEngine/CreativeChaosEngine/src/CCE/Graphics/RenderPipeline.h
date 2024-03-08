@@ -199,7 +199,6 @@ namespace CCE::Graphics
 		ComPtr<ID3D11Debug> pDebug{};
 		RenderPipelineConfig pipelineConfig{};
 
-
 	private:
 		ComPtr<ID3D11Device> p_device = nullptr;
 		ComPtr<IDXGISwapChain> pSwapChain = nullptr;

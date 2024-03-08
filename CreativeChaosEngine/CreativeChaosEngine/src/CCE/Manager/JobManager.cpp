@@ -46,17 +46,17 @@ namespace CCE::Jobs
 			DeleteFiber(fiberPool.at(i));
 		}
 
-		for (short i = 0; i < workerThreadPtrs.size(); ++i)
+		for (short i = 0; i < worker_threads.size(); ++i)
 		{
-			if(workerThreadPtrs.at(i)->joinable())
-				workerThreadPtrs.at(i)->join();
+			if(worker_threads.at(i)->joinable())
+				worker_threads.at(i)->join();
 
-			workerThreadPtrs.at(i)->~thread();
-			MemoryManager::Instance->jobMemory.Free<std::thread>(workerThreadPtrs.at(i));
+			worker_threads.at(i)->~thread();
+			MemoryManager::Instance->jobMemory.Free<std::thread>(worker_threads.at(i));
 			LOG("Joined worker thread!");
 		}
 		
-		workerThreadPtrs.clear();
+		worker_threads.clear();
 		Instance = nullptr;
 	}
 
@@ -224,7 +224,7 @@ namespace CCE::Jobs
 		}
 		
 		// Reserve space for the threads
-		workerThreadPtrs.reserve(numThreads);
+		worker_threads.reserve(numThreads);
 
 		LOG_JOBS("Number of logical cpu cores: %i", numThreads + 1);
 		DWORD_PTR processAffinityMask = (DWORD_PTR(1) << (numThreads)) - 1;
@@ -250,7 +250,7 @@ namespace CCE::Jobs
 			DASSERT(threadAffinityResult != 0,"Setting thread affinity wasn't successful!");
 			
 			// Add pointer to list
-			workerThreadPtrs.emplace_back(pWorkerThread);
+			worker_threads.emplace_back(pWorkerThread);
 		}
 
 		LOG_JOBS("Created Thread-Pool containing %i threads.", numThreads);
