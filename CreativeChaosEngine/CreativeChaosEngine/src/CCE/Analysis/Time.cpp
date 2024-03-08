@@ -34,6 +34,7 @@ namespace CCE
 
 	void Time::SetDeltaTime(const double millis)
 	{
+		OPTICK_EVENT();
 		deltaTime = millis / 1000.0;
 
 		if (millis > 1000)

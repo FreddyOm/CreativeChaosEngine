@@ -46,6 +46,7 @@ namespace CCE::Scene
 	/// </summary>
 	void Scene::UpdateScene()
 	{
+		OPTICK_EVENT();
 		PROFILE_FUNCTION;
 		// @TODO: Update all components (NOT THE ENTITIES!!)
 		// Later this means updating the script behaviour for example

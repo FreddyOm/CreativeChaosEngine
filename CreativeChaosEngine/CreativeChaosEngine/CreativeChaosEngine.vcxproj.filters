@@ -58,6 +58,15 @@
     <ClCompile Include="src\CCE\ecs\components\Material.cpp" />
     <ClCompile Include="src\CCE\Physics\Physics.cpp" />
     <ClCompile Include="src\CCE\ECS\Components\Collider.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_capi.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_core.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_gpu.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_gpu.d3d12.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_gpu.vulkan.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_message.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_miniz.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_serialization.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\ECS\ComponentBuffer.h" />
@@ -224,11 +233,28 @@
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\VSConstBufData.h" />
     <ClInclude Include="src\CCE\Utilities\Containers\Octree.h" />
     <ClInclude Include="src\CCE\Physics\Physics.h" />
+    <ClInclude Include="src\Thirdparty\src\optick.config.h" />
+    <ClInclude Include="src\Thirdparty\src\optick.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_capi.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_common.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.freebsd.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.linux.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.macos.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.platform.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.win.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_gpu.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_memory.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_message.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_miniz.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_serialization.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_server.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="resources\sdk\assimp-vc143-mt.lib" />
     <Library Include="resources\sdk\ds5w_x64.lib" />
     <Library Include="resources\sdk\FreeImage.lib" />
+    <Library Include="resources\sdk\OptickCore.lib" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CreativeChaosEngineCore.rc" />
@@ -247,5 +273,6 @@
     <None Include="src\CCE\include\assimp\SmoothingGroups.inl" />
     <None Include="src\CCE\include\assimp\vector2.inl" />
     <None Include="src\CCE\include\assimp\vector3.inl" />
+    <None Include="resources\sdk\OptickCore.dll" />
   </ItemGroup>
 </Project>

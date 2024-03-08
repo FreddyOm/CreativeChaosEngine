@@ -4,6 +4,7 @@
 #include "../Analysis/Time.h"
 #include <unordered_map>
 #include <string>
+#include "../../Thirdparty/src/optick.h"
 
 namespace CCE
 {

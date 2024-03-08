@@ -235,6 +235,7 @@ namespace CCE::Graphics
 	{
 		if ( ClientWindow::Instance->minimized) { return; }
 		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		// Clear render view and draw background color
 		p_Context->ClearRenderTargetView(p_renderTarget.Get(), col.RGBA());
 		p_Context->ClearDepthStencilView(p_DSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
@@ -257,6 +258,7 @@ namespace CCE::Graphics
 	void RenderPipeline::EndFrame()
 	{
 		if (ClientWindow::Instance->minimized) { return; }
+		OPTICK_EVENT();
 		PROFILE_FUNCTION;
 		// Render buffer
 		HRESULT pres = pSwapChain->Present(pipelineConfig.VSync ? 1 : 0, 0);

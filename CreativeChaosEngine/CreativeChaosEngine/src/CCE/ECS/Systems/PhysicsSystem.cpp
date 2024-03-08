@@ -37,6 +37,7 @@ namespace CCE::ECS::Systems
 
 	void PhysicsSystem::UpdateSystem()
 	{
+		OPTICK_EVENT();
 		PROFILE_FUNCTION;
 		if (pause) { return; }	// Pause simulation
 

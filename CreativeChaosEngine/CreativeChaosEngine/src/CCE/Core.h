@@ -12,6 +12,7 @@
 
 #ifdef CCE_BUILD_DLL
 #define CCE_API __declspec(dllexport)
+#define OPTICK_EXPORTS (1)
 #else
 #define CCE_API __declspec(dllimport)
 #endif // CCE_BUILD_DLL

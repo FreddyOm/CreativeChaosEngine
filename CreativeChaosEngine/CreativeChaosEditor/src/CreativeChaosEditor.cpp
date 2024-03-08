@@ -117,7 +117,6 @@ int main(int argc, char* argv[])
         
         // update window input
         int rValue = 0;
-
         // ----------------------------------------
 
         // @TODO: Multithread the editor loop as well

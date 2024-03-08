@@ -67,6 +67,15 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\VertexBuffer.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\VertexShader.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\Topology.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_capi.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_core.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_gpu.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_gpu.d3d12.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_gpu.vulkan.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_message.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_miniz.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_serialization.cpp" />
+    <ClCompile Include="src\Thirdparty\src\optick_server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\ECS\ComponentBuffer.h" />
@@ -233,11 +242,28 @@
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\VertexShader.h" />
     <ClInclude Include="src\CCE\Graphics\Rendering\Bindable\Topology.h" />
     <ClInclude Include="src\CCE\String\StringConverter.h" />
+    <ClInclude Include="src\Thirdparty\src\optick.config.h" />
+    <ClInclude Include="src\Thirdparty\src\optick.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_capi.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_common.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.freebsd.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.linux.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.macos.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.platform.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_core.win.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_gpu.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_memory.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_message.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_miniz.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_serialization.h" />
+    <ClInclude Include="src\Thirdparty\src\optick_server.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\sdk\assimp-vc143-mt.dll" />
     <None Include="resources\sdk\ds5w_x64.dll" />
     <None Include="resources\sdk\FreeImage.dll" />
+    <None Include="resources\sdk\OptickCore.dll" />
     <None Include="src\CCE\include\assimp\.editorconfig" />
     <None Include="src\CCE\include\assimp\color4.inl" />
     <None Include="src\CCE\include\assimp\config.h.in" />
@@ -253,6 +279,7 @@
     <Library Include="resources\sdk\assimp-vc143-mt.lib" />
     <Library Include="resources\sdk\ds5w_x64.lib" />
     <Library Include="resources\sdk\FreeImage.lib" />
+    <Library Include="resources\sdk\OptickCore.lib" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CreativeChaosEngineCore.rc" />
@@ -363,7 +390,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(SolutionDir)CreativeChaosEngine\resources\sdk;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ds5w_x64.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ds5w_x64.lib;assimp-vc143-mt.lib;OptickCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\ mkdir $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\
@@ -372,7 +399,8 @@ xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Con
 xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"
 xcopy /d /y "$(ProjectDir)src\CCE\ComputeShader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\compute-shader\"
 xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
-xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
+xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"
+xcopy /d /y "$(ProjectDir)resources\sdk\OptickCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying DLLs into Editor Folder</Message>
@@ -400,15 +428,17 @@ xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bi
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(SolutionDir)CreativeChaosEngine\resources\sdk;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ds5w_x64.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ds5w_x64.lib;assimp-vc143-mt.lib;OptickCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\ mkdir $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\
 xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"
+xcopy /d /y "$(ProjectDir)src\CCE\ComputeShader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\compute-shader\"
 xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
-xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
+xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"
+xcopy /d /y "$(ProjectDir)resources\sdk\OptickCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying DLLs into Editor Folder</Message>
@@ -441,15 +471,17 @@ xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bi
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(SolutionDir)CreativeChaosEngine\resources\sdk;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ds5w_x64.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ds5w_x64.lib;assimp-vc143-mt.lib;OptickCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\ mkdir $(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\
 xcopy /d /y "$(OutDir)CreativeChaosEngineCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)resources\sdk\ds5w_x64.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
 xcopy /d /y "$(ProjectDir)src\CCE\Graphics\Shader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\shader\"
+xcopy /d /y "$(ProjectDir)src\CCE\ComputeShader\*.hlsl" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\resources\compute-shader\"
 xcopy /d /y "$(ProjectDir)resources\sdk\FreeImage.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor\"
-xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
+xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"
+xcopy /d /y "$(ProjectDir)resources\sdk\OptickCore.dll" "$(ProjectDir)..\bin\$(Configuration)-$(Platform)\CreativeChaosEditor"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying DLLs into Editor Folder</Message>

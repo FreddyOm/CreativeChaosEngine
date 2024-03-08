@@ -59,6 +59,8 @@ namespace CCE
 	/// </summary>
 	void InputManager::FinalizeWinInput()
 	{
+		OPTICK_EVENT();
+
 		PROFILE_FUNCTION;
 		// Reset values for accuracy
 		mouse.deltaX = mouse.xPos - mouse.lastXPos;
@@ -81,6 +83,7 @@ namespace CCE
 	/// </summary>
 	void InputManager::ResetInputValues()
 	{
+		OPTICK_EVENT();
 		mouse.wheelDelta = 0;
 	}
 
@@ -311,6 +314,7 @@ namespace CCE
 	/// </summary>
 	void InputManager::HandleXInput()
 	{
+		OPTICK_EVENT();
 		PROFILE_FUNCTION;
 		connectedDeviceCount = 0;
 

@@ -64,6 +64,7 @@ bool CCE::ClientWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 /// </summary>
 void CCE::ClientWindow::UpdateClientWindow(int& _returnVal)
 {
+	OPTICK_EVENT();
 	PROFILE_FUNCTION;
 	_returnVal = 0;
 	MSG msg;

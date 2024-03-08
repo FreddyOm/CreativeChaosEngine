@@ -7,6 +7,8 @@
 #include "../ClientWindow/ClientWindow.h"
 #include <functional>
 
+#include "../../Thirdparty/src/optick.h"
+
 namespace CCE
 {
 	/// <summary>
@@ -66,6 +68,7 @@ namespace CCE
 	/// </summary>
 	void Application::PreEditorUpdate(int& rValue, bool handleInput)
 	{
+		OPTICK_FRAME("MainThread");
 		CCE::ProfilingManager::Instance->StartFrameDebuggerFrame(); // Resets frame debugger for new frame
 		PROFILE_FUNCTION;
 
@@ -135,6 +138,7 @@ namespace CCE
 	void Application::PostEditorUpdate()
 	{
 		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		
 #if MULTITHREADED
 			JobManager::EntryPoint epRPEF = BIND(window.GetRenderPipeline()->EndFrame);
