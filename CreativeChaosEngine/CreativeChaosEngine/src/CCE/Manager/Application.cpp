@@ -5,6 +5,7 @@
 #include "../Graphics/RenderPipeline.h"
 #include "../ClientWindow/ClientWindow.h"
 #include <functional>
+#include "../Multithreading/JobSystem.h"
 
 #include "../../Thirdparty/src/optick.h"
 
@@ -196,8 +197,9 @@ namespace CCE
 #endif
 		mMemoryManager.StartUp();
 #if MULTITHREADED
-		mJobManager.StartUp();
+		//mJobManager.StartUp();
 #endif
+		Jobs::InitializeThreadpool();
 		mInputManager.StartUp();
 		mECS.StartUp();
 		mPhysicsSystem.StartUp();
@@ -221,8 +223,10 @@ namespace CCE
 		mECS.ShutDown();
 		mInputManager.ShutDown();
 #if MULTITHREADED
-		mJobManager.ShutDown();
+		//mJobManager.ShutDown();
 #endif
+		Jobs::DeinitializeThreadpool();
+
 		mMemoryManager.ShutDown();
 	}
 

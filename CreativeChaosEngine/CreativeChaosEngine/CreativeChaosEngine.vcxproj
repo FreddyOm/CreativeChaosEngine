@@ -33,6 +33,7 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\PixelShader.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IndexBuffer.cpp" />
     <ClCompile Include="src\CCE\Manager\ProfilingManager.cpp" />
+    <ClCompile Include="src\CCE\Multithreading\JobSystem.cpp" />
     <ClCompile Include="src\CCE\Physics\Physics.cpp" />
     <ClCompile Include="src\CCE\Resources\MeshLoader.cpp" />
     <ClCompile Include="src\CCE\Resources\ResourceAllocator.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="src\CCE\include\json\json_fwd.hpp" />
     <ClInclude Include="src\CCE\Manager\ProfilingManager.h" />
     <ClInclude Include="src\CCE\Multithreading\Job.h" />
+    <ClInclude Include="src\CCE\Multithreading\JobSystem.h" />
     <ClInclude Include="src\CCE\Multithreading\ScopedSpinLock.h" />
     <ClInclude Include="src\CCE\Multithreading\SpinLock.h" />
     <ClInclude Include="src\CCE\Physics\Physics.h" />
