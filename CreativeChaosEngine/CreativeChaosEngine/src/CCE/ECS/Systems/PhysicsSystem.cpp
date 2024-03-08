@@ -15,7 +15,7 @@ namespace CCE::ECS::Systems
 
 	void PhysicsSystem::StartUp()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		ECS::Instance->RegisterSystem<PhysicsSystem>();
 		REGISTER_INPUT_CALLBACK;
 		LOGC("PhysicsSystem initialized!", COLOR_BLUE);
@@ -28,7 +28,7 @@ namespace CCE::ECS::Systems
 
 	void PhysicsSystem::RegisterEntity(long long entity)
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		using Entity = CCE::ECS::Entity;
 		using namespace CCE::ECS::Components;
 
@@ -38,7 +38,6 @@ namespace CCE::ECS::Systems
 	void PhysicsSystem::UpdateSystem()
 	{
 		OPTICK_EVENT();
-		PROFILE_FUNCTION;
 		if (pause) { return; }	// Pause simulation
 
 		start = Time::Now();
@@ -54,7 +53,7 @@ namespace CCE::ECS::Systems
 
 	void PhysicsSystem::Step()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		using Entity = CCE::ECS::Entity;
 		using namespace CCE::ECS::Components;
 
@@ -90,7 +89,7 @@ namespace CCE::ECS::Systems
 	/// </summary>
 	void PhysicsSystem::BroadPhaseCollisionDetection()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		using Entity = CCE::ECS::Entity;
 		using namespace CCE::Containers;
 		using namespace CCE::ECS::Components;
@@ -147,7 +146,7 @@ namespace CCE::ECS::Systems
 	/// </summary>
 	void PhysicsSystem::MidPhaseCollisionDetection()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		using Entity = CCE::ECS::Entity;
 		using namespace CCE::ECS::Components;
 		using namespace CCE::Physics;
@@ -210,7 +209,7 @@ namespace CCE::ECS::Systems
 	/// </summary>
 	void PhysicsSystem::NarrowPhaseCollisionDetection() const
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		using Entity = CCE::ECS::Entity;
 		using namespace CCE::ECS::Components;
 		using namespace CCE::Physics;
@@ -323,7 +322,7 @@ namespace CCE::ECS::Systems
 	void PhysicsSystem::ApplyAngularTransformations(CCE::ECS::Components::Rigidbody* rbA, CCE::ECS::Components::Transform* tfA, 
 		CCE::ECS::Components::Rigidbody* rbB, CCE::ECS::Components::Transform* tfB) const
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		using Entity = CCE::ECS::Entity;
 		using namespace CCE::ECS::Components;
 		using namespace CCE::Physics;
@@ -344,7 +343,7 @@ namespace CCE::ECS::Systems
 
 	void PhysicsSystem::InputCallback(const Input::Mouse* mouse, const Input::Keyboard* keyboard, const Input::Controller* controller)
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		using namespace Input;
 		if (keyboard->keys[(int)InputDevice::Keycode::SPACE] == Keyboard::ButtonState::PRESSED ||
 			controller->RSouth == InputDevice::ButtonState::PRESSED)
@@ -358,7 +357,7 @@ namespace CCE::ECS::Systems
 		CCE::ECS::Components::Collider* colA, CCE::ECS::Components::Rigidbody* rbB, CCE::ECS::Components::Transform* tfB, 
 		CCE::ECS::Components::Collider* colB, CCE::Physics::CollisionInfo& cInfo, float totalInverseMass) const
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		using Entity = CCE::ECS::Entity;
 		using namespace CCE::ECS::Components;
 		using namespace CCE::Physics;
@@ -407,7 +406,7 @@ namespace CCE::ECS::Systems
 		CCE::ECS::Components::Transform* tfA, CCE::ECS::Components::Rigidbody* rbB, 
 		CCE::ECS::Components::Transform* tfB, CCE::Physics::CollisionInfo& cInfo, float totalInverseMass) const
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		using Entity = CCE::ECS::Entity;
 		using namespace CCE::ECS::Components;
 		using namespace CCE::Physics;

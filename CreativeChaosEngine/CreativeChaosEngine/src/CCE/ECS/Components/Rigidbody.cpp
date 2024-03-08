@@ -1,6 +1,7 @@
 #include "Rigidbody.h"
 #include "../../Analysis/Debug.h"
 #include "../../Analysis/Time.h"
+#include "../../Thirdparty/src/optick.h"
 
 namespace CCE::ECS::Components
 {
@@ -10,6 +11,7 @@ namespace CCE::ECS::Components
 	/// <param name="force">The force to apply to the rigidbody.</param>
 	void Rigidbody::ApplyLinearImpulse(const DirectX::XMVECTOR& force)
 	{
+		OPTICK_EVENT();
 		using namespace DirectX;
 
 		if (mass == 0) { return; }
@@ -22,6 +24,7 @@ namespace CCE::ECS::Components
 
 	void Rigidbody::ApplyAngularImpulse(const DirectX::XMVECTOR& force)
 	{
+		OPTICK_EVENT();
 		using namespace DirectX;
 
 		XMVECTOR inverseForce = XMVectorDivide({1.0f, 1.0f, 1.0f}, force * Time::deltaTime);
@@ -36,6 +39,7 @@ namespace CCE::ECS::Components
 	/// </summary>
 	void Rigidbody::UpdateRigidbody()
 	{
+		OPTICK_EVENT();
 		using namespace DirectX;
 		
 		if (useGravity)
@@ -58,6 +62,7 @@ namespace CCE::ECS::Components
 	/// <returns>A matrix containing the inertia coefficients for each rotational axis.</returns>
 	DirectX::XMFLOAT3X3& Rigidbody::InertiaTensor(Collider* collider)
 	{
+		OPTICK_EVENT();
 		if (inertiaTensor == nullptr)
 		{
 			inertiaTensor = new DirectX::XMFLOAT3X3();

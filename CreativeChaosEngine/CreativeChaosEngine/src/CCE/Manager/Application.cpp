@@ -3,7 +3,6 @@
 #include "../Analysis/Debug.h"
 #include "../Analysis/Logger.h"
 #include "../Graphics/RenderPipeline.h"
-#include "../Manager/ProfilingManager.h"
 #include "../ClientWindow/ClientWindow.h"
 #include <functional>
 
@@ -69,8 +68,6 @@ namespace CCE
 	void Application::PreEditorUpdate(int& rValue, bool handleInput)
 	{
 		OPTICK_FRAME("MainThread");
-		CCE::ProfilingManager::Instance->StartFrameDebuggerFrame(); // Resets frame debugger for new frame
-		PROFILE_FUNCTION;
 
 		if (!m_pause)
 		{
@@ -137,7 +134,6 @@ namespace CCE
 
 	void Application::PostEditorUpdate()
 	{
-		PROFILE_FUNCTION;
 		OPTICK_EVENT();
 		
 #if MULTITHREADED
@@ -161,7 +157,6 @@ namespace CCE
 
 		frameEnd = Time::Now();
 		Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));
-		ProfilingManager::Instance->m_profileData;
 	}
 
 	bool Application::IsPaused() const
@@ -184,7 +179,7 @@ namespace CCE
 	/// </summary>
 	void Application::Initialize() 
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 
 #ifdef CCE_PLATFORM_WINDOWS
 
@@ -220,7 +215,7 @@ namespace CCE
 	/// </summary>
 	void Application::Deinitialize()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 
 		mPhysicsSystem.ShutDown();
 		mECS.ShutDown();
@@ -233,7 +228,7 @@ namespace CCE
 
 	Directory Application::GetPersistentDataPath() const
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 
 		std::string persDataPath;
 		Directory persDir;
@@ -265,6 +260,7 @@ namespace CCE
 
 	Directory Application::GetApplicationDataPath() const
 	{
+		OPTICK_EVENT();
 #ifdef CCE_PLATFORM_WINDOWS
 		char pBuf[256] = {};
 		ZeroMemory(&pBuf[0], sizeof(pBuf));

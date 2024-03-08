@@ -23,7 +23,6 @@ namespace CCE
 	{
 		LOGC("Shutting down ProfilingManager...", COLOR_BLUE);
 		BaseManager::Deinit();
-		m_profileData.clear();
 		delete memLeakTable;
 		Instance = nullptr;
 	}

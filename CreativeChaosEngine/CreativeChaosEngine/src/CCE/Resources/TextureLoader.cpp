@@ -1,11 +1,13 @@
 #include "TextureLoader.h"
 #include "../Utilities/IO/IO.h"
 #include "../Analysis/Debug.h"
+#include "../../Thirdparty/src/optick.h"
 
 namespace CCE::Resources 
 {
 	std::shared_ptr<TexData> TextureLoader::LoadResource(String filePath)
 	{
+		OPTICK_EVENT();
 		TexData texData;
 		BYTE* bytes = new BYTE[41943040];	// @TODO: Is there any other way..?
 		ZeroMemory(bytes, 41943040);

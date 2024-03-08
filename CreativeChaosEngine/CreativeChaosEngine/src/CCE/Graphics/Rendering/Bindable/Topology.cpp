@@ -15,6 +15,7 @@ namespace CCE::Graphics
 	/// </summary>
 	void Topology::DynamicBind()
 	{
+		OPTICK_EVENT();
 		GetContext()->IASetPrimitiveTopology(pTopology);
 	}
 
@@ -23,6 +24,6 @@ namespace CCE::Graphics
 	/// </summary>
 	void Topology::StaticBind()
 	{
-		
+		OPTICK_EVENT();
 	}
 }

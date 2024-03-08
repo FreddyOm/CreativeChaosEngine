@@ -27,6 +27,7 @@ namespace CCE::Graphics
 
 	void Camera::SetProjectionData(float _near, float _far, float _fovV) noexcept
 	{
+		OPTICK_EVENT();
 		nearPlane = _near;
 		farPlane = _far;
 		fovVertical = _fovV;
@@ -34,6 +35,7 @@ namespace CCE::Graphics
 
 	void Camera::SetProjectionType(unsigned char type) noexcept
 	{
+		OPTICK_EVENT();
 		projType = (ProjectionType)type;
 	}
 
@@ -43,16 +45,19 @@ namespace CCE::Graphics
 
 	const float Camera::GetNearPlane() const noexcept
 	{
+		OPTICK_EVENT();
 		return nearPlane;
 	}
 
 	const float Camera::GetFarPlane() const noexcept
 	{
+		OPTICK_EVENT();
 		return farPlane;
 	}
 
 	const float Camera::GetVerticalFOV() const noexcept
 	{
+		OPTICK_EVENT();
 		return fovVertical;
 	}
 
@@ -60,6 +65,7 @@ namespace CCE::Graphics
 
 	void Camera::CreateConstBufs()
 	{
+		OPTICK_EVENT();
 		SetFovAndLookDir();
 		pCameraConstBuf = std::make_shared<VSConstantBuffer<CameraConstantBufs>>(cameraConstBufs, 1);
 	}
@@ -67,6 +73,7 @@ namespace CCE::Graphics
 	// @TODO: Only do this when necessary!
 	void Camera::SetFovAndLookDir() noexcept
 	{
+		OPTICK_EVENT();
 		using namespace DirectX;
 
 		ZeroMemory(&cameraConstBufs.viewMatrix, sizeof(DirectX::XMMATRIX));
@@ -98,6 +105,7 @@ namespace CCE::Graphics
 
 	void Camera::Update()
 	{
+		OPTICK_EVENT();
 		SetFovAndLookDir();
 
 		pCameraConstBuf->UpdateConstantBuffer(cameraConstBufs);
@@ -108,6 +116,7 @@ namespace CCE::Graphics
 	// Also, keep in mind virtual functions are runtime performance critical!
 	void Camera::InputCallback(const Input::Mouse* mouse, const Input::Keyboard* keyboard, const Input::Controller* controller)
 	{
+		OPTICK_EVENT();
 		using namespace CCE::Input;
 		using CCE::Input::InputDevice;
 		if (mouse->middleMouseButton == InputDevice::ButtonState::PRESSED)

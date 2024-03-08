@@ -25,7 +25,7 @@ namespace CCE::ECS::Systems
 
 	void RenderingSystem::RegisterEntity(long long entity)
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		using Entity = CCE::ECS::Entity;
 		using namespace CCE::ECS::Components;
 		
@@ -34,13 +34,13 @@ namespace CCE::ECS::Systems
 
 	void RenderingSystem::UpdateSystem()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		UpdateECSBasic();
 	}
 
 	void RenderingSystem::UpdateECSBasic()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		using Entity = CCE::ECS::Entity;
 		using namespace CCE::ECS::Components;
 

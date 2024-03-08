@@ -32,6 +32,7 @@
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\InputLayout.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\PixelShader.cpp" />
     <ClCompile Include="src\CCE\Graphics\Rendering\Bindable\IndexBuffer.cpp" />
+    <ClCompile Include="src\CCE\Manager\ProfilingManager.cpp" />
     <ClCompile Include="src\CCE\Physics\Physics.cpp" />
     <ClCompile Include="src\CCE\Resources\MeshLoader.cpp" />
     <ClCompile Include="src\CCE\Resources\ResourceAllocator.cpp" />
@@ -53,7 +54,6 @@
     <ClCompile Include="src\CCE\Manager\JobManager.cpp" />
     <ClCompile Include="src\CCE\Manager\BaseManager.cpp" />
     <ClCompile Include="src\CCE\Analysis\Debug.cpp" />
-    <ClCompile Include="src\CCE\Manager\ProfilingManager.cpp" />
     <ClCompile Include="src\CCE\Analysis\Logger.cpp" />
     <ClCompile Include="src\CCE\Core.cpp" />
     <ClCompile Include="src\CCE\Analysis\Time.cpp" />
@@ -187,6 +187,10 @@
     <ClInclude Include="src\CCE\include\assimp\ZipArchiveIOSystem.h" />
     <ClInclude Include="src\CCE\include\json\json.hpp" />
     <ClInclude Include="src\CCE\include\json\json_fwd.hpp" />
+    <ClInclude Include="src\CCE\Manager\ProfilingManager.h" />
+    <ClInclude Include="src\CCE\Multithreading\Job.h" />
+    <ClInclude Include="src\CCE\Multithreading\ScopedSpinLock.h" />
+    <ClInclude Include="src\CCE\Multithreading\SpinLock.h" />
     <ClInclude Include="src\CCE\Physics\Physics.h" />
     <ClInclude Include="src\CCE\Resources\MeshData.h" />
     <ClInclude Include="src\CCE\Resources\MeshLoader.h" />
@@ -223,7 +227,6 @@
     <ClInclude Include="src\CCE\Manager\JobManager.h" />
     <ClInclude Include="src\CCE\Manager\BaseManager.h" />
     <ClInclude Include="src\CCE\Analysis\Debug.h" />
-    <ClInclude Include="src\CCE\Manager\ProfilingManager.h" />
     <ClInclude Include="src\CCE\Analysis\Logger.h" />
     <ClInclude Include="src\CCEngine.h" />
     <ClInclude Include="src\CCE\Core.h" />
@@ -362,8 +365,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Profile|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
-    <ExternalIncludePath>
-    </ExternalIncludePath>
+    <ExternalIncludePath>$(SolutionDir)CreativeChaosEngine\src\CCE\include</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
@@ -382,7 +384,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include</AdditionalIncludeDirectories>
       <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
     </ClCompile>
     <Link>
@@ -421,7 +423,8 @@ xcopy /d /y "$(ProjectDir)resources\sdk\OptickCore.dll" "$(ProjectDir)..\bin\$(C
       <LanguageStandard>stdcpp17</LanguageStandard>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <TranslateIncludes>true</TranslateIncludes>
+      <TranslateIncludes>false</TranslateIncludes>
+      <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -461,7 +464,7 @@ xcopy /d /y "$(ProjectDir)resources\sdk\OptickCore.dll" "$(ProjectDir)..\bin\$(C
       <LanguageStandard>stdcpp17</LanguageStandard>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include</AdditionalIncludeDirectories>
       <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
     </ClCompile>
     <Link>

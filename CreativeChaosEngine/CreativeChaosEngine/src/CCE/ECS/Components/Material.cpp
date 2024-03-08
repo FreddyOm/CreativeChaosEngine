@@ -9,7 +9,7 @@ namespace CCE::ECS::Components
 	/// </summary>
 	void Material::StaticBind()
 	{
-
+		OPTICK_EVENT();
 	}
 
 	/// <summary>
@@ -17,7 +17,7 @@ namespace CCE::ECS::Components
 	/// </summary>
 	void Material::DynamicBind()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		for (auto& bind : materialBindPtrs)
 		{
 			bind->DynamicBind();
@@ -30,7 +30,7 @@ namespace CCE::ECS::Components
 	/// <param name="bind"></param>
 	void Material::AddBind(std::shared_ptr<CCE::Graphics::IBindable> bind) noexcept
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		materialBindPtrs.push_back(std::move(bind));
 	}
 }

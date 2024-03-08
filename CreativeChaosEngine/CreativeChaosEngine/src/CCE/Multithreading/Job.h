@@ -6,10 +6,7 @@
 #include <thread>
 
 
-
 #define JOB_RETURN_TYPE void
-
-
 
 typedef std::function<JOB_RETURN_TYPE(va_list)> EntryPoint;
 typedef std::atomic<int> Counter;

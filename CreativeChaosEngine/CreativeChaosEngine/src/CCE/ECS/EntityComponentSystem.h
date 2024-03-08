@@ -48,6 +48,7 @@ namespace CCE::ECS
 		template<typename T>
 		void RegisterComponent()
 		{
+			OPTICK_EVENT();
 			std::type_index typeIndex(typeid(T));
 
 			DASSERT(ComponentTypeLUT.find(typeIndex) == ComponentTypeLUT.end(),
@@ -71,6 +72,7 @@ namespace CCE::ECS
 		template<typename T>
 		std::shared_ptr<T> RegisterSystem()
 		{
+			OPTICK_EVENT();
 			const char* typeName = typeid(T).name();
 
 			DASSERT(mSystems.find(typeName) == mSystems.end(),
@@ -91,6 +93,7 @@ namespace CCE::ECS
 		template<typename T>
 		bool HasEntityComponent(UINT64 entityId) const
 		{
+			OPTICK_EVENT();
 			return mEntityComposition[entityId] & ComponentTypeLUT(typeid(T));
 		}
 
@@ -104,6 +107,7 @@ namespace CCE::ECS
 		template<typename T>
 		std::shared_ptr<ComponentBuffer<T>> GetComponentBuffer() const
 		{
+			OPTICK_EVENT();
 			std::type_index typeIndex(typeid(T));
 			DASSERT(ComponentTypeLUT.find(typeIndex) != ComponentTypeLUT.end(),
 				"Component not registered.");

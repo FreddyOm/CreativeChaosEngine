@@ -37,7 +37,7 @@ namespace CCE
 	/// </summary>
 	void InputManager::ShutDown()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		CoUninitialize();
 		for(int i = 0; i < XUSER_MAX_COUNT; i++)
 			DS5W::freeDeviceContext(&con[i]);
@@ -61,7 +61,6 @@ namespace CCE
 	{
 		OPTICK_EVENT();
 
-		PROFILE_FUNCTION;
 		// Reset values for accuracy
 		mouse.deltaX = mouse.xPos - mouse.lastXPos;
 		mouse.deltaY = mouse.yPos - mouse.lastYPos;
@@ -95,7 +94,7 @@ namespace CCE
 	/// <param name="lParam">The low word parameter.</param>
 	void InputManager::HandleWinInput(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		// @TODO: Implement a callback or sth that allows to call here.
 		// Also check with calling over dll and stuff
 		if (inputCallback != NULL && inputCallback(hWnd, msg, wParam, lParam))
@@ -315,7 +314,7 @@ namespace CCE
 	void InputManager::HandleXInput()
 	{
 		OPTICK_EVENT();
-		PROFILE_FUNCTION;
+
 		connectedDeviceCount = 0;
 
 		DWORD dwResult;
@@ -364,7 +363,7 @@ namespace CCE
 	/// </summary>
 	void InputManager::InitializeDualSense()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		unsigned int dualSenseCount = 0;
 
 		// @TODO: Maybe do this during update to get (re)connected devices
@@ -389,7 +388,7 @@ namespace CCE
 	/// </summary>
 	void InputManager::HandleDualSenseInput()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		for(DWORD controller_index = 0; controller_index < XUSER_MAX_COUNT; controller_index++)
 		{
 			if (DS5W_SUCCESS(DS5W::getDeviceInputState(&con[controller_index], &inState[controller_index])))
@@ -405,7 +404,7 @@ namespace CCE
 	/// </summary>
 	void InputManager::UpdateXInputControllerCount()
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		for (unsigned short i = 0; i < XUSER_MAX_COUNT; i++)
 		{
 			if (activeController[i] != lastActiveController[i])
@@ -430,7 +429,7 @@ namespace CCE
 	/// <param name="controller_Index"></param>
 	void InputManager::GetXInput(const DWORD controller_Index)
 	{
-		PROFILE_FUNCTION;
+		OPTICK_EVENT();
 		_currentController = &controller[controller_Index];
 
 		if (!activeController.at(controller_Index))
