@@ -1,9 +1,9 @@
 #include "InputManager.h"
-#include "../Analysis/Logger.h"
-#include "../Analysis/debug.h"
-#include "../Analysis/Time.h"
-#include "../Utilities/Math/CCMath.h"
-#include "JobManager.h"
+#include "../analysis/logger.h"
+#include "../analysis/debug.h"
+#include "../analysis/time.h"
+#include "../Utilities/math/CCMath.h"
+#include "../multithreading/job-system.h"
 #include "ProfilingManager.h"
 
 #define BUTTON_STATE CCE::Input::InputDevice::ButtonState

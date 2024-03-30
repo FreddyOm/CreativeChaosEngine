@@ -162,12 +162,15 @@ namespace CCE::Jobs
 							fiber_pool_mtx.Acquire();
 							LPVOID fiberToSwitchTo = it->m_Fiber;
 
-							it = wait_list.erase(it);		// @TODO: Ereasing while iterating not allowed!
+							it = wait_list.erase(it);
 							fiber_pool.push(GetCurrentFiber());
 							wait_list_mtx.Release();
 							fiber_pool_mtx.Release();
 							SwitchToFiber(fiberToSwitchTo);
-							break;
+							break; // Break in order to make this work with multiple wait list elements!
+
+							// Erasing an element from wait_list may result in an error when returning to this job
+							// and trying to iterate using the old iterator.
 						}
 					}
 				}

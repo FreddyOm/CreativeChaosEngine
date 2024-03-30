@@ -75,110 +75,51 @@ namespace CCE
 	void Application::PreEditorUpdate(int& rValue, bool handleInput)
 	{
 		OPTICK_FRAME("MainThread");
-
 		if (!m_pause)
 		{
 			frameBegin = Time::Now();
-#if MULTITHREADED
-
-			if (handleInput)
-				mInputManager.FinalizeWinInput();
-
-			window->UpdateClientWindow(rValue);
-
-			cnt = 1;
-
-		Jobs::JobManager::EntryPoint epRPBF = std::bind(&Graphics::BeginFrame,
-			Graphics::RenderPipeline::Instance->GetDeviceContextPtr(),
-			Graphics::RenderPipeline::Instance->GetRenderTargetComPtr(),
-			Graphics::RenderPipeline::Instance->GetDepthStencilViewPtr(),
-			Graphics::RenderPipeline::Instance->pViewportCamera,
-			Graphics::RenderPipeline::Instance->testModels,
-			window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
-
-		JOBDECL declBeginFrame = JOBDECL(epRPBF, Jobs::Priority::LOW);
-
-			mJobManager.KickJob(declBeginFrame, &cnt);
-
-			// Make sure not to busy wait on main thread!
-			// Otherwise, the main thread waits for execution and 
-			// puts the main fiber onto the waitlist infinitely!!
-			while (cnt != 0)
-			{
-				continue;
-			}
-
-			/*
-			JobManager::EntryPoint epHXI = BIND(mInputManager.HandleXInput);
-			JOBDECL declHandleInput = JOBDECL(epHXI, JobManager::Priority::LOW);
-
-
-			mJobManager.KickJobAndFreeDecl(declBeginFrame, &cnt);
-			mJobManager.KickJobAndFreeDecl(declHandleInput, &cnt);
-
-			window->UpdateClientWindow(rValue);
-
-			mJobManager.BusyWaitForCounter(cnt, 2);
-			*/
-#else
 		}
 
-		window->UpdateClientWindow(rValue);
+		// Handle input
+
+		window->UpdateClientWindow(rValue); // @TODO: Check if this can be done by another thread!
 		if (handleInput)
 			mInputManager.FinalizeWinInput();
 
-		mPhysicsSystem.UpdateSystem();
+		//mInputManager.HandleDirectInput();
+		mInputManager.HandleXInput();	// @TODO: Check if this can be done by another thread!
 
-		//window->GetRenderPipeline()->BeginFrame(window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
+		mPhysicsSystem.UpdateSystem();
 
 		cnt.store(1, std::memory_order_release);
 
-		Job beginFrameJob(Graphics::BeginFrame, Priority::NORMAL,
+
+		Job beginFrameJob(Graphics::BeginFrame, &cnt, Priority::NORMAL,
 			reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor));
-
-		beginFrameJob.m_pCounter = &cnt;
-
 		KickJob(std::move(beginFrameJob));
+
+		// Update scene
+		//Job updateSceneJob(nullptr, &cnt, Priority::NORMAL);
+		//KickJob(std::move(updateSceneJob));
 
 		BusyWaitForCounter(&cnt);
 
-		//Update scene
 		scene->UpdateScene();
-		
-		//mInputManager.HandleDirectInput();
-		mInputManager.HandleXInput();
-#endif
 	}
 
 	void Application::PostEditorUpdate()
 	{
 		OPTICK_EVENT();
 		
-#if MULTITHREADED
-			JobManager::EntryPoint epRPEF = BIND(window.GetRenderPipeline()->EndFrame);
-			JOBDECL declEndFrame = JOBDECL(epRPEF, JobManager::Priority::LOW);
+		cnt.store(1, std::memory_order_release);
 
-			JobManager::EntryPoint epUMU = BIND(mMemoryManager.UpdateMemoryUsage);
-			JOBDECL declUpdateMemUsage = JOBDECL(epUMU, JobManager::Priority::LOW);
-
-
-			mJobManager.KickJobAndFreeDecl(declEndFrame, &cnt);
-			mJobManager.KickJobAndFreeDecl(declUpdateMemUsage, &cnt);
-
-			mJobManager.BusyWaitForCounter(cnt, 0);
-
-#else
 		//window->GetRenderPipeline()->EndFrame();
 		//mInputManager.ResetInputValues();
 
-		cnt.store(1, std::memory_order_release);
-		Job endFrameJob = Job(Graphics::EndFrame, Priority::LOW);
-		endFrameJob.m_pCounter = &cnt;
+		Job endFrameJob = Job(Graphics::EndFrame, &cnt, Priority::LOW);
 		Jobs::KickJob(std::move(endFrameJob));
 
-		Jobs::BusyWaitForCounter(&cnt, 0);
-
-#endif
+		Jobs::BusyWaitForCounter(&cnt);
 
 		frameEnd = Time::Now();
 		Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));
@@ -220,10 +161,7 @@ namespace CCE
 #error CCE is currently only supported for Windows
 #endif
 		mMemoryManager.StartUp();
-#if MULTITHREADED
-		//mJobManager.StartUp();
-#endif
-		Jobs::InitializeThreadpool(6);
+		Jobs::InitializeThreadpool();
 		mInputManager.StartUp();
 		mECS.StartUp();
 		mPhysicsSystem.StartUp();

@@ -40,6 +40,10 @@ namespace CCE::Jobs
 			: m_EntryPoint(static_cast<JobEntryPoint>(ep)), m_Param(args), m_Priority(pr)
 		{ }
 
+		Job(void* ep, Counter* pCnt, Priority pr, uintptr_t args = 0)
+			: m_EntryPoint(static_cast<JobEntryPoint>(ep)), m_Param(args), m_pCounter(pCnt), m_Priority(pr)
+		{ }
+
 		// Copy semantics
 		Job(const Job& other) = delete;
 		Job& operator=(const Job& other) = delete;
