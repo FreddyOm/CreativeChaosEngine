@@ -1,5 +1,5 @@
-#include "Debug.h"
-#include "Logger.h"
+#include "debug.h"
+#include "logger.h"
 
 namespace CCE
 {

@@ -107,11 +107,11 @@ namespace CCE::Jobs
 		// Add job to queue depending on its priority
 		switch (decl.m_priority)
 		{
-		case Jobs::Priority::HIGH:
+		case 0:
 		{
 			jobQueue_High.push(std::move(decl)); break;
 		}
-		case Jobs::Priority::LOW:
+		case 1:
 		{
 			jobQueue_Low.push(std::move(decl)); break;
 		}
@@ -139,11 +139,11 @@ namespace CCE::Jobs
 		// Add job to queue depending on its priority
 		switch (decl.m_priority)
 		{
-		case Jobs::Priority::HIGH:
+		case 0:
 		{
 			jobQueue_High.push(std::move(decl)); break;
 		}
-		case Jobs::Priority::LOW:
+		case 1:
 		{
 			jobQueue_Low.push(std::move(decl)); break;
 		}
@@ -406,7 +406,7 @@ namespace CCE::Jobs
 	/// <returns>The next jobs declearation or null if there is none left.</returns>
 	JobManager::JobDeclaration JobManager::GetNextJob()
 	{
-		JobDeclaration decl = { nullptr, Priority::NORMAL };
+		JobDeclaration decl = { nullptr, 0 };
 
 		auto jobLock = CCE::ScopedSpinLock(jobQueueSpinLock);
 

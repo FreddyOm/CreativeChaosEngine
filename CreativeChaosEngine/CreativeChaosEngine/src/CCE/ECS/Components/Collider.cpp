@@ -1,5 +1,5 @@
-#include "Collider.h"
-#include "../../ECS/Systems/PhysicsSystem.h"
+#include "collider.h"
+#include "../../ecs/systems/physics-system.h"
 
 namespace CCE::ECS::Components
 {

@@ -1,6 +1,6 @@
 #include "InputManager.h"
 #include "../Analysis/Logger.h"
-#include "../Analysis/Debug.h"
+#include "../Analysis/debug.h"
 #include "../Analysis/Time.h"
 #include "../Utilities/Math/CCMath.h"
 #include "JobManager.h"

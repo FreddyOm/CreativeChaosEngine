@@ -1,4 +1,4 @@
-#include "Behaviour.h"
+#include "behaviour.h"
 
 namespace CCE::ECS::Components
 {

@@ -1,23 +1,23 @@
-#include "Application.h"
-#include "../Analysis/Time.h"
-#include "../Analysis/Debug.h"
-#include "../Analysis/Logger.h"
-#include "../Graphics/RenderPipeline.h"
-#include "../ClientWindow/ClientWindow.h"
-#include <functional>
-#include "../Multithreading/JobSystem.h"
-
-#include "../../Thirdparty/src/optick.h"
+#include "application.h"
+#include "../core.h"
+#include "../analysis/time.h"
+#include "../analysis/debug.h"
+#include "../analysis/logger.h"
+#include "../graphics/rendering.h"
+#include "../client-window/client-window.h"
+#include "../multithreading/job-system.h"
+#include "../../thirdparty/src/optick.h"
 
 namespace CCE
 {
+	using namespace Jobs;
+
 	/// <summary>
 	/// Starts up the application.
 	/// </summary>
 	void Application::StartUp()
 	{
 		DASSERT(Instance == nullptr, "Application was instantiated more than once!");
-
 		Instance = this;
 		Initialize();
 
@@ -26,7 +26,7 @@ namespace CCE
 		if (File::Exists(engineConfig.Path().Value()))
 		{
 			std::string config = IO::ReadText(engineConfig).Value();
-			window->GetRenderPipeline()->GetRenderPipelineConfig()->DeserializeFromString(config);
+			//Graphics::g_RenderPipelineConfig.DeserializeFromString(config);
 		}
 #else
 #error CCE is currently only supported for Windows
@@ -47,15 +47,21 @@ namespace CCE
 
 		// Save engine config
 		DASSERT(IO::WriteText(engineConfig,
-			window->GetRenderPipeline()->GetRenderPipelineConfig()->SerializeToString(true).c_str(), true),
+			Graphics::g_RenderPipelineConfig.SerializeToString(true).c_str(), true),
 			"Failed writing engine config to file.");
 		
+		Graphics::DeinitializeD3D11();
 		delete scene;
 		delete window;
+
 		// Show leak info
 		PRINT_LEAK_INFO;
 		Deinitialize();
 		Instance = nullptr;
+
+#ifdef DEBUG_PROFILE
+		OPTICK_SHUTDOWN();
+#endif
 	}
 
 	/// <summary>
@@ -123,7 +129,18 @@ namespace CCE
 
 		mPhysicsSystem.UpdateSystem();
 
-		window->GetRenderPipeline()->BeginFrame(window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
+		//window->GetRenderPipeline()->BeginFrame(window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
+
+		cnt.store(1, std::memory_order_release);
+
+		Job beginFrameJob(Graphics::BeginFrame, Priority::NORMAL,
+			reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor));
+
+		beginFrameJob.m_pCounter = &cnt;
+
+		KickJob(std::move(beginFrameJob));
+
+		BusyWaitForCounter(&cnt);
 
 		//Update scene
 		scene->UpdateScene();
@@ -151,8 +168,15 @@ namespace CCE
 			mJobManager.BusyWaitForCounter(cnt, 0);
 
 #else
-		window->GetRenderPipeline()->EndFrame();
-		mInputManager.ResetInputValues();
+		//window->GetRenderPipeline()->EndFrame();
+		//mInputManager.ResetInputValues();
+
+		cnt.store(1, std::memory_order_release);
+		Job endFrameJob = Job(Graphics::EndFrame, Priority::LOW);
+		endFrameJob.m_pCounter = &cnt;
+		Jobs::KickJob(std::move(endFrameJob));
+
+		Jobs::BusyWaitForCounter(&cnt, 0);
 
 #endif
 
@@ -199,7 +223,7 @@ namespace CCE
 #if MULTITHREADED
 		//mJobManager.StartUp();
 #endif
-		Jobs::InitializeThreadpool();
+		Jobs::InitializeThreadpool(6);
 		mInputManager.StartUp();
 		mECS.StartUp();
 		mPhysicsSystem.StartUp();
@@ -225,18 +249,18 @@ namespace CCE
 #if MULTITHREADED
 		//mJobManager.ShutDown();
 #endif
-		Jobs::DeinitializeThreadpool();
 
 		mMemoryManager.ShutDown();
+		Jobs::DeinitializeThreadpool();
 	}
 
 	Directory Application::GetPersistentDataPath() const
 	{
 		OPTICK_EVENT();
 
+#ifdef CCE_PLATFORM_WINDOWS
 		std::string persDataPath;
 		Directory persDir;
-#ifdef CCE_PLATFORM_WINDOWS
 
 		CHAR szPath[MAX_PATH];
 		if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_COMMON_APPDATA, NULL, 0, szPath)))
@@ -248,10 +272,6 @@ namespace CCE
 		{
 			DERROR("Couldn't read the persistent data path!");
 		}
-#else
-#error CCE is currently only supported for Windows
-#endif
-
 		// @TODO: Fix this, this is awful...
 		persDir = Directory(strdup(persDataPath.c_str()));
 		if (!Directory::Exists(persDataPath.c_str()))
@@ -260,6 +280,10 @@ namespace CCE
 		}
 
 		return persDir;
+
+#else
+#error CCE is currently only supported for Windows
+#endif
 	}
 
 	Directory Application::GetApplicationDataPath() const

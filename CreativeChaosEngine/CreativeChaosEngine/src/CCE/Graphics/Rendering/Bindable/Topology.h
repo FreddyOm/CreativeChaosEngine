@@ -1,6 +1,6 @@
 #pragma once
 #include "IBindable.h"
-#include "../../../Core.h"
+#include "../../../core.h"
 
 namespace CCE::Graphics
 {

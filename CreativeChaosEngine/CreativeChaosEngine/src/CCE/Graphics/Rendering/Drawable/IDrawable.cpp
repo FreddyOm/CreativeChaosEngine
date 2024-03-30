@@ -1,6 +1,6 @@
 #include "IDrawable.h"
-#include "../Bindable/IndexBuffer.h"
-#include "../../RenderPipeline.h"
+#include "../bindable/index-buffer.h"
+#include "../../rendering.h"
 
 namespace CCE::Graphics
 {
@@ -11,7 +11,7 @@ namespace CCE::Graphics
 		{
 			b->DynamicBind();
 		}
-		RenderPipeline::Instance->GetDeviceContextPtr()->DrawIndexed(pIndexBuffer->GetCount(), 0u, 0u);
+		g_pContext->DrawIndexed(pIndexBuffer->GetCount(), 0u, 0u);
 	}
 
 	void IDrawable::AddBind(std::shared_ptr<IBindable> bind) noexcept

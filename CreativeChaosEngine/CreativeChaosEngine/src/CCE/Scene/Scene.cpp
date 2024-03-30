@@ -1,7 +1,7 @@
-#include "Scene.h"
-#include "../Manager/Application.h"
-#include "../Graphics/RenderPipeline.h"
-#include "../Utilities/Math/CCMath.h"
+#include "scene.h"
+#include "../manager/application.h"
+#include "../graphics/rendering.h"
+#include "../utilities/math/CCMath.h"
 
 namespace CCE::Scene
 {
@@ -14,7 +14,7 @@ namespace CCE::Scene
 		// Create plane
 
 		ECS::Entity entity = ECS::EntityComponentSystem::Instance->CreateEntity();
-		RenderPipeline::Instance->RenderingSystem.RegisterEntity(static_cast<long long>(entity.Id));
+		Graphics::g_RenderingSystem.RegisterEntity(static_cast<long long>(entity.Id));
 		Application::Instance->mPhysicsSystem.RegisterEntity(static_cast<long long>(entity.Id));
 
 		auto& transform = entity.AddComponent<Transform>();

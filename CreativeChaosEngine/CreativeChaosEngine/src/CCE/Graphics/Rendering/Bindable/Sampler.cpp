@@ -1,5 +1,5 @@
 #include "Sampler.h"
-#include "../../../Analysis/Debug.h"
+#include "../../../Analysis/debug.h"
 
 namespace CCE::Graphics
 {
@@ -12,9 +12,8 @@ namespace CCE::Graphics
 		smplr.AddressV = addressMode;
 		smplr.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 
-		DASSERT(GetDevice()->CreateSamplerState(&smplr, &pSampler) == S_OK,
+		DASSERT(g_pDevice->CreateSamplerState(&smplr, &pSampler) == S_OK,
 			"Failed creating the sampler state!");
-		
 	}
 
 	Sampler::~Sampler()
@@ -26,7 +25,7 @@ namespace CCE::Graphics
 	void Sampler::DynamicBind()
 	{
 		OPTICK_EVENT();
-		GetContext()->PSSetSamplers(0, 1, pSampler.GetAddressOf());
+		g_pContext->PSSetSamplers(0, 1, pSampler.GetAddressOf());
 	}
 
 	void Sampler::StaticBind()

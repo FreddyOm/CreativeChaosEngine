@@ -1,7 +1,7 @@
 #pragma once
-#include "../Core.h"
-#include "../String/String.h"
-#include "EntityComponentSystem.h"
+#include "../core.h"
+#include "../string/String.h"
+#include "entity-component-system.h"
 
 namespace CCE::ECS
 {

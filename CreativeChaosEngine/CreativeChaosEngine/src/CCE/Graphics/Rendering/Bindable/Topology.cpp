@@ -1,4 +1,4 @@
-#include "Topology.h"
+#include "topology.h"
 
 namespace CCE::Graphics
 {
@@ -16,7 +16,7 @@ namespace CCE::Graphics
 	void Topology::DynamicBind()
 	{
 		OPTICK_EVENT();
-		GetContext()->IASetPrimitiveTopology(pTopology);
+		g_pContext->IASetPrimitiveTopology(pTopology);
 	}
 
 	/// <summary>

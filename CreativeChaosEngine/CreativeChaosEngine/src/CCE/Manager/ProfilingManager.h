@@ -4,6 +4,7 @@
 #include "../Analysis/Time.h"
 #include <unordered_map>
 #include <string>
+#include <tuple>
 #include "../../Thirdparty/src/optick.h"
 
 namespace CCE
@@ -37,7 +38,7 @@ namespace CCE
 		static ProfilingManager* Instance;
 
 	public:
-		std::unordered_map<unsigned long long, int>* memLeakTable;
+		std::unordered_map<unsigned long long, std::tuple<int, std::string>>* memLeakTable;
 		void RegisterInstance(String name) noexcept;
 		void UnregisterInstance(String name) noexcept;
 

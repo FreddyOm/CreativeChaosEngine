@@ -1,7 +1,8 @@
 #pragma once
-#include "../../../Core.h"
+#include "../../../core.h"
 #include "../D3D11.h"
-#include "../../Thirdparty/src/optick.h"
+#include "../graphics/rendering.h"
+#include "../../thirdparty/src/optick.h"
 
 namespace CCE::Graphics
 {
@@ -14,9 +15,5 @@ namespace CCE::Graphics
 		virtual ~IBindable() = default;
 		virtual void DynamicBind() = 0;
 		virtual void StaticBind() = 0;
-
-	protected:
-		ID3D11DeviceContext* GetContext() noexcept;
-		ID3D11Device* GetDevice() noexcept;
 	};
 }

@@ -1,5 +1,5 @@
 #include "Physics.h"
-#include "../Analysis/Debug.h"
+#include "../Analysis/debug.h"
 #include "../Utilities/Math/CCMath.h"
 #include <DirectXMathVector.inl>
 

@@ -1,5 +1,5 @@
 #include "CreativeChaosEditor.h"
-#include "CCE/ClientWindow/ClientWindow.h"
+#include "CCE/client-window/client-window.h"
 #include <functional>
 
 #pragma region drawables
@@ -13,7 +13,7 @@
 #include "GUIDrawables/Inspector.h"
 #include "GUIDrawables/InputWindow.h"
 #include "GUIDrawables/Console.h"
-#include "GUIDrawables\Icons.h"
+#include "GUIDrawables/Icons.h"
 
 #pragma endregion drawables
 
@@ -21,11 +21,11 @@
 
 #ifdef DEBUG
 
-#include "CCE/Analysis/UnitTesting/UnitTest.h"
-#include "CCE/Analysis/UnitTesting/UnitTestMath.h"
-#include "CCE/Analysis/UnitTesting/UnitTestStackAlloc.h"
-#include "CCE/Analysis/UnitTesting/UnitTestPoolAlloc.h"
-#include "CCE/Analysis/UnitTesting/UnitTestString.h"
+#include "CCE/analysis/unit-testing/unit-test.h"
+#include "CCE/analysis/unit-testing/unit-test-math.h"
+#include "CCE/analysis/unit-testing/unit-test-stack-alloc.h"
+#include "CCE/analysis/unit-testing/unit-test-pool-alloc.h"
+#include "CCE/analysis/unit-testing/unit-test-string.h"
 
 #endif
 
@@ -83,7 +83,6 @@ int main(int argc, char* argv[])
         }
     }
 #endif // Only test when in debug mode
-    
 
     // ------ STARTUP MANAGER ------
 
@@ -99,7 +98,7 @@ int main(int argc, char* argv[])
         RenderingDebugger rendEditorWin = RenderingDebugger(String(ICON_FK_VIDEO_CAMERA) + " Rendering");
         Console debugConsole = Console(String(ICON_FK_CHECK_CIRCLE_O) + " Debug Console");
         InputWindow input = InputWindow(String(ICON_FK_KEYBOARD_O) + " Input");
-        Inspector inspector = Inspector("Inspector");
+        Inspector inspector = Inspector(String(ICON_FK_SEARCH) + "Inspector");
 
         // Editor viewport camera
         //CCE::Graphics::Camera viewportCamera = CCE::Graphics::Camera();

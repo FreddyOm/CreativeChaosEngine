@@ -1,8 +1,8 @@
-#include "Model.h"
-#include "../../RenderPipeline.h"
-#include "../Resources/MeshLoader.h"
-#include "../Bindable/BindableCommon.h"
-#include "../../../Manager/Application.h"
+#include "model.h"
+#include "../../rendering.h"
+#include "../resources/mesh-loader.h"
+#include "../bindable/bindable-common.h"
+#include "../../../manager/application.h"
 #include <memory>
 
 namespace CCE::Graphics

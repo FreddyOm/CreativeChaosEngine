@@ -1,10 +1,10 @@
 #pragma once
 #include <mutex>
-#include "../Core.h"
-#include "../String/String.h"
-#include "../Multithreading/ScopedSpinLock.h"
-#include "../Multithreading/SpinLock.h"
-#include "Time.h"
+#include "../core.h"
+#include "../string/string.h"
+#include "../multithreading/scoped-spinlock.h"
+#include "../multithreading/spinlock.h"
+#include "time.h"
 
 #ifdef DEBUG
 

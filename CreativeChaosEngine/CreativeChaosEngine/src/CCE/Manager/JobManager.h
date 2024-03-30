@@ -1,10 +1,10 @@
 #pragma once
 #include "BaseManager.h"
-#include "../Multithreading/ScopedSpinLock.h"
-#include "../Multithreading/SpinLock.h"
-#include "../Memory/PoolAllocator.h"
-#include "../Analysis/Logger.h"
-#include "../String/String.h"
+#include "../multithreading/scoped-spinlock.h"
+#include "../multithreading/spinlock.h"
+#include "../memory/pool-allocator.h"
+#include "../analysis/logger.h"
+#include "../string/string.h"
 #include <unordered_map>
 #include <emmintrin.h>
 #include <winternl.h>
@@ -23,17 +23,7 @@ namespace CCE::Jobs
 #define MAX_JOBS 500
 #define WAIT_CNTR_LOOPS 200
 #define JOBDECL CCE::Jobs::JobManager::JobDeclaration
-	// TODO: Override an operator to make the binding even more easy to use
-#define BIND_BASIC(func, obj, ...) std::bind(&func, obj, ##__VA_ARGS__)
-#define BIND(func, ...) [&](...){return func(##__VA_ARGS__);};
-#define JOB_ENTRY_POINT void
 
-	enum class alignas(4) Priority
-	{
-		HIGH,
-		NORMAL,
-		LOW
-	};
 
 	struct CCE_API JobManager : public BaseManager
 	{
@@ -44,7 +34,7 @@ namespace CCE::Jobs
 		void StartUp() override;
 		void ShutDown() override;
 
-		typedef std::function<JOB_ENTRY_POINT(va_list)> EntryPoint;
+		typedef std::function<void(va_list)> EntryPoint;
 		typedef std::atomic<int> Counter;
 
 		static JobManager* Instance;
@@ -56,7 +46,7 @@ namespace CCE::Jobs
 			LPVOID m_pFiber = NULL;					// 8 bytes
 			Counter* m_pCounter = NULL;				// 8 bytes
 
-			Priority m_priority = Priority::NORMAL;	// 4 bytes
+			byte m_priority = 0;	// 4 bytes
 			unsigned int mDesiredCount = 0;			// 4 bytes
 			va_list m_param = NULL;					// 8 bytes
 
@@ -66,7 +56,7 @@ namespace CCE::Jobs
 				: m_pEntryPoint(nullptr)
 			{ }
 
-			JobDeclaration(const EntryPoint& ep, Priority pr, ...)
+			JobDeclaration(const EntryPoint& ep, byte pr, ...)
 				: m_pEntryPoint(ep)
 				, m_priority(pr)
 			{
@@ -122,7 +112,7 @@ namespace CCE::Jobs
 			void operator += (const EntryPoint& ep)
 			{
 				m_pEntryPoint = ep;
-				m_priority = Priority::NORMAL;
+				m_priority = 0;
 			}
 		};
 

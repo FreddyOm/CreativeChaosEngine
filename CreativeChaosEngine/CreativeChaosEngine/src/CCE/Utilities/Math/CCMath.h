@@ -2,7 +2,7 @@
 #include "../../Core.h"
 #include <cmath>
 #include <DirectXMath.h>
-#include "../../Analysis/Debug.h"
+#include "../../Analysis/debug.h"
 
 namespace CCE::Math
 {

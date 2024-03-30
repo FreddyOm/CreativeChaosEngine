@@ -1,7 +1,7 @@
-#include "ProfilingManager.h"
-#include "../Analysis/Logger.h"
-#include "../Analysis/Debug.h"
-#include "../Analysis/Time.h"
+#include "profilingManager.h"
+#include "../analysis/logger.h"
+#include "../analysis/debug.h"
+#include "../analysis/time.h"
 
 namespace CCE
 {
@@ -11,7 +11,7 @@ namespace CCE
 		Instance = this;
 
 		auto startTime = Time::CurrentTick();
-		memLeakTable = new std::unordered_map<unsigned long long, int>();
+		memLeakTable = new std::unordered_map<unsigned long long, std::tuple<int, std::string>>();
 
 		BaseManager::Init();
 		auto endTime = Time::CurrentTick();
@@ -37,12 +37,12 @@ namespace CCE
 		if (memLeakTable->find(name.sId) == memLeakTable->end())
 		{
 			// No such instance in here yet
-			memLeakTable->emplace(name.sId, 1);
+			memLeakTable->emplace(name.sId, std::make_tuple(1, name.Value()));
 		}
 		else 
 		{
 			// Increase the instance count for this name
-			memLeakTable->insert_or_assign(name.sId, memLeakTable->at(name.sId) + 1);
+			memLeakTable->insert_or_assign(name.sId, std::make_tuple(std::get<0>(memLeakTable->at(name.sId)) + 1 , name.Value()));
 		}
 	}
 
@@ -55,8 +55,8 @@ namespace CCE
 		DASSERT(memLeakTable->find(name.sId) != memLeakTable->end(),
 			"The instance you try to unregister was never reigstered!");
 		
-		// Increase the instance count for this name
-		memLeakTable->insert_or_assign(name.sId, memLeakTable->at(name.sId) - 1);
+		// Decrease the instance count for this name
+		memLeakTable->insert_or_assign(name.sId, std::make_tuple(std::get<0>(memLeakTable->at(name.sId)) - 1, name.Value()));
 	}
 
 	/// <summary>
@@ -68,14 +68,13 @@ namespace CCE
 		
 		LOG_PROFILING("## ------------- MEMORY LEAK INFO ------------- ##", COLOR_WHITE);
 
-		std::unordered_map<unsigned long long, int>::iterator it;
+		std::unordered_map<unsigned long long, std::tuple<int, std::string>>::iterator it;
 		for (it = memLeakTable->begin(); it != memLeakTable->end(); it++)
 		{
-			if (it->second != 0)
+			if (std::get<0>(it->second) != 0)
 			{
-				const char* className = String::ValueBySID(it->first);
 				LOG_PROFILING("Memory leak detected on object \"%s\". RefCount: %d", 
-					COLOR_RED, className, it->second);
+					COLOR_RED, std::get<1>(it->second), it->second);
 			}
 		}
 

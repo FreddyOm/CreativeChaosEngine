@@ -1,8 +1,8 @@
 #pragma once
 #include "BaseManager.h"
-#include "../Memory/PoolAllocator.h"
-#include "../Memory/StackAllocator.h"
-#include "../Analysis/Logger.h"
+#include "../memory/pool-allocator.h"
+#include "../memory/stack-allocator.h"
+#include "../analysis/logger.h"
 
 #define JOB_POOL_SIZE 32
 #define JOB_POOL_ELMNT_CNT 10

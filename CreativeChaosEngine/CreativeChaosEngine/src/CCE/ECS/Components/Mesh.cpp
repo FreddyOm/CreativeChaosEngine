@@ -1,10 +1,10 @@
 #include "Mesh.h"
-#include "../../Resources/MeshLoader.h"
-#include "../../Resources/ResourceAllocator.h"
-#include "../../Graphics/Rendering/Bindable/BindableCommon.h"
-#include "../../String/StringConverter.h"
-#include "../../Manager/Application.h"
-#include "../../Analysis/Debug.h"
+#include "../../resources/mesh-loader.h"
+#include "../../resources/resource-allocator.h"
+#include "../../graphics/rendering/bindable/bindable-common.h"
+#include "../../string/string-converter.h"
+#include "../../manager/application.h"
+#include "../../analysis/debug.h"
 
 namespace CCE::ECS::Components
 {

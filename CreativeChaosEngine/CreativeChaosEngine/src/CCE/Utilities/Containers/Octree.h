@@ -7,7 +7,7 @@
 #include <array>
 #include <vector>
 #include <functional>
-#include "../../ECS/Entity.h"
+#include "../../ECS/entity.h"
 #include "../../Physics/Physics.h"
 #include "../../Graphics/Rendering/D3D11.h"
 

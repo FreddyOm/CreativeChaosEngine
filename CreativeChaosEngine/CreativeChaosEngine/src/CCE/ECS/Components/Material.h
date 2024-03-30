@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <memory>
-#include "../../Graphics/Rendering/Bindable/BindableCommon.h"
+#include "../../graphics/rendering/bindable/bindable-common.h"
 
 namespace CCE::ECS::Components
 {
