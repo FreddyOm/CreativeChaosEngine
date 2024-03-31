@@ -1,9 +1,10 @@
 #include "Camera.h"
-#include "../RenderPipeline.h"
+#include "../rendering.h"
 #include "../../Analysis/Time.h"
-#include "Bindable/ConstantBuffer.h"
+#include "bindable/constant-buffer.h"
 #include "../../Manager/InputManager.h"
 #include "../Rendering/../../Manager/ProfilingManager.h"
+#include "../Rendering/D3D11.h"
 
 namespace CCE::Graphics
 {
@@ -79,8 +80,8 @@ namespace CCE::Graphics
 		ZeroMemory(&cameraConstBufs.viewMatrix, sizeof(DirectX::XMMATRIX));
 		ZeroMemory(&cameraConstBufs.projectionMatrix, sizeof(DirectX::XMMATRIX));
 
-		float width = static_cast<float>(RenderPipeline::Instance->GetRenderTargetWidth());
-		float height = static_cast<float>(RenderPipeline::Instance->GetRenderTargetHeight());
+		float width = static_cast<float>(Graphics::GetRenderTargetWidth());
+		float height = static_cast<float>(Graphics::GetRenderTargetHeight());
 
 		XMMATRIX fovMatr = XMMatrixIdentity();
 		if (projType == ProjectionType::PERSPECTIVE)
@@ -118,7 +119,9 @@ namespace CCE::Graphics
 	{
 		OPTICK_EVENT();
 		using namespace CCE::Input;
+		using namespace DirectX;
 		using CCE::Input::InputDevice;
+		
 		if (mouse->middleMouseButton == InputDevice::ButtonState::PRESSED)
 		{
 			XMStoreFloat3( &transform.Position(), 

@@ -1,6 +1,6 @@
-#include "Material.h"
-#include "../../Analysis/Debug.h"
-#include "../Manager/ProfilingManager.h"
+#include "material.h"
+#include "../../analysis/debug.h"
+#include "../manager/ProfilingManager.h"
 
 namespace CCE::ECS::Components
 {

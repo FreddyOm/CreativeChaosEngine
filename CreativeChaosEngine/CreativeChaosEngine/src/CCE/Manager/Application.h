@@ -1,17 +1,17 @@
 #pragma once
-#include "../Core.h"
-#include "JobManager.h"
-#include "BaseManager.h"
-#include "InputManager.h"
-#include "MemoryManager.h"
-#include "ProfilingManager.h"
-#include "../Scene/Scene.h"
-#include "../Utilities/IO/IO.h"
-#include "../ECS/EntityComponentSystem.h"
-#include "../ECS/Systems/PhysicsSystem.h"
-#include "../ECS/Systems/RenderingSystem.h"
-#include "../Utilities/Serialization/ISerializable.h"
-#include "../Resources/ResourceAllocator.h"
+#include "../core.h"
+#include "jobManager.h"
+#include "baseManager.h"
+#include "inputManager.h"
+#include "memoryManager.h"
+#include "profilingManager.h"
+#include "../scene/scene.h"
+#include "../utilities/io/io.h"
+#include "../ecs/entity-component-system.h"
+#include "../ecs/systems/physics-system.h"
+#include "../ecs/systems/rendering-system.h"
+#include "../utilities/serialization/ISerializable.h"
+#include "../resources/resource-allocator.h"
 
 namespace CCE
 {
@@ -54,7 +54,7 @@ namespace CCE
 
 	public:
 
-		JobManager mJobManager = CCE::JobManager();
+		Jobs::JobManager mJobManager = CCE::Jobs::JobManager();
 		ProfilingManager mProfilingManager = CCE::ProfilingManager();
 		InputManager mInputManager = InputManager();
 		MemoryManager mMemoryManager = MemoryManager();
@@ -71,7 +71,7 @@ namespace CCE
 		std::chrono::steady_clock::time_point frameBegin;
 		std::chrono::steady_clock::time_point frameEnd;
 	
-		JobManager::Counter cnt = 0;
+		Jobs::JobManager::Counter cnt;
 
 		File engineConfig = {};
 

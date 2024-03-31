@@ -1,5 +1,5 @@
 #pragma once
-#include "../../Core.h"
+#include "../../core.h"
 #include <DirectXMath.h>
 
 namespace CCE::Graphics 

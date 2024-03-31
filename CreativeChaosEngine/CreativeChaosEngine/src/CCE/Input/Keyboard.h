@@ -1,6 +1,6 @@
 #pragma once
-#include "../Core.h"
-#include "InputDevice.h"
+#include "../core.h"
+#include "input-device.h"
 
 namespace CCE::Input
 {

@@ -1,7 +1,7 @@
 #pragma once
 #include "IBindable.h"
-#include "../../../String/String.h"
-#include "../../../Manager/JobManager.h"
+#include "../../../string/string.h"
+#include "../../../multithreading/job-system.h"
 #include <vector>
 #include <wrl.h>
 

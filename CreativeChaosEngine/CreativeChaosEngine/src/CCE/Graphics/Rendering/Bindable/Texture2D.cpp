@@ -1,18 +1,20 @@
-#include "Texture2D.h"
-#include "../../../Utilities/FreeImg/FreeImage.h"
-#include "../../../Resources/TextureLoader.h"
-#include "../../../Analysis/Debug.h"
-#include "../../../Resources/ResourceAllocator.h"
+#include "texture2D.h"
+#include "../../../analysis/debug.h"
+
+#include "../../../utilities/free-img/FreeImage.h"
+
+#include "../../../resources/texture-loader.h"
+#include "../../../resources/resource-allocator.h"
 
 namespace CCE::Graphics
 {
 #pragma region job funcs declarations
 
-	JOB_ENTRY_POINT D3D11LoadImageResource(CCE::Resources::TextureLoader& loader, ID3D11Device* device, std::vector<String> const& filePaths, 
+	Jobs::JobReturnType D3D11LoadImageResource(CCE::Resources::TextureLoader& loader, ID3D11Device* device, std::vector<String> const& filePaths,
 		std::vector<D3D11_SUBRESOURCE_DATA>& subresourceDataArr, Microsoft::WRL::ComPtr<ID3D11Texture2D>& pTexture2D, 
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& pResourceView, unsigned short count);
 
-	JOB_ENTRY_POINT D3D11SetImage(std::shared_ptr<CCE::Resources::TexData> tex, D3D11_TEXTURE2D_DESC& texDesc,
+	Jobs::JobReturnType D3D11SetImage(std::shared_ptr<CCE::Resources::TexData> tex, D3D11_TEXTURE2D_DESC& texDesc,
 		FIBITMAP* texture, std::vector<D3D11_SUBRESOURCE_DATA>& subresourceDataArr, D3D11_SHADER_RESOURCE_VIEW_DESC& srvd);
 
 #pragma endregion job funcs declarations
@@ -25,7 +27,7 @@ namespace CCE::Graphics
 		subresourceDataArr.reserve(count);
 		CCE::Resources::TextureLoader loader;
 
-		D3D11LoadImageResource(loader, GetDevice(), {filePath}, subresourceDataArr, pTexture2D, pResourceView, count);
+		D3D11LoadImageResource(loader, g_pDevice.Get(), {filePath}, subresourceDataArr, pTexture2D, pResourceView, count);
 	}
 
 	// @TODO: How can I load every image in parallel?
@@ -36,7 +38,7 @@ namespace CCE::Graphics
 		subresourceDataArr.reserve(count);
 		CCE::Resources::TextureLoader loader;
 
-		D3D11LoadImageResource(loader, GetDevice(), filePaths, subresourceDataArr, pTexture2D, pResourceView, count);
+		D3D11LoadImageResource(loader, g_pDevice.Get(), filePaths, subresourceDataArr, pTexture2D, pResourceView, count);
 	}
 
 	/// <summary>
@@ -57,7 +59,7 @@ namespace CCE::Graphics
 		OPTICK_EVENT();
 		// Bind to pipeline
 		//for(unsigned short s = 0; s < count; ++s)
-		GetContext()->PSSetShaderResources(startSlot, count, pResourceView.GetAddressOf());
+		g_pContext.Get()->PSSetShaderResources(startSlot, count, pResourceView.GetAddressOf());
 	}
 
 	/// <summary>
@@ -69,7 +71,7 @@ namespace CCE::Graphics
 	}
 
 	// @TODO: Kick more leaf jobs (parallelize creation of texDesc and srvd)
-	JOB_ENTRY_POINT D3D11LoadImageResource(CCE::Resources::TextureLoader& loader, ID3D11Device* device, std::vector<String> const& filePaths,
+	Jobs::JobReturnType D3D11LoadImageResource(CCE::Resources::TextureLoader& loader, ID3D11Device* device, std::vector<String> const& filePaths,
 		std::vector<D3D11_SUBRESOURCE_DATA>& subresourceDataArr, Microsoft::WRL::ComPtr<ID3D11Texture2D>& pTexture2D, 
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& pResourceView, unsigned short count)
 	{
@@ -115,7 +117,7 @@ namespace CCE::Graphics
 	}
 
 	// Set the actual image data and 
-	JOB_ENTRY_POINT D3D11SetImage(std::shared_ptr<CCE::Resources::TexData> tex, D3D11_TEXTURE2D_DESC& texDesc, 
+	Jobs::JobReturnType D3D11SetImage(std::shared_ptr<CCE::Resources::TexData> tex, D3D11_TEXTURE2D_DESC& texDesc,
 		FIBITMAP* texture, std::vector<D3D11_SUBRESOURCE_DATA>& subresourceDataArr, D3D11_SHADER_RESOURCE_VIEW_DESC& srvd)
 	{
 		OPTICK_EVENT();

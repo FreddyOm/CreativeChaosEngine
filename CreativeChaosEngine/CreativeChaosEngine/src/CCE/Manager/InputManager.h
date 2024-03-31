@@ -1,11 +1,11 @@
 #pragma once
 #include "BaseManager.h"
-#include "../Input/Mouse.h"
 #include "../String/String.h"
-#include "../Input/Keyboard.h"
-#include "../Input/Controller.h"
-#include "../Input/InputDevice.h"
-#include "../Input/IInputHandler.h"
+#include "../input/mouse.h"
+#include "../input/keyboard.h"
+#include "../input/controller.h"
+#include "../input/input-device.h"
+#include "../input/IInputHandler.h"
 #include <vector>
 
 #include <Xinput.h>

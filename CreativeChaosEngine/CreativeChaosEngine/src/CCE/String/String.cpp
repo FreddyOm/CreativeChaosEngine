@@ -1,6 +1,6 @@
-#include "String.h"
-#include "../Manager/MemoryManager.h"
-#include "../Manager/ProfilingManager.h"
+#include "string.h"
+#include "../manager/memoryManager.h"
+#include "../manager/profilingManager.h"
 
 namespace CCE
 {

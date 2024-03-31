@@ -2,10 +2,10 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-#include "../../Core.h"
-#include "../../String/String.h"
-#include "../../Analysis/Debug.h"
-#include "../../String/StringConverter.h"
+#include "../../core.h"
+#include "../../string/string.h"
+#include "../../analysis/debug.h"
+#include "../../string/string-converter.h"
 
 namespace CCE
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "../../Graphics/Rendering/D3D11.h"
+#include "../../graphics/rendering/D3D11.h"
 
 namespace CCE::ECS::Components
 {

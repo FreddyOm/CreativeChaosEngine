@@ -2,44 +2,44 @@
 
 // For use by applications
 
-#include "CCE/Core.h"
-#include "CCE/Memory/StackAllocator.h"
-#include "CCE/Memory/PoolAllocator.h"
+#include "CCE/core.h"
+#include "CCE/Memory/stack-allocator.h"
+#include "CCE/Memory/pool-allocator.h"
 
 // ------- Analysis --------
 
-#include "CCE/Analysis/Debug.h"
-#include "CCE/Analysis/Logger.h"
-#include "CCE/Analysis/Time.h"
+#include "CCE/analysis/debug.h"
+#include "CCE/analysis/logger.h"
+#include "CCE/analysis/time.h"
 
 // -------------------------
 
 // ------ Application -------
 
-#include "CCE/Manager/Application.h"
+#include "CCE/manager/application.h"
 
 // -------------------------
 
 // -------- Manager ---------
 
-#include "CCE/ECS/Systems/PhysicsSystem.h"
+#include "CCE/ecs/systems/physics-system.h"
 
 // -------------------------
 
 // ------- Graphics --------
 
-#include "CCE/Graphics/RenderPipeline.h"
+#include "CCE/graphics/rendering.h"
 
 // --------------------------
 
 // ------- Utilities --------
 
-#include "CCE/String/String.h"
-#include "CCE/Utilities/Math/CCMath.h"
-#include "CCE/Utilities/Math/CRCHash.h"
-#include "CCE/Utilities/Color/Color.h"
-#include "CCE/Utilities/IO/IO.h"
-#include "CCE/Utilities/Serialization/ISerializable.h"
+#include "CCE/string/string.h"
+#include "CCE/utilities/math/CCMath.h"
+#include "CCE/utilities/math/CRCHash.h"
+#include "CCE/utilities/Color/Color.h"
+#include "CCE/utilities/io/io.h"
+#include "CCE/utilities/serialization/ISerializable.h"
 
 // --------------------------
 

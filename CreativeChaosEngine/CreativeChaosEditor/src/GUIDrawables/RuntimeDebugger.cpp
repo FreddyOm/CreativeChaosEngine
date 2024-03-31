@@ -1,5 +1,5 @@
-#include "RuntimeDebugger.h"
-#include "CCE/Graphics/RenderPipeline.h"
+#include "runtimeDebugger.h"
+#include "CCE/graphics/rendering.h"
 
 void RuntimeDebugger::UpdateDrawable(ImFont* font)
 {

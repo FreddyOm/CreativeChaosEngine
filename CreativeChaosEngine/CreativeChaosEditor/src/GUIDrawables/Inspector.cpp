@@ -1,5 +1,5 @@
-#include "Inspector.h"
-#include "CCE/Graphics/RenderPipeline.h"
+#include "inspector.h"
+#include "CCE/graphics/rendering.h"
 
 void Inspector::OnGui()
 {

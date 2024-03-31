@@ -1,20 +1,18 @@
-#include "Scene.h"
-#include "../Manager/Application.h"
-#include "../Graphics/RenderPipeline.h"
-#include "../Utilities/Math/CCMath.h"
+#include "scene.h"
+#include "../manager/application.h"
+#include "../graphics/rendering.h"
+#include "../utilities/math/CCMath.h"
 
 namespace CCE::Scene
 {
-	void Scene::SetupScene()
+
+	void CreateEntity()
 	{
-		OPTICK_EVENT();
 		using namespace ECS::Components;
 		using namespace Graphics;
-		
-		// Create plane
 
 		ECS::Entity entity = ECS::EntityComponentSystem::Instance->CreateEntity();
-		RenderPipeline::Instance->RenderingSystem.RegisterEntity(static_cast<long long>(entity.Id));
+		Graphics::g_RenderingSystem.RegisterEntity(static_cast<long long>(entity.Id));
 		Application::Instance->mPhysicsSystem.RegisterEntity(static_cast<long long>(entity.Id));
 
 		auto& transform = entity.AddComponent<Transform>();
@@ -22,8 +20,7 @@ namespace CCE::Scene
 		auto& material = entity.AddComponent<Material>();
 
 		transform.SetScale({ .1, .1, .1 });
-
-		material.BaseColor = { 1,1,1, 1 };
+		material.BaseColor = { 1,1,1,1 };
 
 		mesh = Mesh(Application::Instance->resourceDataPath.Path() + "/models/Stanford_Dragon.fbx");
 
@@ -40,6 +37,19 @@ namespace CCE::Scene
 		mesh.CreateConstBufs(std::move(VSConstBufData(transform.GetTransformationMatrix(), material.BaseColor)));
 	}
 
+	void Scene::SetupScene()
+	{
+		OPTICK_EVENT();
+		using namespace ECS::Components;
+		using namespace Graphics;
+		
+		// Create mesh
+
+		for (int i = 0; i < 1; ++i)
+		{
+			CreateEntity();
+		}
+	}
 
 	/// <summary>
 	/// Updates scene by referring to the ECS to update the registered components

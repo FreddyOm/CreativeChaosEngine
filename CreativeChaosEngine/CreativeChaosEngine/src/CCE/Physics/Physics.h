@@ -4,10 +4,10 @@
 
 #pragma once
 #include <DirectXMath.h>
-#include "../ECS/Components/ComponentHeaders.h"
+#include "../ecs/components/component-headers.h"
 #include <set>
-#include "../Analysis/Debug.h"
-#include "../Analysis/Logger.h"
+#include "../analysis/debug.h"
+#include "../analysis/logger.h"
 
 namespace CCE::Physics
 {

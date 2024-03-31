@@ -1,10 +1,10 @@
 #pragma once
 #include <set>
 #include <vector>
-#include "../Manager/ProfilingManager.h"
-#include "../ECS/EntityComponentSystem.h"
-#include "../ECS/Entity.h"
-#include "../Manager/InputManager.h"
+#include "../manager/profilingManager.h"
+#include "../ecs/entity-component-system.h"
+#include "../ecs/entity.h"
+#include "../manager/inputManager.h"
 
 namespace CCE::Scene
 {

@@ -1,6 +1,6 @@
 #pragma once
-#include "../../Core.h"
-#include "../../Analysis/Debug.h"
+#include "../../core.h"
+#include "../../analysis/debug.h"
 
 namespace CCE
 {

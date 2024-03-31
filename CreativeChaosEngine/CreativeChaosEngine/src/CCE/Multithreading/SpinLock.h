@@ -1,5 +1,5 @@
 #pragma once
-#include "../Core.h"
+#include "../core.h"
 #include <atomic>
 
 namespace CCE
@@ -9,17 +9,22 @@ namespace CCE
 		SpinLock() = default;
 		~SpinLock() = default;
 
-		bool Lock()
+		__forceinline void Acquire() const
 		{
-			return lock.test_and_set();
+			for (;;) {
+				// Returns false when it switched from true to false!
+				if (!lock.exchange(true, std::memory_order_acquire)) {
+					break;
+				}
+			}
 		}
 
-		void Unlock()
+		__forceinline void Release() const
 		{
-			lock.clear();
+			lock.store(false, std::memory_order_release);
 		}
 
 	private:
-		std::atomic_flag lock = ATOMIC_FLAG_INIT;
+		mutable std::atomic<bool> lock = {false};
 	};
 }

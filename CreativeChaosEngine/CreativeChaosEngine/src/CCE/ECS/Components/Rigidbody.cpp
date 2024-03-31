@@ -1,5 +1,5 @@
 #include "Rigidbody.h"
-#include "../../Analysis/Debug.h"
+#include "../../Analysis/debug.h"
 #include "../../Analysis/Time.h"
 #include "../../Thirdparty/src/optick.h"
 

@@ -1,10 +1,10 @@
 #pragma once
-#include "../Bindable/IBindable.h"
-#include "../../../Manager/ProfilingManager.h"
-#include "../../../Utilities/IO/IO.h"
-#include "../../../Core.h"
-#include "../../../ECS/Components/Transform.h"    // <-- @TODO: Remove later and use ECS for any given entity
-#include "../Vertex.h"
+#include "../bindable/IBindable.h"
+#include "../../../manager/ProfilingManager.h"
+#include "../../../utilities/io/io.h"
+#include "../../../core.h"
+#include "../../../ecs/components/transform.h"    // <-- @TODO: Remove later and use ECS for any given entity
+#include "../vertex.h"
 #include "IDrawable.h"
 #include <memory>
 

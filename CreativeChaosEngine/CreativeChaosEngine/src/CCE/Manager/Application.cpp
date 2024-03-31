@@ -1,23 +1,23 @@
-#include "Application.h"
-#include "../Analysis/Time.h"
-#include "../Analysis/Debug.h"
-#include "../Analysis/Logger.h"
-#include "../Graphics/RenderPipeline.h"
-#include "../ClientWindow/ClientWindow.h"
-#include <functional>
-#include "../Multithreading/JobSystem.h"
-
-#include "../../Thirdparty/src/optick.h"
+#include "application.h"
+#include "../core.h"
+#include "../analysis/time.h"
+#include "../analysis/debug.h"
+#include "../analysis/logger.h"
+#include "../graphics/rendering.h"
+#include "../client-window/client-window.h"
+#include "../multithreading/job-system.h"
+#include "../../thirdparty/src/optick.h"
 
 namespace CCE
 {
+	using namespace Jobs;
+
 	/// <summary>
 	/// Starts up the application.
 	/// </summary>
 	void Application::StartUp()
 	{
 		DASSERT(Instance == nullptr, "Application was instantiated more than once!");
-
 		Instance = this;
 		Initialize();
 
@@ -26,7 +26,7 @@ namespace CCE
 		if (File::Exists(engineConfig.Path().Value()))
 		{
 			std::string config = IO::ReadText(engineConfig).Value();
-			window->GetRenderPipeline()->GetRenderPipelineConfig()->DeserializeFromString(config);
+			//Graphics::g_RenderPipelineConfig.DeserializeFromString(config);
 		}
 #else
 #error CCE is currently only supported for Windows
@@ -47,15 +47,21 @@ namespace CCE
 
 		// Save engine config
 		DASSERT(IO::WriteText(engineConfig,
-			window->GetRenderPipeline()->GetRenderPipelineConfig()->SerializeToString(true).c_str(), true),
+			Graphics::g_RenderPipelineConfig.SerializeToString(true).c_str(), true),
 			"Failed writing engine config to file.");
 		
+		Graphics::DeinitializeD3D11();
 		delete scene;
 		delete window;
+
 		// Show leak info
 		PRINT_LEAK_INFO;
 		Deinitialize();
 		Instance = nullptr;
+
+#ifdef DEBUG_PROFILE
+		OPTICK_SHUTDOWN();
+#endif
 	}
 
 	/// <summary>
@@ -69,92 +75,50 @@ namespace CCE
 	void Application::PreEditorUpdate(int& rValue, bool handleInput)
 	{
 		OPTICK_FRAME("MainThread");
-
 		if (!m_pause)
 		{
 			frameBegin = Time::Now();
-#if MULTITHREADED
-
-			if (handleInput)
-				mInputManager.FinalizeWinInput();
-
-			window->UpdateClientWindow(rValue);
-
-			cnt = 1;
-
-			JobManager::EntryPoint epRPBF = std::bind(&Graphics::BeginFrame,
-				Graphics::RenderPipeline::Instance->GetDeviceContextPtr(),
-				Graphics::RenderPipeline::Instance->GetRenderTargetComPtr(),
-				Graphics::RenderPipeline::Instance->GetDepthStencilViewPtr(),
-				Graphics::RenderPipeline::Instance->pViewportCamera,
-				Graphics::RenderPipeline::Instance->testModels,
-				window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
-
-			JOBDECL declBeginFrame = JOBDECL(epRPBF, JobManager::Priority::LOW);
-
-			mJobManager.KickJob(declBeginFrame, &cnt);
-
-			// Make sure not to busy wait on main thread!
-			// Otherwise, the main thread waits for execution and 
-			// puts the main fiber onto the waitlist infinitely!!
-			while (cnt != 0)
-			{
-				continue;
-			}
-
-			/*
-			JobManager::EntryPoint epHXI = BIND(mInputManager.HandleXInput);
-			JOBDECL declHandleInput = JOBDECL(epHXI, JobManager::Priority::LOW);
-
-
-			mJobManager.KickJobAndFreeDecl(declBeginFrame, &cnt);
-			mJobManager.KickJobAndFreeDecl(declHandleInput, &cnt);
-
-			window->UpdateClientWindow(rValue);
-
-			mJobManager.BusyWaitForCounter(cnt, 2);
-			*/
-#else
 		}
 
-		window->UpdateClientWindow(rValue);
+		// Handle input
+
+		window->UpdateClientWindow(rValue); // @TODO: Check if this can be done by another thread!
 		if (handleInput)
 			mInputManager.FinalizeWinInput();
 
+		//mInputManager.HandleDirectInput();
+		mInputManager.HandleXInput();	// @TODO: Check if this can be done by another thread!
+
 		mPhysicsSystem.UpdateSystem();
 
-		window->GetRenderPipeline()->BeginFrame(window->GetRenderPipeline()->GetRenderPipelineConfig()->backgroundColor);
+		/*cnt.store(1, std::memory_order_release);
 
-		//Update scene
-		scene->UpdateScene();
-		
-		//mInputManager.HandleDirectInput();
-		mInputManager.HandleXInput();
-#endif
+		Job beginFrameJob(Graphics::BeginFrame, &cnt, Priority::NORMAL,
+			reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor));
+		KickJob(std::move(beginFrameJob));
+
+		BusyWaitForCounter(&cnt);
+		*/
+		Graphics::BeginFrame(reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor));
 	}
 
 	void Application::PostEditorUpdate()
 	{
 		OPTICK_EVENT();
 		
-#if MULTITHREADED
-			JobManager::EntryPoint epRPEF = BIND(window.GetRenderPipeline()->EndFrame);
-			JOBDECL declEndFrame = JOBDECL(epRPEF, JobManager::Priority::LOW);
+		//cnt.store(1, std::memory_order_release);
 
-			JobManager::EntryPoint epUMU = BIND(mMemoryManager.UpdateMemoryUsage);
-			JOBDECL declUpdateMemUsage = JOBDECL(epUMU, JobManager::Priority::LOW);
+		//window->GetRenderPipeline()->EndFrame();
 
+		
+		//Job endFrameJob = Job(Graphics::EndFrame, &cnt, Priority::LOW);
+		//Jobs::KickJob(std::move(endFrameJob));
 
-			mJobManager.KickJobAndFreeDecl(declEndFrame, &cnt);
-			mJobManager.KickJobAndFreeDecl(declUpdateMemUsage, &cnt);
+		//Jobs::BusyWaitForCounter(&cnt);
+		
 
-			mJobManager.BusyWaitForCounter(cnt, 0);
-
-#else
-		window->GetRenderPipeline()->EndFrame();
+		Graphics::EndFrame();
 		mInputManager.ResetInputValues();
-
-#endif
 
 		frameEnd = Time::Now();
 		Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));
@@ -196,14 +160,10 @@ namespace CCE
 #error CCE is currently only supported for Windows
 #endif
 		mMemoryManager.StartUp();
-#if MULTITHREADED
-		//mJobManager.StartUp();
-#endif
-		Jobs::InitializeThreadpool();
+		Jobs::InitializeThreadpool(1);
 		mInputManager.StartUp();
 		mECS.StartUp();
 		mPhysicsSystem.StartUp();
-
 
 		window = new ClientWindow();
 		window->OpenWindow(GetModuleHandle(NULL));
@@ -225,18 +185,18 @@ namespace CCE
 #if MULTITHREADED
 		//mJobManager.ShutDown();
 #endif
-		Jobs::DeinitializeThreadpool();
 
 		mMemoryManager.ShutDown();
+		Jobs::DeinitializeThreadpool();
 	}
 
 	Directory Application::GetPersistentDataPath() const
 	{
 		OPTICK_EVENT();
 
+#ifdef CCE_PLATFORM_WINDOWS
 		std::string persDataPath;
 		Directory persDir;
-#ifdef CCE_PLATFORM_WINDOWS
 
 		CHAR szPath[MAX_PATH];
 		if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_COMMON_APPDATA, NULL, 0, szPath)))
@@ -248,10 +208,6 @@ namespace CCE
 		{
 			DERROR("Couldn't read the persistent data path!");
 		}
-#else
-#error CCE is currently only supported for Windows
-#endif
-
 		// @TODO: Fix this, this is awful...
 		persDir = Directory(strdup(persDataPath.c_str()));
 		if (!Directory::Exists(persDataPath.c_str()))
@@ -260,6 +216,10 @@ namespace CCE
 		}
 
 		return persDir;
+
+#else
+#error CCE is currently only supported for Windows
+#endif
 	}
 
 	Directory Application::GetApplicationDataPath() const

@@ -107,8 +107,8 @@ void IGUIDrawable::InitializeGUI()
 	// Hook the editors input calls to the engines input
 	InputManager::Instance->inputCallback = &ImGui_ImplWin32_WndProcHandler;
 
-	bool ImguiInitD3D11 = ImGui_ImplDX11_Init(Graphics::RenderPipeline::Instance->GetDevicePtr(),
-		Graphics::RenderPipeline::Instance->GetDeviceContextPtr());
+	bool ImguiInitD3D11 = ImGui_ImplDX11_Init(Graphics::g_pDevice.Get(),
+		Graphics::g_pContext.Get());
 
 	DASSERT(ImguiInitD3D11, "Failed initializing GUI with D3D11.");
 
