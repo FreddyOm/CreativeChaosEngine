@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include "../string/string.h"
 #include "resource-loader.h"
+#include "../multithreading/scoped-spinlock.h"
 
 namespace CCE::Resources
 {
@@ -26,5 +27,9 @@ namespace CCE::Resources
 	
 		std::unordered_map<UINT64, std::shared_ptr<MeshData>> meshDataMap = {};
 		std::unordered_map<UINT64, std::shared_ptr<TexData>> texDataMap = {};
+
+	private:
+
+		SpinLock meshLoadSl = SpinLock();
 	};
 }

@@ -91,35 +91,34 @@ namespace CCE
 
 		mPhysicsSystem.UpdateSystem();
 
-		cnt.store(1, std::memory_order_release);
-
+		/*cnt.store(1, std::memory_order_release);
 
 		Job beginFrameJob(Graphics::BeginFrame, &cnt, Priority::NORMAL,
 			reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor));
 		KickJob(std::move(beginFrameJob));
 
-		// Update scene
-		//Job updateSceneJob(nullptr, &cnt, Priority::NORMAL);
-		//KickJob(std::move(updateSceneJob));
-
 		BusyWaitForCounter(&cnt);
-
-		scene->UpdateScene();
+		*/
+		Graphics::BeginFrame(reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor));
 	}
 
 	void Application::PostEditorUpdate()
 	{
 		OPTICK_EVENT();
 		
-		cnt.store(1, std::memory_order_release);
+		//cnt.store(1, std::memory_order_release);
 
 		//window->GetRenderPipeline()->EndFrame();
-		//mInputManager.ResetInputValues();
 
-		Job endFrameJob = Job(Graphics::EndFrame, &cnt, Priority::LOW);
-		Jobs::KickJob(std::move(endFrameJob));
+		
+		//Job endFrameJob = Job(Graphics::EndFrame, &cnt, Priority::LOW);
+		//Jobs::KickJob(std::move(endFrameJob));
 
-		Jobs::BusyWaitForCounter(&cnt);
+		//Jobs::BusyWaitForCounter(&cnt);
+		
+
+		Graphics::EndFrame();
+		mInputManager.ResetInputValues();
 
 		frameEnd = Time::Now();
 		Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));
@@ -161,11 +160,10 @@ namespace CCE
 #error CCE is currently only supported for Windows
 #endif
 		mMemoryManager.StartUp();
-		Jobs::InitializeThreadpool();
+		Jobs::InitializeThreadpool(1);
 		mInputManager.StartUp();
 		mECS.StartUp();
 		mPhysicsSystem.StartUp();
-
 
 		window = new ClientWindow();
 		window->OpenWindow(GetModuleHandle(NULL));

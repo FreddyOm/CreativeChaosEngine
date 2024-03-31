@@ -25,18 +25,13 @@ namespace CCE::Jobs
 	std::deque<Job> job_queue_normal{};
 	std::deque<Job> job_queue_low{};
 
-
 	std::queue<LPVOID> fiber_pool{};
 
 	std::atomic<bool> runThreads(true);
 	
-	CCE::SpinLock job_queue_mtx{};
-	CCE::SpinLock fiber_pool_mtx{};
-	CCE::SpinLock wait_list_mtx{};
-
-	std::mutex thrd_fiber_mtx{};
-	std::mutex fiberpool_mtx{};
-
+	CCE::SpinLock job_queue_sl{};
+	CCE::SpinLock fiber_pool_sl{};
+	CCE::SpinLock wait_list_sl{};
 
 	struct WaitData
 	{
@@ -71,7 +66,7 @@ namespace CCE::Jobs
 		Sleep(1);
 
 		{
-			ScopedSpinLock lock(fiber_pool_mtx);
+			ScopedSpinLock lock(fiber_pool_sl);
 			while (fiber_pool.size() > 0)
 			{
 				LPVOID fiber = fiber_pool.front();
@@ -81,7 +76,7 @@ namespace CCE::Jobs
 		}
 
 		{
-			ScopedSpinLock lock(wait_list_mtx);
+			ScopedSpinLock lock(wait_list_sl);
 			for(int i = 0; i < wait_list.size(); ++i)
 			{
 				DeleteFiber(wait_list[i].m_Fiber);
@@ -121,7 +116,7 @@ namespace CCE::Jobs
 
 	Jobs::Job GetNextJob()
 	{
-		ScopedSpinLock lock(job_queue_mtx);
+		ScopedSpinLock lock(job_queue_sl);
 		Jobs::Job jobCpy;
 
 		if (!job_queue_high.empty())
@@ -151,7 +146,7 @@ namespace CCE::Jobs
 		while (runThreads.load(std::memory_order_consume))
 		{
 			{
-				wait_list_mtx.Acquire();
+				wait_list_sl.Acquire();
 				if (!wait_list.empty())
 				{
 					for (auto it = wait_list.begin(); it != wait_list.end(); ++it)
@@ -159,13 +154,13 @@ namespace CCE::Jobs
 						if ((*it->m_pCounter) <= it->m_desiredCount)
 						{
 							// If job is ready, remove wait data entry, return fiber and switch to waiting fiber!
-							fiber_pool_mtx.Acquire();
+							fiber_pool_sl.Acquire();
 							LPVOID fiberToSwitchTo = it->m_Fiber;
 
-							it = wait_list.erase(it);
+							wait_list.erase(it);
 							fiber_pool.push(GetCurrentFiber());
-							wait_list_mtx.Release();
-							fiber_pool_mtx.Release();
+							wait_list_sl.Release();
+							fiber_pool_sl.Release();
 							SwitchToFiber(fiberToSwitchTo);
 							break; // Break in order to make this work with multiple wait list elements!
 
@@ -174,7 +169,7 @@ namespace CCE::Jobs
 						}
 					}
 				}
-				wait_list_mtx.Release();
+				wait_list_sl.Release();
 			}
 
 			Job jobCpy = GetNextJob();
@@ -182,7 +177,7 @@ namespace CCE::Jobs
 			if (jobCpy.m_EntryPoint != nullptr)
 			{
 				// Valid job
-
+				
 				// New job -> Get new fiber! | Job will not have a fiber associated with it yet since this case 
 				// is handled before!
 				jobCpy.m_Fiber = GetCurrentFiber();
@@ -193,10 +188,26 @@ namespace CCE::Jobs
 		}
 	}
 
+	LPVOID GetFiber()
+	{
+		LPVOID fiber;
+		// Critical section!
+		{
+			CCE::ScopedSpinLock lock(fiber_pool_sl);
+			DASSERT(fiber_pool.size() != 0, "Job system ran out of fibers!");
+
+			fiber = fiber_pool.front();
+			fiber_pool.pop();
+		}
+		return fiber;
+	}
+
 	void RunThread()
 	{
-		OPTICK_THREAD("Worker");
-		LPVOID threadFiber = ConvertThreadToFiber(RunFiber);
+		OPTICK_THREAD("WORKER");
+		LPVOID threadFiber = ConvertThreadToFiber(0);
+		SwitchToFiber(GetFiber());
+		LOG("Terminated Thread %d", GetCurrentThreadId());
 	}
 
 	void InitializeThreadpool(int numOfThreads)
@@ -239,29 +250,15 @@ namespace CCE::Jobs
 	{
 		// Critical section!
 		{
-			CCE::ScopedSpinLock lock(fiber_pool_mtx);
+			CCE::ScopedSpinLock lock(fiber_pool_sl);
 			fiber_pool.push(fiber);
 		}
-	}
-
-	LPVOID GetFiber()
-	{
-		LPVOID fiber;
-		// Critical section!
-		{
-			CCE::ScopedSpinLock lock(fiber_pool_mtx);
-			DASSERT(fiber_pool.size() != 0, "Job system ran out of fibers!");
-			
-			fiber = fiber_pool.front();
-			fiber_pool.pop();
-		}
-		return fiber;
 	}
 
 	void KickJob(Job job)
 	{
 		OPTICK_EVENT();
-		ScopedSpinLock lock(job_queue_mtx);
+		ScopedSpinLock lock(job_queue_sl);
 
 		switch (job.m_Priority)
 		{
@@ -283,7 +280,7 @@ namespace CCE::Jobs
 		{
 			// Put on wait list!
 			{
-				ScopedSpinLock lock(wait_list_mtx);
+				ScopedSpinLock lock(wait_list_sl);
 				wait_list.push_back(WaitData(GetCurrentFiber(), cnt, desiredCount));
 			}
 

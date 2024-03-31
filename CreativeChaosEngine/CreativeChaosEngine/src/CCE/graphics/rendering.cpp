@@ -169,14 +169,14 @@ namespace CCE::Graphics
 		// swap chain
 		g_pSwapChainDesc = MemoryManager::Instance->rendMemory.AllocAligned<DXGI_SWAP_CHAIN_DESC>();
 
-		g_pSwapChainDesc->BufferDesc.Width = g_pClientRect->right;					// backbuffer settings
-		g_pSwapChainDesc->BufferDesc.Height = g_pClientRect->bottom;				// backbuffer settings
+		g_pSwapChainDesc->BufferDesc.Width = g_pClientRect->right;				// backbuffer settings
+		g_pSwapChainDesc->BufferDesc.Height = g_pClientRect->bottom;			// backbuffer settings
 		g_pSwapChainDesc->BufferDesc.RefreshRate = DXGI_RATIONAL{ 0,1 };		// backbuffer settings
 		g_pSwapChainDesc->BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;		// backbuffer settings
 		g_pSwapChainDesc->BufferDesc.Scaling = DXGI_MODE_SCALING_CENTERED;		// backbuffer settings
 		g_pSwapChainDesc->BufferDesc.ScanlineOrdering =
-			DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;							// backbuffer settings
-		g_pSwapChainDesc->SampleDesc.Count = 1;								// sample description
+			DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;								// backbuffer settings
+		g_pSwapChainDesc->SampleDesc.Count = 1;									// sample description
 		g_pSwapChainDesc->SampleDesc.Quality = 0;								// sample description
 		g_pSwapChainDesc->BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;		// swap chain is used as back buffer
 		g_pSwapChainDesc->BufferCount = 1;										// amount of swap chain buffers
@@ -369,6 +369,7 @@ namespace CCE::Graphics
 
 		// Clear render view and draw background color
 		
+		/*
 		// Create job descriptions
 		Jobs::Job cdsvJob = Jobs::Job(ClearDepthStencilView, Jobs::Priority::HIGH);
 		Jobs::Job crtvJob = Jobs::Job(ClearRenderTargetView, Jobs::Priority::NORMAL, color);
@@ -401,6 +402,16 @@ namespace CCE::Graphics
 		Jobs::KickJob(std::move(ursJob));
 
 		Jobs::BusyWaitForCounter(&cnt, 0);
+
+		*/
+
+		ClearDepthStencilView();
+		ClearRenderTargetView(color);
+
+		OMSetRenderTarget();
+
+		UpdateViewportCamera();
+		UpdateRenderingSystem();
 	}
 
 	/// <summary>
@@ -411,6 +422,7 @@ namespace CCE::Graphics
 		if (ClientWindow::Instance->minimized) { return; }
 		OPTICK_EVENT();
 		// Render buffer
+
 		HRESULT pres = g_pSwapChain->Present(g_RenderPipelineConfig.VSync ? 1 : 0, 0);
 		
 #if defined(DEBUG) || defined(DEBUG_PROFILE)

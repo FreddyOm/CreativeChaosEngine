@@ -10,7 +10,7 @@ namespace CCE::ECS::Components
 {
 	Mesh::Mesh(String path)
 		: meshPath(path)
-		,meshData(Resources::ResourceAllocator::Instance->GetMesh(path))
+		, meshData(Resources::ResourceAllocator::Instance->GetMesh(path))
 	{
 		OPTICK_EVENT();
 		String vertexShader = Application::Instance->resourceDataPath.Path() + "/shader/DefaultVertexShader.cso";

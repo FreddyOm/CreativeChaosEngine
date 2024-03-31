@@ -20,6 +20,7 @@ namespace CCE::Resources
 
 		if (meshDataMap.find(meshPath.sId) == meshDataMap.end())
 		{
+			ScopedSpinLock lock(meshLoadSl);
 			// Mesh not yet loaded! --> Load
 			MeshLoader meshLoader;
 

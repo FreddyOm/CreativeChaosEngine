@@ -5,6 +5,7 @@
 #include "../analysis/logger.h"
 #include "../analysis/debug.h"
 #include "systems/ecs-system.h"
+#include "../multithreading/scoped-spinlock.h"
 #include <unordered_map>
 #include <typeindex>
 #include "../core.h"
@@ -122,6 +123,8 @@ namespace CCE::ECS
 		std::unordered_map<std::type_index, DWORD> ComponentTypeLUT = {};
 
 	private:
+
+		SpinLock createEntitySl = SpinLock();
 		unsigned int mEntityCount = 0;
 		unsigned int mRegisteredComponentIndex = 0; // Used to dynamically create bitmasks for checking the types
 

@@ -125,6 +125,7 @@ namespace CCE::ECS
 		T* GetComponent() const
 		{
 			OPTICK_EVENT();
+			
 			using ECS = EntityComponentSystem;
 			return ECS::Instance->GetComponentBuffer<T>()->GetData(Id);
 		}
@@ -140,6 +141,7 @@ namespace CCE::ECS
 		{
 			OPTICK_EVENT();
 			using ECS = EntityComponentSystem;
+
 			T* component = ECS::Instance->GetComponentBuffer<T>()->GetData(Id);
 
 			if (nullptr != component)
@@ -153,5 +155,6 @@ namespace CCE::ECS
 
 	public:
 		UINT64 Id = 0;
+
 	};
 }

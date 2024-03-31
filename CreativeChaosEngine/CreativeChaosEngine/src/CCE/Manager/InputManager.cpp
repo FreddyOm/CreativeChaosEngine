@@ -355,7 +355,7 @@ namespace CCE
 	void InputManager::HandleDirectInput()
 	{
 		// @TODO: Handle Direct Input ?
-
+		OPTICK_EVENT();
 	}
 
 	/// <summary>
@@ -389,7 +389,7 @@ namespace CCE
 	void InputManager::HandleDualSenseInput()
 	{
 		OPTICK_EVENT();
-		for(DWORD controller_index = 0; controller_index < XUSER_MAX_COUNT; controller_index++)
+		for(DWORD controller_index = 0; controller_index < XUSER_MAX_COUNT; ++controller_index)
 		{
 			if (DS5W_SUCCESS(DS5W::getDeviceInputState(&con[controller_index], &inState[controller_index])))
 			{
@@ -405,7 +405,7 @@ namespace CCE
 	void InputManager::UpdateXInputControllerCount()
 	{
 		OPTICK_EVENT();
-		for (unsigned short i = 0; i < XUSER_MAX_COUNT; i++)
+		for (unsigned short i = 0; i < XUSER_MAX_COUNT; ++i)
 		{
 			if (activeController[i] != lastActiveController[i])
 			{

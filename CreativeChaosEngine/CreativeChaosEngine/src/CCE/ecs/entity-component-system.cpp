@@ -66,6 +66,8 @@ namespace CCE::ECS
 	Entity EntityComponentSystem::CreateEntity()
 	{
 		OPTICK_EVENT();
+
+		ScopedSpinLock lock(createEntitySl);
 		DASSERT(mEntityCount < MAX_ENTITIES, "Can't create any more instances!");
 
 		Entity entity(mEntityPool.front());
