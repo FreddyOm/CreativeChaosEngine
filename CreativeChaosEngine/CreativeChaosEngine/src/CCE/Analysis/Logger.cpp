@@ -1,4 +1,5 @@
 #include "Logger.h"
+#include "../manager/ProfilingManager.h"
 
 namespace CCE
 {
@@ -11,6 +12,7 @@ namespace CCE
     /// <param name="">additional arguments</param>
     void Logger::Log(const char* msg, const COLOR color = COLOR_WHITE, const LogLevel level = LogLevel::NONE, ...)
     {
+        OPTICK_EVENT();
         auto lock = ScopedSpinLock(logSpinLock);
         if (!LogLvlActive(level)) { return; }
 

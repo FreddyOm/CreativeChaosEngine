@@ -77,11 +77,11 @@ namespace CCE
 
 	#pragma region date time
 
-	alignas(16) char DateTime::currentTime[8];
+	alignas(16) char DateTime::currentTime[9];
 
 	const char* DateTime::GetTime()
 	{
-		char buffer[26];
+		char buffer[26] = {};
 		time_t now = time(0);
 		ctime_s(buffer, sizeof(buffer), &now);
 
@@ -90,7 +90,7 @@ namespace CCE
 		{
 			currentTime[i] = buffer[i + 11];
 		}
-
+		currentTime[8] = 0;
 		return currentTime;
 	}
 

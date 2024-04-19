@@ -33,7 +33,7 @@ namespace CCE
 
 	struct CCE_API DateTime
 	{
-		alignas(16) static char currentTime[8];		// 8 bytes
+		alignas(16) static char currentTime[9];		// 9 bytes
 		static const char* GetTime();
 	};
 
