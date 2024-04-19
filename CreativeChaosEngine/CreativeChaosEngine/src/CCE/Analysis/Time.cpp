@@ -77,7 +77,7 @@ namespace CCE
 
 	#pragma region date time
 
-	alignas(16) char DateTime::currentTime[9];
+	alignas(16) char DateTime::currentTime[9] = {0};
 
 	const char* DateTime::GetTime()
 	{
@@ -90,7 +90,6 @@ namespace CCE
 		{
 			currentTime[i] = buffer[i + 11];
 		}
-		currentTime[8] = 0;
 		return currentTime;
 	}
 
