@@ -162,12 +162,12 @@ namespace CCE::Graphics
 				XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Right() * camMovementDelta * (float)CCE::Time::deltaTime)));
 			}
 
-			if (keyboard->keys[(int)InputDevice::Keycode::KEY_Q] == InputDevice::ButtonState::PRESSED)
+			if (keyboard->keys[(int)InputDevice::Keycode::KEY_E] == InputDevice::ButtonState::PRESSED)
 			{
 				XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Up() * camMovementDelta * (float)CCE::Time::deltaTime)));
 			}
 
-			if (keyboard->keys[(int)InputDevice::Keycode::KEY_E] == InputDevice::ButtonState::PRESSED)
+			if (keyboard->keys[(int)InputDevice::Keycode::KEY_Q] == InputDevice::ButtonState::PRESSED)
 			{
 				XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (-transform.Up() * camMovementDelta * (float)CCE::Time::deltaTime)));
 			}
@@ -250,12 +250,12 @@ namespace CCE::Graphics
 
 		if (controller->LShoulder == InputDevice::ButtonState::PRESSED)
 		{
-			XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Up() * camMovementDelta * (float)CCE::Time::deltaTime)));
+			XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (-transform.Up() * camMovementDelta * (float)CCE::Time::deltaTime)));
 		}
 
 		if (controller->RShoulder == InputDevice::ButtonState::PRESSED)
 		{
-			XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (-transform.Up() * camMovementDelta * (float)CCE::Time::deltaTime)));
+			XMStoreFloat3(&transform.Position(), XMVectorAdd(XMLoadFloat3(&transform.Position()), (transform.Up() * camMovementDelta * (float)CCE::Time::deltaTime)));
 		}
 
 		#pragma endregion move
