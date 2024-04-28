@@ -7,7 +7,7 @@ namespace CCE
 	/// <summary>
 	/// Query the string value (char*) with the given handle.
 	/// </summary>
-	/// <param name="stringHandle"></param>
+	/// <param name="stringHandle">The handle to the string.</param>
 	/// <returns>The raw pointer to the requested string.</returns>
 	char* StringMemory::GetValue(UINT64 stringHandle)
 	{

@@ -90,6 +90,10 @@ namespace CCE::Jobs
 		ScopedSpinLock lock(job_queue_sl);
 		Jobs::Job jobCpy;
 
+		OPTICK_TAG("JobQueueHigh", job_queue_high.size());
+		OPTICK_TAG("JobQueueNormal", job_queue_normal.size());
+		OPTICK_TAG("JobQueueLow", job_queue_low.size());
+
 		if (!job_queue_high.empty())
 		{
 			jobCpy = std::move(job_queue_high.front());
@@ -119,6 +123,7 @@ namespace CCE::Jobs
 	{
 		OPTICK_EVENT();
 		wait_list_sl.Acquire();
+		OPTICK_TAG("WaitListSize", wait_list.size());
 		if (!wait_list.empty())
 		{
 			for (auto it = wait_list.begin(); it != wait_list.end(); ++it)
@@ -148,22 +153,26 @@ namespace CCE::Jobs
 	{
 		while (runThreads)
 		{
-			OPTICK_EVENT("FiberLoop");
-			
-			CheckWaitList();
-
-			Job jobCpy = GetNextJob();
-
-			if (jobCpy.m_EntryPoint != nullptr)
 			{
-				// Valid job
-				
-				// New job -> Get new fiber! | Job will not have a fiber associated with it yet since this case 
-				// is handled before!
-				jobCpy.m_Fiber = GetCurrentFiber();
-				jobCpy.m_EntryPoint(jobCpy.m_Param);
-				jobCpy.m_pCounter->fetch_sub(1);
-				jobCpy.m_Fiber = nullptr;
+				OPTICK_EVENT();
+
+				CheckWaitList();
+
+				Job jobCpy = GetNextJob();
+
+				OPTICK_TAG("JobValidity", jobCpy.m_EntryPoint == nullptr ? "Invalid" : "Valid");
+
+				if (jobCpy.m_EntryPoint != nullptr)
+				{
+					// Valid job
+
+					// New job -> Get new fiber! | Job will not have a fiber associated with it yet since this case 
+					// is handled before!
+					jobCpy.m_Fiber = GetCurrentFiber();
+					jobCpy.m_EntryPoint(jobCpy.m_Param);
+					jobCpy.m_pCounter->fetch_sub(1);
+					jobCpy.m_Fiber = nullptr;
+				}
 			}
 		}
 
@@ -183,6 +192,9 @@ namespace CCE::Jobs
 
 			fiber = fiber_pool.front();
 			fiber_pool.pop();
+
+			OPTICK_TAG("FibersLeft", fiber_pool.size());
+
 		}
 		return fiber;
 	}
@@ -235,6 +247,7 @@ namespace CCE::Jobs
 
 	void ReturnFiber(LPVOID fiber)
 	{
+		OPTICK_EVENT();
 		// Critical section!
 		{
 			CCE::ScopedSpinLock lock(fiber_pool_sl);
@@ -245,6 +258,7 @@ namespace CCE::Jobs
 	void KickJob(Job job)
 	{
 		OPTICK_EVENT();
+		OPTICK_TAG("Job", job.m_FunctionName.c_str());
 		ScopedSpinLock lock(job_queue_sl);
 
 		switch (job.m_Priority)
@@ -263,6 +277,10 @@ namespace CCE::Jobs
 
 	__forceinline void BusyWaitForCounter(Counter* const cnt, const int desiredCount)
 	{
+		OPTICK_EVENT();
+		OPTICK_TAG("CurrentCount:", cnt->load(std::memory_order_consume));
+		OPTICK_TAG("DesiredCount:", desiredCount);
+
 		while (cnt->load(std::memory_order_consume) > desiredCount)
 		{
 			//// Put on wait list!
