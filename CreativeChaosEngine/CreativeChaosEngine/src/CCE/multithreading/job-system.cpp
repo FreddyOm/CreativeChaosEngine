@@ -197,9 +197,11 @@ namespace CCE::Jobs
 
 	void InitializeThreadpool(int numOfThreads)
 	{
+		unsigned int hardwareThreads = std::thread::hardware_concurrency();
+
 		// Define number of threads
-		if (numOfThreads < 1)
-			numOfThreads = std::thread::hardware_concurrency() - 1;
+		if (numOfThreads < 1 || numOfThreads > hardwareThreads)
+			numOfThreads = hardwareThreads - 1;
 
 		LOG_JOBS("Number of logical cpu cores: %i", std::thread::hardware_concurrency());
 		LOG_JOBS("Number of worker threads: %i", numOfThreads);
