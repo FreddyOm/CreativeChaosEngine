@@ -10,7 +10,7 @@ namespace CCE::Jobs
 	typedef JobReturnType(*JobEntryPoint)(uintptr_t args);
 	typedef std::atomic<int> Counter;
 
-#define JOB(entryPoint, priority, ...) Job(entryPoint, priority, #entryPoint, __VA_ARGS__)
+#define PARALLEL_JOB(entryPoint, priority, ...) Job(entryPoint, priority, #entryPoint, __VA_ARGS__)
 #define JOB(entryPoint, counter, priority, ...) Job(entryPoint, counter, priority, #entryPoint, __VA_ARGS__)
 
 	enum class alignas(4) Priority : byte
@@ -30,7 +30,7 @@ namespace CCE::Jobs
 		JobEntryPoint m_EntryPoint = nullptr;	// 64 bytes
 		LPVOID m_Fiber = NULL;					// 8 bytes
 		uintptr_t m_Param = NULL;				// 8 bytes
-		Counter* m_pCounter;					// 8 bytes
+		Counter* m_pCounter = nullptr;			// 8 bytes
 
 		unsigned int m_DesiredCount = 0;		// 4 bytes
 		Priority m_Priority = (Priority)1;		// 4 bytes

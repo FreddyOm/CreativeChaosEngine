@@ -124,29 +124,46 @@ namespace CCE::Jobs
 		OPTICK_EVENT();
 		wait_list_sl.Acquire();
 		OPTICK_TAG("WaitListSize", wait_list.size());
+
+		bool waitListAlreadyReleased = false;
+
 		if (!wait_list.empty())
 		{
+			std::vector<WaitData>::iterator validWaitData = wait_list.end();
+
 			for (auto it = wait_list.begin(); it != wait_list.end(); ++it)
 			{
-				if (*(it->m_pCounter) <= it->m_desiredCount)	// Error? Invalid iterator? --> See below!
+				if (it->m_pCounter->load(std::memory_order_relaxed) <= it->m_desiredCount)
 				{
-					// If job is ready, remove wait data entry, return fiber and switch to waiting fiber!
-					fiber_pool_sl.Acquire();
-					LPVOID fiberToSwitchTo = it->m_Fiber;	// Error? Invalid iterator? --> Probably wrong TLS
-
-					wait_list.erase(it);
-					wait_list_sl.Release();
-					fiber_pool.push(GetCurrentFiber());
-					fiber_pool_sl.Release();
-					SwitchToFiber(fiberToSwitchTo);
+					DASSERT(it->m_pCounter->load(std::memory_order_relaxed) <= it->m_desiredCount, 
+						"Counter is not yet equal or less than the desired count!");
+					
+					validWaitData = it;
 					break; // Break in order to make this work with multiple wait list elements!
-
-					// Erasing an element from wait_list may result in an error when returning to this job
-					// and trying to iterate using the old iterator.
 				}
 			}
+
+			// If job is ready, remove wait data entry, return fiber and switch to waiting fiber!
+			if (validWaitData != wait_list.end())
+			{
+				LPVOID fiberToSwitchTo = validWaitData->m_Fiber;	// Error? Invalid iterator? --> Probably wrong TLS
+
+				{
+					ScopedSpinLock lock(fiber_pool_sl);
+					
+					wait_list.erase(validWaitData);
+					wait_list_sl.Release();
+					waitListAlreadyReleased = true;				// Store in FLS that we actually released the wait list spin lock!
+					fiber_pool.push(GetCurrentFiber());
+				}
+				SwitchToFiber(fiberToSwitchTo);
+			}
 		}
-		wait_list_sl.Release();
+		// If there was no job in the wait list we have to release the spin lock.
+		// BUT: If we just came from a fiber we must not re-release the fiber! 
+		// Otherwise there will be an invalid iterator somewhere else!
+		if(!waitListAlreadyReleased)
+			wait_list_sl.Release();
 	}
 
 	VOID RunFiber()
@@ -166,11 +183,17 @@ namespace CCE::Jobs
 				{
 					// Valid job
 
-					// New job -> Get new fiber! | Job will not have a fiber associated with it yet since this case 
-					// is handled before!
+					// New job -> Get new fiber!
+					// Job will not have a fiber associated with it yet since this case is handled before!
 					jobCpy.m_Fiber = GetCurrentFiber();
 					jobCpy.m_EntryPoint(jobCpy.m_Param);
-					jobCpy.m_pCounter->fetch_sub(1);
+
+					// We might not want to associate a counter with a parallel job!
+					if (jobCpy.m_pCounter != nullptr)
+					{
+						jobCpy.m_pCounter->fetch_sub(1);
+					}
+					
 					jobCpy.m_Fiber = nullptr;
 				}
 			}
@@ -275,22 +298,43 @@ namespace CCE::Jobs
 		}
 	}
 
-	__forceinline void BusyWaitForCounter(Counter* const cnt, const int desiredCount)
+	void BusyWaitForCounter(Counter* const cnt, const int desiredCount)
 	{
 		OPTICK_EVENT();
 		OPTICK_TAG("CurrentCount:", cnt->load(std::memory_order_consume));
 		OPTICK_TAG("DesiredCount:", desiredCount);
 
-		while (cnt->load(std::memory_order_consume) > desiredCount)
+		if (cnt->load(std::memory_order_consume) > desiredCount)
 		{
-			//// Put on wait list!
-			//{
-			//	ScopedSpinLock lock(wait_list_sl);
-			//	wait_list.push_back(WaitData(GetCurrentFiber(), cnt, desiredCount));
-			//}
+			// Put on wait list!
+			{
+				ScopedSpinLock lock(wait_list_sl);
+				wait_list.push_back(WaitData(GetCurrentFiber(), cnt, desiredCount));
+			}
 
-			//// Switch to new fiber
-			//SwitchToFiber(GetFiber());
+			// Switch to new fiber
+			SwitchToFiber(GetFiber());
 		}
 	}			// Error? --> Probably wrong stack memory because fiber woke up on different thread?
+
+	void BusyWaitForCounterAndFree(Counter* const cnt, const int desiredCount)
+	{
+		OPTICK_EVENT();
+		OPTICK_TAG("CurrentCount:", cnt->load(std::memory_order_consume));
+		OPTICK_TAG("DesiredCount:", desiredCount);
+
+		if (cnt->load(std::memory_order_consume) > desiredCount)
+		{
+			// Put on wait list!
+			{
+				ScopedSpinLock lock(wait_list_sl);
+				wait_list.push_back(WaitData(GetCurrentFiber(), cnt, desiredCount));
+			}
+
+			// Switch to new fiber
+			SwitchToFiber(GetFiber());
+		}
+
+		delete cnt;
+	}
 }

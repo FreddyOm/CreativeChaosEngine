@@ -14,6 +14,7 @@ namespace CCE::Jobs
 	void RunThread();
 
 	void CCE_API BusyWaitForCounter(Counter* const cnt, const int desiredCount = 0);
+	void CCE_API BusyWaitForCounterAndFree(Counter* const cnt, const int desiredCount = 0);
 
 
 	void CCE_API KickJob(Job job);
