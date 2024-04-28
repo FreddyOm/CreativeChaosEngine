@@ -102,11 +102,21 @@ namespace CCE
 		Graphics::BeginFrame(reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor));
 	}
 
+	Jobs::JobReturnType DoWork()
+	{
+		OPTICK_EVENT();
+		float result = 1037.2563 * 29384.62 / 8263.90;
+		result += 1;
+		LOG("Result: %f", result);
+	}
+
 	void Application::PostEditorUpdate()
 	{
 		OPTICK_EVENT();
 		
-		//cnt.store(1, std::memory_order_release);
+		while(cnt != 0)
+		{ }
+		cnt.store(100, std::memory_order_release);
 
 		//window->GetRenderPipeline()->EndFrame();
 
@@ -114,8 +124,13 @@ namespace CCE
 		//Job endFrameJob = Job(Graphics::EndFrame, &cnt, Priority::LOW);
 		//Jobs::KickJob(std::move(endFrameJob));
 
-		//Jobs::BusyWaitForCounter(&cnt);
-		
+		for (int i = 0; i < 100; ++i)
+		{
+			Job workJob = Job(DoWork, &cnt, Priority::HIGH);
+			Jobs::KickJob(std::move(workJob));
+		}
+
+		Jobs::BusyWaitForCounter(&cnt);
 
 		Graphics::EndFrame();
 		mInputManager.ResetInputValues();
@@ -160,7 +175,7 @@ namespace CCE
 #error CCE is currently only supported for Windows
 #endif
 		mMemoryManager.StartUp();
-		Jobs::InitializeThreadpool(1);
+		Jobs::InitializeThreadpool(4);
 		mInputManager.StartUp();
 		mECS.StartUp();
 		mPhysicsSystem.StartUp();

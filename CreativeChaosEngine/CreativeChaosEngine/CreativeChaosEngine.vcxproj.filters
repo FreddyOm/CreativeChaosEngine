@@ -4,6 +4,8 @@
     <FxCompile Include="src\CCE\graphics\shader\DefaultPixelShader.hlsl" />
     <FxCompile Include="src\CCE\graphics\shader\DefaultVertexShader.hlsl" />
     <FxCompile Include="src\CCE\compute-shader\CollisionDetectionResolve.hlsl" />
+    <FxCompile Include="src\CCE\graphics\shader\PBRPixelShader.hlsl" />
+    <FxCompile Include="src\CCE\graphics\shader\PBRVertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CCE\ecs\components\transform.cpp" />

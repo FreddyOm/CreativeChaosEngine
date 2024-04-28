@@ -82,40 +82,11 @@ namespace CCE::Jobs
 				DeleteFiber(wait_list[i].m_Fiber);
 			}
 		}
-
-		for (std::thread* workerThread : worker_threads)
-		{
-			if (workerThread->joinable())
-				workerThread->join();
-
-			delete workerThread;
-		}
 	}
-/*
-	void RunThread()
-	{
-		OPTICK_THREAD("Worker");
-		
-		{
-			ScopedMutex lock(thrd_fiber_mtx);
-			thread_fibers.push_back(std::move(ConvertThreadToFiber(0)));
-		}		
-		
-		while (runThreads.load(std::memory_order_consume))
-		{
-			Job jobCpy = GetNextJob();
-			if (jobCpy.m_EntryPoint != nullptr)
-			{
-				OPTICK_EVENT("JobRunner");
-				jobCpy.m_EntryPoint(jobCpy.m_Param);
-				jobCpy.m_pCounter->fetch_sub(1, std::memory_order_release);
-			}				
-		}
-	}
-	*/
 
 	Jobs::Job GetNextJob()
 	{
+		OPTICK_EVENT();
 		ScopedSpinLock lock(job_queue_sl);
 		Jobs::Job jobCpy;
 
@@ -141,36 +112,45 @@ namespace CCE::Jobs
 		}
 	}
 
+	/// <summary>
+	/// Checks the waitlist for waiting jobs and returns to those jobs that are done waiting.
+	/// </summary>
+	void CheckWaitList()
+	{
+		OPTICK_EVENT();
+		wait_list_sl.Acquire();
+		if (!wait_list.empty())
+		{
+			for (auto it = wait_list.begin(); it != wait_list.end(); ++it)
+			{
+				if (*(it->m_pCounter) <= it->m_desiredCount)	// Error? Invalid iterator? --> See below!
+				{
+					// If job is ready, remove wait data entry, return fiber and switch to waiting fiber!
+					fiber_pool_sl.Acquire();
+					LPVOID fiberToSwitchTo = it->m_Fiber;	// Error? Invalid iterator? --> Probably wrong TLS
+
+					wait_list.erase(it);
+					wait_list_sl.Release();
+					fiber_pool.push(GetCurrentFiber());
+					fiber_pool_sl.Release();
+					SwitchToFiber(fiberToSwitchTo);
+					break; // Break in order to make this work with multiple wait list elements!
+
+					// Erasing an element from wait_list may result in an error when returning to this job
+					// and trying to iterate using the old iterator.
+				}
+			}
+		}
+		wait_list_sl.Release();
+	}
+
 	VOID RunFiber()
 	{
-		while (runThreads.load(std::memory_order_consume))
+		while (runThreads)
 		{
-			{
-				wait_list_sl.Acquire();
-				if (!wait_list.empty())
-				{
-					for (auto it = wait_list.begin(); it != wait_list.end(); ++it)
-					{
-						if ((*it->m_pCounter) <= it->m_desiredCount)
-						{
-							// If job is ready, remove wait data entry, return fiber and switch to waiting fiber!
-							fiber_pool_sl.Acquire();
-							LPVOID fiberToSwitchTo = it->m_Fiber;
-
-							wait_list.erase(it);
-							fiber_pool.push(GetCurrentFiber());
-							wait_list_sl.Release();
-							fiber_pool_sl.Release();
-							SwitchToFiber(fiberToSwitchTo);
-							break; // Break in order to make this work with multiple wait list elements!
-
-							// Erasing an element from wait_list may result in an error when returning to this job
-							// and trying to iterate using the old iterator.
-						}
-					}
-				}
-				wait_list_sl.Release();
-			}
+			OPTICK_EVENT("FiberLoop");
+			
+			CheckWaitList();
 
 			Job jobCpy = GetNextJob();
 
@@ -186,10 +166,15 @@ namespace CCE::Jobs
 				jobCpy.m_Fiber = nullptr;
 			}
 		}
+
+		// Do not terminate the main thread!
+		if(GetCurrentThread() != mainThread)
+			DeleteFiber(GetCurrentFiber());
 	}
 
 	LPVOID GetFiber()
 	{
+		OPTICK_EVENT();
 		LPVOID fiber;
 		// Critical section!
 		{
@@ -274,7 +259,7 @@ namespace CCE::Jobs
 		}
 	}
 
-	void BusyWaitForCounter(Counter* const cnt, const int desiredCount)
+	__forceinline void BusyWaitForCounter(Counter* const cnt, const int desiredCount)
 	{
 		if (cnt->load(std::memory_order_consume) > desiredCount)
 		{
@@ -287,5 +272,5 @@ namespace CCE::Jobs
 			// Switch to new fiber
 			SwitchToFiber(GetFiber());
 		}
-	}
+	}			// Error? --> Probably wrong stack memory because fiber woke up on different thread?
 }
