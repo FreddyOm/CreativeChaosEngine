@@ -261,16 +261,16 @@ namespace CCE::Jobs
 
 	__forceinline void BusyWaitForCounter(Counter* const cnt, const int desiredCount)
 	{
-		if (cnt->load(std::memory_order_consume) > desiredCount)
+		while (cnt->load(std::memory_order_consume) > desiredCount)
 		{
-			// Put on wait list!
-			{
-				ScopedSpinLock lock(wait_list_sl);
-				wait_list.push_back(WaitData(GetCurrentFiber(), cnt, desiredCount));
-			}
+			//// Put on wait list!
+			//{
+			//	ScopedSpinLock lock(wait_list_sl);
+			//	wait_list.push_back(WaitData(GetCurrentFiber(), cnt, desiredCount));
+			//}
 
-			// Switch to new fiber
-			SwitchToFiber(GetFiber());
+			//// Switch to new fiber
+			//SwitchToFiber(GetFiber());
 		}
 	}			// Error? --> Probably wrong stack memory because fiber woke up on different thread?
 }

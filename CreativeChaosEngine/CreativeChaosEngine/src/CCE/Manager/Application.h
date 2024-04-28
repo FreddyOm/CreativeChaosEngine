@@ -28,6 +28,7 @@ namespace CCE
 
 		static Application* Instance;
 
+		void TestJobSystem();
 		void PreEditorUpdate(int& rValue, bool handleInput);
 		void PostEditorUpdate();
 

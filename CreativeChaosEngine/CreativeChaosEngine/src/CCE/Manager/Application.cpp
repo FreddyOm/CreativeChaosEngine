@@ -12,6 +12,8 @@ namespace CCE
 {
 	using namespace Jobs;
 
+	std::atomic<long long> workCounter = 0;
+
 	/// <summary>
 	/// Starts up the application.
 	/// </summary>
@@ -105,24 +107,17 @@ namespace CCE
 	Jobs::JobReturnType DoWork()
 	{
 		OPTICK_EVENT();
-		float result = 1037.2563 * 29384.62 / 8263.90;
-		result += 1;
-		LOG("Result: %f", result);
+		++workCounter;
 	}
 
-	void Application::PostEditorUpdate()
+	void Application::TestJobSystem()
 	{
-		OPTICK_EVENT();
-		
-		while(cnt != 0)
-		{ }
+		OPTICK_FRAME("MainThread");
+		while (cnt != 0)
+		{
+		}
 		cnt.store(100, std::memory_order_release);
 
-		//window->GetRenderPipeline()->EndFrame();
-
-		
-		//Job endFrameJob = Job(Graphics::EndFrame, &cnt, Priority::LOW);
-		//Jobs::KickJob(std::move(endFrameJob));
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -131,6 +126,21 @@ namespace CCE
 		}
 
 		Jobs::BusyWaitForCounter(&cnt);
+	}
+
+	void Application::PostEditorUpdate()
+	{
+		OPTICK_EVENT();
+		
+		//cnt.store(1, std::memory_order_release);
+
+		//window->GetRenderPipeline()->EndFrame();
+
+		
+		//Job endFrameJob = Job(Graphics::EndFrame, &cnt, Priority::LOW);
+		//Jobs::KickJob(std::move(endFrameJob));
+
+		//Jobs::BusyWaitForCounter(&cnt);
 
 		Graphics::EndFrame();
 		mInputManager.ResetInputValues();
@@ -175,7 +185,7 @@ namespace CCE
 #error CCE is currently only supported for Windows
 #endif
 		mMemoryManager.StartUp();
-		Jobs::InitializeThreadpool(4);
+		Jobs::InitializeThreadpool(16);
 		mInputManager.StartUp();
 		mECS.StartUp();
 		mPhysicsSystem.StartUp();

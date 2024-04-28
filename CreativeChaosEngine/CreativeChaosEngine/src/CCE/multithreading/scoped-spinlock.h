@@ -1,6 +1,7 @@
 #pragma once
 #include "../core.h"
 #include "spinLock.h"
+#include "../../Thirdparty/src/optick.h"
 
 namespace CCE 
 {
@@ -8,12 +9,14 @@ namespace CCE
 	{
 		ScopedSpinLock(SpinLock& _spinlock)
 		{
+			OPTICK_EVENT();
 			spinlock = &_spinlock;
 			spinlock->Acquire();
 		}
 
 		~ScopedSpinLock()
 		{
+			OPTICK_EVENT();
 			spinlock->Release();
 			spinlock = nullptr;
 		}

@@ -81,6 +81,7 @@ namespace CCE
     /// <param name="">additional arguments</param>
     void Logger::Log(const String msg, const COLOR color = COLOR_WHITE, const LogLevel level = LogLevel::NONE, ...)
     {
+        OPTICK_EVENT();
         auto lock = ScopedSpinLock(logSpinLock);
         if (!LogLvlActive(level)) { return; }
 
@@ -131,6 +132,7 @@ namespace CCE
 
     void Logger::Log(const DebugInfoDesc desc)
     {
+        OPTICK_EVENT();
         logCount[(int)desc.debugType]++;
         logBuffer.push_back(desc);
         CapDebugBuffer();
@@ -138,12 +140,14 @@ namespace CCE
 
     void Logger::ClearDebugBuffer()
     {
+        OPTICK_EVENT();
         ZeroMemory(&logCount[0], sizeof(logCount));
         logBuffer.clear();
     }
 
     void Logger::CapDebugBuffer()
     {
+        OPTICK_EVENT();
         if (logBuffer.size() > 999)
         {
             logCount[(int)logBuffer.at(0).debugType]--;

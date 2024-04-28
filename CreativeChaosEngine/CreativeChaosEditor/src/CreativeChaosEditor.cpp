@@ -120,27 +120,29 @@ int main(int argc, char* argv[])
         // @TODO: Multithread the editor loop as well
         while (rValue != (int)WM_QUIT)
         {
-            mRuntimeManager.PreEditorUpdate(rValue, true);
-            
-            //viewportCamera.Update();
-            
-            // ------------------------------ RUNTIME DEBUGGER ------------------------------
+            //mRuntimeManager.PreEditorUpdate(rValue, true);
+            //
+            ////viewportCamera.Update();
+            //
+            //// ------------------------------ RUNTIME DEBUGGER ------------------------------
 
-            start = CCE::Time::Now();
+            //start = CCE::Time::Now();
 
-            IGUIDrawable::PreGUIUpdate();
+            //IGUIDrawable::PreGUIUpdate();
 
-            for (int i = 0; i < IGUIDrawable::GetGUIDrawablePtrs()->size(); i++)
-            {
-                IGUIDrawable::GetGUIDrawablePtrs()->at(i)->UpdateDrawable();
-            }
-            //ImGui::ShowDemoWindow();
-            IGUIDrawable::PostGUIUpdate();
+            //for (int i = 0; i < IGUIDrawable::GetGUIDrawablePtrs()->size(); i++)
+            //{
+            //    IGUIDrawable::GetGUIDrawablePtrs()->at(i)->UpdateDrawable();
+            //}
+            ////ImGui::ShowDemoWindow();
+            //IGUIDrawable::PostGUIUpdate();
            
-            end = CCE::Time::Now(); imgui_process_time_ms = static_cast<float>( CCE::Time::GetDurationInMilliSec( start, end ) );
-            // ------------------------------------------------------------------------------
+            //end = CCE::Time::Now(); imgui_process_time_ms = static_cast<float>( CCE::Time::GetDurationInMilliSec( start, end ) );
+            //// ------------------------------------------------------------------------------
 
-            mRuntimeManager.PostEditorUpdate();
+            //mRuntimeManager.PostEditorUpdate();
+
+            mRuntimeManager.TestJobSystem();
         }
     }
 
