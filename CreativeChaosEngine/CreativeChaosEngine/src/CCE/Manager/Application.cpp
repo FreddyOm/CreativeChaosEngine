@@ -12,8 +12,6 @@ namespace CCE
 {
 	using namespace Jobs;
 
-	std::atomic<long long> workCounter = 0;
-
 	/// <summary>
 	/// Starts up the application.
 	/// </summary>
@@ -104,29 +102,6 @@ namespace CCE
 		Graphics::BeginFrame(reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor));
 	}
 
-	Jobs::JobReturnType DoWork()
-	{
-		OPTICK_EVENT();
-		++workCounter;
-	}
-
-	void Application::TestJobSystem()
-	{
-		OPTICK_FRAME("MainThread");
-		while (cnt != 0)
-		{
-		}
-		cnt.store(100, std::memory_order_release);
-
-
-		for (int i = 0; i < 100; ++i)
-		{
-			Job workJob = Job(DoWork, &cnt, Priority::HIGH);
-			Jobs::KickJob(std::move(workJob));
-		}
-
-		Jobs::BusyWaitForCounter(&cnt);
-	}
 
 	void Application::PostEditorUpdate()
 	{
