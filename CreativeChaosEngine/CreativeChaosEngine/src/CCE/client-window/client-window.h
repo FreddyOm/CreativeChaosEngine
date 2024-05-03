@@ -3,7 +3,7 @@
 #include <optional>
 #include <vector>
 #include "../core.h"
-#include "../manager/inputManager.h"
+#include "../input/input.h"
 #include "../manager/jobManager.h"
 #include "../graphics/rendering.h"
 #include "../manager/profilingManager.h"

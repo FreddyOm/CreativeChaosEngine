@@ -75,6 +75,7 @@ namespace CCE
 	void Application::PreEditorUpdate(int& rValue, bool handleInput)
 	{
 		OPTICK_FRAME("MainThread");
+
 		if (!m_pause)
 		{
 			frameBegin = Time::Now();
@@ -83,13 +84,23 @@ namespace CCE
 		// Handle input
 
 		window->UpdateClientWindow(rValue); // @TODO: Check if this can be done by another thread!
+
 		if (handleInput)
-			mInputManager.FinalizeWinInput();
+		{
+			cnt.store(2, std::memory_order_release);
+			Input::FinalizeWinInput();
+		}
+		else 
+		{
+			cnt.store(1, std::memory_order_release);
+		}
+
 
 		//mInputManager.HandleDirectInput();
-		mInputManager.HandleXInput();	// @TODO: Check if this can be done by another thread!
+		Input::HandleXInput();	// @TODO: Check if this can be done by another thread!
 
-		mPhysicsSystem.UpdateSystem();
+		// @TODO: Replace with NVIDIA PhysX
+		//mPhysicsSystem.UpdateSystem();
 
 		/*cnt.store(1, std::memory_order_release);
 
@@ -118,7 +129,7 @@ namespace CCE
 		//Jobs::BusyWaitForCounter(&cnt);
 
 		Graphics::EndFrame();
-		mInputManager.ResetInputValues();
+		Input::ResetInputValues();
 
 		frameEnd = Time::Now();
 		Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));
@@ -161,7 +172,7 @@ namespace CCE
 #endif
 		mMemoryManager.StartUp();
 		Jobs::InitializeThreadpool(16);
-		mInputManager.StartUp();
+		Input::Initialize();
 		mECS.StartUp();
 		mPhysicsSystem.StartUp();
 
@@ -181,7 +192,7 @@ namespace CCE
 
 		mPhysicsSystem.ShutDown();
 		mECS.ShutDown();
-		mInputManager.ShutDown();
+		Input::Deinitialize();
 #if MULTITHREADED
 		//mJobManager.ShutDown();
 #endif

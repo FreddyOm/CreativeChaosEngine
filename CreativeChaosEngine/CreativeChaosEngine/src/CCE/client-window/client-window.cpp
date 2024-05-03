@@ -165,7 +165,7 @@ using namespace CCE;
 /// <summary>
 /// Window Procedure.
 /// </summary>
-/// <param name="hwnd"></param>
+/// <param name="hwnd">The handle to the window.</param>
 /// <param name="uMsg"></param>
 /// <param name="wParam"></param>
 /// <param name="lParam"></param>
@@ -175,7 +175,7 @@ LRESULT CALLBACK ClientWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 	OPTICK_EVENT();
 	// @TODO: Handle input in one place & make explicit code platform independent
 	// @TODO: Create possibility to set values to 0 again
-	InputManager::Instance->HandleWinInput(hwnd, uMsg, wParam, lParam);
+	Input::HandleWinInput(hwnd, uMsg, wParam, lParam);
 
 	switch (uMsg)
 	{

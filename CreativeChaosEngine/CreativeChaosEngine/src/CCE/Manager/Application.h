@@ -2,7 +2,7 @@
 #include "../core.h"
 #include "jobManager.h"
 #include "baseManager.h"
-#include "inputManager.h"
+#include "./../input/input.h"
 #include "memoryManager.h"
 #include "profilingManager.h"
 #include "../scene/scene.h"
@@ -28,7 +28,6 @@ namespace CCE
 
 		static Application* Instance;
 
-		void TestJobSystem();
 		void PreEditorUpdate(int& rValue, bool handleInput);
 		void PostEditorUpdate();
 
@@ -57,7 +56,6 @@ namespace CCE
 
 		Jobs::JobManager mJobManager = CCE::Jobs::JobManager();
 		ProfilingManager mProfilingManager = CCE::ProfilingManager();
-		InputManager mInputManager = InputManager();
 		MemoryManager mMemoryManager = MemoryManager();
 		ECS::EntityComponentSystem mECS = ECS::EntityComponentSystem();
 
@@ -76,7 +74,6 @@ namespace CCE
 
 		File engineConfig = {};
 
-		UINT64 maxUsedFibersPerFrame = 0;
 		bool initialized = false;
 
 	private:
@@ -87,13 +84,13 @@ namespace CCE
 	struct CCE_API EngineConfig : private ISerializable<EngineConfig>
 	{
 	public:
-		bool multithreaded = false;
+		bool placeholder = false;
 
 		std::string SerializeToString(bool prettyPrint = false) const override
 		{
 			JSON data;
 
-			SERIALIZE_CLASS_MEMBER(multithreaded);
+			SERIALIZE_CLASS_MEMBER(placeholder);
 			std::string out = prettyPrint ? data.dump(4).c_str() : data.dump().c_str();
 			return out.c_str();
 		}
@@ -102,20 +99,20 @@ namespace CCE
 		{
 			JSON data;
 
-			SERIALIZE_CLASS_MEMBER(multithreaded);
+			SERIALIZE_CLASS_MEMBER(placeholder);
 			return JSON::to_bson(data);
 		}
 
 		void DeserializeFromString(std::string serializeString) override
 		{
 			JSON data = JSON::parse(serializeString);
-			DESERIALIZE_CLASS_MEMBER(multithreaded);
+			DESERIALIZE_CLASS_MEMBER(placeholder);
 		}
 
 		void DeserializeFromBinary(std::vector<uint8_t> serializeData) override
 		{
 			JSON data = JSON::from_bson(serializeData);			
-			DESERIALIZE_CLASS_MEMBER(multithreaded);
+			DESERIALIZE_CLASS_MEMBER(placeholder);
 		}
 	};
 }

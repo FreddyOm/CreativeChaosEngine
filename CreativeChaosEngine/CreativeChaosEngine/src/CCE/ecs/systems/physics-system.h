@@ -5,7 +5,7 @@
 #include "../../core.h"
 #include "../../analysis/time.h"
 #include "../../physics/Physics.h"
-#include "../../manager/InputManager.h"
+#include "../../input/input.h"
 
 namespace CCE::ECS::Systems
 {

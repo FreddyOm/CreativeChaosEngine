@@ -23,6 +23,7 @@
 // -------- Manager ---------
 
 #include "CCE/ecs/systems/physics-system.h"
+#include "CCE/input/input.h"
 
 // -------------------------
 

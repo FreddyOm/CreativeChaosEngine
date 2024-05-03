@@ -1,63 +1,134 @@
-#include "InputManager.h"
+#include "input.h"
+
 #include "../analysis/logger.h"
 #include "../analysis/debug.h"
-#include "../analysis/time.h"
-#include "../Utilities/math/CCMath.h"
-#include "../multithreading/job-system.h"
-#include "ProfilingManager.h"
+#include "../Manager/ProfilingManager.h"
 
-#define BUTTON_STATE CCE::Input::InputDevice::ButtonState
-#define AXIS_STATE CCE::Input::InputDevice::AxisState
-#define AXIS CCE::Input::InputDevice::Axis
+#include "../Utilities/Math/CCMath.h"
 
-namespace CCE
+#include "Mouse.h"
+#include "Keyboard.h"
+#include "Controller.h"
+#include "input-device.h"
+
+#include <vector>
+
+#include <Xinput.h>
+#pragma comment(lib, "XInput.lib")
+
+#include "../include/ds5w/ds5w.h"
+
+namespace CCE::Input
 {
-	/// <summary>
-	/// The startup call for the manager. Initializes the manager.
-	/// </summary>
-	void InputManager::StartUp()
-	{
-		DASSERT(Instance == nullptr, "InputManager was instantiated more than once!");
-		Instance = this;
 
-		auto startTime = Time::CurrentTick();
+#define BUTTON_STATE InputDevice::ButtonState
+#define AXIS_STATE InputDevice::AxisState
+#define AXIS InputDevice::Axis
+
+	GuiInputCallback InputCallback = nullptr;
+
+	// InputHandler
+	std::vector<Input::IInputHandler*> handlerList = {};
+
+	alignas (64)	Mouse mouse = {};
+	alignas (256)	Keyboard keyboard = {};
+	alignas (128)	Controller controller[4] = {};
+
+	Controller* _currentController = nullptr;
+
+	unsigned char connectedDeviceCount = 0;
+	unsigned char lastConnectedDeviceCount = 0;
+	std::vector<bool> activeController = { false, false, false, false };
+	std::vector<bool> lastActiveController = { false, false, false, false };
+
+	// xinput
+	XINPUT_STATE state = {};
+
+	// dual sense
+	DS5W::DeviceEnumInfo infos[XUSER_MAX_COUNT] = {};
+	DS5W::DeviceContext con[XUSER_MAX_COUNT] = {};
+	DS5W::DS5InputState inState[XUSER_MAX_COUNT] = {};
+	DS5W::DS5OutputState outState[XUSER_MAX_COUNT] = {};
+
+	Jobs::JobReturnType Initialize()
+	{
+		OPTICK_EVENT();
+		
 		DASSERT(CoInitializeEx(NULL, COINIT_MULTITHREADED) == S_OK,
 			"Failed initializing COM on this thread!");
 
 		InitializeDualSense();
-		BaseManager::Init();
-
-		auto endTime = Time::CurrentTick();
-		double initDuration = Time::GetDurationInMicroSec(startTime, endTime);
-		LOGC("InputManager initialized!", COLOR_BLUE);
 	}
 
-	/// <summary>
-	/// The shutdown call of the manager. Deinitializes all contents of the manager.
-	/// </summary>
-	void InputManager::ShutDown()
+	Jobs::JobReturnType Deinitialize()
 	{
 		OPTICK_EVENT();
-		CoUninitialize();
-		for(int i = 0; i < XUSER_MAX_COUNT; i++)
-			DS5W::freeDeviceContext(&con[i]);
 
-		LOGC("Shutting down InputManager...", COLOR_BLUE);
-		BaseManager::Deinit();
-		Instance = nullptr;
+		CoUninitialize();
+		
+		handlerList.clear();
+
+		for (int i = 0; i < XUSER_MAX_COUNT; i++)
+			DS5W::freeDeviceContext(&con[i]);
 	}
 
-	/// <summary>
-	/// A singelton instance pointer that points to itself.
-	/// </summary>
-	InputManager* InputManager::Instance = nullptr;
+	Jobs::JobReturnType RegisterInputCallback(IInputHandler* handler)
+	{
+		handlerList.push_back(handler);
+	}
 
-#ifdef CCE_PLATFORM_WINDOWS // PLATFORM WINDOWS
+	Jobs::JobReturnType UnregisterInputCallback(IInputHandler* handler)
+	{
+		for (auto it = handlerList.begin(); it != handlerList.end(); ++it)
+		{
+			if (*it == handler)
+			{
+				handlerList.erase(it);
+			}
+		}
+	}
 
-	/// <summary>
-	/// Calculate some intermediate values and update all input callback receiver.
-	/// </summary>
-	void InputManager::FinalizeWinInput()
+#pragma region DUAL_SENSE
+
+	Jobs::JobReturnType InitializeDualSense()
+	{
+		OPTICK_EVENT();
+		unsigned int dualSenseCount = 0;
+
+		// @TODO: Maybe do this during update to get (re)connected devices
+		switch (DS5W::enumDevices(infos, (unsigned int)XUSER_MAX_COUNT,
+			&dualSenseCount))
+		{
+		default:
+		{
+			LOG_INPUT("NO DUAL SENSE SUPPORT YET!");
+		}
+		}
+
+		for (unsigned int i = 0; i < dualSenseCount; i++)
+		{
+			DASSERT(DS5W::initDeviceContext(&infos[0], &con[i]) == _DS5W_ReturnValue::OK,
+				"Initialization of Dual Sense device was unsuccessful!");
+		}
+	}
+
+	Jobs::JobReturnType HandleDualSenseInput()
+	{
+		OPTICK_EVENT();
+		for (DWORD controller_index = 0; controller_index < XUSER_MAX_COUNT; ++controller_index)
+		{
+			if (DS5W_SUCCESS(DS5W::getDeviceInputState(&con[controller_index], &inState[controller_index])))
+			{
+				// @TODO: Handle Dual Sense Input
+			}
+		}
+	}
+
+#pragma endregion DUAL_SENSE
+
+#pragma region WIN_INPUT
+
+	Jobs::JobReturnType FinalizeWinInput()
 	{
 		OPTICK_EVENT();
 
@@ -68,41 +139,24 @@ namespace CCE
 		mouse.lastXPos = mouse.xPos;
 		mouse.lastYPos = mouse.yPos;
 
-		//mouse.wheelDelta = 0;
-
-		// @TODO: Do this only when values change
+		// @TODO: Do this only when values change and multithread
 		for (auto* handler : handlerList)
 		{
 			handler->InputCallback(&mouse, &keyboard, &controller[0]);
 		}
 	}
 
-	/// <summary>
-	/// Reset input values that are otherwise not reset by the windows message proc.
-	/// </summary>
-	void InputManager::ResetInputValues()
-	{
-		OPTICK_EVENT();
-		mouse.wheelDelta = 0;
-	}
-
-	/// <summary>
-	/// Handle window input (Mouse + Keyoard).
-	/// </summary>
-	/// <param name="msg">The current message type.</param>
-	/// <param name="wParam">The high word parameter.</param>
-	/// <param name="lParam">The low word parameter.</param>
-	void InputManager::HandleWinInput(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+	Jobs::JobReturnType HandleWinInput(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 		OPTICK_EVENT();
 		// @TODO: Implement a callback or sth that allows to call here.
 		// Also check with calling over dll and stuff
-		if (inputCallback != NULL && inputCallback(hWnd, msg, wParam, lParam))
+		if (InputCallback != NULL && InputCallback(hWnd, msg, wParam, lParam))
 			return;
 
 		switch (msg)
 		{
-		// -------------------- CONFIG --------------------
+			// -------------------- CONFIG --------------------
 		case WM_CREATE:
 		{
 			break;
@@ -116,7 +170,7 @@ namespace CCE
 			{
 				keyboard.keys[(int)wParam] = BUTTON_STATE::PRESSED;
 				LOG_INPUT("Key down: %x", wParam);
-			}			
+			}
 			break;
 		}
 		case WM_SYSKEYDOWN:
@@ -150,7 +204,7 @@ namespace CCE
 			break;
 		}
 		// ------------------------------------------------
-		
+
 		// --------------------- MOUSE --------------------
 		case WM_MOUSEMOVE:
 		{
@@ -216,7 +270,7 @@ namespace CCE
 			{
 				mouse.rightMouseButton = BUTTON_STATE::PRESSED;
 				LOG_INPUT("Right Mouse button down");
-			}			
+			}
 			break;
 		}
 		case WM_RBUTTONUP:
@@ -254,7 +308,7 @@ namespace CCE
 			// handle mouse button down
 
 			UINT button = GET_XBUTTON_WPARAM(wParam);
-			
+
 			if (button == XBUTTON1)
 			{
 				// XBUTTON1 was clicked.
@@ -271,7 +325,7 @@ namespace CCE
 				{
 					mouse.extraButton2 = BUTTON_STATE::PRESSED;
 					LOG_INPUT("Extra mouse button 2 down");
-				}				
+				}
 			}
 
 			break;
@@ -290,7 +344,7 @@ namespace CCE
 					mouse.extraButton1 = BUTTON_STATE::RELEASED;
 					LOG_INPUT("Extra mouse button up");
 				}
-				
+
 			}
 			else if (button == XBUTTON2)
 			{
@@ -299,7 +353,7 @@ namespace CCE
 				{
 					mouse.extraButton2 = BUTTON_STATE::RELEASED;
 					LOG_INPUT("Extra mouse button 2 up");
-				}				
+				}
 			}
 
 			break;
@@ -307,11 +361,12 @@ namespace CCE
 		// ------------------------------------------------
 		}
 	}
-	
-	/// <summary>
-	/// Handle XInput (Controller).
-	/// </summary>
-	void InputManager::HandleXInput()
+
+#pragma endregion WIN_INPUT
+
+#pragma region XINPUT
+
+	Jobs::JobReturnType HandleXInput()
 	{
 		OPTICK_EVENT();
 
@@ -349,60 +404,13 @@ namespace CCE
 		lastConnectedDeviceCount = connectedDeviceCount;
 	}
 
-	/// <summary>
-	/// Handle DirectInput (Controller).
-	/// </summary>
-	void InputManager::HandleDirectInput()
-	{
-		// @TODO: Handle Direct Input ?
-		OPTICK_EVENT();
-	}
-
-	/// <summary>
-	/// Initializes the DualSense input.
-	/// </summary>
-	void InputManager::InitializeDualSense()
+	Jobs::JobReturnType ResetInputValues()
 	{
 		OPTICK_EVENT();
-		unsigned int dualSenseCount = 0;
-
-		// @TODO: Maybe do this during update to get (re)connected devices
-		switch (DS5W::enumDevices(infos, (unsigned int)XUSER_MAX_COUNT,
-			&dualSenseCount))
-		{
-		default:
-		{
-			LOG_INPUT("NO DUAL SENSE SUPPORT YET!");
-		}
-		}
-
-		for (unsigned int i = 0; i < dualSenseCount; i++)
-		{
-			DASSERT(DS5W::initDeviceContext(&infos[0], &con[i]) == _DS5W_ReturnValue::OK,
-				"Initialization of Dual Sense device was unsuccessful!");
-		}
+		mouse.wheelDelta = 0;
 	}
 
-	/// <summary>
-	/// Handle inputs by Sonys Dual Sense Controller
-	/// </summary>
-	void InputManager::HandleDualSenseInput()
-	{
-		OPTICK_EVENT();
-		for(DWORD controller_index = 0; controller_index < XUSER_MAX_COUNT; ++controller_index)
-		{
-			if (DS5W_SUCCESS(DS5W::getDeviceInputState(&con[controller_index], &inState[controller_index])))
-			{
-				// @TODO: Handle Dual Sense Input
-			}
-		}
-		
-	}
-
-	/// <summary>
-	/// Updates the controller count and sends connected / disconnected events
-	/// </summary>
-	void InputManager::UpdateXInputControllerCount()
+	Jobs::JobReturnType UpdateXInputControllerCount()
 	{
 		OPTICK_EVENT();
 		for (unsigned short i = 0; i < XUSER_MAX_COUNT; ++i)
@@ -413,7 +421,7 @@ namespace CCE
 				{
 					LOG_INPUT("Controller %i connected", i);
 				}
-				else 
+				else
 				{
 					LOG_INPUT("Controller %i disconnected", i);
 				}
@@ -423,18 +431,14 @@ namespace CCE
 		}
 	}
 
-	/// <summary>
-	/// Collects the actual input data.
-	/// </summary>
-	/// <param name="controller_Index"></param>
-	void InputManager::GetXInput(const DWORD controller_Index)
+	Jobs::JobReturnType GetXInput(const DWORD controllerIndex)
 	{
 		OPTICK_EVENT();
-		_currentController = &controller[controller_Index];
+		_currentController = &controller[controllerIndex];
 
-		if (!activeController.at(controller_Index))
+		if (!activeController.at(controllerIndex))
 		{
-			activeController.at(controller_Index) = true;
+			activeController.at(controllerIndex) = true;
 		}
 
 #pragma region buttons
@@ -445,7 +449,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i" ,"SOUTH", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i", "SOUTH", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -458,7 +462,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "SOUTH", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "SOUTH", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -472,7 +476,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i", "EAST", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i", "EAST", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -485,7 +489,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "EAST", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "EAST", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -499,7 +503,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i", "WEST", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i", "WEST", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -512,7 +516,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "WEST", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "WEST", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -526,7 +530,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i", "NORTH", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i", "NORTH", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -539,7 +543,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "NORTH", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "NORTH", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -557,20 +561,20 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i" ,"DPAD UP", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i", "DPAD UP", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
 				*pButton = BUTTON_STATE::PRESSED;
 			}
-	}
+		}
 		else
 		{
 			BUTTON_STATE* pButton = &_currentController->LNorth;
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "DPAD UP", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "DPAD UP", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -584,7 +588,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i" ,"DPAD RIGHT", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i", "DPAD RIGHT", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -597,7 +601,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "DPAD RIGHT", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "DPAD RIGHT", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -611,7 +615,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i" ,"DPAD DOWN", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i", "DPAD DOWN", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -624,7 +628,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "DPAD DOWN", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "DPAD DOWN", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -638,7 +642,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i" ,"DPAD LEFT", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i", "DPAD LEFT", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -651,7 +655,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "DPAD LEFT", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "DPAD LEFT", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -669,7 +673,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i" ,"OPTION2", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i", "OPTION2", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -682,7 +686,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "OPTION2", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "OPTION2", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -696,7 +700,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i" ,"OPTION1", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i", "OPTION1", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -709,7 +713,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "OPTION1", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "OPTION1", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -727,7 +731,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i" ,"LEFT_SHOULDER", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i", "LEFT_SHOULDER", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -740,7 +744,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "LEFT_SHOULDER", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "LEFT_SHOULDER", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -754,7 +758,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i" ,"RIGHT_SHOULDER", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i", "RIGHT_SHOULDER", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -767,7 +771,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "RIGHT_SHOULDER", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "RIGHT_SHOULDER", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -785,7 +789,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i" ,"LEFT_THUMB", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i", "LEFT_THUMB", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -798,7 +802,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "LEFT_THUMB", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "LEFT_THUMB", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -812,7 +816,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::RELEASED) {
 				*pButton = BUTTON_STATE::JUST_PRESSED;
-				LOG_INPUT("Button [%s] pressed on Device: %i" ,"RIGHT_THUMB", controller_Index);
+				LOG_INPUT("Button [%s] pressed on Device: %i", "RIGHT_THUMB", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_PRESSED)
 			{
@@ -825,7 +829,7 @@ namespace CCE
 
 			if (*pButton == BUTTON_STATE::PRESSED || *pButton == BUTTON_STATE::JUST_PRESSED) {
 				*pButton = BUTTON_STATE::JUST_RELEASED;
-				LOG_INPUT("Button [%s] released on Device: %i", "RIGHT_THUMB", controller_Index);
+				LOG_INPUT("Button [%s] released on Device: %i", "RIGHT_THUMB", controllerIndex);
 			}
 			else if (*pButton == BUTTON_STATE::JUST_RELEASED)
 			{
@@ -848,13 +852,13 @@ namespace CCE
 
 			if (pAxis->state == AXIS_STATE::AXIS_RELEASED) {
 				pAxis->state = AXIS_STATE::AXIS_JUST_MOVED;
-				LOG_INPUT("Axis [%s] moved on device: %i", "LStick X", controller_Index);
+				LOG_INPUT("Axis [%s] moved on device: %i", "LStick X", controllerIndex);
 			}
 			else if (pAxis->state == AXIS_STATE::AXIS_JUST_MOVED)
 			{
 				pAxis->state = AXIS_STATE::AXIS_MOVED;
 			}
-			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "LStick X", controller_Index, pAxis->value);
+			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "LStick X", controllerIndex, pAxis->value);
 		}
 		else
 		{
@@ -863,7 +867,7 @@ namespace CCE
 			if (pAxis->state == AXIS_STATE::AXIS_MOVED || pAxis->state == AXIS_STATE::AXIS_JUST_MOVED) {
 				pAxis->state = AXIS_STATE::AXIS_JUST_RELEASED;
 				pAxis->value = 0.0f;
-				LOG_INPUT("Axis [%s] released on device: %i", "LStick Y", controller_Index);
+				LOG_INPUT("Axis [%s] released on device: %i", "LStick Y", controllerIndex);
 			}
 			else if (pAxis->state == AXIS_STATE::AXIS_JUST_RELEASED)
 			{
@@ -880,13 +884,13 @@ namespace CCE
 
 			if (pAxis->state == AXIS_STATE::AXIS_RELEASED) {
 				pAxis->state = AXIS_STATE::AXIS_JUST_MOVED;
-				LOG_INPUT("Axis [%s] moved on device: %i" , "LStick Y", controller_Index);
+				LOG_INPUT("Axis [%s] moved on device: %i", "LStick Y", controllerIndex);
 			}
 			else if (pAxis->state == AXIS_STATE::AXIS_JUST_MOVED)
 			{
 				pAxis->state = AXIS_STATE::AXIS_MOVED;
 			}
-			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "LStick Y", controller_Index, pAxis->value);
+			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "LStick Y", controllerIndex, pAxis->value);
 		}
 		else
 		{
@@ -895,7 +899,7 @@ namespace CCE
 			if (pAxis->state == AXIS_STATE::AXIS_MOVED || pAxis->state == AXIS_STATE::AXIS_JUST_MOVED) {
 				pAxis->state = AXIS_STATE::AXIS_JUST_RELEASED;
 				pAxis->value = 0.0f;
-				LOG_INPUT("Axis [%s] released on device: %i", "LStick Y", controller_Index);
+				LOG_INPUT("Axis [%s] released on device: %i", "LStick Y", controllerIndex);
 			}
 			else if (pAxis->state == AXIS_STATE::AXIS_JUST_RELEASED)
 			{
@@ -914,13 +918,13 @@ namespace CCE
 
 			if (pAxis->state == AXIS_STATE::AXIS_RELEASED) {
 				pAxis->state = AXIS_STATE::AXIS_JUST_MOVED;
-				LOG_INPUT("Axis [%s] moved on device: %i" , "RStick X", controller_Index);
+				LOG_INPUT("Axis [%s] moved on device: %i", "RStick X", controllerIndex);
 			}
 			else if (pAxis->state == AXIS_STATE::AXIS_JUST_MOVED)
 			{
 				pAxis->state = AXIS_STATE::AXIS_MOVED;
 			}
-			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "RStick X", controller_Index, pAxis->value);
+			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "RStick X", controllerIndex, pAxis->value);
 		}
 		else
 		{
@@ -929,7 +933,7 @@ namespace CCE
 			if (pAxis->state == AXIS_STATE::AXIS_MOVED || pAxis->state == AXIS_STATE::AXIS_JUST_MOVED) {
 				pAxis->state = AXIS_STATE::AXIS_JUST_RELEASED;
 				pAxis->value = 0.0f;
-				LOG_INPUT("Axis [%s] released on device: %i", "RStick X", controller_Index);
+				LOG_INPUT("Axis [%s] released on device: %i", "RStick X", controllerIndex);
 			}
 			else if (pAxis->state == AXIS_STATE::AXIS_JUST_RELEASED)
 			{
@@ -946,13 +950,13 @@ namespace CCE
 
 			if (pAxis->state == AXIS_STATE::AXIS_RELEASED) {
 				pAxis->state = AXIS_STATE::AXIS_JUST_MOVED;
-				LOG_INPUT("Axis [%s] moved on device: %i" , "RStick Y", controller_Index);
+				LOG_INPUT("Axis [%s] moved on device: %i", "RStick Y", controllerIndex);
 			}
 			else if (pAxis->state == AXIS_STATE::AXIS_JUST_MOVED)
 			{
 				pAxis->state = AXIS_STATE::AXIS_MOVED;
 			}
-			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "RStick Y", controller_Index, pAxis->value);
+			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "RStick Y", controllerIndex, pAxis->value);
 		}
 		else
 		{
@@ -961,7 +965,7 @@ namespace CCE
 			if (pAxis->state == AXIS_STATE::AXIS_MOVED || pAxis->state == AXIS_STATE::AXIS_JUST_MOVED) {
 				pAxis->state = AXIS_STATE::AXIS_JUST_RELEASED;
 				pAxis->value = 0.0f;
-				LOG_INPUT("Axis [%s] released on device: %i", "RStick Y", controller_Index);
+				LOG_INPUT("Axis [%s] released on device: %i", "RStick Y", controllerIndex);
 			}
 			else if (pAxis->state == AXIS_STATE::AXIS_JUST_RELEASED)
 			{
@@ -983,14 +987,14 @@ namespace CCE
 
 			if (pAxis->state == AXIS_STATE::AXIS_RELEASED) {
 				pAxis->state = AXIS_STATE::AXIS_JUST_MOVED;
-				LOG_INPUT("Axis [%s] moved on device: %i" , "LTrigger", controller_Index);
+				LOG_INPUT("Axis [%s] moved on device: %i", "LTrigger", controllerIndex);
 			}
 			else if (pAxis->state == AXIS_STATE::AXIS_JUST_MOVED)
 			{
 				pAxis->state = AXIS_STATE::AXIS_MOVED;
 			}
 
-			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "LTrigger", controller_Index, pAxis->value);
+			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "LTrigger", controllerIndex, pAxis->value);
 		}
 		else
 		{
@@ -999,7 +1003,7 @@ namespace CCE
 			if (pAxis->state == AXIS_STATE::AXIS_MOVED || pAxis->state == AXIS_STATE::AXIS_JUST_MOVED) {
 				pAxis->state = AXIS_STATE::AXIS_JUST_RELEASED;
 				pAxis->value = 0.0f;
-				LOG_INPUT("Axis [%s] released on device: %i", "LTrigger", controller_Index);
+				LOG_INPUT("Axis [%s] released on device: %i", "LTrigger", controllerIndex);
 			}
 			else if (pAxis->state == AXIS_STATE::AXIS_JUST_RELEASED)
 			{
@@ -1018,13 +1022,13 @@ namespace CCE
 
 			if (pAxis->state == AXIS_STATE::AXIS_RELEASED) {
 				pAxis->state = AXIS_STATE::AXIS_JUST_MOVED;
-				LOG_INPUT("Axis [%s] moved on device: %i" , "RTrigger", controller_Index);
+				LOG_INPUT("Axis [%s] moved on device: %i", "RTrigger", controllerIndex);
 			}
 			else if (pAxis->state == AXIS_STATE::AXIS_JUST_MOVED)
 			{
 				pAxis->state = AXIS_STATE::AXIS_MOVED;
 			}
-			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "RTrigger", controller_Index, pAxis->value);
+			LOG_INPUT("Axis [%s] moved on device : %i with value: %f", "RTrigger", controllerIndex, pAxis->value);
 		}
 		else
 		{
@@ -1033,7 +1037,7 @@ namespace CCE
 			if (pAxis->state == AXIS_STATE::AXIS_MOVED || pAxis->state == AXIS_STATE::AXIS_JUST_MOVED) {
 				pAxis->state = AXIS_STATE::AXIS_JUST_RELEASED;
 				pAxis->value = 0.0f;
-				LOG_INPUT("Axis [%s] released on device: %i", "RTrigger", controller_Index);
+				LOG_INPUT("Axis [%s] released on device: %i", "RTrigger", controllerIndex);
 			}
 			else if (pAxis->state == AXIS_STATE::AXIS_JUST_RELEASED)
 			{
@@ -1044,7 +1048,6 @@ namespace CCE
 #pragma endregion trigger
 	}
 
-#else
-#error CCE is currently only supported for Windows
-#endif // CCE_PLATFORM_WINDOWS
+#pragma endregion XINPUT
+
 }

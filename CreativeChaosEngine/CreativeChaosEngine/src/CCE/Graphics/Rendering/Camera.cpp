@@ -2,7 +2,7 @@
 #include "../rendering.h"
 #include "../../Analysis/Time.h"
 #include "bindable/constant-buffer.h"
-#include "../../Manager/InputManager.h"
+#include "../../input/input.h"
 #include "../Rendering/../../Manager/ProfilingManager.h"
 #include "../Rendering/D3D11.h"
 

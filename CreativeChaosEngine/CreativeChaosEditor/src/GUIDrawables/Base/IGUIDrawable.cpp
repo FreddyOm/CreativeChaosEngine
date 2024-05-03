@@ -1,4 +1,5 @@
 #include "IGUIDrawable.h"
+#include "CCEngine.h"
 
 /// <summary>
 /// Set new GUI frame.
@@ -105,7 +106,7 @@ void IGUIDrawable::InitializeGUI()
 	ImGui::GetStyle().ScrollbarRounding = 4.0f;
 
 	// Hook the editors input calls to the engines input
-	InputManager::Instance->inputCallback = &ImGui_ImplWin32_WndProcHandler;
+	Input::InputCallback = &ImGui_ImplWin32_WndProcHandler;
 
 	bool ImguiInitD3D11 = ImGui_ImplDX11_Init(Graphics::g_pDevice.Get(),
 		Graphics::g_pContext.Get());

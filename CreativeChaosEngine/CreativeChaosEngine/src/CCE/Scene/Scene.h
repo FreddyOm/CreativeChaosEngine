@@ -4,7 +4,7 @@
 #include "../manager/profilingManager.h"
 #include "../ecs/entity-component-system.h"
 #include "../ecs/entity.h"
-#include "../manager/inputManager.h"
+#include "../input/input.h"
 
 namespace CCE::Scene
 {
