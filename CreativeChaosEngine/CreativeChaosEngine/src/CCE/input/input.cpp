@@ -138,11 +138,13 @@ namespace CCE::Input
 
 		mouse.lastXPos = mouse.xPos;
 		mouse.lastYPos = mouse.yPos;
+		
+		// @TODO: Do this only when values change
+		// @TODO: This currently doesn't really work out...
 
-		// @TODO: Do this only when values change and multithread
-		for (auto* handler : handlerList)
+		for (int handlerIndex = 0; handlerIndex < handlerList.size(); ++handlerIndex)
 		{
-			handler->InputCallback(&mouse, &keyboard, &controller[0]);
+			UpdateInputHandler(reinterpret_cast<uintptr_t>(handlerList[handlerIndex]));
 		}
 	}
 
@@ -362,40 +364,58 @@ namespace CCE::Input
 		}
 	}
 
+	Jobs::JobReturnType UpdateInputHandler(uintptr_t inputHandler)
+	{
+		reinterpret_cast<IInputHandler*>(inputHandler)->InputCallback(&mouse, &keyboard, &controller[0]);
+	}
+
 #pragma endregion WIN_INPUT
 
 #pragma region XINPUT
+
+	Jobs::JobReturnType FetchXInputDeviceState(DWORD controllerIndex)
+	{
+		OPTICK_EVENT();
+		OPTICK_TAG("ControllerIndex", (int)controllerIndex);
+		// Simply get the state of the _controller from XInput.
+		DWORD dwResult = XInputGetState(controllerIndex, &state);
+
+		if (dwResult == ERROR_SUCCESS)
+		{
+			// controller is connected
+			++connectedDeviceCount;
+			// maybe only check the input if state.dwPacketNumber has changed
+			GetXInput(controllerIndex);
+		}
+		else
+		{
+			// controller is disconnected			
+			if (activeController[controllerIndex])
+			{
+				activeController[controllerIndex] = false;
+			}
+		}
+	}
 
 	Jobs::JobReturnType HandleXInput()
 	{
 		OPTICK_EVENT();
 
 		connectedDeviceCount = 0;
+		ZeroMemory(&state, sizeof(XINPUT_STATE));
 
-		DWORD dwResult;
-		for (DWORD controller_index = 0; controller_index < XUSER_MAX_COUNT; controller_index++)
+		Jobs::Counter cnt = Jobs::Counter(XUSER_MAX_COUNT);
+
+		Jobs::Job xInputJobs[XUSER_MAX_COUNT];
+
+		for (DWORD controllerIndex = 0; controllerIndex < XUSER_MAX_COUNT; ++controllerIndex)
 		{
-			ZeroMemory(&state, sizeof(XINPUT_STATE));
-
-			// Simply get the state of the _controller from XInput.
-			dwResult = XInputGetState(controller_index, &state);
-
-			if (dwResult == ERROR_SUCCESS)
-			{
-				// controller is connected
-				connectedDeviceCount++;
-				// maybe only check the input if state.dwPacketNumber has changed
-				GetXInput(controller_index);
-			}
-			else
-			{
-				// controller is disconnected			
-				if (activeController[controller_index])
-				{
-					activeController[controller_index] = false;
-				}
-			}
+			xInputJobs[controllerIndex] = Jobs::JOB(FetchXInputDeviceState, &cnt, Jobs::Priority::HIGH, controllerIndex);
 		}
+		
+		Jobs::KickJobs(&xInputJobs[0], XUSER_MAX_COUNT);
+
+		Jobs::BusyWaitForCounter(&cnt);
 
 		if (lastConnectedDeviceCount != connectedDeviceCount) {
 			UpdateXInputControllerCount();

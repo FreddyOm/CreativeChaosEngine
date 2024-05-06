@@ -18,4 +18,5 @@ namespace CCE::Jobs
 
 
 	void CCE_API KickJob(Job job);
+	void CCE_API KickJobs(Job* jobs, int jobCount);
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "../core.h"
+#include "../analysis/Debug.h"
 #include <atomic>
 
 namespace CCE
@@ -17,6 +18,9 @@ namespace CCE
 					break;
 				}
 			}
+
+			++lockCount;
+			DASSERT(lockCount == 1, "Lock was aquired by more than one user at the same time!");
 		}
 
 		__forceinline void Release() const
@@ -25,6 +29,7 @@ namespace CCE
 		}
 
 	private:
-		mutable std::atomic<bool> lock = {false};
+		mutable std::atomic<bool> lock = { false };
+		mutable std::atomic<int> lockCount = {0};
 	};
 }
