@@ -70,7 +70,7 @@ namespace CCE
 		std::chrono::steady_clock::time_point frameBegin;
 		std::chrono::steady_clock::time_point frameEnd;
 	
-		Jobs::JobManager::Counter cnt;
+		Jobs::JobManager::Counter cnt1;
 
 		File engineConfig = {};
 

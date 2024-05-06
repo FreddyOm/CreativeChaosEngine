@@ -365,11 +365,11 @@ namespace CCE::Graphics
 		if (CCE::ClientWindow::Instance->minimized) { return; }
 		OPTICK_EVENT();
 
-		Jobs::JobManager::Counter cnt = Jobs::JobManager::Counter(5);
 
 		// Clear render view and draw background color
 		
 		/*
+		Jobs::JobManager::Counter cnt = Jobs::JobManager::Counter(5);
 		// Create job descriptions
 		Jobs::Job cdsvJob = Jobs::Job(ClearDepthStencilView, Jobs::Priority::HIGH);
 		Jobs::Job crtvJob = Jobs::Job(ClearRenderTargetView, Jobs::Priority::NORMAL, color);

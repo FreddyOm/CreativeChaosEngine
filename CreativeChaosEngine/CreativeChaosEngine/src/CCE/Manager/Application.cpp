@@ -87,17 +87,19 @@ namespace CCE
 
 		if (handleInput)
 		{
-			cnt.store(2, std::memory_order_release);
-			Input::FinalizeWinInput();
-		}
+			cnt1.store(2, std::memory_order_release);
+			Job finalizeWinInputJob = JOB(Input::FinalizeWinInput, &cnt1, Priority::NORMAL);
+			KickJob(std::move(finalizeWinInputJob));
+		}	
 		else 
 		{
-			cnt.store(1, std::memory_order_release);
+			cnt1.store(1, std::memory_order_release);
 		}
 
 
 		//mInputManager.HandleDirectInput();
-		Input::HandleXInput();	// @TODO: Check if this can be done by another thread!
+		Job handleXInputJob = JOB(Input::HandleXInput, &cnt1, Priority::NORMAL);
+		KickJob(std::move(handleXInputJob));
 
 		// @TODO: Replace with NVIDIA PhysX
 		//mPhysicsSystem.UpdateSystem();
@@ -107,9 +109,9 @@ namespace CCE
 		Job beginFrameJob(Graphics::BeginFrame, &cnt, Priority::NORMAL,
 			reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor));
 		KickJob(std::move(beginFrameJob));
-
-		BusyWaitForCounter(&cnt);
 		*/
+
+		BusyWaitForCounter(&cnt1);
 		Graphics::BeginFrame(reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor));
 	}
 

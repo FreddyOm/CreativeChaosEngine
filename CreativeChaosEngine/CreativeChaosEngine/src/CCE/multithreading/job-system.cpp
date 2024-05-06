@@ -298,6 +298,29 @@ namespace CCE::Jobs
 		}
 	}
 
+	void KickJobs(Job* jobs, int jobCount)
+	{
+		OPTICK_EVENT();
+		OPTICK_TAG("Job", jobs[0].m_FunctionName.c_str());
+		ScopedSpinLock lock(job_queue_sl);
+
+		for (int i = 0; i < jobCount; ++i)
+		{
+			switch (jobs[i].m_Priority)
+			{
+			case Priority::HIGH:
+				job_queue_high.push_back(std::move(jobs[i]));
+				break;
+			case Priority::NORMAL:
+				job_queue_normal.push_back(std::move(jobs[i]));
+				break;
+			case Priority::LOW:
+				job_queue_low.push_back(std::move(jobs[i]));
+				break;
+			}
+		}
+	}
+
 	void BusyWaitForCounter(Counter* const cnt, const int desiredCount)
 	{
 		OPTICK_EVENT();
@@ -308,14 +331,18 @@ namespace CCE::Jobs
 		{
 			// Put on wait list!
 			{
+				LOG("Pushing fiber %x on thread %x to waitlist", GetCurrentFiber(), GetThreadId(GetCurrentThread()));
 				ScopedSpinLock lock(wait_list_sl);
 				wait_list.push_back(WaitData(GetCurrentFiber(), cnt, desiredCount));
 			}
 
 			// Switch to new fiber
-			SwitchToFiber(GetFiber());
+			LPVOID fiber = GetFiber();
+			DASSERT(fiber != nullptr, "Fiber to switch to was null!");
+			LOG("Resuming fiber %x on thread %x", GetCurrentFiber(), GetThreadId(GetCurrentThread()));
+			SwitchToFiber(fiber);
 		}
-	}			// Error? --> Probably wrong stack memory because fiber woke up on different thread?
+	}
 
 	void BusyWaitForCounterAndFree(Counter* const cnt, const int desiredCount)
 	{

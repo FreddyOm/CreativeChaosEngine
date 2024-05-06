@@ -30,11 +30,11 @@ namespace CCE::Input
 
 	// -------------------- INTERNAL -----------------------------
 
+	Jobs::JobReturnType UpdateInputHandler(uintptr_t inputHandler);
 	Jobs::JobReturnType InitializeDualSense();
 	Jobs::JobReturnType HandleDualSenseInput();
 	Jobs::JobReturnType UpdateXInputControllerCount();
 	Jobs::JobReturnType GetXInput(const DWORD controllerIndex);
 
 	// -----------------------------------------------------------
-
 }
