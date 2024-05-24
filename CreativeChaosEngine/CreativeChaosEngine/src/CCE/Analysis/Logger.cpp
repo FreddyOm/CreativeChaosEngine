@@ -1,5 +1,6 @@
 #include "Logger.h"
 #include "../manager/ProfilingManager.h"
+#include <mutex>
 
 namespace CCE
 {
@@ -13,7 +14,8 @@ namespace CCE
     void Logger::Log(const char* msg, const COLOR color = COLOR_WHITE, const LogLevel level = LogLevel::NONE, ...)
     {
         OPTICK_EVENT();
-        auto lock = ScopedSpinLock(logSpinLock);
+        std::lock_guard<std::mutex> guard(logMutex);
+
         if (!LogLvlActive(level)) { return; }
 
         static char s_buffer[1024];
@@ -82,7 +84,8 @@ namespace CCE
     void Logger::Log(const String msg, const COLOR color = COLOR_WHITE, const LogLevel level = LogLevel::NONE, ...)
     {
         OPTICK_EVENT();
-        auto lock = ScopedSpinLock(logSpinLock);
+        std::lock_guard<std::mutex> guard(logMutex);
+
         if (!LogLvlActive(level)) { return; }
 
         static char s_buffer[1024];
@@ -140,6 +143,7 @@ namespace CCE
 
     void Logger::ClearDebugBuffer()
     {
+        std::lock_guard<std::mutex> guard(logMutex);
         OPTICK_EVENT();
         ZeroMemory(&logCount[0], sizeof(logCount));
         logBuffer.clear();
@@ -160,9 +164,10 @@ namespace CCE
 
 
     /// <summary>
-    /// The spinlock used to synchronize the logging
+    /// The mutex used to synchronize the logging
     /// </summary>
-    SpinLock Logger::logSpinLock = SpinLock();
+    std::mutex Logger::logMutex = std::mutex();
+
 
     /// <summary>
     /// The console window handle.

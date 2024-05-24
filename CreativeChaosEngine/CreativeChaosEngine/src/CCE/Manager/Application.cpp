@@ -173,7 +173,7 @@ namespace CCE
 #error CCE is currently only supported for Windows
 #endif
 		mMemoryManager.StartUp();
-		Jobs::InitializeThreadpool(16);
+		Jobs::InitializeThreadpool();
 		Input::Initialize();
 		mECS.StartUp();
 		mPhysicsSystem.StartUp();

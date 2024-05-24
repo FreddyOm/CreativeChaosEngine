@@ -2,6 +2,7 @@
 #include "../core.h"
 #include "../analysis/Debug.h"
 #include <atomic>
+#include <mutex>
 
 namespace CCE
 {
@@ -12,24 +13,25 @@ namespace CCE
 
 		__forceinline void Acquire() const
 		{
-			for (;;) {
-				// Returns false when it switched from true to false!
-				if (!lock.exchange(true, std::memory_order_acquire)) {
-					break;
-				}
-			}
+			//printf("Acquiring Mutex on Thread %d\n", GetCurrentThreadId());
+			std::lock_guard<std::mutex> guard(aquireLockMutex);
 
-			++lockCount;
-			DASSERT(lockCount == 1, "Lock was aquired by more than one user at the same time!");
+			// Guard
+			while (lock.load(std::memory_order_seq_cst)) 
+			{ }
+			lock.store(true, std::memory_order_seq_cst);
 		}
 
 		__forceinline void Release() const
 		{
-			lock.store(false, std::memory_order_release);
+			//printf("Releasing Mutex on Thread %d\n", GetCurrentThreadId());
+			std::lock_guard<std::mutex> guard(releaseLockMutex);
+			lock.store(false, std::memory_order_seq_cst);
 		}
 
 	private:
 		mutable std::atomic<bool> lock = { false };
-		mutable std::atomic<int> lockCount = {0};
+		mutable std::mutex aquireLockMutex{};
+		mutable std::mutex releaseLockMutex{};
 	};
 }

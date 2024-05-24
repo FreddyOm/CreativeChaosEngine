@@ -10,7 +10,6 @@ namespace CCE
 	{
 		ScopedSpinLock(SpinLock& const _spinlock)
 		{
-			OPTICK_EVENT();
 			spinlock = &_spinlock;
 			spinlock->Acquire();
 
@@ -21,7 +20,6 @@ namespace CCE
 
 		~ScopedSpinLock()
 		{
-			OPTICK_EVENT();
 			spinlock->Release();
 			spinlock = nullptr;
 #if defined( DEBUG ) || defined ( DEBUG_PROFILE )

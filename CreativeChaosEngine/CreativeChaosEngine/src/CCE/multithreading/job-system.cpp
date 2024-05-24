@@ -339,7 +339,7 @@ namespace CCE::Jobs
 			// Switch to new fiber
 			LPVOID fiber = GetFiber();
 			DASSERT(fiber != nullptr, "Fiber to switch to was null!");
-			LOG("Resuming fiber %x on thread %x", GetCurrentFiber(), GetThreadId(GetCurrentThread()));
+			LOG("Resuming fiber %x on thread %d", GetCurrentFiber(), GetThreadId(GetCurrentThread()));
 			SwitchToFiber(fiber);
 		}
 	}

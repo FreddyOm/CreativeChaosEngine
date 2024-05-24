@@ -92,6 +92,8 @@ namespace CCE
 		PROFILING = 7,
 	};
 
+	class std::mutex;
+
 	struct CCE_API Logger
 	{
 		struct DebugInfoDesc // 24 byte
@@ -135,7 +137,7 @@ namespace CCE
 		static void CapDebugBuffer();
 
 	private:
-		static SpinLock logSpinLock;
+		static std::mutex logMutex;
 		static HANDLE hConsole;					            // 8 bytes
 		static DWORD logLvLFilterMask; // 0b00000001		// 8 bytes		
 	};

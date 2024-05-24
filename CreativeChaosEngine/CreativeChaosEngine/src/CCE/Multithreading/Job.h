@@ -35,7 +35,7 @@ namespace CCE::Jobs
 		unsigned int m_DesiredCount = 0;		// 4 bytes
 		Priority m_Priority = (Priority)1;		// 4 bytes
 
-		std::string m_FunctionName = "";
+		std::string m_FunctionName = std::string("");
 
 		Job()
 			: m_EntryPoint(nullptr)
