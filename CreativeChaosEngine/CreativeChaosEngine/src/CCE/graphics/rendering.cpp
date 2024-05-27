@@ -322,7 +322,7 @@ namespace CCE::Graphics
 	Jobs::JobReturnType ClearRenderTargetView(uintptr_t col)
 	{
 		OPTICK_EVENT();
-		ScopedMutex lock(contextLock);
+		//ScopedMutex lock(contextLock);
 		g_pContext->ClearRenderTargetView(g_pRenderTarget.Get(), reinterpret_cast<Color*>(col)->RGBA());
 	}
 
@@ -332,14 +332,14 @@ namespace CCE::Graphics
 	Jobs::JobReturnType ClearDepthStencilView()
 	{
 		OPTICK_EVENT();
-		ScopedMutex lock(contextLock);
+		//ScopedMutex lock(contextLock);
 		g_pContext->ClearDepthStencilView(g_pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 	}
 
 	Jobs::JobReturnType OMSetRenderTarget()
 	{
 		OPTICK_EVENT();
-		ScopedMutex lock(contextLock);
+		//ScopedMutex lock(contextLock);
 		g_pContext->OMSetRenderTargets(1u, g_pRenderTarget.GetAddressOf(), g_pDSV.Get());
 	}
 

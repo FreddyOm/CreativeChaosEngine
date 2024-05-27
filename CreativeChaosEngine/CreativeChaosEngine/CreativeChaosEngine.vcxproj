@@ -51,7 +51,6 @@
     <ClCompile Include="src\CCE\memory\pool-allocator.cpp" />
     <ClCompile Include="src\CCE\memory\allocator.cpp" />
     <ClCompile Include="src\CCE\utilities\math\CCMath.cpp" />
-    <ClCompile Include="src\CCE\manager\JobManager.cpp" />
     <ClCompile Include="src\CCE\manager\BaseManager.cpp" />
     <ClCompile Include="src\CCE\analysis\debug.cpp" />
     <ClCompile Include="src\CCE\analysis\logger.cpp" />
@@ -78,6 +77,7 @@
     <ClCompile Include="src\thirdparty\src\optick_server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CCE\analysis\debugInfoDesc.h" />
     <ClInclude Include="src\CCE\ecs\component-buffer.h" />
     <ClInclude Include="src\CCE\ecs\Components\behaviour.h" />
     <ClInclude Include="src\CCE\ecs\Components\collider.h" />
@@ -226,7 +226,6 @@
     <ClInclude Include="src\CCE\memory\pool-allocator.h" />
     <ClInclude Include="src\CCE\memory\allocator.h" />
     <ClInclude Include="src\CCE\utilities\math\CCMath.h" />
-    <ClInclude Include="src\CCE\manager\JobManager.h" />
     <ClInclude Include="src\CCE\manager\BaseManager.h" />
     <ClInclude Include="src\CCE\analysis\debug.h" />
     <ClInclude Include="src\CCE\analysis\logger.h" />
@@ -350,7 +349,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
+    <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
@@ -394,11 +393,12 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include</AdditionalIncludeDirectories>
       <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -432,11 +432,12 @@ xcopy /d /y "$(ProjectDir)resources\sdk\assimp-vc143-mt.dll" "$(ProjectDir)..\bi
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TranslateIncludes>false</TranslateIncludes>
       <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include</AdditionalIncludeDirectories>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -473,11 +474,12 @@ xcopy /d /y "$(ProjectDir)resources\sdk\OptickCore.dll" "$(ProjectDir)..\bin\$(C
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>.\CreativeChaosEngine\src\CCE\include</AdditionalIncludeDirectories>
       <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

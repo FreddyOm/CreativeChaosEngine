@@ -8,9 +8,9 @@ namespace CCE
 {
 	struct ScopedSpinLock
 	{
-		ScopedSpinLock(SpinLock& const _spinlock)
+		ScopedSpinLock(SpinLock& const _spinlock) noexcept
+			: spinlock(&_spinlock)
 		{
-			spinlock = &_spinlock;
 			spinlock->Acquire();
 
 #if defined( DEBUG ) || defined ( DEBUG_PROFILE )
@@ -18,7 +18,7 @@ namespace CCE
 #endif
 		}
 
-		~ScopedSpinLock()
+		~ScopedSpinLock() noexcept
 		{
 			spinlock->Release();
 			spinlock = nullptr;

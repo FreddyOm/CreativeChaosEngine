@@ -1,6 +1,6 @@
 #pragma once
-#include "CCE/Core.h"
-#include "CCE/String/String.h"
+#include "CCE/core.h"
+#include "CCE/string/string.h"
 #include "../../imgui/imgui.h"
 
 struct DebugInfoLabel

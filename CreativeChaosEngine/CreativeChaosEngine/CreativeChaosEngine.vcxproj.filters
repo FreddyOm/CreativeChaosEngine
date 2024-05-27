@@ -31,7 +31,6 @@
     <ClCompile Include="src\CCE\memory\pool-allocator.cpp" />
     <ClCompile Include="src\CCE\memory\allocator.cpp" />
     <ClCompile Include="src\CCE\utilities\math\CCMath.cpp" />
-    <ClCompile Include="src\CCE\manager\JobManager.cpp" />
     <ClCompile Include="src\CCE\manager\BaseManager.cpp" />
     <ClCompile Include="src\CCE\analysis\debug.cpp" />
     <ClCompile Include="src\CCE\analysis\logger.cpp" />
@@ -197,7 +196,6 @@
     <ClInclude Include="src\CCE\memory\pool-allocator.h" />
     <ClInclude Include="src\CCE\memory\allocator.h" />
     <ClInclude Include="src\CCE\utilities\math\CCMath.h" />
-    <ClInclude Include="src\CCE\manager\JobManager.h" />
     <ClInclude Include="src\CCE\manager\BaseManager.h" />
     <ClInclude Include="src\CCE\analysis\debug.h" />
     <ClInclude Include="src\CCE\analysis\logger.h" />
@@ -256,6 +254,7 @@
     <ClInclude Include="src\CCE\multithreading\job-system.h" />
     <ClInclude Include="src\CCE\multithreading\scoped-mutex.h" />
     <ClInclude Include="src\CCE\input\input.h" />
+    <ClInclude Include="src\CCE\analysis\debugInfoDesc.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="resources\sdk\assimp-vc143-mt.lib" />

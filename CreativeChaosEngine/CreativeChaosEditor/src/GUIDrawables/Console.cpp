@@ -5,7 +5,7 @@ void Console::OnGui()
 {
 	if (ImGui::Button("Clear", ImVec2(40, 20)))
 	{
-		Logger::ClearDebugBuffer();
+		ClearDebugBuffer();
 	}
 
 	ImGui::SameLine();
@@ -27,17 +27,17 @@ void Console::OnGui()
 
 	for (size_t i = 0; i < pLogBuffer->size(); ++i)
 	{
-		LogLevel type = pLogBuffer->at(i).debugType;
+		CCE::LogLevel type = pLogBuffer->at(i).debugType;
 		
-		if (type != LogLevel::NONE) 
-		{ logColor = type == LogLevel::WARNING ? ImVec4(0.8f, 0.8f, 0, 1) : ImVec4(0.8f, 0, 0, 1); }
+		if (type != CCE::LogLevel::NONE)
+		{ logColor = type == CCE::LogLevel::WARNING ? ImVec4(0.8f, 0.8f, 0, 1) : ImVec4(0.8f, 0, 0, 1); }
 		else { logColor = ImVec4(1, 1, 1, 1); }
 			
 		ImGui::PushStyleColor(ImGuiCol_Text, logColor);
 
-		if (type == LogLevel::NONE && messages || 
-			type == LogLevel::WARNING && warnings || 
-			type == LogLevel::ERR && errors)
+		if (type == CCE::LogLevel::NONE && messages ||
+			type == CCE::LogLevel::WARNING && warnings ||
+			type == CCE::LogLevel::ERR && errors)
 		{
 			ImGui::Selectable(pLogBuffer->at(i).msg.c_str(), &selectedLog, ImGuiSelectableFlags_AllowDoubleClick);
 			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))

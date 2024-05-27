@@ -11,27 +11,20 @@ namespace CCE
 		SpinLock() = default;
 		~SpinLock() = default;
 
-		__forceinline void Acquire() const
+		__forceinline void Acquire() const noexcept
 		{
-			//printf("Acquiring Mutex on Thread %d\n", GetCurrentThreadId());
-			std::lock_guard<std::mutex> guard(aquireLockMutex);
-
 			// Guard
-			while (lock.load(std::memory_order_seq_cst)) 
-			{ }
-			lock.store(true, std::memory_order_seq_cst);
+			while (lock.test_and_set(std::memory_order_seq_cst))
+				lock.wait(true, std::memory_order_relaxed);
 		}
 
-		__forceinline void Release() const
+		__forceinline void Release() const noexcept
 		{
-			//printf("Releasing Mutex on Thread %d\n", GetCurrentThreadId());
-			std::lock_guard<std::mutex> guard(releaseLockMutex);
-			lock.store(false, std::memory_order_seq_cst);
+			lock.clear(std::memory_order_release);
+			lock.notify_one();
 		}
 
 	private:
-		mutable std::atomic<bool> lock = { false };
-		mutable std::mutex aquireLockMutex{};
-		mutable std::mutex releaseLockMutex{};
+		mutable std::atomic_flag lock = ATOMIC_FLAG_INIT;
 	};
 }

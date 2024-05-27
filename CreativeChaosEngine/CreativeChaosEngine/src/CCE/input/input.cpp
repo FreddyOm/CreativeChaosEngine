@@ -404,6 +404,7 @@ namespace CCE::Input
 		connectedDeviceCount = 0;
 		ZeroMemory(&state, sizeof(XINPUT_STATE));
 
+		
 		Jobs::Counter cnt = Jobs::Counter(XUSER_MAX_COUNT);
 
 		Jobs::Job xInputJobs[XUSER_MAX_COUNT];
@@ -416,7 +417,7 @@ namespace CCE::Input
 		Jobs::KickJobs(&xInputJobs[0], XUSER_MAX_COUNT);
 
 		Jobs::BusyWaitForCounter(&cnt);
-
+		
 		if (lastConnectedDeviceCount != connectedDeviceCount) {
 			UpdateXInputControllerCount();
 		}

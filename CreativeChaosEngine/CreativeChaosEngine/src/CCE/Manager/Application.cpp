@@ -84,7 +84,9 @@ namespace CCE
 		// Handle input
 
 		window->UpdateClientWindow(rValue); // @TODO: Check if this can be done by another thread!
-
+		//Input::FinalizeWinInput();
+		
+		
 		if (handleInput)
 		{
 			cnt1.store(2, std::memory_order_release);
@@ -95,8 +97,8 @@ namespace CCE
 		{
 			cnt1.store(1, std::memory_order_release);
 		}
-
-
+		
+		//Input::HandleXInput();
 		//mInputManager.HandleDirectInput();
 		Job handleXInputJob = JOB(Input::HandleXInput, &cnt1, Priority::NORMAL);
 		KickJob(std::move(handleXInputJob));
@@ -172,6 +174,7 @@ namespace CCE
 #else
 #error CCE is currently only supported for Windows
 #endif
+		InitializeLogger();
 		mMemoryManager.StartUp();
 		Jobs::InitializeThreadpool();
 		Input::Initialize();
@@ -195,12 +198,10 @@ namespace CCE
 		mPhysicsSystem.ShutDown();
 		mECS.ShutDown();
 		Input::Deinitialize();
-#if MULTITHREADED
-		//mJobManager.ShutDown();
-#endif
 
 		mMemoryManager.ShutDown();
 		Jobs::DeinitializeThreadpool();
+		DeinitializeLogger();
 	}
 
 	Directory Application::GetPersistentDataPath() const

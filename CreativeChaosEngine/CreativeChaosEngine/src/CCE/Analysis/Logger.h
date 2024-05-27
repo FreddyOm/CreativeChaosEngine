@@ -1,51 +1,48 @@
 #pragma once
 #include <mutex>
 #include "../core.h"
-#include "../string/string.h"
-#include "../multithreading/scoped-spinlock.h"
-#include "../multithreading/spinlock.h"
-#include "time.h"
+#include <vector>
 
 #ifdef DEBUG
 
-#define LOG(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::NONE, ##__VA_ARGS__)
-#define LOGC(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::NONE, ##__VA_ARGS__)
+#define LOG(msg, ...) CCE::Log(msg, COLOR_WHITE, CCE::LogLevel::NONE, ##__VA_ARGS__)
+#define LOGC(msg, c, ...) CCE::Log(msg, c, CCE::LogLevel::NONE, ##__VA_ARGS__)
 
-#define LOG_TEST(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::TEST, ##__VA_ARGS__)
-#define LOGC_TEST(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::TEST, ##__VA_ARGS__)
+#define LOG_TEST(msg, ...) CCE::Log(msg, COLOR_WHITE, CCE::LogLevel::TEST, ##__VA_ARGS__)
+#define LOGC_TEST(msg, c, ...) CCE::Log(msg, c, CCE::LogLevel::TEST, ##__VA_ARGS__)
 
-#define LOG_INPUT(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::INPUT, ##__VA_ARGS__)
-#define LOGC_INPUT(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::INPUT, ##__VA_ARGS__)
+#define LOG_INPUT(msg, ...) CCE::Log(msg, COLOR_WHITE, CCE::LogLevel::INPUT, ##__VA_ARGS__)
+#define LOGC_INPUT(msg, c, ...) CCE::Log(msg, c, CCE::LogLevel::INPUT, ##__VA_ARGS__)
 
-#define LOG_REND(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::RENDERING, ##__VA_ARGS__)
-#define LOGC_REND(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::RENDERING, ##__VA_ARGS__)
+#define LOG_REND(msg, ...) CCE::Log(msg, COLOR_WHITE, CCE::LogLevel::RENDERING, ##__VA_ARGS__)
+#define LOGC_REND(msg, c, ...) CCE::Log(msg, c, CCE::LogLevel::RENDERING, ##__VA_ARGS__)
 
-#define LOG_JOBS(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::JOBS, ##__VA_ARGS__)
-#define LOGC_JOBS(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::JOBS, ##__VA_ARGS__)
+#define LOG_JOBS(msg, ...) CCE::Log(msg, COLOR_WHITE, CCE::LogLevel::JOBS, ##__VA_ARGS__)
+#define LOGC_JOBS(msg, c, ...) CCE::Log(msg, c, CCE::LogLevel::JOBS, ##__VA_ARGS__)
 
-#define LOG_PROFILING(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
-#define LOGC_PROFILING(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
+#define LOG_PROFILING(msg, ...) CCE::Log(msg, COLOR_WHITE, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
+#define LOGC_PROFILING(msg, c, ...) CCE::Log(msg, c, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
 
 #endif // DEBUG
 
 #ifdef DEBUG_PROFILE
-#define LOG(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::NONE, ##__VA_ARGS__)
-#define LOGC(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::NONE, ##__VA_ARGS__)
+#define LOG(msg, ...) CCE::Log(msg, COLOR_WHITE, CCE::LogLevel::NONE, ##__VA_ARGS__)
+#define LOGC(msg, c, ...) CCE::Log(msg, c, CCE::LogLevel::NONE, ##__VA_ARGS__)
 
-#define LOG_TEST(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::TEST, ##__VA_ARGS__)
-#define LOGC_TEST(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::TEST, ##__VA_ARGS__)
+#define LOG_TEST(msg, ...) CCE::Log(msg, COLOR_WHITE, CCE::LogLevel::TEST, ##__VA_ARGS__)
+#define LOGC_TEST(msg, c, ...) CCE::Log(msg, c, CCE::LogLevel::TEST, ##__VA_ARGS__)
 
-#define LOG_INPUT(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::INPUT, ##__VA_ARGS__)
-#define LOGC_INPUT(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::INPUT, ##__VA_ARGS__)
+#define LOG_INPUT(msg, ...) CCE::Log(msg, COLOR_WHITE, CCE::LogLevel::INPUT, ##__VA_ARGS__)
+#define LOGC_INPUT(msg, c, ...) CCE::Log(msg, c, CCE::LogLevel::INPUT, ##__VA_ARGS__)
 
-#define LOG_REND(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::RENDERING, ##__VA_ARGS__)
-#define LOGC_REND(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::RENDERING, ##__VA_ARGS__)
+#define LOG_REND(msg, ...) CCE::Log(msg, COLOR_WHITE, CCE::LogLevel::RENDERING, ##__VA_ARGS__)
+#define LOGC_REND(msg, c, ...) CCE::Log(msg, c, CCE::LogLevel::RENDERING, ##__VA_ARGS__)
 
-#define LOG_JOBS(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::JOBS, ##__VA_ARGS__)
-#define LOGC_JOBS(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::JOBS, ##__VA_ARGS__)
+#define LOG_JOBS(msg, ...) CCE::Log(msg, COLOR_WHITE, CCE::LogLevel::JOBS, ##__VA_ARGS__)
+#define LOGC_JOBS(msg, c, ...) CCE::Log(msg, c, CCE::LogLevel::JOBS, ##__VA_ARGS__)
 
-#define LOG_PROFILING(msg, ...) CCE::Logger::Log(msg, COLOR_WHITE, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
-#define LOGC_PROFILING(msg, c, ...) CCE::Logger::Log(msg, c, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
+#define LOG_PROFILING(msg, ...) CCE::Log(msg, COLOR_WHITE, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
+#define LOGC_PROFILING(msg, c, ...) CCE::Log(msg, c, CCE::LogLevel::PROFILING, ##__VA_ARGS__)
 
 #endif // PROFILE
 
@@ -70,6 +67,8 @@
 
 #endif // RELEASE
 
+// @TODO: Maybe log everything into a file ..?
+
 namespace CCE
 {
 #define COLOR unsigned char
@@ -91,56 +90,24 @@ namespace CCE
 		JOBS = 6,
 		PROFILING = 7,
 	};
+	
+	struct DebugInfoDesc;
+	struct String;
 
-	class std::mutex;
+	CCE_API extern size_t g_logCount[3];
+	CCE_API extern std::vector<DebugInfoDesc> g_logBuffer;
 
-	struct CCE_API Logger
-	{
-		struct DebugInfoDesc // 24 byte
-		{
-			DebugInfoDesc(const std::string msg, const std::string file, const int line, const LogLevel type)
-				: line(line), debugType(type), fileName(file)
-			{
-				this->msg = "[";
-				this->msg += DateTime::GetTime();
-				this->msg += "] " + msg;
-			}
+	CCE_API void InitializeLogger();
+	CCE_API void DeinitializeLogger();
 
-			int line = 0;
-			LogLevel debugType = LogLevel::NONE;
-			std::string fileName = "";
-			std::string msg = "";
-		};
+	CCE_API void Log(const char* msg, const COLOR color, const LogLevel level, ...);
+	CCE_API void Log(const String msg, const COLOR color, const LogLevel level, ...);
 
-		Logger() = default;
-		~Logger() = default;
-		static void Log(const char* msg, const COLOR color, const LogLevel level, ...);
-		static void Log(const String msg, const COLOR color, const LogLevel level, ...);
-		static void Log(const DebugInfoDesc desc);
+	CCE_API void SetLogLvlMaks(const DWORD mask);
+	CCE_API bool LogLvlActive(const LogLevel msgLogLvl);
+	CCE_API void ClearDebugBuffer();
 
-		static void SetLogLvlMaks(const DWORD mask)
-		{
-			logLvLFilterMask = mask;
-		}
-
-		// @TODO: Probably move this out of logger and combine this with some other 
-		// system to hook into an event.
-		static std::vector<DebugInfoDesc> logBuffer;
-		static void ClearDebugBuffer();
-		static size_t logCount[3];
-
-	private:
-		static bool LogLvlActive(const LogLevel msgLogLvl)
-		{
-			return (logLvLFilterMask & 1 << (int)msgLogLvl) != 0;
-		}
-		static void CapDebugBuffer();
-
-	private:
-		static std::mutex logMutex;
-		static HANDLE hConsole;					            // 8 bytes
-		static DWORD logLvLFilterMask; // 0b00000001		// 8 bytes		
-	};
+	void Log(const DebugInfoDesc desc);
+	void CapDebugBuffer();
 }
 
-// @TODO: Maybe log everything into a file ..?

@@ -1,28 +1,30 @@
 #include "debug.h"
 #include "logger.h"
+#include "debugInfoDesc.h"
 
 namespace CCE
 {
+
 	void Debug::DebugInfo(const char* msg, const char* file, const int line) noexcept
 	{
-		auto desc = Logger::DebugInfoDesc{ msg, file, line, LogLevel::NONE };
-		CCE::Logger::Log(desc);
+		auto desc = DebugInfoDesc{ msg, file, line, LogLevel::NONE };
+		CCE::Log(desc);
 	}
 
 	void Debug::DebugWarning(const char* msg, const char* file, const int line) noexcept
 	{
 		std::string msgStr = std::string("[WARNING] ");
 		msgStr += msg;
-		auto desc = Logger::DebugInfoDesc{ msgStr, file, line, LogLevel::WARNING };
-		CCE::Logger::Log(desc);
+		auto desc = DebugInfoDesc{ msgStr, file, line, LogLevel::WARNING };
+		CCE::Log(desc);
 	}
 
 	void Debug::DebugError(const char* msg, const char* file, const int line) noexcept
 	{
 		std::string msgStr = std::string("[ERROR] ");
 		msgStr += msg;
-		auto desc = Logger::DebugInfoDesc{ msgStr, file, line, LogLevel::ERR };
-		CCE::Logger::Log(desc);
+		auto desc = DebugInfoDesc{ msgStr, file, line, LogLevel::ERR };
+		CCE::Log(desc);
 	}
 
 	void Debug::DebugError(const DWORD error, const char* file, const int line) noexcept
