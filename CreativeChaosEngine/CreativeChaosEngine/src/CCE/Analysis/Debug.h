@@ -1,13 +1,11 @@
 #pragma once
 #include "../Core.h"
-#include <string>
-#include <vector>
 
 #ifdef DEBUG
-#define DINFO(msg) CCE::Debug::DebugInfo(msg, __FILE__, __LINE__)
-#define DWARNING(msg) CCE::Debug::DebugWarning(msg, __FILE__, __LINE__)
-#define DERROR(msg) CCE::Debug::DebugError(msg, __FILE__, __LINE__)
-#define DASSERT(condition, msg) CCE::Debug::DebugAssert(condition, msg, __FILE__, __LINE__)
+#define DINFO(msg) CCE::DebugInfo(msg, __FILE__, __LINE__)
+#define DWARNING(msg) CCE::DebugWarning(msg, __FILE__, __LINE__)
+#define DERROR(msg) CCE::DebugError(msg, __FILE__, __LINE__)
+#define DASSERT(condition, msg) CCE::DebugAssert(condition, msg, __FILE__, __LINE__)
 #endif // DEBUG
 
 #ifdef DEBUG_PROFILE
@@ -26,12 +24,9 @@
 
 namespace CCE
 {
-	struct CCE_API Debug
-	{
-		static void DebugInfo(const char* msg, const char* file, const int line) noexcept;
-		static void DebugWarning(const char* msg, const char* file, const int line) noexcept;
-		static void DebugError(const char* msg, const char* file, const int line) noexcept;
-		static void DebugError(const DWORD error, const char* file, const int line) noexcept;
-		static void DebugAssert(const bool condition, const char* msg, const char* file, const int line) noexcept;
-	};
+	CCE_API void DebugInfo(const char* msg, const char* file, const int line) noexcept;
+	CCE_API void DebugWarning(const char* msg, const char* file, const int line) noexcept;
+	CCE_API void DebugError(const char* msg, const char* file, const int line) noexcept;
+	CCE_API void DebugError(const DWORD error, const char* file, const int line) noexcept;
+	CCE_API void DebugAssert(const bool condition, const char* msg, const char* file, const int line) noexcept;
 }

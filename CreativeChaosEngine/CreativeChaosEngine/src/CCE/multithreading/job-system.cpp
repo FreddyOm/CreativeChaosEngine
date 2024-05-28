@@ -141,7 +141,6 @@ namespace CCE::Jobs
 		job_queue_normal.clear();
 		job_queue_low.clear();
 
-
 	}
 
 	Jobs::Job GetNextJob()

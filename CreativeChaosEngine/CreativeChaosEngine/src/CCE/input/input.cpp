@@ -128,6 +128,8 @@ namespace CCE::Input
 
 #pragma region WIN_INPUT
 
+	std::vector<Jobs::Job> handlerJobs{};
+
 	Jobs::JobReturnType FinalizeWinInput()
 	{
 		OPTICK_EVENT();
@@ -142,10 +144,22 @@ namespace CCE::Input
 		// @TODO: Do this only when values change
 		// @TODO: This currently doesn't really work out...
 
+		Jobs::Counter cnt = Jobs::Counter(handlerList.size());
+
 		for (int handlerIndex = 0; handlerIndex < handlerList.size(); ++handlerIndex)
 		{
-			UpdateInputHandler(reinterpret_cast<uintptr_t>(handlerList[handlerIndex]));
+			handlerJobs.push_back(
+				Jobs::JOB(UpdateInputHandler, &cnt, Jobs::Priority::NORMAL, 
+					reinterpret_cast<uintptr_t>(handlerList.at(handlerIndex)))
+			);
+
+			//UpdateInputHandler(reinterpret_cast<uintptr_t>(handlerList[handlerIndex]));
 		}
+
+		Jobs::KickJobs(handlerJobs.data(), handlerList.size());
+		handlerJobs.clear();
+
+		Jobs::BusyWaitForCounter(&cnt);
 	}
 
 	Jobs::JobReturnType HandleWinInput(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
