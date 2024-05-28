@@ -1,6 +1,6 @@
 #include "scene.h"
 #include "../manager/application.h"
-#include "../graphics/rendering.h"
+#include "../graphics/rendering/D3D11/d3d11RenderPipeline.h"
 #include "../utilities/math/CCMath.h"
 
 namespace CCE::Scene

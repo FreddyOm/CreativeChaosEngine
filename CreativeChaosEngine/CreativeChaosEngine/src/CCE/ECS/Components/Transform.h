@@ -1,6 +1,6 @@
 #pragma once
-#include "../../Graphics/Rendering/D3D11.h"
-#include "../../Core.h"
+#include "../../graphics/rendering/D3D11/D3D11.h"
+#include "../../core.h"
 
 namespace CCE::ECS::Components
 {

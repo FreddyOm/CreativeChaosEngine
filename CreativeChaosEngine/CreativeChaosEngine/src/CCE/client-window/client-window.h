@@ -4,7 +4,7 @@
 #include <vector>
 #include "../core.h"
 #include "../input/input.h"
-#include "../graphics/rendering.h"
+#include "../graphics/rendering/D3D11/d3d11RenderPipeline.h"
 #include "../manager/profilingManager.h"
 #include "../multithreading/job-system.h"
 

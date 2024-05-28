@@ -6,9 +6,9 @@
 #include "../utilities/color/color.h"
 #include "../ecs/systems/rendering-system.h"
 
-#include "rendering/drawable/model.h"
-#include "rendering/camera.h"
-#include "rendering/D3D11.h"
+#include "../drawable/model.h"
+#include "../camera.h"
+#include "D3D11.h"
 #include <vector>
 
 namespace CCE::Graphics

@@ -3,7 +3,7 @@
 #include "../analysis/time.h"
 #include "../analysis/debug.h"
 #include "../analysis/logger.h"
-#include "../graphics/rendering.h"
+#include "../graphics/rendering/D3D11/d3d11RenderPipeline.h"
 #include "../client-window/client-window.h"
 #include "../multithreading/job-system.h"
 #include "../../thirdparty/src/optick.h"

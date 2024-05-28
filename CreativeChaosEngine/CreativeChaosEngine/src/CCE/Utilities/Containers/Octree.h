@@ -7,9 +7,9 @@
 #include <array>
 #include <vector>
 #include <functional>
-#include "../../ECS/entity.h"
-#include "../../Physics/Physics.h"
-#include "../../Graphics/Rendering/D3D11.h"
+#include "../../ecs/entity.h"
+#include "../../physics/physics.h"
+#include "../../graphics/rendering/D3D11/D3D11.h"
 
 namespace CCE::Containers
 {

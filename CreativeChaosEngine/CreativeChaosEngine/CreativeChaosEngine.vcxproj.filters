@@ -26,7 +26,7 @@
     <ClCompile Include="src\CCE\graphics\rendering\Drawable\model.cpp" />
     <ClCompile Include="src\CCE\manager\application.cpp" />
     <ClCompile Include="src\CCE\utilities\Color\color.cpp" />
-    <ClCompile Include="src\CCE\graphics\rendering.cpp" />
+    <ClCompile Include="src\CCE\graphics\rendering\D3D11\d3d11RenderPipeline.cpp" />
     <ClCompile Include="src\CCE\utilities\Math\CRCHash.cpp" />
     <ClCompile Include="src\CCE\memory\pool-allocator.cpp" />
     <ClCompile Include="src\CCE\memory\allocator.cpp" />
@@ -84,7 +84,7 @@
     <ClInclude Include="src\CCE\graphics\rendering\Bindable\index-buffer.h" />
     <ClInclude Include="src\CCE\graphics\rendering\Bindable\IBindable.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="src\CCE\graphics\rendering\D3D11.h" />
+    <ClInclude Include="src\CCE\graphics\rendering\D3D11\D3D11.h" />
     <ClInclude Include="src\CCE\graphics\rendering\Drawable\IDrawable.h" />
     <ClInclude Include="src\CCE\include\assimp\aabb.h" />
     <ClInclude Include="src\CCE\include\assimp\ai_assert.h" />
@@ -190,7 +190,7 @@
     <ClInclude Include="src\CCE\Utilities\Concurrency\SpinLock.h" />
     <ClInclude Include="src\CCE\include\ds5w\ds5w.h" />
     <ClInclude Include="src\CCE\utilities\Color\color.h" />
-    <ClInclude Include="src\CCE\graphics\rendering.h" />
+    <ClInclude Include="src\CCE\graphics\rendering\D3D11\d3d11RenderPipeline.h" />
     <ClInclude Include="src\CCE\input\input-device.h" />
     <ClInclude Include="src\CCE\utilities\Math\CRCHash.h" />
     <ClInclude Include="src\CCE\memory\pool-allocator.h" />
