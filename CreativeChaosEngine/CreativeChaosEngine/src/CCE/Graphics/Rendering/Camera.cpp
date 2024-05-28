@@ -1,10 +1,10 @@
 #include "Camera.h"
-#include "../rendering.h"
+#include "../rendering/D3D11/d3d11RenderPipeline.h"
 #include "../../Analysis/Time.h"
 #include "bindable/constant-buffer.h"
 #include "../../input/input.h"
-#include "../Rendering/../../Manager/ProfilingManager.h"
-#include "../Rendering/D3D11.h"
+#include "../rendering/../../manager/profilingManager.h"
+#include "../rendering/D3D11/D3D11.h"
 
 namespace CCE::Graphics
 {

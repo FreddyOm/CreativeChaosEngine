@@ -4,9 +4,9 @@
 #include <vector>
 #include "../core.h"
 #include "../input/input.h"
-#include "../manager/jobManager.h"
-#include "../graphics/rendering.h"
+#include "../graphics/rendering/D3D11/d3d11RenderPipeline.h"
 #include "../manager/profilingManager.h"
+#include "../multithreading/job-system.h"
 
 // @TODO: Refactor static manager pointers to work in a defined way
 namespace CCE
@@ -29,7 +29,7 @@ namespace CCE
 		}
 
 		bool OpenWindow(HINSTANCE hInstance, String winName = "Creative Chaos Engine - v0.1");
-		void UpdateClientWindow(int& _returnVal);
+		Jobs::JobReturnType UpdateClientWindow(uintptr_t _returnVal);
 		int CloseClientWindow();
 
 		int GetClientWindowWidth() const;

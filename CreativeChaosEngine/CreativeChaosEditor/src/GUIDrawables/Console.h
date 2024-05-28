@@ -1,13 +1,14 @@
 #pragma once
 #include "Base/EditorWindow.h"
+#include "../src/CCE/Analysis/logger.h"
+#include "CCE/analysis/debugInfoDesc.h"
 #include <vector>
-#include "../src/CCE/Analysis/Logger.h"
 
 class Console : public EditorWindow
 {
 public:
 	Console(String _winName)
-		: EditorWindow(_winName), pLogBuffer(&Logger::logBuffer)
+		: EditorWindow(_winName), pLogBuffer(&g_logBuffer)
 	{ }
 
 	void OnGui();
@@ -16,7 +17,7 @@ private:
 	void OpenIDE(const std::string fileName, const int line);
 
 private:
-	std::vector<Logger::DebugInfoDesc>* pLogBuffer = nullptr;
+	std::vector<CCE::DebugInfoDesc>* pLogBuffer = nullptr;
 
 	bool messages = true;
 	bool warnings = true;

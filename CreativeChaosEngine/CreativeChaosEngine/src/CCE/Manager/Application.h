@@ -1,6 +1,5 @@
 #pragma once
 #include "../core.h"
-#include "jobManager.h"
 #include "baseManager.h"
 #include "./../input/input.h"
 #include "memoryManager.h"
@@ -54,7 +53,6 @@ namespace CCE
 
 	public:
 
-		Jobs::JobManager mJobManager = CCE::Jobs::JobManager();
 		ProfilingManager mProfilingManager = CCE::ProfilingManager();
 		MemoryManager mMemoryManager = MemoryManager();
 		ECS::EntityComponentSystem mECS = ECS::EntityComponentSystem();
@@ -70,7 +68,8 @@ namespace CCE
 		std::chrono::steady_clock::time_point frameBegin;
 		std::chrono::steady_clock::time_point frameEnd;
 	
-		Jobs::JobManager::Counter cnt;
+		Jobs::Counter cntPreEditorUpdate;
+		Jobs::Counter cntPostEditorUpdate;
 
 		File engineConfig = {};
 

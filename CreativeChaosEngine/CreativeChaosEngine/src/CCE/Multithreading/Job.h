@@ -2,7 +2,6 @@
 #include "scoped-spinlock.h"
 #include "spinlock.h"
 #include <string>
-#include <functional>
 
 namespace CCE::Jobs
 {
@@ -35,7 +34,7 @@ namespace CCE::Jobs
 		unsigned int m_DesiredCount = 0;		// 4 bytes
 		Priority m_Priority = (Priority)1;		// 4 bytes
 
-		std::string m_FunctionName = "";
+		std::string m_FunctionName = std::string("");
 
 		Job()
 			: m_EntryPoint(nullptr)
@@ -48,6 +47,20 @@ namespace CCE::Jobs
 		Job(void* ep, Counter* pCnt, Priority pr, std::string functionName, uintptr_t args = 0)
 			: m_EntryPoint(static_cast<JobEntryPoint>(ep)), m_Param(args), m_pCounter(pCnt), m_Priority(pr), m_FunctionName(functionName)
 		{ }
+
+		/// <summary>
+		/// Explicitly copies the job - only used for debug purposes currently.
+		/// </summary>
+		/// <returns>A copy of the job description.</returns>
+		Job Copy()
+		{
+			Job cpy(m_EntryPoint, m_Priority, m_FunctionName, m_Param);
+			cpy.m_DesiredCount = m_DesiredCount;
+			cpy.m_Fiber = m_Fiber;
+			cpy.m_pCounter = m_pCounter;
+
+			return cpy;
+		}
 
 		// Copy semantics
 		Job(const Job& other) = delete;
@@ -92,5 +105,4 @@ namespace CCE::Jobs
 			return *this;
 		}
 	};
-
 }

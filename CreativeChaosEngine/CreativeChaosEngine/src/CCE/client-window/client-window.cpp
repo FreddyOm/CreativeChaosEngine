@@ -1,6 +1,5 @@
 #include "client-window.h"
-#include "../manager/Application.h"
-#include <functional>
+#include "../manager/application.h"
 
 /// <summary>
 /// Callback for window procedure.
@@ -62,16 +61,16 @@ bool CCE::ClientWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 /// <summary>
 /// The window's message pump.
 /// </summary>
-void CCE::ClientWindow::UpdateClientWindow(int& _returnVal)
+CCE::Jobs::JobReturnType CCE::ClientWindow::UpdateClientWindow(uintptr_t _returnVal)
 {
 	OPTICK_EVENT();
-	_returnVal = 0;
+	*(reinterpret_cast<int*>(_returnVal)) = 0;
 	MSG msg;
 	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 	{
 		if (msg.message == (int)WM_QUIT)
 		{
-			_returnVal = (int)msg.message;
+			*(reinterpret_cast<int*>(_returnVal)) = (int)msg.message;
 		}
 
 		TranslateMessage(&msg);

@@ -3,7 +3,7 @@
 #include "../analysis/time.h"
 #include "../analysis/debug.h"
 #include "../analysis/logger.h"
-#include "../graphics/rendering.h"
+#include "../graphics/rendering/D3D11/d3d11RenderPipeline.h"
 #include "../client-window/client-window.h"
 #include "../multithreading/job-system.h"
 #include "../../thirdparty/src/optick.h"
@@ -82,34 +82,37 @@ namespace CCE
 		}
 
 		// Handle input
-
-		window->UpdateClientWindow(rValue); // @TODO: Check if this can be done by another thread!
+		window->UpdateClientWindow(reinterpret_cast<uintptr_t>(&rValue)); // @TODO: Check if this can be done by another thread!		
+		
+		cntPreEditorUpdate.store(handleInput ? 3 : 1, std::memory_order_release);
 
 		if (handleInput)
-		{
-			cnt.store(2, std::memory_order_release);
-			Input::FinalizeWinInput();
-		}
-		else 
-		{
-			cnt.store(1, std::memory_order_release);
-		}
+		{	
+			Job inputJobs[2] =
+			{
+				JOB(Input::FinalizeWinInput, &cntPreEditorUpdate, Priority::NORMAL),
+				JOB(Input::HandleXInput, &cntPreEditorUpdate, Priority::NORMAL),
+				//Input::HandleDirectInput();
+				//Input::HandleDualSenseInput();
+			};
+			KickJobs(&inputJobs[0], 2);
 
-
-		//mInputManager.HandleDirectInput();
-		Input::HandleXInput();	// @TODO: Check if this can be done by another thread!
+			BusyWaitForCounter(&cntPreEditorUpdate, 1);
+		}
 
 		// @TODO: Replace with NVIDIA PhysX
 		//mPhysicsSystem.UpdateSystem();
 
-		/*cnt.store(1, std::memory_order_release);
+		/*
+		
+		// Currently not working... Probably because of graphics call from non-main thread -.-
+		Job beginFrameJob = JOB(Graphics::BeginFrame, &cntPreEditorUpdate, Priority::HIGH,
+			reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor)),
 
-		Job beginFrameJob(Graphics::BeginFrame, &cnt, Priority::NORMAL,
-			reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor));
 		KickJob(std::move(beginFrameJob));
-
-		BusyWaitForCounter(&cnt);
+		BusyWaitForCounter(&cntPreEditorUpdate);
 		*/
+
 		Graphics::BeginFrame(reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor));
 	}
 
@@ -118,18 +121,16 @@ namespace CCE
 	{
 		OPTICK_EVENT();
 		
-		//cnt.store(1, std::memory_order_release);
+		cntPostEditorUpdate.store(2, std::memory_order_release);
 
-		//window->GetRenderPipeline()->EndFrame();
-
+		Job postEditorUpdateJobs[2] =
+		{
+			JOB(Graphics::EndFrame, &cntPostEditorUpdate, Priority::LOW),
+			JOB(Input::ResetInputValues, &cntPostEditorUpdate, Priority::LOW)
+		};
 		
-		//Job endFrameJob = Job(Graphics::EndFrame, &cnt, Priority::LOW);
-		//Jobs::KickJob(std::move(endFrameJob));
-
-		//Jobs::BusyWaitForCounter(&cnt);
-
-		Graphics::EndFrame();
-		Input::ResetInputValues();
+		KickJobs(&postEditorUpdateJobs[0], 2);
+		BusyWaitForCounter(&cntPostEditorUpdate);
 
 		frameEnd = Time::Now();
 		Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));
@@ -170,8 +171,9 @@ namespace CCE
 #else
 #error CCE is currently only supported for Windows
 #endif
+		InitializeLogger();
 		mMemoryManager.StartUp();
-		Jobs::InitializeThreadpool(16);
+		Jobs::InitializeThreadpool();
 		Input::Initialize();
 		mECS.StartUp();
 		mPhysicsSystem.StartUp();
@@ -193,12 +195,10 @@ namespace CCE
 		mPhysicsSystem.ShutDown();
 		mECS.ShutDown();
 		Input::Deinitialize();
-#if MULTITHREADED
-		//mJobManager.ShutDown();
-#endif
 
 		mMemoryManager.ShutDown();
 		Jobs::DeinitializeThreadpool();
+		DeinitializeLogger();
 	}
 
 	Directory Application::GetPersistentDataPath() const

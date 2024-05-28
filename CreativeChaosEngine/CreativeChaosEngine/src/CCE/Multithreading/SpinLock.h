@@ -1,6 +1,8 @@
 #pragma once
 #include "../core.h"
+#include "../analysis/Debug.h"
 #include <atomic>
+#include <mutex>
 
 namespace CCE
 {
@@ -9,22 +11,20 @@ namespace CCE
 		SpinLock() = default;
 		~SpinLock() = default;
 
-		__forceinline void Acquire() const
+		__forceinline void Acquire() const noexcept
 		{
-			for (;;) {
-				// Returns false when it switched from true to false!
-				if (!lock.exchange(true, std::memory_order_acquire)) {
-					break;
-				}
-			}
+			// Guard
+			while (lock.test_and_set(std::memory_order_seq_cst))
+				lock.wait(true, std::memory_order_relaxed);
 		}
 
-		__forceinline void Release() const
+		__forceinline void Release() const noexcept
 		{
-			lock.store(false, std::memory_order_release);
+			lock.clear(std::memory_order_release);
+			lock.notify_one();
 		}
 
 	private:
-		mutable std::atomic<bool> lock = {false};
+		mutable std::atomic_flag lock = ATOMIC_FLAG_INIT;
 	};
 }

@@ -1,5 +1,5 @@
 #include "model.h"
-#include "../../rendering.h"
+#include "../../rendering/D3D11/d3d11RenderPipeline.h"
 #include "../resources/mesh-loader.h"
 #include "../bindable/bindable-common.h"
 #include "../../../manager/application.h"

@@ -3,7 +3,7 @@
 #include "../../string/string.h"
 #include "../../resources/mesh-data.h"
 #include "../../graphics/rendering/bindable/bindable-common.h"
-#include "../../graphics/rendering/D3D11.h"
+#include "../../graphics/rendering/D3D11/D3D11.h"
 #include "../../graphics/rendering/bindable/vs-const-buf-data.h"
 
 

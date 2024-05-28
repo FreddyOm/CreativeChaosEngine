@@ -25,7 +25,7 @@ public:
 
 		DebugInfoLabel::Draw();
 		if (ImGui::DynamicTextButton(ICON_FK_INFO_CIRCLE " %d      " ICON_FK_EXCLAMATION_CIRCLE " %d      "
-			ICON_FK_BAN " %d", 0, size, Logger::logCount[0], Logger::logCount[1], Logger::logCount[2]))
+			ICON_FK_BAN " %d", 0, size, g_logCount[0], g_logCount[1], g_logCount[2]))
 		{
 			// Toggle console
 			pDrawables->at(2)->ToggleWindow(); // FIX-ME: Don't look for the console via an index! 
@@ -37,14 +37,14 @@ public:
 
 	void AdaptColor()
 	{
-		if (Logger::logCount[2] > 0)
+		if (g_logCount[2] > 0)
 		{
 			bg_color = ImVec4(0.5f, 0.1f, 0.1f, 0.2f);
 			text_color = ImVec4(1, 0.2f, 0.2f, 0.8f);
 			return;
 		}
 
-		if (Logger::logCount[1] > 0)
+		if (g_logCount[1] > 0)
 		{
 			bg_color = ImVec4(0.5f, 0.5f, 0.1f, 0.2f);
 			text_color = ImVec4(1, 1, 0.2f, 0.8f);

@@ -1,5 +1,5 @@
 #pragma once
-#include "../../Graphics/Rendering/D3D11.h"
+#include "../../Graphics/Rendering/D3D11/D3D11.h"
 #include "Collider.h"
 
 namespace CCE::ECS::Components

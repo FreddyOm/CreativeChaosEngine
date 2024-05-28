@@ -2,6 +2,7 @@
 #include "../analysis/logger.h"
 #include "../analysis/debug.h"
 #include "../analysis/time.h"
+#include "../string/string.h"
 
 namespace CCE
 {

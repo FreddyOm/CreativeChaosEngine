@@ -1,6 +1,6 @@
 #pragma once
 #include "IBindable.h"
-#include "../D3D11.h"
+#include "../D3D11/D3D11.h"
 #include "../../../Analysis/debug.h"
 
 namespace CCE::Graphics

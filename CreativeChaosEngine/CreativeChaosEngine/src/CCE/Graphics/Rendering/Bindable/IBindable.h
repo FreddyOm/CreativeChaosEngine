@@ -1,7 +1,7 @@
 #pragma once
 #include "../../../core.h"
-#include "../D3D11.h"
-#include "../graphics/rendering.h"
+#include "../D3D11/D3D11.h"
+#include "../graphics/rendering/D3D11/d3d11RenderPipeline.h"
 #include "../../thirdparty/src/optick.h"
 
 namespace CCE::Graphics

@@ -5,21 +5,28 @@
 
 #include "scoped-spinlock.h"
 #include "spinlock.h"
-#include "scoped-mutex.h"
 
+#include <thread>
 #include <queue>
 #include <mutex>
+#include <unordered_map>
 
 namespace CCE::Jobs
 {
 	
 #define NUM_FIBERS 150
 
+#if NUM_FIBERS > 2028 
+#error There can only be a maximum of 2028 fibers present at the same time!
+#endif
+
 	HANDLE mainThread{};
 	LPVOID mainFiber{};
+	
+	std::atomic<bool> runThreads(true);
 
 	std::vector<std::thread*> worker_threads = {};
-	std::vector<LPVOID> thread_fibers = {};
+	std::unordered_map<HANDLE, LPVOID> thread_fibers = {};
 
 	std::deque<Job> job_queue_high{};
 	std::deque<Job> job_queue_normal{};
@@ -27,17 +34,21 @@ namespace CCE::Jobs
 
 	std::queue<LPVOID> fiber_pool{};
 
-	std::atomic<bool> runThreads(true);
-	
+	CCE::SpinLock thread_fibers_sl{};
 	CCE::SpinLock job_queue_sl{};
 	CCE::SpinLock fiber_pool_sl{};
 	CCE::SpinLock wait_list_sl{};
+	CCE::SpinLock schedule_list_sl{};
 
 	struct WaitData
 	{
 		LPVOID m_Fiber = nullptr;
 		Counter* m_pCounter = nullptr;
 		int m_desiredCount = 0;
+
+		WaitData()
+			: m_Fiber(nullptr), m_pCounter(nullptr), m_desiredCount(0)
+		{ }
 
 		WaitData(const LPVOID _fiber, Counter* _counter, const int desiredCount)
 			: m_Fiber(_fiber), m_pCounter(_counter), m_desiredCount(desiredCount)
@@ -57,6 +68,7 @@ namespace CCE::Jobs
 	};
 
 	std::vector<WaitData> wait_list{};
+	std::unordered_map<LPVOID, WaitData> schedule_list{};
 	
 
 	void DeinitializeThreadpool()
@@ -65,6 +77,22 @@ namespace CCE::Jobs
 
 		Sleep(1);
 
+		ConvertFiberToThread(); // @TODO: Which thread will this be and will it be joined soon?
+
+		// Join and clear the worker threads
+		{
+			for (auto thread : worker_threads)
+			{
+				if (thread->joinable())
+				{
+					thread->join();
+				}
+			}
+
+			worker_threads.clear();
+		}
+		
+		// Clear the fiber pool and delete all fibers in the pool
 		{
 			ScopedSpinLock lock(fiber_pool_sl);
 			while (fiber_pool.size() > 0)
@@ -75,13 +103,43 @@ namespace CCE::Jobs
 			}
 		}
 
+		// Clear the wait list and delete all fibers in the wait list
 		{
 			ScopedSpinLock lock(wait_list_sl);
 			for(int i = 0; i < wait_list.size(); ++i)
 			{
 				DeleteFiber(wait_list[i].m_Fiber);
 			}
+
+			wait_list.clear();
 		}
+
+		// Delete all scheduled fibers and clear the list
+		{
+			ScopedSpinLock lock(schedule_list_sl);
+			for (auto kvp : schedule_list)
+			{
+				DeleteFiber(kvp.second.m_Fiber);
+			}
+			schedule_list.clear();
+		}
+		
+		// Delete the fibers which were created on the threads initially
+		{
+			ScopedSpinLock lock(thread_fibers_sl);
+
+			for (auto kvp : thread_fibers)
+			{
+				DeleteFiber(kvp.second);
+			}
+			
+			thread_fibers.clear();
+		}
+
+		job_queue_high.clear();
+		job_queue_normal.clear();
+		job_queue_low.clear();
+
 	}
 
 	Jobs::Job GetNextJob()
@@ -129,7 +187,8 @@ namespace CCE::Jobs
 
 		if (!wait_list.empty())
 		{
-			std::vector<WaitData>::iterator validWaitData = wait_list.end();
+			bool isValidData = false;
+			std::vector<WaitData>::iterator validWaitData = {};
 
 			for (auto it = wait_list.begin(); it != wait_list.end(); ++it)
 			{
@@ -138,15 +197,16 @@ namespace CCE::Jobs
 					DASSERT(it->m_pCounter->load(std::memory_order_relaxed) <= it->m_desiredCount, 
 						"Counter is not yet equal or less than the desired count!");
 					
+					isValidData = true;
 					validWaitData = it;
 					break; // Break in order to make this work with multiple wait list elements!
 				}
 			}
 
 			// If job is ready, remove wait data entry, return fiber and switch to waiting fiber!
-			if (validWaitData != wait_list.end())
+			if (isValidData)
 			{
-				LPVOID fiberToSwitchTo = validWaitData->m_Fiber;	// Error? Invalid iterator? --> Probably wrong TLS
+				LPVOID fiberToSwitchTo = validWaitData->m_Fiber;
 
 				{
 					ScopedSpinLock lock(fiber_pool_sl);
@@ -173,7 +233,12 @@ namespace CCE::Jobs
 			{
 				OPTICK_EVENT();
 
+				UpdateWaitData();	// @TODO: Try to somehow do this more elegantly!!
+
 				CheckWaitList();
+
+				if (job_queue_high.empty() && job_queue_normal.empty() && job_queue_low.empty())
+					continue;
 
 				Job jobCpy = GetNextJob();
 
@@ -199,9 +264,8 @@ namespace CCE::Jobs
 			}
 		}
 
-		// Do not terminate the main thread!
-		if(GetCurrentThread() != mainThread)
-			DeleteFiber(GetCurrentFiber());
+		// Switch back to the initial RunThread Fiber
+		SwitchToFiber(thread_fibers.at(GetCurrentThread()));
 	}
 
 	LPVOID GetFiber()
@@ -226,12 +290,23 @@ namespace CCE::Jobs
 	{
 		OPTICK_THREAD("WORKER");
 		LPVOID threadFiber = ConvertThreadToFiber(0);
+
+		// Store the fibers running in this thread inside this list.
+		{
+			ScopedSpinLock lock(thread_fibers_sl);
+			thread_fibers.emplace(GetCurrentThread(), threadFiber);
+		}
+
 		SwitchToFiber(GetFiber());
+
+		// Reconvert the fiber to a thread.
+		ConvertFiberToThread();
 		LOG("Terminated Thread %d", GetCurrentThreadId());
 	}
 
 	void InitializeThreadpool(int numOfThreads)
 	{
+		if (numOfThreads == 0) { return; }
 		unsigned int hardwareThreads = std::thread::hardware_concurrency();
 
 		// Define number of threads
@@ -250,7 +325,7 @@ namespace CCE::Jobs
 
 		for (int i = 0; i < NUM_FIBERS; ++i)
 		{
-			LPVOID fiber = CreateFiber(0, (LPFIBER_START_ROUTINE) &RunFiber, NULL);
+			LPVOID fiber = CreateFiber(1024, (LPFIBER_START_ROUTINE) &RunFiber, NULL);
 			fiber_pool.push(fiber);
 		}
 
@@ -298,6 +373,51 @@ namespace CCE::Jobs
 		}
 	}
 
+	void KickJobs(Job* jobs, int jobCount)
+	{
+		OPTICK_EVENT();
+		OPTICK_TAG("Job", jobs[0].m_FunctionName.c_str());
+		ScopedSpinLock lock(job_queue_sl);
+
+		for (int i = 0; i < jobCount; ++i)
+		{
+			switch (jobs[i].m_Priority)
+			{
+			case Priority::HIGH:
+				job_queue_high.push_back(std::move(jobs[i]));
+				break;
+			case Priority::NORMAL:
+				job_queue_normal.push_back(std::move(jobs[i]));
+				break;
+			case Priority::LOW:
+				job_queue_low.push_back(std::move(jobs[i]));
+				break;
+			}
+		}
+	}
+
+	void UpdateWaitData()
+	{
+		ScopedSpinLock lock(schedule_list_sl);
+		if (schedule_list.empty()) 
+		{
+			return; 
+		}
+
+		LPVOID currentFiber = GetCurrentFiber();
+
+		if (schedule_list.contains(currentFiber))
+		{
+			WaitData waitDataCpy = std::move(schedule_list[currentFiber]);
+			schedule_list.erase(currentFiber);
+
+			{
+				ScopedSpinLock wl_lock(wait_list_sl);
+				wait_list.push_back(std::move(waitDataCpy));
+			}
+		}
+	}
+
 	void BusyWaitForCounter(Counter* const cnt, const int desiredCount)
 	{
 		OPTICK_EVENT();
@@ -306,16 +426,19 @@ namespace CCE::Jobs
 
 		if (cnt->load(std::memory_order_consume) > desiredCount)
 		{
-			// Put on wait list!
+			// Fetch new fiber
+			LPVOID fiber = GetFiber();	
+			DASSERT(fiber != nullptr, "Fiber to switch to was null!");
+			
+			// Schedule for wait list!
 			{
-				ScopedSpinLock lock(wait_list_sl);
-				wait_list.push_back(WaitData(GetCurrentFiber(), cnt, desiredCount));
+				ScopedSpinLock lock(schedule_list_sl);
+				schedule_list.emplace(fiber, std::move(WaitData(GetCurrentFiber(), cnt, desiredCount)));
 			}
 
-			// Switch to new fiber
-			SwitchToFiber(GetFiber());
+			SwitchToFiber(fiber);
 		}
-	}			// Error? --> Probably wrong stack memory because fiber woke up on different thread?
+	}
 
 	void BusyWaitForCounterAndFree(Counter* const cnt, const int desiredCount)
 	{
@@ -325,10 +448,14 @@ namespace CCE::Jobs
 
 		if (cnt->load(std::memory_order_consume) > desiredCount)
 		{
-			// Put on wait list!
+			// Fetch new fiber
+			LPVOID fiber = GetFiber();
+			DASSERT(fiber != nullptr, "Fiber to switch to was null!");
+		
+			// Schedule for wait list!
 			{
-				ScopedSpinLock lock(wait_list_sl);
-				wait_list.push_back(WaitData(GetCurrentFiber(), cnt, desiredCount));
+				ScopedSpinLock lock(schedule_list_sl);
+				schedule_list.emplace(fiber, std::move(WaitData(GetCurrentFiber(), cnt, desiredCount)));
 			}
 
 			// Switch to new fiber
