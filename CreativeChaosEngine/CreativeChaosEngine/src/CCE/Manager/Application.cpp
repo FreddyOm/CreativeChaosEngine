@@ -82,7 +82,7 @@ namespace CCE
 		}
 
 		// Handle input
-		window->UpdateClientWindow(rValue); // @TODO: Check if this can be done by another thread!		
+		window->UpdateClientWindow(reinterpret_cast<uintptr_t>(&rValue)); // @TODO: Check if this can be done by another thread!		
 		
 		cntPreEditorUpdate.store(handleInput ? 3 : 1, std::memory_order_release);
 

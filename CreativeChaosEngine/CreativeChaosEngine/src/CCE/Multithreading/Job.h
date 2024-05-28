@@ -2,7 +2,6 @@
 #include "scoped-spinlock.h"
 #include "spinlock.h"
 #include <string>
-#include <functional>
 
 namespace CCE::Jobs
 {
