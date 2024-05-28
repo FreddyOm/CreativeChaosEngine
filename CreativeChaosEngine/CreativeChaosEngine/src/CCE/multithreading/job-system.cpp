@@ -5,7 +5,6 @@
 
 #include "scoped-spinlock.h"
 #include "spinlock.h"
-#include "scoped-mutex.h"
 
 #include <thread>
 #include <queue>

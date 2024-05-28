@@ -252,7 +252,6 @@
     <ClInclude Include="src\CCE\multithreading\scoped-spinlock.h" />
     <ClInclude Include="src\CCE\multithreading\spinlock.h" />
     <ClInclude Include="src\CCE\multithreading\job-system.h" />
-    <ClInclude Include="src\CCE\multithreading\scoped-mutex.h" />
     <ClInclude Include="src\CCE\input\input.h" />
     <ClInclude Include="src\CCE\analysis\debugInfoDesc.h" />
   </ItemGroup>

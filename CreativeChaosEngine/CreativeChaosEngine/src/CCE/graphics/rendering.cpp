@@ -5,7 +5,7 @@
 #include "../manager/profilingManager.h"
 #include "../client-window/client-window.h"
 #include "../resources/resource-allocator.h"
-#include "../multithreading/scoped-mutex.h"
+#include "../multithreading/scoped-spinlock.h"
 
 namespace CCE::Graphics
 {
@@ -32,7 +32,7 @@ namespace CCE::Graphics
 
 	RenderPipelineConfig g_RenderPipelineConfig = RenderPipelineConfig();
 
-	std::mutex contextLock;
+	SpinLock contextLock;
 
 	int GetRenderTargetWidth()
 	{
@@ -322,7 +322,7 @@ namespace CCE::Graphics
 	Jobs::JobReturnType ClearRenderTargetView(uintptr_t col)
 	{
 		OPTICK_EVENT();
-		//ScopedMutex lock(contextLock);
+		ScopedSpinLock lock(contextLock);
 		g_pContext->ClearRenderTargetView(g_pRenderTarget.Get(), reinterpret_cast<Color*>(col)->RGBA());
 	}
 
@@ -332,14 +332,14 @@ namespace CCE::Graphics
 	Jobs::JobReturnType ClearDepthStencilView()
 	{
 		OPTICK_EVENT();
-		//ScopedMutex lock(contextLock);
+		ScopedSpinLock lock(contextLock);
 		g_pContext->ClearDepthStencilView(g_pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 	}
 
 	Jobs::JobReturnType OMSetRenderTarget()
 	{
 		OPTICK_EVENT();
-		//ScopedMutex lock(contextLock);
+		ScopedSpinLock lock(contextLock);
 		g_pContext->OMSetRenderTargets(1u, g_pRenderTarget.GetAddressOf(), g_pDSV.Get());
 	}
 
@@ -365,45 +365,24 @@ namespace CCE::Graphics
 		if (CCE::ClientWindow::Instance->minimized) { return; }
 		OPTICK_EVENT();
 
-
 		// Clear render view and draw background color
 		
-		/*
-		Jobs::JobManager::Counter cnt = Jobs::JobManager::Counter(5);
-		// Create job descriptions
-		Jobs::Job cdsvJob = Jobs::Job(ClearDepthStencilView, Jobs::Priority::HIGH);
-		Jobs::Job crtvJob = Jobs::Job(ClearRenderTargetView, Jobs::Priority::NORMAL, color);
+		//Jobs::Counter cnt = Jobs::Counter(5);
 
-		cdsvJob.m_pCounter = &cnt;
-		crtvJob.m_pCounter = &cnt;
+		//Jobs::Job beginFrameJobs[5]
+		//{
+		//	// Create job descriptions
+		//	Jobs::JOB(ClearDepthStencilView, &cnt, Jobs::Priority::CRITICAL),
+		//	Jobs::JOB(ClearRenderTargetView, &cnt, Jobs::Priority::CRITICAL, color),
+		//	Jobs::JOB(OMSetRenderTarget, &cnt, Jobs::Priority::HIGH),
+		//	Jobs::JOB(UpdateViewportCamera, &cnt, Jobs::Priority::NORMAL),
+		//	Jobs::JOB(UpdateRenderingSystem, &cnt, Jobs::Priority::NORMAL),
+		//};
 
-		// Kick jobs
-		Jobs::KickJob(std::move(cdsvJob));
-		Jobs::KickJob(std::move(crtvJob));
+		//Jobs::KickJobs(&beginFrameJobs[0], 5);
 
-		// Await execution
-		Jobs::BusyWaitForCounter(&cnt, 3);
-
-		Jobs::Job omsrtJob = Jobs::Job(OMSetRenderTarget, Jobs::Priority::LOW);
-
-		omsrtJob.m_pCounter = &cnt;
-
-		Jobs::KickJob(std::move(omsrtJob));
-
-		Jobs::BusyWaitForCounter(&cnt, 2);
-
-		Jobs::Job uvcJob = Jobs::Job(UpdateViewportCamera, Jobs::Priority::NORMAL);
-		Jobs::Job ursJob = Jobs::Job(UpdateRenderingSystem, Jobs::Priority::NORMAL);
-
-		uvcJob.m_pCounter = &cnt;
-		ursJob.m_pCounter = &cnt;
-
-		Jobs::KickJob(std::move(uvcJob));
-		Jobs::KickJob(std::move(ursJob));
-
-		Jobs::BusyWaitForCounter(&cnt, 0);
-
-		*/
+		//// Await execution
+		//Jobs::BusyWaitForCounter(&cnt);		
 
 		ClearDepthStencilView();
 		ClearRenderTargetView(color);

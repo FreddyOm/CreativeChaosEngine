@@ -82,38 +82,37 @@ namespace CCE
 		}
 
 		// Handle input
+		window->UpdateClientWindow(rValue); // @TODO: Check if this can be done by another thread!		
+		
+		cntPreEditorUpdate.store(handleInput ? 3 : 1, std::memory_order_release);
 
-		window->UpdateClientWindow(rValue); // @TODO: Check if this can be done by another thread!
-		//Input::FinalizeWinInput();
-		
-		
 		if (handleInput)
-		{
-			cnt1.store(2, std::memory_order_release);
-			Job finalizeWinInputJob = JOB(Input::FinalizeWinInput, &cnt1, Priority::NORMAL);
-			KickJob(std::move(finalizeWinInputJob));
-		}	
-		else 
-		{
-			cnt1.store(1, std::memory_order_release);
+		{	
+			Job inputJobs[2] =
+			{
+				JOB(Input::FinalizeWinInput, &cntPreEditorUpdate, Priority::NORMAL),
+				JOB(Input::HandleXInput, &cntPreEditorUpdate, Priority::NORMAL),
+				//Input::HandleDirectInput();
+				//Input::HandleDualSenseInput();
+			};
+			KickJobs(&inputJobs[0], 2);
+
+			BusyWaitForCounter(&cntPreEditorUpdate, 1);
 		}
-		
-		//Input::HandleXInput();
-		//mInputManager.HandleDirectInput();
-		Job handleXInputJob = JOB(Input::HandleXInput, &cnt1, Priority::NORMAL);
-		KickJob(std::move(handleXInputJob));
 
 		// @TODO: Replace with NVIDIA PhysX
 		//mPhysicsSystem.UpdateSystem();
 
-		/*cnt.store(1, std::memory_order_release);
+		/*
+		
+		// Currently not working... Probably because of graphics call from non-main thread -.-
+		Job beginFrameJob = JOB(Graphics::BeginFrame, &cntPreEditorUpdate, Priority::HIGH,
+			reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor)),
 
-		Job beginFrameJob(Graphics::BeginFrame, &cnt, Priority::NORMAL,
-			reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor));
 		KickJob(std::move(beginFrameJob));
+		BusyWaitForCounter(&cntPreEditorUpdate);
 		*/
 
-		BusyWaitForCounter(&cnt1);
 		Graphics::BeginFrame(reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor));
 	}
 
@@ -122,18 +121,16 @@ namespace CCE
 	{
 		OPTICK_EVENT();
 		
-		//cnt.store(1, std::memory_order_release);
+		cntPostEditorUpdate.store(2, std::memory_order_release);
 
-		//window->GetRenderPipeline()->EndFrame();
-
+		Job postEditorUpdateJobs[2] =
+		{
+			JOB(Graphics::EndFrame, &cntPostEditorUpdate, Priority::LOW),
+			JOB(Input::ResetInputValues, &cntPostEditorUpdate, Priority::LOW)
+		};
 		
-		//Job endFrameJob = Job(Graphics::EndFrame, &cnt, Priority::LOW);
-		//Jobs::KickJob(std::move(endFrameJob));
-
-		//Jobs::BusyWaitForCounter(&cnt);
-
-		Graphics::EndFrame();
-		Input::ResetInputValues();
+		KickJobs(&postEditorUpdateJobs[0], 2);
+		BusyWaitForCounter(&cntPostEditorUpdate);
 
 		frameEnd = Time::Now();
 		Time::SetDeltaTime(Time::GetDurationInMilliSec(frameBegin, frameEnd));

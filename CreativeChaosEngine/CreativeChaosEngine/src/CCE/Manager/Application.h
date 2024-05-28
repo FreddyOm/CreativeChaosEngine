@@ -68,7 +68,8 @@ namespace CCE
 		std::chrono::steady_clock::time_point frameBegin;
 		std::chrono::steady_clock::time_point frameEnd;
 	
-		Jobs::Counter cnt1;
+		Jobs::Counter cntPreEditorUpdate;
+		Jobs::Counter cntPostEditorUpdate;
 
 		File engineConfig = {};
 
