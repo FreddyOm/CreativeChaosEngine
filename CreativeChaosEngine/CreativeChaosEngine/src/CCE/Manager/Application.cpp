@@ -7,6 +7,7 @@
 #include "../client-window/client-window.h"
 #include "../multithreading/job-system.h"
 #include "../../thirdparty/src/optick.h"
+#include "../editor/job-profiler/jobProfiler.h"
 
 namespace CCE
 {
@@ -75,10 +76,12 @@ namespace CCE
 	void Application::PreEditorUpdate(int& rValue, bool handleInput)
 	{
 		OPTICK_FRAME("MainThread");
+		SAMPLE_JOB();
 
 		if (!m_pause)
 		{
 			frameBegin = Time::Now();
+			Debug::frameStart = frameBegin;
 		}
 
 		// Handle input
@@ -103,16 +106,6 @@ namespace CCE
 		// @TODO: Replace with NVIDIA PhysX
 		//mPhysicsSystem.UpdateSystem();
 
-		/*
-		
-		// Currently not working... Probably because of graphics call from non-main thread -.-
-		Job beginFrameJob = JOB(Graphics::BeginFrame, &cntPreEditorUpdate, Priority::HIGH,
-			reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor)),
-
-		KickJob(std::move(beginFrameJob));
-		BusyWaitForCounter(&cntPreEditorUpdate);
-		*/
-
 		Graphics::BeginFrame(reinterpret_cast<uintptr_t>(&Graphics::g_RenderPipelineConfig.backgroundColor));
 	}
 
@@ -120,7 +113,8 @@ namespace CCE
 	void Application::PostEditorUpdate()
 	{
 		OPTICK_EVENT();
-		
+		SAMPLE_JOB();
+
 		cntPostEditorUpdate.store(2, std::memory_order_release);
 
 		Job postEditorUpdateJobs[2] =

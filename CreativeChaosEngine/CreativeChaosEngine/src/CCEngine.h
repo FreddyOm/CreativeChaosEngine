@@ -46,6 +46,7 @@
 
 // --------- Editor ----------
 
+#include "CCE/editor/job-profiler/jobProfiler.h"
 // @TODO: Add new editor interface using gRPC
 
 // --------------------------

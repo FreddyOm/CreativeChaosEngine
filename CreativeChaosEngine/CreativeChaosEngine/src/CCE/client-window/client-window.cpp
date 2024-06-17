@@ -20,6 +20,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 bool CCE::ClientWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 {
 	OPTICK_EVENT();
+	SAMPLE_JOB();
+
 	// Set window name	
 	windowName = winName;
 	// Create and register win class
@@ -64,6 +66,8 @@ bool CCE::ClientWindow::OpenWindow(HINSTANCE hInstance, CCE::String winName)
 CCE::Jobs::JobReturnType CCE::ClientWindow::UpdateClientWindow(uintptr_t _returnVal)
 {
 	OPTICK_EVENT();
+	SAMPLE_JOB();
+
 	*(reinterpret_cast<int*>(_returnVal)) = 0;
 	MSG msg;
 	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -85,6 +89,8 @@ CCE::Jobs::JobReturnType CCE::ClientWindow::UpdateClientWindow(uintptr_t _return
 int CCE::ClientWindow::CloseClientWindow()
 {
 	OPTICK_EVENT();
+	SAMPLE_JOB();
+
 	windowRunning = false;
 	DASSERT(DestroyWindow(hWnd) != 0, "Failed destroying the editor window!");
 	LOG("Window was implicitly closed.");
@@ -99,6 +105,8 @@ int CCE::ClientWindow::CloseClientWindow()
 int CCE::ClientWindow::GetClientWindowWidth() const
 {
 	OPTICK_EVENT();
+	SAMPLE_JOB();
+
 	RECT rect = {};
 	GetWindowRect(hWnd,&rect);
 
@@ -112,6 +120,8 @@ int CCE::ClientWindow::GetClientWindowWidth() const
 int CCE::ClientWindow::GetClientWindowHeight() const
 {
 	OPTICK_EVENT();
+	SAMPLE_JOB();
+
 	RECT rect = {};
 	GetWindowRect(hWnd, &rect);
 
@@ -155,6 +165,8 @@ CCE::String CCE::ClientWindow::GetClientWindowName() const
 void CCE::ClientWindow::SetClientWindowName(CCE::String name)
 {
 	OPTICK_EVENT();
+	SAMPLE_JOB();
+
 	windowName = name;
 	SetWindowTextA(GetClientWindowHandle(), windowName.Value());
 }
@@ -172,6 +184,8 @@ using namespace CCE;
 LRESULT CALLBACK ClientWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	OPTICK_EVENT();
+	SAMPLE_JOB();
+
 	// @TODO: Handle input in one place & make explicit code platform independent
 	// @TODO: Create possibility to set values to 0 again
 	Input::HandleWinInput(hwnd, uMsg, wParam, lParam);

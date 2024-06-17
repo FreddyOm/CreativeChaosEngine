@@ -22,6 +22,7 @@ public:
 			DebugCategoryButton(ImVec2(40,40), GetGUIDrawablePtrs(), ICON_FK_VIDEO_CAMERA),
 			DebugCategoryButton(ImVec2(40,40), GetGUIDrawablePtrs(), ICON_FK_CHECK_CIRCLE_O),
 			DebugCategoryButton(ImVec2(40,40), GetGUIDrawablePtrs(), ICON_FK_KEYBOARD_O),
+			DebugCategoryButton(ImVec2(40,40), GetGUIDrawablePtrs(), ICON_FK_TASKS),
 		};
 
 		// Add more individual metrics here (e.g. GPU time, vertex count, mesh count, ...)

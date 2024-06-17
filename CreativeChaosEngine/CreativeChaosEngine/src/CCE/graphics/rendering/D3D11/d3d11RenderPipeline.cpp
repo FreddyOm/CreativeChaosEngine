@@ -322,6 +322,7 @@ namespace CCE::Graphics
 	Jobs::JobReturnType ClearRenderTargetView(uintptr_t col)
 	{
 		OPTICK_EVENT();
+		SAMPLE_JOB();
 		ScopedSpinLock lock(contextLock);
 		g_pContext->ClearRenderTargetView(g_pRenderTarget.Get(), reinterpret_cast<Color*>(col)->RGBA());
 	}
@@ -332,6 +333,7 @@ namespace CCE::Graphics
 	Jobs::JobReturnType ClearDepthStencilView()
 	{
 		OPTICK_EVENT();
+		SAMPLE_JOB();
 		ScopedSpinLock lock(contextLock);
 		g_pContext->ClearDepthStencilView(g_pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 	}
@@ -339,6 +341,7 @@ namespace CCE::Graphics
 	Jobs::JobReturnType OMSetRenderTarget()
 	{
 		OPTICK_EVENT();
+		SAMPLE_JOB();
 		ScopedSpinLock lock(contextLock);
 		g_pContext->OMSetRenderTargets(1u, g_pRenderTarget.GetAddressOf(), g_pDSV.Get());
 	}
@@ -346,12 +349,14 @@ namespace CCE::Graphics
 	Jobs::JobReturnType UpdateViewportCamera()
 	{
 		OPTICK_EVENT();
+		SAMPLE_JOB();
 		g_pViewportCamera->Update();
 	}
 
 	Jobs::JobReturnType UpdateRenderingSystem()
 	{
 		OPTICK_EVENT();
+		SAMPLE_JOB();
 		g_RenderingSystem.UpdateSystem();
 	}
 
@@ -364,6 +369,7 @@ namespace CCE::Graphics
 	{
 		if (CCE::ClientWindow::Instance->minimized) { return; }
 		OPTICK_EVENT();
+		SAMPLE_JOB();
 
 		// Clear render view and draw background color
 		
@@ -400,6 +406,7 @@ namespace CCE::Graphics
 	{
 		if (ClientWindow::Instance->minimized) { return; }
 		OPTICK_EVENT();
+		SAMPLE_JOB();
 		// Render buffer
 
 		HRESULT pres = g_pSwapChain->Present(g_RenderPipelineConfig.VSync ? 1 : 0, 0);

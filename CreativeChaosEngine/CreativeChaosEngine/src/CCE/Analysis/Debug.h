@@ -11,8 +11,8 @@
 #ifdef DEBUG_PROFILE
 #define DINFO(msg)
 #define DWARNING(msg)
-#define DERROR(msg) CCE::Debug::DebugError(msg, __FILE__, __LINE__)
-#define DASSERT(condition, msg) CCE::Debug::DebugAssert(condition, msg, __FILE__, __LINE__)
+#define DERROR(msg) CCE::DebugError(msg, __FILE__, __LINE__)
+#define DASSERT(condition, msg) CCE::DebugAssert(condition, msg, __FILE__, __LINE__)
 #endif // PROFILE
 
 #ifdef NDEBUG

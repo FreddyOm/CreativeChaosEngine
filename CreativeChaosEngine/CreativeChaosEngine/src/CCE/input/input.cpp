@@ -2,7 +2,7 @@
 
 #include "../analysis/logger.h"
 #include "../analysis/debug.h"
-#include "../Manager/ProfilingManager.h"
+#include "../manager/profilingManager.h"
 
 #include "../Utilities/Math/CCMath.h"
 
@@ -133,6 +133,7 @@ namespace CCE::Input
 	Jobs::JobReturnType FinalizeWinInput()
 	{
 		OPTICK_EVENT();
+		SAMPLE_JOB();
 
 		// Reset values for accuracy
 		mouse.deltaX = mouse.xPos - mouse.lastXPos;
@@ -165,6 +166,7 @@ namespace CCE::Input
 	Jobs::JobReturnType HandleWinInput(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 		OPTICK_EVENT();
+		SAMPLE_JOB();
 		// @TODO: Implement a callback or sth that allows to call here.
 		// Also check with calling over dll and stuff
 		if (InputCallback != NULL && InputCallback(hWnd, msg, wParam, lParam))
@@ -391,6 +393,8 @@ namespace CCE::Input
 	{
 		OPTICK_EVENT();
 		OPTICK_TAG("ControllerIndex", (int)controllerIndex);
+		SAMPLE_JOB();
+
 		// Simply get the state of the _controller from XInput.
 		DWORD dwResult = XInputGetState(controllerIndex, &state);
 
@@ -414,6 +418,7 @@ namespace CCE::Input
 	Jobs::JobReturnType HandleXInput()
 	{
 		OPTICK_EVENT();
+		SAMPLE_JOB();
 
 		connectedDeviceCount = 0;
 		ZeroMemory(&state, sizeof(XINPUT_STATE));
@@ -442,12 +447,15 @@ namespace CCE::Input
 	Jobs::JobReturnType ResetInputValues()
 	{
 		OPTICK_EVENT();
+		SAMPLE_JOB();
 		mouse.wheelDelta = 0;
 	}
 
 	Jobs::JobReturnType UpdateXInputControllerCount()
 	{
 		OPTICK_EVENT();
+		SAMPLE_JOB();
+
 		for (unsigned short i = 0; i < XUSER_MAX_COUNT; ++i)
 		{
 			if (activeController[i] != lastActiveController[i])
@@ -469,6 +477,7 @@ namespace CCE::Input
 	Jobs::JobReturnType GetXInput(const DWORD controllerIndex)
 	{
 		OPTICK_EVENT();
+		SAMPLE_JOB();
 		_currentController = &controller[controllerIndex];
 
 		if (!activeController.at(controllerIndex))

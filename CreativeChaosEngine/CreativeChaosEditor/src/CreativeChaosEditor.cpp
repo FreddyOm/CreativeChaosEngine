@@ -92,20 +92,20 @@ int main(int argc, char* argv[])
     // ------ OPEN ENGINE WINDOW ------
 
     {
-        // EditorGUI
         double imgui_process_time_ms = 0;
+        
+        // EditorGUI
         RuntimeDebugger runtimeDebugger = RuntimeDebugger(&imgui_process_time_ms);
         RenderingDebugger rendEditorWin = RenderingDebugger(String(ICON_FK_VIDEO_CAMERA) + " Rendering");
         Console debugConsole = Console(String(ICON_FK_CHECK_CIRCLE_O) + " Debug Console");
         InputWindow input = InputWindow(String(ICON_FK_KEYBOARD_O) + " Input");
+        JobWindow jobProfiler = JobWindow(String(ICON_FK_TASKS) + " Job Profiler");
         Inspector inspector = Inspector(String(ICON_FK_SEARCH) + "Inspector");
 
         // Editor viewport camera
         //CCE::Graphics::Camera viewportCamera = CCE::Graphics::Camera();
 
-#if MULTITHREADED
-        //JobWindow jobWin = JobWindow("Jobs");
-#endif
+        CCE::Debug::InitializeJobProfiler();
 
         using namespace CCE;
 
@@ -141,6 +141,7 @@ int main(int argc, char* argv[])
             // ------------------------------------------------------------------------------
 
             mRuntimeManager.PostEditorUpdate();
+            RESET_SAMPLES();
         }
     }
 

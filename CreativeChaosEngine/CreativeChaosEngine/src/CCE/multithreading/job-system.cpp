@@ -11,6 +11,9 @@
 #include <mutex>
 #include <unordered_map>
 
+#if defined(DEBUG) || defined(DEBUG_PROFILE)
+#include "../editor/job-profiler/jobProfiler.h"
+#endif
 namespace CCE::Jobs
 {
 	
@@ -424,6 +427,7 @@ namespace CCE::Jobs
 		OPTICK_TAG("CurrentCount:", cnt->load(std::memory_order_consume));
 		OPTICK_TAG("DesiredCount:", desiredCount);
 
+
 		if (cnt->load(std::memory_order_consume) > desiredCount)
 		{
 			// Fetch new fiber
@@ -436,7 +440,11 @@ namespace CCE::Jobs
 				schedule_list.emplace(fiber, std::move(WaitData(GetCurrentFiber(), cnt, desiredCount)));
 			}
 
+			PRE_SWITCH_FIBER();
+
 			SwitchToFiber(fiber);
+
+			POST_SWITCH_FIBER();
 		}
 	}
 
@@ -458,8 +466,11 @@ namespace CCE::Jobs
 				schedule_list.emplace(fiber, std::move(WaitData(GetCurrentFiber(), cnt, desiredCount)));
 			}
 
+			PRE_SWITCH_FIBER();
 			// Switch to new fiber
 			SwitchToFiber(GetFiber());
+
+			POST_SWITCH_FIBER();
 		}
 
 		delete cnt;

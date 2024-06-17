@@ -6,6 +6,7 @@
 #include <string>
 #include <tuple>
 #include "../../Thirdparty/src/optick.h"
+#include "../editor/job-profiler/jobProfiler.h"
 
 namespace CCE
 {

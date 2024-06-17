@@ -24,6 +24,9 @@
     <ClCompile Include="src\CCE\ecs\entity-component-system.cpp" />
     <ClCompile Include="src\CCE\ecs\systems\physics-system.cpp" />
     <ClCompile Include="src\CCE\ecs\systems\rendering-system.cpp" />
+    <ClCompile Include="src\CCE\editor\job-profiler\jobProfiler.cpp" />
+    <ClCompile Include="src\CCE\editor\job-profiler\JobProfilingCollector.cpp" />
+    <ClCompile Include="src\CCE\editor\job-profiler\JobProfilingData.cpp" />
     <ClCompile Include="src\CCE\graphics\rendering\Bindable\sampler.cpp" />
     <ClCompile Include="src\CCE\graphics\rendering\Bindable\texture2D.cpp" />
     <ClCompile Include="src\CCE\graphics\rendering\camera.cpp" />
@@ -90,6 +93,10 @@
     <ClInclude Include="src\CCE\ecs\entity.h" />
     <ClInclude Include="src\CCE\ecs\entity-component-system.h" />
     <ClInclude Include="src\CCE\ecs\systems\rendering-system.h" />
+    <ClInclude Include="src\CCE\editor\job-profiler\jobProfiler.h" />
+    <ClInclude Include="src\CCE\editor\job-profiler\JobProfilingCollector.h" />
+    <ClInclude Include="src\CCE\editor\job-profiler\JobProfilingData.h" />
+    <ClInclude Include="src\CCE\editor\job-profiler\JobProfilingWaitData.h" />
     <ClInclude Include="src\CCE\graphics\rendering\Bindable\constant-buffer.h" />
     <ClInclude Include="src\CCE\graphics\rendering\Bindable\sampler.h" />
     <ClInclude Include="src\CCE\graphics\rendering\Bindable\texture2D.h" />

@@ -68,6 +68,9 @@
     <ClCompile Include="src\CCE\manager\ProfilingManager.cpp" />
     <ClCompile Include="src\CCE\multithreading\job-system.cpp" />
     <ClCompile Include="src\CCE\input\input.cpp" />
+    <ClCompile Include="src\CCE\editor\job-profiler\jobProfiler.cpp" />
+    <ClCompile Include="src\CCE\editor\job-profiler\JobProfilingData.cpp" />
+    <ClCompile Include="src\CCE\editor\job-profiler\JobProfilingCollector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CCE\ecs\component-buffer.h" />
@@ -254,6 +257,10 @@
     <ClInclude Include="src\CCE\multithreading\job-system.h" />
     <ClInclude Include="src\CCE\input\input.h" />
     <ClInclude Include="src\CCE\analysis\debugInfoDesc.h" />
+    <ClInclude Include="src\CCE\editor\job-profiler\jobProfiler.h" />
+    <ClInclude Include="src\CCE\editor\job-profiler\JobProfilingData.h" />
+    <ClInclude Include="src\CCE\editor\job-profiler\JobProfilingCollector.h" />
+    <ClInclude Include="src\CCE\editor\job-profiler\JobProfilingWaitData.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="resources\sdk\assimp-vc143-mt.lib" />
