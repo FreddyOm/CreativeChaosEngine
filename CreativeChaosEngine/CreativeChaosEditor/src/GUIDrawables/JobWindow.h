@@ -13,6 +13,8 @@ public:
 
     void DrawSequencer();
 
+    void DrawThreadSequence(int& threadNum, std::pair<const DWORD, std::vector<CCE::Debug::JobProfilingData>>& thread);
+
 private:
     bool sampling = false;
 
@@ -24,7 +26,7 @@ private:
     float barHeight = 15.0f;
 
     float zoomFactor = 100.0f;
-
+    
     std::unordered_map<DWORD, std::vector<Debug::JobProfilingData>> frameProfilingCache{};
     Time::time::time_point frameStart{};
 
