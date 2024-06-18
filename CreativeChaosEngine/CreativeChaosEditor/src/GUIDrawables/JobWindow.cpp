@@ -38,6 +38,7 @@ void JobWindow::OnGui()
 		{
 			// Remove Samples
 			frameTimes.clear();
+			pCurrentJobInfo = nullptr;
 		}
 	}
 
@@ -47,6 +48,12 @@ void JobWindow::OnGui()
 	ImGui::Spacing();
 	
 	DrawSequencer();
+
+	ImGui::Spacing();
+	ImGui::Spacing();
+
+	DrawJobInfo();
+	DrawRecommendations();
 }
 
 void JobWindow::DrawSequencer()
@@ -55,7 +62,7 @@ void JobWindow::DrawSequencer()
 	// apply it at the end of the frame and display it beginning with the next frame.
 
 	ImGui::SliderFloat("Zoom Level", &zoomFactor, 1.0f, 500.0f, "%.1f", ImGuiSliderFlags_Logarithmic);
-	ImGui::BeginChild("Sequencer", { 0, 0 }, false, ImGuiWindowFlags_HorizontalScrollbar);
+	ImGui::BeginChild("Sequencer", { 0, 0 }, true, ImGuiWindowFlags_HorizontalScrollbar);
 
 	ImGui::Spacing();
 
@@ -82,7 +89,10 @@ void JobWindow::DrawThreadSequence(int& threadNum, std::pair<const DWORD, std::v
 			ImGui::PushStyleColor(ImGuiCol_Button, colors[Math::CRCHash::HashValue(sample.functionName.c_str()) % NUM_BAR_COLORS]);
 
 			duration = Time::GetDurationInMilliSec(sample.jobEntryTime, sample.profilingWaitData[0].jobWaitEntryTime);
-			ImGui::DynamicTextButton(sample.functionName.c_str(), 0, ImVec2(baseBarWidth * duration * zoomFactor, barHeight));
+			if (ImGui::DynamicTextButton(sample.functionName.c_str(), 0, ImVec2(baseBarWidth * duration * zoomFactor, barHeight)))
+			{
+				pCurrentJobInfo = &sample;
+			}
 
 			// Waited in between
 			for (int i = 0; i < sample.profilingWaitData.size(); ++i)
@@ -92,7 +102,10 @@ void JobWindow::DrawThreadSequence(int& threadNum, std::pair<const DWORD, std::v
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8, 0.5, 0.5, 1.0));
 
 				duration = Time::GetDurationInMilliSec(sample.profilingWaitData[i].jobWaitEntryTime, sample.profilingWaitData[i].jobWaitExitTime);
-				ImGui::DynamicTextButton("WaitForCounter", 0, ImVec2(baseBarWidth * duration * zoomFactor, barHeight));
+				if (ImGui::DynamicTextButton("WaitForCounter", 0, ImVec2(baseBarWidth * duration * zoomFactor, barHeight)))
+				{
+					pCurrentJobInfo = &sample;
+				}
 
 				ImGui::PopStyleColor();
 
@@ -101,14 +114,20 @@ void JobWindow::DrawThreadSequence(int& threadNum, std::pair<const DWORD, std::v
 				if (sample.profilingWaitData.size() > 1 && i < sample.profilingWaitData.size())
 				{
 					duration = Time::GetDurationInMilliSec(sample.profilingWaitData[i].jobWaitExitTime, sample.profilingWaitData[i + 1].jobWaitEntryTime);
-					ImGui::DynamicTextButton("WaitForCounter", 0, ImVec2(baseBarWidth * duration * zoomFactor, barHeight));
+					if (ImGui::DynamicTextButton("WaitForCounter", 0, ImVec2(baseBarWidth * duration * zoomFactor, barHeight)))
+					{
+						pCurrentJobInfo = &sample;
+					}
 
 					ImGui::SameLine();
 				}
 			}
 
 			duration = Time::GetDurationInMilliSec(sample.profilingWaitData.back().jobWaitExitTime, sample.jobExitTime);
-			ImGui::DynamicTextButton(sample.functionName.c_str(), 0, ImVec2(baseBarWidth * duration * zoomFactor, barHeight));
+			if (ImGui::DynamicTextButton(sample.functionName.c_str(), 0, ImVec2(baseBarWidth * duration * zoomFactor, barHeight)))
+			{
+				pCurrentJobInfo = &sample;
+			}
 
 			ImGui::PopStyleColor();
 		}
@@ -117,9 +136,149 @@ void JobWindow::DrawThreadSequence(int& threadNum, std::pair<const DWORD, std::v
 			ImGui::PushStyleColor(ImGuiCol_Button, colors[Math::CRCHash::HashValue(sample.functionName.c_str()) % NUM_BAR_COLORS]);
 
 			duration = Time::GetDurationInMilliSec(sample.jobEntryTime, sample.jobExitTime);
-			ImGui::DynamicTextButton(sample.functionName.c_str(), 0, ImVec2(baseBarWidth * duration * zoomFactor, barHeight));
+			if (ImGui::DynamicTextButton(sample.functionName.c_str(), 0, ImVec2(baseBarWidth * duration * zoomFactor, barHeight)))
+			{
+				pCurrentJobInfo = &sample;
+			}
 
 			ImGui::PopStyleColor();
 		}
+
+		// @TODO: Put all jobs in correct hierarchy!
 	}
+}
+
+void JobWindow::DrawJobInfo()
+{
+	if (!pCurrentJobInfo) { return; }
+
+	static ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
+
+	if (ImGui::BeginTable("Job Info", 2, flags))
+	{
+		ImGui::TableSetupColumn("Criteria", ImGuiTableColumnFlags_WidthFixed);
+		ImGui::TableSetupColumn("Job Data", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableHeadersRow();
+	
+		{
+			// Job info
+			{
+				ImGui::TableNextRow();
+
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text("Job Description");
+
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%s: %s, %d", pCurrentJobInfo->fileName.c_str(), pCurrentJobInfo->functionName.c_str(), pCurrentJobInfo->lineNumber);
+			}
+
+			// -------------------------------------------------------------------------------
+
+			{
+				ImGui::TableNextRow();
+
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text("Starting Thread");
+
+				ImGui::TableSetColumnIndex(1);
+				int startingThreadID = pCurrentJobInfo->jobThreadId.size() > 0 ? pCurrentJobInfo->jobThreadId[0] : -1;
+				
+				if (startingThreadID > 0)
+				{
+					ImGui::Text("%d", startingThreadID);
+				}
+				else
+				{
+					ImGui::Text("Invalid!");
+				}
+			}
+
+			// -------------------------------------------------------------------------------
+
+			{
+				ImGui::TableNextRow();
+
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text("Job Execution Time");
+
+				ImGui::TableSetColumnIndex(1);
+
+				float jobExecTime = Time::GetDurationInMilliSec(pCurrentJobInfo->jobEntryTime, pCurrentJobInfo->jobExitTime);
+				if (jobExecTime >= 0) 
+				{
+					ImGui::Text("%.4f ms", jobExecTime);
+				}
+				else
+				{
+					ImGui::Text("Invalid!");
+				}
+			}
+			
+
+			// -------------------------------------------------------------------------------
+
+			{
+				ImGui::TableNextRow();
+
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text("Job Interruption Count");
+
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%d", pCurrentJobInfo->profilingWaitData.size());
+			}
+
+			// -------------------------------------------------------------------------------
+
+			{
+				ImGui::TableNextRow();
+
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text("Total Job Wait Time");
+
+				ImGui::TableSetColumnIndex(1);
+
+				float totalWaitTime = 0.0f;
+				for (auto& waitTime : pCurrentJobInfo->profilingWaitData)
+					totalWaitTime += Time::GetDurationInMilliSec(waitTime.jobWaitEntryTime, waitTime.jobWaitExitTime);
+
+				if (totalWaitTime >= 0)
+				{
+					ImGui::Text("%.4f ms", totalWaitTime);
+				}
+				else
+				{
+					ImGui::Text("Invalid!");
+				}
+			}
+
+			// -------------------------------------------------------------------------------
+
+			{
+
+			}
+		}
+
+		ImGui::EndTable();
+	}
+
+
+	ImGui::TableNextColumn();
+
+	
+
+
+	/* @TDOD: Draw job info containing:
+	* - Job description (Name, File, Line)
+	* - Total job time
+	* - Amount of waits 
+	* - Total wait time
+	* - Started thread
+	* - Associated fiber
+	* - ...
+	*/
+}
+
+void JobWindow::DrawRecommendations()
+{
+	// @TODO: List recommendations like where to use spinning busy wait ...
 }
