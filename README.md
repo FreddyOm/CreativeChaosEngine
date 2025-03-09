@@ -1,6 +1,10 @@
 # CreativeChaosEditor
 A custom game engine editor
 
+>Disclaimer: This project is not active anymore. The systems are currently being reworked and put into the new [Borealis Engine](https://github.com/FreddyOm/BorealisEngine) project.
+>Until everything is finally moved to the new project, the CreativeChaosEngine project will stay available here.
+>***Note that this code might not be representative of my latest work!***
+
 ## Documentation
 
 ### CC Editor
